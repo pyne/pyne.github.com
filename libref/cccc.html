@@ -1,0 +1,352 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CCCC Formats – pyne.cccc &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="ACE Cross Sections – pyne.ace" href="ace.html" />
+    <link rel="prev" title="Binning Functions – pyne.bins" href="bins.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ace.html" title="ACE Cross Sections – pyne.ace"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bins.html" title="Binning Functions – pyne.bins"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyne.cccc">
+<span id="cccc-formats-pyne-cccc"></span><span id="pyne-cccc"></span><h1>CCCC Formats &#8211; <a class="reference internal" href="../usersguide/cccc.html#module-pyne.cccc" title="pyne.cccc"><tt class="xref py py-mod docutils literal"><span class="pre">pyne.cccc</span></tt></a><a class="headerlink" href="#module-pyne.cccc" title="Permalink to this headline">¶</a></h1>
+<p>The CCCC module contains a number of classes for reading various cross section,
+flux, geometry, and data files with specifications given by the Committee for
+Computer Code Coordination. The following types of files can be read using
+classes from this module: ISOTXS, DLAYXS, BRKOXS, RTFLUX, ATFLUX, RZFLUX, MATXS,
+and SPECTR.</p>
+<p>The ISOTXS reader was originally derived from Professor James Holloway&#8217;s
+open-source C++ classes from the University of Michigan and later expanded by
+Nick Touran for work on his PhD thesis. DLAYXS was later added by Paul Romano.</p>
+<p>A description of several CCCC formats are available online for <a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/isotxs.html">ISOTXS</a>, <a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/matxs.html">MATXS</a>,
+<a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/rtflux.html">RTFLUX</a>, and <a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/rzflux.html">RZFLUX</a>. Other format specifications can be found in Los Alamos
+Report <a class="reference external" href="http://www.osti.gov/bridge/servlets/purl/5369298-uIcX6p/">LA-5324-MS</a>.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">cccc</span></tt> package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">cccc</span>
+</pre></div>
+</div>
+<p>The information below represents the complete specification of the classes in
+the cccc module. For examples of usage, please refer to the User&#8217;s Guide entry
+for <a class="reference internal" href="../usersguide/cccc.html#usersguide-cccc"><em>CCCC Formats</em></a>.</p>
+<div class="section" id="isotxs-class">
+<h2>Isotxs Class<a class="headerlink" href="#isotxs-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Isotxs">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Isotxs</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Isotxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Isotxs object represents a binary ISOTXS file written according to the
+CCCC specifications.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path of the ISOTXS file to load.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.cccc.Isotxs.find_nuclide">
+<tt class="descname">find_nuclide</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#pyne.cccc.Isotxs.find_nuclide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a nuclide with a given name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>Path of the ISOTXS file to load.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>nuc</strong> : Nuclide</p>
+<blockquote class="last">
+<div><p>Object containing microscopic cross sections and other data.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.cccc.Isotxs.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="headerlink" href="#pyne.cccc.Isotxs.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through and parse the ISOTXS file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dlayxs-class">
+<h2>Dlayxs Class<a class="headerlink" href="#dlayxs-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Dlayxs">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Dlayxs</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Dlayxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Dlayxs object represents the data stored in a CCCC-format DLAYXS
+file. This file contains delayed neutron precursor yields, emission spectra,
+and decay constants reduced to multigroup form. Typically, the data in a
+DLAYXS file would be related to cross-section files in ISOTXS and GRUPXS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path of the DLAYXS file to load.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.cccc.Dlayxs.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="headerlink" href="#pyne.cccc.Dlayxs.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through and parse data in the DLAYXS file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="brkoxs-class">
+<h2>Brkoxs Class<a class="headerlink" href="#brkoxs-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Brkoxs">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Brkoxs</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Brkoxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Brkoxs object represents data stored in a BRKOXS file from the CCCC
+format specification. This file is given in conjunction with an ISOTXS (or
+GRUPXS) file when the Bondarenko self-shielding method is to be used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path of the BRKOXS file to read.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="rtflux-class">
+<h2>Rtflux Class<a class="headerlink" href="#rtflux-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Rtflux">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Rtflux</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Rtflux" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Rtflux object represents data stored in a RTFLUX file from the CCCC
+format specification. This file contains regular total fluxes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path to the RTFLUX file to be read.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="atflux-class">
+<h2>Atflux Class<a class="headerlink" href="#atflux-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Atflux">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Atflux</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Atflux" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Atflux object represents data stored in a ATFLUX file from the CCCC
+format specification. This file contains adjoint total fluxes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path to the ATFLUX file to be read.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="rzflux-class">
+<h2>Rzflux Class<a class="headerlink" href="#rzflux-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Rzflux">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Rzflux</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Rzflux" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Rzflux object represents data stored in a RZFLUX file from the CCCC
+format specification. This file contains volumetric averages of fluxes by
+broad energy groups for different geometric zones.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path to the RZFLUX file to be read.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="matxs-class">
+<h2>Matxs Class<a class="headerlink" href="#matxs-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.cccc.Matxs">
+<em class="property">class </em><tt class="descclassname">pyne.cccc.</tt><tt class="descname">Matxs</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.cccc.Matxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Matxs object represents data stored in a MATXS file. This file contains
+generalized cross-sections.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path to the MATXS file to be read.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CCCC Formats &#8211; <tt class="docutils literal"><span class="pre">pyne.cccc</span></tt></a><ul>
+<li><a class="reference internal" href="#isotxs-class">Isotxs Class</a></li>
+<li><a class="reference internal" href="#dlayxs-class">Dlayxs Class</a></li>
+<li><a class="reference internal" href="#brkoxs-class">Brkoxs Class</a></li>
+<li><a class="reference internal" href="#rtflux-class">Rtflux Class</a></li>
+<li><a class="reference internal" href="#atflux-class">Atflux Class</a></li>
+<li><a class="reference internal" href="#rzflux-class">Rzflux Class</a></li>
+<li><a class="reference internal" href="#matxs-class">Matxs Class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bins.html"
+                        title="previous chapter">Binning Functions &#8211; <tt class="docutils literal docutils literal"><span class="pre">pyne.bins</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ace.html"
+                        title="next chapter">ACE Cross Sections &#8211; <tt class="docutils literal docutils literal"><span class="pre">pyne.ace</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/cccc.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ace.html" title="ACE Cross Sections – pyne.ace"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bins.html" title="Binning Functions – pyne.bins"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

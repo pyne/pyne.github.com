@@ -1,0 +1,206 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Atomic Weights – pyne.dbgen.atomic_weight &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Nuclear Data Generation – pyne.dbgen" href="index.html" />
+    <link rel="next" title="Radioactive Decay Data – pyne.dbgen.decay" href="decay.html" />
+    <link rel="prev" title="KAERI Helpers – pyne.dbgen.kaeri" href="kaeri.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="decay.html" title="Radioactive Decay Data – pyne.dbgen.decay"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="kaeri.html" title="KAERI Helpers – pyne.dbgen.kaeri"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Nuclear Data Generation &#8211; <tt class="docutils literal"><span class="pre">pyne.dbgen</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="atomic-weights-pyne-dbgen-atomic-weight">
+<span id="pyne-dbgen-atomic-weight"></span><h1>Atomic Weights &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.atomic_weight</span></tt><a class="headerlink" href="#atomic-weights-pyne-dbgen-atomic-weight" title="Permalink to this headline">¶</a></h1>
+<p>This module adds high-fidelity atomic weights and natural abundance data to <tt class="docutils literal"><span class="pre">nuc_data.h5</span></tt>.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">atomic_weight</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne.dbgen</span> <span class="kn">import</span> <span class="n">atomic_weight</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="pyne.dbgen.atomic_weight.grab_kaeri_atomic_abund">
+<tt class="descclassname">pyne.dbgen.atomic_weight.</tt><tt class="descname">grab_kaeri_atomic_abund</tt><big>(</big><em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.atomic_weight.grab_kaeri_atomic_abund" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grabs the KAERI files needed for the atomic abundance calculation, 
+if not already present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>build_dir</strong> : str</p>
+<blockquote class="last">
+<div><p>Major directory to place html files in. &#8216;KAERI/&#8217; will be appended.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.atomic_weight.parse_atomic_abund">
+<tt class="descclassname">pyne.dbgen.atomic_weight.</tt><tt class="descname">parse_atomic_abund</tt><big>(</big><em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.atomic_weight.parse_atomic_abund" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns a dictionary from nuclides to atomic abundence fractions.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.atomic_weight.grab_atmoic_mass_adjustment">
+<tt class="descclassname">pyne.dbgen.atomic_weight.</tt><tt class="descname">grab_atmoic_mass_adjustment</tt><big>(</big><em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.atomic_weight.grab_atmoic_mass_adjustment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grabs the current atomic mass adjustment from the Atomic
+Mass Data Center.  These are courtesy of Georges Audi and 
+Wang Meng via a private communication, April 2011.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.atomic_weight.parse_atmoic_mass_adjustment">
+<tt class="descclassname">pyne.dbgen.atomic_weight.</tt><tt class="descname">parse_atmoic_mass_adjustment</tt><big>(</big><em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.atomic_weight.parse_atmoic_mass_adjustment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the atomic mass adjustment data into a list of tuples of 
+the nuclide, atomic mass, and error.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.atomic_weight.make_atomic_weight_table">
+<tt class="descclassname">pyne.dbgen.atomic_weight.</tt><tt class="descname">make_atomic_weight_table</tt><big>(</big><em>nuc_data</em>, <em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.atomic_weight.make_atomic_weight_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes an atomic weight table in the nuc_data library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc_data</strong> : str</p>
+<blockquote>
+<div><p>Path to nuclide data file.</p>
+</div></blockquote>
+<p><strong>build_dir</strong> : str</p>
+<blockquote class="last">
+<div><p>Directory to place html files in.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.atomic_weight.make_atomic_weight">
+<tt class="descclassname">pyne.dbgen.atomic_weight.</tt><tt class="descname">make_atomic_weight</tt><big>(</big><em>nuc_data</em>, <em>build_dir</em><big>)</big><a class="headerlink" href="#pyne.dbgen.atomic_weight.make_atomic_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller function for adding atomic_weights.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kaeri.html"
+                        title="previous chapter">KAERI Helpers &#8211; <tt class="docutils literal"><span class="pre">pyne.dbgen.kaeri</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="decay.html"
+                        title="next chapter">Radioactive Decay Data &#8211; <tt class="docutils literal"><span class="pre">pyne.dbgen.decay</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/dbgen/atomic_weight.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="decay.html" title="Radioactive Decay Data – pyne.dbgen.decay"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="kaeri.html" title="KAERI Helpers – pyne.dbgen.kaeri"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >Nuclear Data Generation &#8211; <tt class="docutils literal"><span class="pre">pyne.dbgen</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

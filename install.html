@@ -1,0 +1,179 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="index.html" />
+    <link rel="next" title="PyNE User’s Guide" href="usersguide/index.html" />
+    <link rel="prev" title="Welcome to PyNE’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="usersguide/index.html" title="PyNE User’s Guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PyNE’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyNE v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="binary">
+<h2>Binary<a class="headerlink" href="#binary" title="Permalink to this headline">¶</a></h2>
+<p>A binary distribution of PyNE is hopefully coming soon.  Until then, please
+install from source.</p>
+</div>
+<div class="section" id="source">
+<span id="install-source"></span><h2>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>Installing PyNE from source is a two-step process:</p>
+<div class="highlight-python"><pre>cd pyne/
+python setup.py install
+nuc_data_make</pre>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">setup.py</span></tt> command compiles and installs the PyNE source code.
+The <tt class="docutils literal"><span class="pre">nuc_data_make</span></tt> builds and installs a database of nuclear data.
+Unfortunately, this must be done as a second step because most nuclear
+data is under some form of license restriction or export control which
+prevents the developers from distributing it with PyNE.  However, the
+<tt class="docutils literal"><span class="pre">nuc_data_make</span></tt> program (which is installed by <tt class="docutils literal"><span class="pre">setup.py</span></tt>) will
+do its best to find relevant nuclear data elsewhere on your machine
+or from public sources on the internet.</p>
+<div class="section" id="linux-ubuntu-epd">
+<h3>Linux (Ubuntu) + EPD<a class="headerlink" href="#linux-ubuntu-epd" title="Permalink to this headline">¶</a></h3>
+<p>Assuming you are on some flavor of Linux and you primarily use Python
+through the Enthought Python Distribution (EPD), you can install PyNE
+to be based off of the EPD packages.</p>
+<p>First, you&#8217;ll need to know where on your system EPD is installed.
+Call this variable <tt class="docutils literal"><span class="pre">EPD_DIR</span></tt>; for example if you have installed it
+to your home directory then <tt class="docutils literal"><span class="pre">EPD_DIR=$HOME/epd</span></tt>.  You&#8217;ll then need
+to add the following lines to your <tt class="file docutils literal"><span class="pre">~/.bashrc</span></tt> file <em>after</em>
+installing EPD but <em>prior to</em> installing PyNE:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$EPD_DIR</span>/bin:<span class="nv">$HOME</span>/.local/bin:<span class="nv">$PATH</span>
+<span class="nb">export </span><span class="nv">CPATH</span><span class="o">=</span><span class="nv">$EPD_DIR</span>/include:<span class="nv">$CPATH</span>
+<span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$EPD_DIR</span>/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+</pre></div>
+</div>
+<p>Or as in the example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/epd/bin:<span class="nv">$HOME</span>/.local/bin:<span class="nv">$PATH</span>
+<span class="nb">export </span><span class="nv">CPATH</span><span class="o">=</span><span class="nv">$HOME</span>/epd/include:<span class="nv">$CPATH</span>
+<span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$HOME</span>/epd/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+</pre></div>
+</div>
+<p>You may now proceed with the PyNE install <a class="reference internal" href="#install-source"><em>as above</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#binary">Binary</a></li>
+<li><a class="reference internal" href="#source">Source</a><ul>
+<li><a class="reference internal" href="#linux-ubuntu-epd">Linux (Ubuntu) + EPD</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to PyNE&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="usersguide/index.html"
+                        title="next chapter">PyNE User&#8217;s Guide</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/install.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="usersguide/index.html" title="PyNE User’s Guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PyNE’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">PyNE v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

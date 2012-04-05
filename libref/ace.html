@@ -1,0 +1,196 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ACE Cross Sections – pyne.ace &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="ENSDF File Support – pyne.ensdf" href="ensdf.html" />
+    <link rel="prev" title="CCCC Formats – pyne.cccc" href="cccc.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ensdf.html" title="ENSDF File Support – pyne.ensdf"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cccc.html" title="CCCC Formats – pyne.cccc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyne.ace">
+<span id="ace-cross-sections-pyne-ace"></span><span id="pyne-ace"></span><h1>ACE Cross Sections &#8211; <a class="reference internal" href="../usersguide/ace.html#module-pyne.ace" title="pyne.ace"><tt class="xref py py-mod docutils literal"><span class="pre">pyne.ace</span></tt></a><a class="headerlink" href="#module-pyne.ace" title="Permalink to this headline">¶</a></h1>
+<p>This module is for reading ACE-format cross sections. ACE stands for &#8220;A Compact
+ENDF&#8221; format and originated from work on <a class="reference external" href="http://mcnp-green.lanl.gov/">MCNP</a>. It is used in a number of other
+Monte Carlo particle transport codes.</p>
+<p>ACE-format cross sections are typically generated from <a class="reference external" href="http://www.nndc.bnl.gov/endf">ENDF</a> files through a
+cross section processing program like <a class="reference external" href="http://t2.lanl.gov/codes/codes.html">NJOY</a>. The ENDF data consists of tabulated
+thermal data, ENDF/B resonance parameters, distribution parameters in the
+unresolved resonance region, and tabulated data in the fast region. After the
+ENDF data has been reconstructed and Doppler-broadened, the ACER module
+generates ACE-format cross sections.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">ace</span></tt> package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">ace</span>
+</pre></div>
+</div>
+<p>The information below represents the complete specification of the classes in
+the ace module. For examples of usage, please refer to the User&#8217;s Guide entry
+for <a class="reference internal" href="../usersguide/ace.html#usersguide-ace"><em>ACE Cross Sections</em></a>.</p>
+<div class="section" id="library-class">
+<h2>Library Class<a class="headerlink" href="#library-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.ace.Library">
+<em class="property">class </em><tt class="descclassname">pyne.ace.</tt><tt class="descname">Library</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#pyne.ace.Library" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Library objects represents an ACE-formatted file which may contain
+multiple tables with data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path of the ACE library file to load.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.ace.Library.find_table">
+<tt class="descname">find_table</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#pyne.ace.Library.find_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a cross-section table with a given name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote class="last">
+<div><p>Name of the cross-section table, e.g. 92235.70c</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.ace.Library.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="headerlink" href="#pyne.ace.Library.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through and parse the ACE-format library.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ACE Cross Sections &#8211; <tt class="docutils literal"><span class="pre">pyne.ace</span></tt></a><ul>
+<li><a class="reference internal" href="#library-class">Library Class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cccc.html"
+                        title="previous chapter">CCCC Formats &#8211; <tt class="docutils literal"><span class="pre">pyne.cccc</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ensdf.html"
+                        title="next chapter">ENSDF File Support &#8211; <tt class="docutils literal"><span class="pre">pyne.ensdf</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/ace.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ensdf.html" title="ENSDF File Support – pyne.ensdf"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cccc.html" title="CCCC Formats – pyne.cccc"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

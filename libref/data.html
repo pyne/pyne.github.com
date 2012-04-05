@@ -1,0 +1,365 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic Nuclear Data – pyne.data &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="Materials – pyne.material" href="material.html" />
+    <link rel="prev" title="Nuclide Naming Module – pyne.nucname" href="nucname.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="material.html" title="Materials – pyne.material"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nucname.html" title="Nuclide Naming Module – pyne.nucname"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="basic-nuclear-data-pyne-data">
+<span id="pyne-data"></span><h1>Basic Nuclear Data &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.data</span></tt><a class="headerlink" href="#basic-nuclear-data-pyne-data" title="Permalink to this headline">¶</a></h1>
+<p>This module provides a top-level interface for a variety of basic nuclear data needs.
+This aims to provide quick access to very high fidelity data.  Usually values
+are taken from the <tt class="file docutils literal"><span class="pre">nuc_data.h5</span></tt> library.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">data</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">data</span>
+</pre></div>
+</div>
+<div class="section" id="atomic-weight">
+<h2>Atomic Weight<a class="headerlink" href="#atomic-weight" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.nuc_weight">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">nuc_weight</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.data.nuc_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the weight of a nuclide in [amu].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>weight</strong> : float</p>
+<blockquote class="last">
+<div><p>Atomic weight of this nuclide [amu].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the A-number is returned as a float.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.nuc_weight_map">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">nuc_weight_map</tt><a class="headerlink" href="#pyne.data.nuc_weight_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their mass weights.
+This is used by <a class="reference internal" href="#pyne.data.nuc_weight" title="pyne.data.nuc_weight"><tt class="xref py py-func docutils literal"><span class="pre">nuc_weight()</span></tt></a> under the hood.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="decay-data">
+<h2>Decay Data<a class="headerlink" href="#decay-data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.half_life">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">half_life</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.data.half_life" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the half-life of a nuclide in [seconds].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>hl</strong> : float</p>
+<blockquote class="last">
+<div><p>Half-life of this nuclide [seconds].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the nuclide is assumed to be stable.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.half_life_map">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">half_life_map</tt><a class="headerlink" href="#pyne.data.half_life_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their half lives.
+This is used by <a class="reference internal" href="#pyne.data.half_life" title="pyne.data.half_life"><tt class="xref py py-func docutils literal"><span class="pre">half_life()</span></tt></a> under the hood.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_const">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">decay_const</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.data.decay_const" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the decay constant of a nuclide in [1/seconds].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>dc</strong> : float</p>
+<blockquote class="last">
+<div><p>Decay constant of this nuclide [1/seconds].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the nuclide is assumed to be stable.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.decay_const_map">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">decay_const_map</tt><a class="headerlink" href="#pyne.data.decay_const_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their decay constants.
+This is used by <a class="reference internal" href="#pyne.data.decay_const" title="pyne.data.decay_const"><tt class="xref py py-func docutils literal"><span class="pre">decay_const()</span></tt></a> under the hood.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="neutron-scattering-lengths">
+<h2>Neutron Scattering Lengths<a class="headerlink" href="#neutron-scattering-lengths" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.b">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">b</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.data.b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the bound scattering length of a nuclide in [cm].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>b</strong> : float</p>
+<blockquote class="last">
+<div><p>Bound scattering length of nuc [cm].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If nuc is not found, the value for a nuclide with the same A-number 
+is used instead. If still no value is found, the an isotope of the 
+same element as nuc is used.  If still no values are found, zero is
+returned.</p>
+<p>This value is computed from the coherent and incoherent scattering 
+lengths as follows:</p>
+<div class="math">
+<p><img src="../_images/math/17b3f128996d9876b58a388ea25b71b48931e7f7.png" alt="b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}" /></p>
+</div></dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.b_map">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">b_map</tt><a class="headerlink" href="#pyne.data.b_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their bound neuton scattering lengths.
+This is used by <a class="reference internal" href="#pyne.data.b" title="pyne.data.b"><tt class="xref py py-func docutils literal"><span class="pre">b()</span></tt></a> under the hood.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.data.b_coherent">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">b_coherent</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.data.b_coherent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the coherent bound scattering length of a nuclide in [cm].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>bc</strong> : complex</p>
+<blockquote class="last">
+<div><p>Coherent bound scattering length of nuc [cm].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If nuc is not found, the value for a nuclide with the same A-number 
+is used instead. If still no value is found, the an isotope of the 
+same element as nuc is used.  If still no values are found, zero is
+returned.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.b_coherent_map">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">b_coherent_map</tt><a class="headerlink" href="#pyne.data.b_coherent_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their bound coherent neuton scattering lengths.
+This is used by <a class="reference internal" href="#pyne.data.b_coherent" title="pyne.data.b_coherent"><tt class="xref py py-func docutils literal"><span class="pre">b_coherent()</span></tt></a> under the hood.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.data.b_incoherent">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">b_incoherent</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.data.b_incoherent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the incoherent bound scattering length of a nuclide in [cm].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>bi</strong> : complex</p>
+<blockquote class="last">
+<div><p>Incoherent bound scattering length of nuc [cm].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If nuc is not found, the value for a nuclide with the same A-number 
+is used instead. If still no value is found, the an isotope of the 
+same element as nuc is used.  If still no values are found, zero is
+returned.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.b_incoherent_map">
+<tt class="descclassname">pyne.data.</tt><tt class="descname">b_incoherent_map</tt><a class="headerlink" href="#pyne.data.b_incoherent_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their bound incoherent neuton scattering lengths.
+This is used by <a class="reference internal" href="#pyne.data.b_coherent" title="pyne.data.b_coherent"><tt class="xref py py-func docutils literal"><span class="pre">b_coherent()</span></tt></a> under the hood.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Basic Nuclear Data &#8211; <tt class="docutils literal"><span class="pre">pyne.data</span></tt></a><ul>
+<li><a class="reference internal" href="#atomic-weight">Atomic Weight</a></li>
+<li><a class="reference internal" href="#decay-data">Decay Data</a></li>
+<li><a class="reference internal" href="#neutron-scattering-lengths">Neutron Scattering Lengths</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nucname.html"
+                        title="previous chapter">Nuclide Naming Module &#8211; <tt class="docutils literal"><span class="pre">pyne.nucname</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="material.html"
+                        title="next chapter">Materials &#8211; <tt class="docutils literal"><span class="pre">pyne.material</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/data.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="material.html" title="Materials – pyne.material"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nucname.html" title="Nuclide Naming Module – pyne.nucname"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

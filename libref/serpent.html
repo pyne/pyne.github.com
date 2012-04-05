@@ -1,0 +1,242 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Serpent Support – pyne.serpent &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="Utility Functions – pyne.utils" href="utils.html" />
+    <link rel="prev" title="ORIGEN 2.2 Support – pyne.origen22" href="origen22.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Utility Functions – pyne.utils"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="origen22.html" title="ORIGEN 2.2 Support – pyne.origen22"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="serpent-support-pyne-serpent">
+<span id="pyne-serpent"></span><h1>Serpent Support &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.serpent</span></tt><a class="headerlink" href="#serpent-support-pyne-serpent" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="http://montecarlo.vtt.fi/">Serpent</a> is a continuous energy Monte Carlo reactor physics code.  Pyne contains support for reading
+in serpents three types of output files, which are all in Matlab&#8217;s <tt class="docutils literal"><span class="pre">*.m</span></tt> format.  These files are
+all read in as Python dictionaries and optionally written out to a corresponding <tt class="docutils literal"><span class="pre">*.py</span></tt> file.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">serpent</span></tt> package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">serpent</span>
+</pre></div>
+</div>
+<div class="section" id="parsers">
+<h2>Parsers<a class="headerlink" href="#parsers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.serpent.parse_res">
+<tt class="descclassname">pyne.serpent.</tt><tt class="descname">parse_res</tt><big>(</big><em>resfile</em>, <em>write_py=False</em><big>)</big><a class="headerlink" href="#pyne.serpent.parse_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a serpent results <tt class="docutils literal"><span class="pre">*_res.m</span></tt> output file to a dictionary (and 
+optionally to a <tt class="docutils literal"><span class="pre">*_res.py</span></tt> file).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>resfile</strong> : str or file-like object</p>
+<blockquote>
+<div><p>Path to results file or a res file handle.</p>
+</div></blockquote>
+<p><strong>write_py</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag for whether to write the res file to an analogous python file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>res</strong> : dict</p>
+<blockquote class="last">
+<div><p>Dictionary of the parsed results.  Please see the Serpent manual for
+a complete description of contents.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.serpent.parse_dep">
+<tt class="descclassname">pyne.serpent.</tt><tt class="descname">parse_dep</tt><big>(</big><em>depfile</em>, <em>write_py=False</em>, <em>make_mats=True</em><big>)</big><a class="headerlink" href="#pyne.serpent.parse_dep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a serpent depletion <tt class="docutils literal"><span class="pre">*_dep.m</span></tt> output file to a dictionary (and 
+optionally to a <tt class="docutils literal"><span class="pre">*_dep.py</span></tt> file).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>depfile</strong> : str or file-like object</p>
+<blockquote>
+<div><p>Path to depletion file or a dep file handle.</p>
+</div></blockquote>
+<p><strong>write_py</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag for whether to write the dep file to an analogous python file.</p>
+</div></blockquote>
+<p><strong>make_mats</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag for whether or not to build Materials out of mass data and add 
+these to the return dictionary.  Materials so added have names which 
+end in &#8216;_MATERIAL&#8217;.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>dep</strong> : dict</p>
+<blockquote class="last">
+<div><p>Dictionary of the parsed depletion information.  Please see the Serpent 
+manual for a complete description of contents.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.serpent.parse_det">
+<tt class="descclassname">pyne.serpent.</tt><tt class="descname">parse_det</tt><big>(</big><em>detfile</em>, <em>write_py=False</em><big>)</big><a class="headerlink" href="#pyne.serpent.parse_det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a serpent detector <tt class="docutils literal"><span class="pre">*_det.m</span></tt> output file to a dictionary (and 
+optionally to a <tt class="docutils literal"><span class="pre">*_det.py</span></tt> file).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>detfile</strong> : str or file-like object</p>
+<blockquote>
+<div><p>Path to detector file or a det file handle.</p>
+</div></blockquote>
+<p><strong>write_py</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag for whether to write the det file to an analogous python file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>det</strong> : dict</p>
+<blockquote class="last">
+<div><p>Dictionary of the parsed detector.  Please see the Serpent manual for
+a complete description of contents.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Serpent Support &#8211; <tt class="docutils literal"><span class="pre">pyne.serpent</span></tt></a><ul>
+<li><a class="reference internal" href="#parsers">Parsers</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="origen22.html"
+                        title="previous chapter">ORIGEN 2.2 Support &#8211; <tt class="docutils literal docutils literal"><span class="pre">pyne.origen22</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">Utility Functions &#8211; <tt class="docutils literal"><span class="pre">pyne.utils</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/serpent.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Utility Functions – pyne.utils"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="origen22.html" title="ORIGEN 2.2 Support – pyne.origen22"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

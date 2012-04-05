@@ -1,0 +1,233 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Binning Functions – pyne.bins &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="CCCC Formats – pyne.cccc" href="cccc.html" />
+    <link rel="prev" title="Materials – pyne.material" href="material.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cccc.html" title="CCCC Formats – pyne.cccc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="material.html" title="Materials – pyne.material"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="binning-functions-pyne-bins">
+<span id="pyne-bins"></span><h1>Binning Functions &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.bins</span></tt><a class="headerlink" href="#binning-functions-pyne-bins" title="Permalink to this headline">¶</a></h1>
+<p>This module holds some basic utility functions that are used throughout PyNE.
+You may find them useful as well!</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">bins</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">bins</span>
+</pre></div>
+</div>
+<div class="section" id="special-binning-functions">
+<h2>Special Binning Functions<a class="headerlink" href="#special-binning-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.bins.ninespace">
+<tt class="descclassname">pyne.bins.</tt><tt class="descname">ninespace</tt><big>(</big><em>start</em>, <em>stop</em>, <em>num=50</em>, <em>endpoint=True</em><big>)</big><a class="headerlink" href="#pyne.bins.ninespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the range into one-minus-log-uniform bins defined by num points.
+In the vernacular, the space is &#8216;split in the nines&#8217;.  Note that this assumes
+base = 10.0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>start</strong> : number</p>
+<blockquote>
+<div><p>The starting value of the sequence.</p>
+</div></blockquote>
+<p><strong>stop</strong> : number</p>
+<blockquote>
+<div><p>The final value of the sequence, unless endpoint
+is False.  In that case, num + 1 values are spaced over the
+interval in nines-space, of which all but the last (a sequence of
+length num) are returned.</p>
+</div></blockquote>
+<p><strong>num</strong> : integer, optional</p>
+<blockquote>
+<div><p>Number of samples to generate. See endpoint.</p>
+</div></blockquote>
+<p><strong>endpoint</strong> : boolean, optional</p>
+<blockquote>
+<div><p>If true, stop is the last sample. Otherwise, it is not included.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>samples</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>num samples, equally spaced in the nines.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ninespace</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9999</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">    array([0.9, 0.99, 0.999, 0.9999])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.bins.stair_step">
+<tt class="descclassname">pyne.bins.</tt><tt class="descname">stair_step</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#pyne.bins.stair_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a 1d data set of boundaries (x) and cell-centered values (y) 
+into stair step arrays of the same length.  The returned arrays are 
+suitable for graphing.  This is especially useful in energy vs. spectrum
+data where there are G+1 boundaries and G data points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>x</strong> : sequence</p>
+<blockquote>
+<div><p>Data of length G+1.</p>
+</div></blockquote>
+<p><strong>y</strong> : sequence</p>
+<blockquote>
+<div><p>Data of length G.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>xss</strong> : ndarray</p>
+<blockquote>
+<div><p>Stair-step version of x data, length 2G.</p>
+</div></blockquote>
+<p><strong>yss</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>Stair-step version of y data, length 2G.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bins</span><span class="o">.</span><span class="n">stair_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">(array([   0.1,    1. ,    1. ,   10. ,   10. ,  100. ]),</span>
+<span class="go">array([ 2.,  2.,  3.,  3.,  4.,  4.]))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Binning Functions &#8211; <tt class="docutils literal"><span class="pre">pyne.bins</span></tt></a><ul>
+<li><a class="reference internal" href="#special-binning-functions">Special Binning Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="material.html"
+                        title="previous chapter">Materials &#8211; <tt class="docutils literal"><span class="pre">pyne.material</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cccc.html"
+                        title="next chapter">CCCC Formats &#8211; <tt class="docutils literal"><span class="pre">pyne.cccc</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/bins.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cccc.html" title="CCCC Formats – pyne.cccc"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="material.html" title="Materials – pyne.material"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

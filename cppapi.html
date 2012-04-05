@@ -1,0 +1,177 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using the C++ API &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="index.html" />
+    <link rel="next" title="PyNE Development Team" href="dev_team.html" />
+    <link rel="prev" title="CINDER Data – pyne.dbgen.cinder" href="libref/dbgen/cinder.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dev_team.html" title="PyNE Development Team"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libref/dbgen/cinder.html" title="CINDER Data – pyne.dbgen.cinder"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyNE v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="using-the-c-api">
+<span id="cppapi"></span><h1>Using the C++ API<a class="headerlink" href="#using-the-c-api" title="Permalink to this headline">¶</a></h1>
+<p>While PyNE is a Python package, much of its core functionality exists purely in C/C++.
+The python wrappers that expose these C-level utilities exist independently of the the
+C-code.  Therefore it is possible to use, compile, and link directly to PyNE core
+libraries from lower-level languages without having to touch Python at all.  Additionally,
+this enables PyNE to be used from <em>within</em> other Python extension modules!</p>
+<p>The API for PyNE functions on the C++ level is very similar to that which is exposed to
+Python.  The differences lie largely in that C functions are strongly typed, whereas PyNE&#8217;s
+wrappers take heavy advantage of Python&#8217;s duck typing.  For most use cases, the <a class="reference internal" href="usersguide/index.html#usersguide"><em>PyNE User&#8217;s Guide</em></a>,
+the <a class="reference internal" href="libref/index.html#libref"><em>Library Reference</em></a>, and the header files should be sufficient to describe the C++ API.</p>
+<p>All PyNE shared objects are installed into the <tt class="file docutils literal"><span class="pre">pyne/lib/</span></tt> directory.  The headers
+for both C/C++ and Cython are always installed into the <tt class="file docutils literal"><span class="pre">pyne/includes/</span></tt> directory.
+Unfortunately, where <tt class="file docutils literal"><span class="pre">pyne/</span></tt> is located often changes from one system to another.
+However, these locations may be found from the <tt class="docutils literal"><span class="pre">pyne_config</span></tt> module.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">pyne_config</span>
+
+<span class="gp">In [2]: </span><span class="n">pyne_config</span><span class="o">.</span><span class="n">lib</span>
+<span class="gr">Out[2]: </span><span class="s">&#39;/usr/lib64/python2.7/site-packages/site-packages/pyne/lib&#39;</span>
+
+<span class="gp">In [3]: </span><span class="n">pyne_config</span><span class="o">.</span><span class="n">includes</span>
+<span class="gr">Out[3]: </span><span class="s">&#39;/usr/lib64/python2.7/site-packages/site-packages/pyne/includes&#39;</span>
+</pre></div>
+</div>
+<p>The following table displays the C++ shared objects that are currently built (in Linux)
+and which names to use when dynamically linking to them.  For an example of how to link
+please refer to PyNE&#8217;s own <a class="reference external" href="https://github.com/pyne/pyne/blob/staging/setup.py">setup.py</a> file.  Additionally, feel free to contact the
+authors if you require additional assistance.</p>
+<table border="1" class="docutils">
+<caption>Pure C++ Shared Object Libraries</caption>
+<colgroup>
+<col width="19%" />
+<col width="45%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Module</th>
+<th class="head">Filename</th>
+<th class="head">Link With</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>pyne</td>
+<td>libpyne.so</td>
+<td>&#8216;pyne&#8217;</td>
+</tr>
+<tr><td>nucname</td>
+<td>libpyne_nucname.so</td>
+<td>&#8216;pyne_nucname&#8217;</td>
+</tr>
+<tr><td>material</td>
+<td>libpyne_material.so</td>
+<td>&#8216;pyne_material&#8217;</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libref/dbgen/cinder.html"
+                        title="previous chapter">CINDER Data &#8211; <tt class="docutils literal"><span class="pre">pyne.dbgen.cinder</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dev_team.html"
+                        title="next chapter">PyNE Development Team</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cppapi.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dev_team.html" title="PyNE Development Team"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libref/dbgen/cinder.html" title="CINDER Data – pyne.dbgen.cinder"
+             >previous</a> |</li>
+        <li><a href="index.html">PyNE v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>KAERI Helpers – pyne.dbgen.kaeri &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Nuclear Data Generation – pyne.dbgen" href="index.html" />
+    <link rel="next" title="Atomic Weights – pyne.dbgen.atomic_weight" href="atomic_weight.html" />
+    <link rel="prev" title="Nuclear Data Utility – pyne.dbgen.nuc_data_make" href="nuc_data_make.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="atomic_weight.html" title="Atomic Weights – pyne.dbgen.atomic_weight"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nuc_data_make.html" title="Nuclear Data Utility – pyne.dbgen.nuc_data_make"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Nuclear Data Generation &#8211; <tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="kaeri-helpers-pyne-dbgen-kaeri">
+<span id="pyne-dbgen-kaeri"></span><h1>KAERI Helpers &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.kaeri</span></tt><a class="headerlink" href="#kaeri-helpers-pyne-dbgen-kaeri" title="Permalink to this headline">¶</a></h1>
+<p>This module provides tools for scraping nuclear data off of the KAERI website (<a class="reference external" href="http://atom.kaeri.re.kr">http://atom.kaeri.re.kr</a>).
+These functions are used by other parts of dbgen.  Please use with respect.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">kaeri</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne.dbgen</span> <span class="kn">import</span> <span class="n">kaeri</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="pyne.dbgen.kaeri.grab_kaeri_nuclide">
+<tt class="descclassname">pyne.dbgen.kaeri.</tt><tt class="descname">grab_kaeri_nuclide</tt><big>(</big><em>nuc</em>, <em>build_dir=&quot;&quot;</em>, <em>n=None</em><big>)</big><a class="headerlink" href="#pyne.dbgen.kaeri.grab_kaeri_nuclide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grabs a nuclide file from KAERI from the web and places 
+it a {nuc}.html file in the build directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> : str, int</p>
+<blockquote>
+<div><p>nuclide, preferably in name form.</p>
+</div></blockquote>
+<p><strong>build_dir</strong> : str, optional</p>
+<blockquote>
+<div><p>Directory to place html files in.</p>
+</div></blockquote>
+<p><strong>n</strong> : None or int</p>
+<blockquote class="last">
+<div><p>Optional flag on data to grab.  None = basic data, 
+2 = cross section summary, 3 = cross section graphs.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.kaeri.parse_for_natural_isotopes">
+<tt class="descclassname">pyne.dbgen.kaeri.</tt><tt class="descname">parse_for_natural_isotopes</tt><big>(</big><em>htmlfile</em><big>)</big><a class="headerlink" href="#pyne.dbgen.kaeri.parse_for_natural_isotopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an elemental html file, returning a set of naturally occuring isotopes.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.kaeri.parse_for_all_isotopes">
+<tt class="descclassname">pyne.dbgen.kaeri.</tt><tt class="descname">parse_for_all_isotopes</tt><big>(</big><em>htmlfile</em><big>)</big><a class="headerlink" href="#pyne.dbgen.kaeri.parse_for_all_isotopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an elemental html file, returning a set of all occuring isotopes.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nuc_data_make.html"
+                        title="previous chapter">Nuclear Data Utility &#8211; <tt class="docutils literal docutils literal"><span class="pre">pyne.dbgen.nuc_data_make</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="atomic_weight.html"
+                        title="next chapter">Atomic Weights &#8211; <tt class="docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen.atomic_weight</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/dbgen/kaeri.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="atomic_weight.html" title="Atomic Weights – pyne.dbgen.atomic_weight"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nuc_data_make.html" title="Nuclear Data Utility – pyne.dbgen.nuc_data_make"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >Nuclear Data Generation &#8211; <tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

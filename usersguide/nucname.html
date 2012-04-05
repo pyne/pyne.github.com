@@ -1,0 +1,228 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nuclide Naming Conventions &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../index.html" />
+    <link rel="up" title="PyNE User’s Guide" href="index.html" />
+    <link rel="next" title="Materials" href="material.html" />
+    <link rel="prev" title="PyNE User’s Guide" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="material.html" title="Materials"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="PyNE User’s Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">PyNE User&#8217;s Guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nuclide-naming-conventions">
+<span id="usersguide-nucname"></span><h1>Nuclide Naming Conventions<a class="headerlink" href="#nuclide-naming-conventions" title="Permalink to this headline">¶</a></h1>
+<p>One of the most frustrating aspects of nuclear data software is the large number
+of different ways that people choose to nuclide names.  Functionally, there are
+three pieces of information that <em>should</em> be included in a radionuclide&#8217;s name</p>
+<ol class="arabic simple">
+<li><strong>Z Number</strong>: The number of protons.</li>
+<li><strong>A Number</strong>: The number of nucleons (neutrons + protons).</li>
+<li><strong>Excitation Level</strong>: The internal energy state of the nucleus.</li>
+</ol>
+<p>Some common naming conventions exist.  The following are the ones currently
+supported by PyNE.  Functions to convert between forms may be seen in <a class="reference internal" href="../libref/nucname.html#name-cast"><em>Naming Convention Casting Functions</em></a>.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><strong>zzaaam</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass number, and ends with a metastable flag (0 = ground,
+1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
+be expressed as &#8216;922350&#8217;.</li>
+<li><strong>name</strong>: This is the more common, human readable notation.  The chemical symbol
+(one or two characters long) is first, followed by the atomic weight.  Lastly if
+the nuclide is metastable, the letter <em>M</em> is concatenated to the end.  For example,
+&#8216;H-1&#8217; and &#8216;Am242M&#8217; are both valid.  Note that nucname will always return name form with
+the dash removed and all letters uppercase.</li>
+<li><strong>MCNP</strong>: The MCNP format for entering nuclides is unfortunately non-standard.  In most
+ways it is similar to zzaaam form, except that it lacks the metastable flag.  For information
+on how metastable isotopes are named, please consult the MCNPX documentation for more information.</li>
+<li><strong>Serpent</strong>: The serpent naming convention is similar to name form.  However, only the first
+letter in the chemical symbol is uppercase, the dash is always present, and the the meta-stable
+flag is lowercase.  For instance, &#8216;Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+<li><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.  However, this
+convention contains not meta-stable information.  Moreover, the A-number comes before the
+element symbol.  For example, &#8216;242Am&#8217; is the valid NIST notation.</li>
+<li><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the placement of the Z- and
+A-numbers are swapped. Therefore, this format is effectively aaazzzm.  For example, &#8216;2420951&#8217; is
+the valid cinder notation for &#8216;AM242M&#8217;.</li>
+</ol>
+</div></blockquote>
+<p>If there are more conventions that you would like to see supported, please contact the <a class="reference internal" href="../dev_team.html#dev-team"><em>PyNE Development Team</em></a>.</p>
+<div class="section" id="canonical-form">
+<h2>Canonical Form<a class="headerlink" href="#canonical-form" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">zzaaam</span></tt> integer form of nuclide names is the fundamental form of nuclide naming because
+it accurately captures all of the needed information in the smallest amount of space.  Given that the
+Z-number may be up to three digits, A-numbers are always three digits, and the excitation level is
+one digit, all possible nuclides are represented on the range <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">zzaaam</span> <span class="pre">&lt;</span> <span class="pre">10000000</span></tt>.  This
+falls well within 32 bit integers (but sadly outside of the smaller 16 bit ints).</p>
+<p>On the other hand, <tt class="docutils literal"><span class="pre">name</span></tt> string representations may be anywhere from two characters (16 bits)
+up to six characters (48 bits).  So in general, <tt class="docutils literal"><span class="pre">zzaaam</span></tt> is smaller by 50%.  Other forms do
+not necessarily contain all of the required information (<tt class="docutils literal"><span class="pre">MCNP</span></tt>) or require additional storage
+space (<tt class="docutils literal"><span class="pre">Serpent</span></tt>).  It may seem pedantic to quibble over the number of bits per nuclide name,
+but these identifiers are used everywhere throughout nuclear code, so it behooves us to be as small
+and fast as possible.</p>
+<p>The other distinct advantage that integer forms have is that you can natively perform arithmetic
+on them.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Am-242m</span>
+<span class="n">nuc</span> <span class="o">=</span> <span class="mi">942421</span>
+
+<span class="c"># Z-number</span>
+<span class="n">zz</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">/</span><span class="mi">10000</span>
+
+<span class="c"># A-number</span>
+<span class="n">aaa</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span><span class="o">%</span><span class="mi">1000</span>
+
+<span class="c"># Meta-stable state</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">%</span><span class="mi">10</span>
+</pre></div>
+</div>
+<p>Code internal to PyNE use <tt class="docutils literal"><span class="pre">zzaaam</span></tt>, and except for human readability, you should too!
+Natural elements are specified in this form by having zero A-number and excitation flags
+(<tt class="docutils literal"><span class="pre">zzaaam('U')</span> <span class="pre">==</span> <span class="pre">920000</span></tt>).</p>
+</div>
+<div class="section" id="examples-of-use">
+<h2>Examples of Use<a class="headerlink" href="#examples-of-use" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+
+<span class="gp">In [2]: </span><span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="s">&#39;U235&#39;</span><span class="p">)</span>
+<span class="gr">Out[2]: </span><span class="mi">922350</span>
+
+<span class="gp">In [3]: </span><span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="mi">10010</span><span class="p">)</span>
+<span class="gr">Out[3]: </span><span class="mi">10010</span>
+
+<span class="gp">In [4]: </span><span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="mi">10010</span><span class="p">)</span>
+<span class="gr">Out[4]: </span><span class="s">&#39;H1&#39;</span>
+
+<span class="gp">In [5]: </span><span class="n">nucname</span><span class="o">.</span><span class="n">serpent</span><span class="p">(</span><span class="s">&#39;AM242M&#39;</span><span class="p">)</span>
+<span class="gr">Out[5]: </span><span class="s">&#39;Am-242m&#39;</span>
+
+<span class="gp">In [6]: </span><span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="p">[</span><span class="s">&#39;SR&#39;</span><span class="p">]</span>
+<span class="gr">Out[6]: </span><span class="mi">38</span>
+
+<span class="gp">In [7]: </span><span class="n">nucname</span><span class="o">.</span><span class="n">zz_name</span><span class="p">[</span><span class="mi">57</span><span class="p">]</span>
+<span class="gr">Out[7]: </span><span class="s">&#39;LA&#39;</span>
+</pre></div>
+</div>
+<p>Further information on the naming module may be seen in the library reference <a class="reference internal" href="../libref/nucname.html#pyne-nucname"><em>Nuclide Naming Module &#8211; pyne.nucname</em></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Nuclide Naming Conventions</a><ul>
+<li><a class="reference internal" href="#canonical-form">Canonical Form</a></li>
+<li><a class="reference internal" href="#examples-of-use">Examples of Use</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">PyNE User&#8217;s Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="material.html"
+                        title="next chapter">Materials</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/usersguide/nucname.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="material.html" title="Materials"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="PyNE User’s Guide"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >PyNE User&#8217;s Guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

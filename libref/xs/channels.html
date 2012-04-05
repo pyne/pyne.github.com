@@ -1,0 +1,543 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nuclear Reaction Channels – pyne.xs.channels &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Cross Section Interface – pyne.xs" href="index.html" />
+    <link rel="next" title="ORIGEN 2.2 Support – pyne.origen22" href="../origen22.html" />
+    <link rel="prev" title="Cross Section Cache – pyne.xs.cache" href="cache.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../origen22.html" title="ORIGEN 2.2 Support – pyne.origen22"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cache.html" title="Cross Section Cache – pyne.xs.cache"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Cross Section Interface &#8211; <tt class="docutils literal"><span class="pre">pyne.xs</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nuclear-reaction-channels-pyne-xs-channels">
+<span id="pyne-xs-channels"></span><h1>Nuclear Reaction Channels &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.xs.channels</span></tt><a class="headerlink" href="#nuclear-reaction-channels-pyne-xs-channels" title="Permalink to this headline">¶</a></h1>
+<p>This module provides an easy interface to very quickly grab multi-group cross sections
+from the cross section cache and collapse them to the appropriate group structure.
+The more finely resolved group constants</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">channels</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne.xs</span> <span class="kn">import</span> <span class="n">channels</span>
+</pre></div>
+</div>
+<p>The following terminology applies for this module:</p>
+<ul class="simple">
+<li><strong>G</strong>: The number of low-resolution energy groups, indexed by <strong>g</strong>.</li>
+<li><strong>N</strong>: The number of high-resolution energy groups, indexed by <strong>n</strong>.</li>
+<li><strong>E_g</strong>: The low-resolution group structure [MeV].  Must be monotonic.</li>
+<li><strong>E_n</strong>: The high-resolution group structure [MeV].  Must be monotonic
+in the same direction as <strong>E_g</strong>.</li>
+<li><strong>phi</strong>: Neutron flux [n/cm^2/s].</li>
+<li><strong>E</strong>: The incident neutron energy [MeV].</li>
+<li><strong>E&#8217;</strong>: The exiting neutron energy [MeV].</li>
+<li><strong>theta</strong>: The scattering angle [radians].</li>
+<li><strong>M_A</strong>: The atomic mass [amu] of the target material.</li>
+<li><strong>T</strong>: The temperature [kelvin] of the target material.</li>
+</ul>
+<div class="section" id="channels">
+<h2>Channels<a class="headerlink" href="#channels" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.xs.channels.sigma_t">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">sigma_t</tt><big>(</big><em>nuc</em>, <em>T=300.0</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.sigma_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the total neutron cross section for a nuclide.</p>
+<div class="math">
+<p><img src="../../_images/math/a01bcf4bd222857d46fb4699d57aabcf57a70d5b.png" alt="\sigma_{t, g} = \sigma_{a, g} + \sigma_{s, g}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the total cross section.</p>
+</div></blockquote>
+<p><strong>T</strong> : float, optional</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>sig_t_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the total cross section.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.sigma_f">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">sigma_f</tt><big>(</big><em>nuc</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.sigma_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the neutron fission cross-section for a nuclide for a new, 
+lower resolution group structure using a higher fidelity flux.  Note that 
+g indexes G, n indexes N, and G &lt; N.  If any of these are None-valued, 
+values from the cache are used.  The energy groups and fluxes are normally 
+ordered from highest-to-lowest energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the fission cross-section.</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>sigma_f_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the collapsed fission cross-section.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This always pulls the fission cross-section out of nuc_data library.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.chi">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">chi</tt><big>(</big><em>nuc</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em>, <em>eres=101</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.chi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the neutron fission energy spectrum for an isotope for a new, 
+lower resolution group structure using a higher fidelity flux.  Note that 
+g indexes G, n indexes N, and G &lt; N.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the neutron fission energy spectrum.</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+<p><strong>eres</strong> : int</p>
+<blockquote>
+<div><p>Number of energy-points to integrate over per group.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>chi_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the fission energy spectrum.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="models.html#pyne.xs.models.chi" title="pyne.xs.models.chi"><tt class="xref py py-obj docutils literal"><span class="pre">pyne.xs.models.chi</span></tt></a></dt>
+<dd>used under the covers by this function.</dd>
+</dl>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.sigma_s">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">sigma_s</tt><big>(</big><em>nuc</em>, <em>T</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.sigma_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the neutron scattering cross-section for a nuclide.</p>
+<div class="math">
+<p><img src="../../_images/math/c376f8b907f4355e39b3965bfa1d5c2354d05afa.png" alt="\sigma_{s, g} = \sum_{h} \sigma_{s, g\to h}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the scattering cross section.</p>
+</div></blockquote>
+<p><strong>T</strong> : float</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>sig_s_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the scattering cross section.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.sigma_s_gh">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">sigma_s_gh</tt><big>(</big><em>nuc</em>, <em>T</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.sigma_s_gh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the neutron scattering cross-section kernel for a nuclide for a new, 
+lower resolution group structure using a higher fidelity flux.  Note that g, h index G, 
+n indexes N, and G &lt; N.  g is for the incident energy and h is for the exiting energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the scattering kernel.</p>
+</div></blockquote>
+<p><strong>T</strong> : float</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>sig_s_gh</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the scattering kernel.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This function is currently a stub until the proper way to compute the 
+scattering kernel is determined.  This function is safe to use but the 
+results are trivial.  This function simply returns an array with the 
+diagonal elements set to sigma_s as computed by pyne.xs.models.sigma_s().
+This conserves the calculation of sigma_s_g by summing sigma_s_gh over 
+the h-index.</p>
+</div>
+<p class="rubric">Notes</p>
+<p>This pulls the scattering length out of nuc_data library.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.sigma_a">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">sigma_a</tt><big>(</big><em>nuc</em>, <em>T</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.sigma_a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the neutron absorption cross section for a nuclide for a new, 
+lower resolution group structure using a higher fidelity flux.  Note that 
+g indexes G, n indexes N, and G &lt; N.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the absorption cross section.</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>sigma_a_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the collapsed absorption cross section.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This always pulls the absorption cross section out of the nuc_data.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.sigma_a_reaction">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">sigma_a_reaction</tt><big>(</big><em>nuc</em>, <em>rx</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.sigma_a_reaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the neutron absorption reaction cross-section for a nuclide for a 
+new, lower resolution group structure using a higher fidelity flux.  Note that 
+g indexes G, n indexes N, and G &lt; N.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the absorption reaction cross-section.</p>
+</div></blockquote>
+<p><strong>rx</strong> : str</p>
+<blockquote>
+<div><p>Reaction key. (&#8216;gamma&#8217;, &#8216;alpha&#8217;, &#8216;p&#8217;, etc.)</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>sigma_rx_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the collapsed absorption reaction cross section.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="cache.html#pyne.xs.cache.ABSORPTION_RX" title="pyne.xs.cache.ABSORPTION_RX"><tt class="xref py py-obj docutils literal"><span class="pre">pyne.xs.cache.ABSORPTION_RX</span></tt></a>, <a class="reference internal" href="cache.html#pyne.xs.cache.ABSORPTION_RX_MAP" title="pyne.xs.cache.ABSORPTION_RX_MAP"><tt class="xref py py-obj docutils literal"><span class="pre">pyne.xs.cache.ABSORPTION_RX_MAP</span></tt></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p>This always pulls the absorption reaction cross-section out of the nuc_data.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.xs.channels.metastable_ratio">
+<tt class="descclassname">pyne.xs.channels.</tt><tt class="descname">metastable_ratio</tt><big>(</big><em>nuc</em>, <em>rx</em>, <em>E_g=None</em>, <em>E_n=None</em>, <em>phi_n=None</em><big>)</big><a class="headerlink" href="#pyne.xs.channels.metastable_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the ratio between a reaction that leaves the nuclide in a 
+metastable state and the equivalent reaction that leaves the nuclide in 
+the ground state.  This allows the calculation of metastable cross sections 
+via sigma_ms = ratio * sigma_ground.  Note that g indexes G, n indexes N, 
+and G &lt; N.</p>
+<p>Note: This always pulls the absorption reaction cross-sections out of the nuc_data library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc</strong> :</p>
+<blockquote>
+<div><p>A nuclide name for which to calculate the metastable.</p>
+</div></blockquote>
+<p><strong>rx</strong> : str</p>
+<blockquote>
+<div><p>Reaction key. (&#8216;gamma&#8217;, &#8216;alpha&#8217;, &#8216;p&#8217;, etc.)</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>New, lower fidelity energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over.  
+Length N.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>ratio_rx_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the ratio of the metastable cross section for a reaction 
+to the ground state reaction.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="cache.html#pyne.xs.cache.ABSORPTION_RX" title="pyne.xs.cache.ABSORPTION_RX"><tt class="xref py py-obj docutils literal"><span class="pre">pyne.xs.cache.ABSORPTION_RX</span></tt></a>, <a class="reference internal" href="cache.html#pyne.xs.cache.ABSORPTION_RX_MAP" title="pyne.xs.cache.ABSORPTION_RX_MAP"><tt class="xref py py-obj docutils literal"><span class="pre">pyne.xs.cache.ABSORPTION_RX_MAP</span></tt></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p>This always pulls the absorption reaction cross section out of the nuc_data.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Nuclear Reaction Channels &#8211; <tt class="docutils literal"><span class="pre">pyne.xs.channels</span></tt></a><ul>
+<li><a class="reference internal" href="#channels">Channels</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cache.html"
+                        title="previous chapter">Cross Section Cache &#8211; <tt class="docutils literal"><span class="pre">pyne.xs.cache</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../origen22.html"
+                        title="next chapter">ORIGEN 2.2 Support &#8211; <tt class="docutils literal"><span class="pre">pyne.origen22</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/xs/channels.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../origen22.html" title="ORIGEN 2.2 Support – pyne.origen22"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cache.html" title="Cross Section Cache – pyne.xs.cache"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >Cross Section Interface &#8211; <tt class="docutils literal"><span class="pre">pyne.xs</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

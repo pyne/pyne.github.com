@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Simple Cross Sections – pyne.dbgen.simple_xs &mdash; PyNE v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyNE v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Nuclear Data Generation – pyne.dbgen" href="index.html" />
+    <link rel="next" title="CINDER Data – pyne.dbgen.cinder" href="cinder.html" />
+    <link rel="prev" title="Neutron Scattering Lengths – pyne.dbgen.scattering_lengths" href="scattering_lengths.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cinder.html" title="CINDER Data – pyne.dbgen.cinder"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scattering_lengths.html" title="Neutron Scattering Lengths – pyne.dbgen.scattering_lengths"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Nuclear Data Generation &#8211; <tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="simple-cross-sections-pyne-dbgen-simple-xs">
+<span id="pyne-dbgen-simple-xs"></span><h1>Simple Cross Sections &#8211; <tt class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.simple_xs</span></tt><a class="headerlink" href="#simple-cross-sections-pyne-dbgen-simple-xs" title="Permalink to this headline">¶</a></h1>
+<p>This module adds simple cross section data from KAERI to <tt class="docutils literal"><span class="pre">nuc_data.h5</span></tt>.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">simple_xs</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyne.dbgen</span> <span class="kn">import</span> <span class="n">simple_xs</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="pyne.dbgen.simple_xs.grab_kaeri_simple_xs">
+<tt class="descclassname">pyne.dbgen.simple_xs.</tt><tt class="descname">grab_kaeri_simple_xs</tt><big>(</big><em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.simple_xs.grab_kaeri_simple_xs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grabs the KAERI files needed for the simple cross sections table, 
+if not already present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>build_dir</strong> : str</p>
+<blockquote class="last">
+<div><p>Major directory to place html files in. &#8216;KAERI/&#8217; will be appended.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.simple_xs.get_xs_from_file">
+<tt class="descclassname">pyne.dbgen.simple_xs.</tt><tt class="descname">get_xs_from_file</tt><big>(</big><em>filename</em>, <em>eng</em>, <em>chan</em><big>)</big><a class="headerlink" href="#pyne.dbgen.simple_xs.get_xs_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses out a cross section from a KAERI file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Local path to a KAERI neutron cross section summary html file.</p>
+</div></blockquote>
+<p><strong>eng</strong> : str</p>
+<blockquote>
+<div><p>Energy flag to find this cross section for.  (Must be key 
+of simple_xs_energy dictionary).</p>
+</div></blockquote>
+<p><strong>chan</strong> : str</p>
+<blockquote>
+<div><p>Cross section (interaction channel) to find.  (Must be key 
+of simple_xs_channels dict).</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>data</strong> : float</p>
+<blockquote class="last">
+<div><p>Microscopic cross section in [barns].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.simple_xs.parse_simple_xs">
+<tt class="descclassname">pyne.dbgen.simple_xs.</tt><tt class="descname">parse_simple_xs</tt><big>(</big><em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.simple_xs.parse_simple_xs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns a dictionary from cross-section types to nuclides.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.simple_xs.make_simple_xs_tables">
+<tt class="descclassname">pyne.dbgen.simple_xs.</tt><tt class="descname">make_simple_xs_tables</tt><big>(</big><em>nuc_data</em>, <em>build_dir=&quot;&quot;</em><big>)</big><a class="headerlink" href="#pyne.dbgen.simple_xs.make_simple_xs_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the simple cross section tables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nuc_data</strong> : str</p>
+<blockquote>
+<div><p>Path to nuclide data file.</p>
+</div></blockquote>
+<p><strong>build_dir</strong> : str</p>
+<blockquote class="last">
+<div><p>Directory to place html files in.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.dbgen.simple_xs.make_simple_xs">
+<tt class="descclassname">pyne.dbgen.simple_xs.</tt><tt class="descname">make_simple_xs</tt><big>(</big><em>nuc_data</em>, <em>build_dir</em><big>)</big><a class="headerlink" href="#pyne.dbgen.simple_xs.make_simple_xs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller function for adding basic cross section data.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scattering_lengths.html"
+                        title="previous chapter">Neutron Scattering Lengths &#8211; <tt class="docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen.scattering_lengths</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cinder.html"
+                        title="next chapter">CINDER Data &#8211; <tt class="docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen.cinder</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/dbgen/simple_xs.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cinder.html" title="CINDER Data – pyne.dbgen.cinder"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scattering_lengths.html" title="Neutron Scattering Lengths – pyne.dbgen.scattering_lengths"
+             >previous</a> |</li>
+        <li><a href="../../index.html">PyNE v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >Nuclear Data Generation &#8211; <tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">pyne.dbgen</span></tt></a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
