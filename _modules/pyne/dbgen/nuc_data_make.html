@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.nuc_data_make &mdash; PyNE 0.1</title>
+    <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
+    <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyne.dbgen.nuc_data_make</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">distutils.file_util</span> <span class="kn">import</span> <span class="n">copy_file</span><span class="p">,</span> <span class="n">move_file</span>
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">mkpath</span><span class="p">,</span> <span class="n">remove_tree</span>
+
+<span class="kn">from</span> <span class="nn">pyne.api</span> <span class="kn">import</span> <span class="n">nuc_data</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.api</span> <span class="kn">import</span> <span class="n">build_dir</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.decay</span> <span class="kn">import</span> <span class="n">make_decay</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.atomic_weight</span> <span class="kn">import</span> <span class="n">make_atomic_weight</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.scattering_lengths</span> <span class="kn">import</span> <span class="n">make_scattering_lengths</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.simple_xs</span> <span class="kn">import</span> <span class="n">make_simple_xs</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.cinder</span> <span class="kn">import</span> <span class="n">make_cinder</span>
+
+<span class="c"># Thanks to http://patorjk.com/software/taag/</span>
+<span class="c"># and http://www.chris.com/ascii/index.php?art=creatures/dragons (Jeff Ferris)</span>
+<span class="c"># for ASCII art inspiriation</span>
+
+<span class="n">pyne_logo</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+
+<span class="s">                                  /   \       </span>
+<span class="s"> _                        )      ((   ))     (                          </span>
+<span class="s">(@)                      /|\      ))_((     /|\                          </span>
+<span class="s">|-|                     / | \    (/\|/\)   / | \                      (@) </span>
+<span class="s">| | -------------------/--|-voV---\`|&#39;/--Vov-|--\---------------------|-|</span>
+<span class="s">|-|                         &#39;^`   (o o)  &#39;^`                          | |</span>
+<span class="s">| |                               `\Y/&#39;                               |-|</span>
+<span class="s">|-|                                                                   | |</span>
+<span class="s">| |        /\             ___           __  __             /\         |-|</span>
+<span class="s">|-|       /^~\           / _ \_   _  /\ \ \/__\           /^~\        | |  </span>
+<span class="s">| |       /^~\          / /_)/ | | |/  \/ /_\             /^~\        |-|</span>
+<span class="s">|-|       /^~\         / ___/| |_| / /\  //__             /^~\        | | </span>
+<span class="s">| |       ^||`         \/     \__, \_\ \/\__/             ^||`        |-|  </span>
+<span class="s">|-|        ||                |____/                        ||         | | </span>
+<span class="s">| |       ====                                            ====        |-|</span>
+<span class="s">|-|                                                                   | |</span>
+<span class="s">| |                                                                   |-|</span>
+<span class="s">|-|___________________________________________________________________| |</span>
+<span class="s">(@)              l   /\ /         ( (       \ /\   l                `\|-|</span>
+<span class="s">                 l /   V           \ \       V   \ l                  (@)</span>
+<span class="s">                 l/                _) )_          \I                   </span>
+<span class="s">                                   `\ /&#39;</span>
+<span class="s">                                     `  </span>
+<span class="s">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../libref/dbgen/nuc_data_make.html#pyne.dbgen.nuc_data_make.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Entry point for nuc_data_make utility.&quot;&quot;&quot;</span>
+    <span class="k">print</span> <span class="n">pyne_logo</span>
+
+    <span class="n">make_funcs</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;atomic_weight&#39;</span><span class="p">,</span> <span class="n">make_atomic_weight</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s">&#39;scattering_lengths&#39;</span><span class="p">,</span> <span class="n">make_scattering_lengths</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s">&#39;decay&#39;</span><span class="p">,</span> <span class="n">make_decay</span><span class="p">),</span> 
+                  <span class="p">(</span><span class="s">&#39;simple_xs&#39;</span><span class="p">,</span> <span class="n">make_simple_xs</span><span class="p">),</span> 
+                  <span class="p">(</span><span class="s">&#39;cinder&#39;</span><span class="p">,</span> <span class="n">make_cinder</span><span class="p">),</span> 
+                 <span class="p">]</span>
+    <span class="n">make_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">make_funcs</span><span class="p">)</span>
+
+    <span class="c"># Parse the command line arguments</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&#39;Make a nuclear data library.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;nuc_data&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">nuc_data</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&#39;path to the output database file.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-b&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;build_dir&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">build_dir</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&#39;path to the build directory.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--datapath&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;datapath&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&#39;MCNP DATAPATH.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-m&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;make&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&#39;comma-separated parts of nuc_data to make: &#39;</span> <span class="o">+</span> \
+                        <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">mf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">make_funcs</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#39;, all, and none.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--clean&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;clean&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&quot;&quot;&quot;level to clean up existing files.</span>
+<span class="s">                                0: no cleaning (default).</span>
+<span class="s">                                1: clean nuc_data.</span>
+<span class="s">                                2: clean nuc_data and build_dir.&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c"># clean nuc data</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">clean</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="k">print</span> <span class="s">&quot;removing nuc_data from {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c"># Make the build dir</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">clean</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;removing build_dir from {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
+        <span class="n">remove_tree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
+    <span class="n">mkpath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c"># Determine what to make</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">make</span> <span class="o">==</span> <span class="s">&#39;none&#39;</span><span class="p">:</span>
+        <span class="n">make_order</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">make</span> <span class="o">==</span> <span class="s">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">make_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">mf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">make_funcs</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>   
+        <span class="n">make_order</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">make</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s">&quot;Making nuc_data at {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
+
+    <span class="c"># Make the various tables</span>
+    <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">make_order</span><span class="p">:</span>
+        <span class="n">make_map</span><span class="p">[</span><span class="n">mo</span><span class="p">](</span><span class="n">args</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2011-2012, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+    <!-- cloud_sptheme 1.3 -->
+  </body>
+</html>

@@ -1,0 +1,1041 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.origen22 &mdash; PyNE 0.1</title>
+    <link rel="stylesheet" href="../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/toggle_sections.js"></script>
+    <script type="text/javascript" src="../../_static/toggle_sidebar.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="top" title="PyNE 0.1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyne.origen22</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">imap</span><span class="p">,</span> <span class="n">izip</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">from_atom_frac</span>
+
+<span class="c"># Table 4.2 in ORIGEN 2.2 manual</span>
+<span class="n">ORIGEN_TIME_UNITS</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span>              <span class="c"># No zero unit</span>
+                     <span class="mf">1.0</span><span class="p">,</span>               <span class="c"># seconds</span>
+                     <span class="mf">60.0</span><span class="p">,</span>              <span class="c"># minutes</span>
+                     <span class="mf">3600.0</span><span class="p">,</span>            <span class="c"># hours</span>
+                     <span class="mf">86400.0</span><span class="p">,</span>           <span class="c"># days</span>
+                     <span class="mf">31556926.0</span><span class="p">,</span>        <span class="c"># years...which are fuzzily defined.</span>
+                     <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>            <span class="c"># stable</span>
+                     <span class="mf">31556926.0</span> <span class="o">*</span> <span class="mf">1E3</span><span class="p">,</span>  <span class="c"># ky</span>
+                     <span class="mf">31556926.0</span> <span class="o">*</span> <span class="mf">1E6</span><span class="p">,</span>  <span class="c"># My</span>
+                     <span class="mf">31556926.0</span> <span class="o">*</span> <span class="mf">1E9</span><span class="p">,</span>  <span class="c"># Gy</span>
+                    <span class="p">]</span>
+
+
+<div class="viewcode-block" id="sec_to_time_unit"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.sec_to_time_unit">[docs]</a><span class="k">def</span> <span class="nf">sec_to_time_unit</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts seconds to ORIGEN time and units.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : float</span>
+<span class="sd">        time in seconds</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    t : float</span>
+<span class="sd">        time in units</span>
+<span class="sd">    unit : int</span>
+<span class="sd">        time unit that t is in. Represents index </span>
+<span class="sd">        into ORIGEN_TIME_UNITS, which matches </span>
+<span class="sd">        Table 4.2 in ORIGEN 2.2 manual.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ORIGEN_TIME_UNITS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">val</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">i</span> 
+
+        <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+            <span class="c"># Origen spec for stable nuclides</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="n">unit</span> <span class="o">-=</span> <span class="mi">2</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unit</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">ORIGEN_TIME_UNITS</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">unit</span>
+        
+
+<span class="c"># Regex helpers</span></div>
+<span class="n">_data_format</span> <span class="o">=</span> <span class="s">&quot;\d+\.\d*[EeDd]?[ +-]?\d+&quot;</span>
+
+
+
+<span class="c">###################################</span>
+<span class="c">### ORIGEN Input Deck Functions ###</span>
+<span class="c">###################################</span>
+
+<div class="viewcode-block" id="write_tape4"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.write_tape4">[docs]</a><span class="k">def</span> <span class="nf">write_tape4</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s">&quot;TAPE4.INP&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Writes a TAPE4.INP ORIGEN input file for a material.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mat : Material </span>
+<span class="sd">        Material with mass weights in units of grams.</span>
+<span class="sd">    outfile : str or file handler, optional </span>
+<span class="sd">        Path to tape4 file or file-like object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lower_z</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="s">&#39;AC&#39;</span><span class="p">]</span>
+    <span class="n">upper_z</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s">&#39;AC&#39;</span><span class="p">:]</span>
+
+    <span class="n">lower_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;1 {0} {1:.10E}   0 0   0 0   0 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">mass</span> <span class="ow">in</span> <span class="n">lower_z</span><span class="o">.</span><span class="n">mult_by_mass</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="n">upper_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;2 {0} {1:.10E}   0 0   0 0   0 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">mass</span> <span class="ow">in</span> <span class="n">upper_z</span><span class="o">.</span><span class="n">mult_by_mass</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">lower_lines</span> <span class="o">+</span> <span class="n">upper_lines</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;0 0 0 0</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">]</span>
+
+    <span class="n">tape4</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="c"># Write to the file</span>
+    <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tape4</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+</div>
+<span class="n">_tape5_irradiation_template</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s">  -1</span>
+<span class="s">  -1</span>
+<span class="s">  -1</span>
+<span class="s">  CUT     5 {CUT_OFF} -1</span>
+<span class="s">  RDA     Make sure thet the library identifier numbers match those in the TAPE9.INP file</span>
+<span class="s">  LIB     0 {DECAY_NLB1} {DECAY_NLB2} {DECAY_NLB3} {XSFPY_NLB1} {XSFPY_NLB2} {XSFPY_NLB3} 9 3 0 4 0</span>
+<span class="s">  OPTL    {optl}</span>
+<span class="s">  OPTA    {opta}</span>
+<span class="s">  OPTF    {optf}</span>
+<span class="s">  INP     1 -1  0  -1  4  4</span>
+<span class="s">  RDA     All irradiation (IRF and IRP) cards must be between burnup (BUP) cards.</span>
+<span class="s">  BUP</span>
+<span class="s">  {irr_type}     {irr_time}  {irr_value}   1   2   4  2</span>
+<span class="s">  BUP</span>
+<span class="s">  OUT     2  1 1 0</span>
+<span class="s">  END</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="n">_nes_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">]</span>    <span class="o">=</span> <span class="mi">1</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>   <span class="o">=</span> <span class="mi">2</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">]</span>   <span class="o">=</span> <span class="mi">3</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">]</span>   <span class="o">=</span> <span class="mi">4</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">5</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">6</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">7</span>
+<span class="n">_nes_table</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
+
+
+<span class="k">def</span> <span class="nf">_out_table_string</span><span class="p">(</span><span class="n">out_table_nes</span><span class="p">,</span> <span class="n">out_table_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes a string output table line from relevant information.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">out_table_num</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> 
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">arr</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="n">arr</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out_table_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">_nes_table</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">out_table_nes</span><span class="p">)]</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">arr</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<div class="viewcode-block" id="write_tape5_irradiation"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.write_tape5_irradiation">[docs]</a><span class="k">def</span> <span class="nf">write_tape5_irradiation</span><span class="p">(</span><span class="n">irr_type</span><span class="p">,</span> <span class="n">irr_time</span><span class="p">,</span> <span class="n">irr_value</span><span class="p">,</span> 
+                            <span class="n">outfile</span><span class="o">=</span><span class="s">&quot;TAPE5.INP&quot;</span><span class="p">,</span>
+                            <span class="n">decay_nlb</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> 
+                            <span class="n">xsfpy_nlb</span><span class="o">=</span><span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">205</span><span class="p">,</span> <span class="mi">206</span><span class="p">),</span> 
+                            <span class="n">cut_off</span><span class="o">=</span><span class="mf">1E-10</span><span class="p">,</span> 
+                            <span class="n">out_table_nes</span><span class="o">=</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span>
+                            <span class="n">out_table_laf</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span>  <span class="bp">True</span><span class="p">,</span>  <span class="bp">True</span><span class="p">),</span>
+                            <span class="n">out_table_num</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Writes an irradiation TAPE5 file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    irr_type : str</span>
+<span class="sd">        Flag that determines whether this is a constant power &quot;IRP&quot;</span>
+<span class="sd">        irradiation or a constant flux &quot;IRF&quot; irradiation calculation.</span>
+<span class="sd">    irr_time : float </span>
+<span class="sd">        Irradiation time durration in days.</span>
+<span class="sd">    irr_value : float </span>
+<span class="sd">        Magnitude of the irradiation. If irr_type = &quot;IRP&quot;, then</span>
+<span class="sd">        this is a power.  If irr_type = &quot;IRF&quot;, then this is a flux. </span>
+<span class="sd">    outfile : str or file-like object</span>
+<span class="sd">        Path or file to write the tape5 to.</span>
+<span class="sd">    decay_nlb : length 3 sequence</span>
+<span class="sd">        Three tuple of library numbers from the tape9 file decay data, eg (1, 2, 3).</span>
+<span class="sd">    xsfpy_nlb : length 3 sequence</span>
+<span class="sd">        Three tuple of library numbers from the tape9 file for cross section and fission</span>
+<span class="sd">        product yields, eg (204, 205, 206).</span>
+<span class="sd">    cut_off : float, optional</span>
+<span class="sd">        Cut-off concentration, below which reults are not recorded.</span>
+<span class="sd">    out_table_nes :  length 3 sequence of bools, optional</span>
+<span class="sd">        Specifies which type of output tables should be printed by ORIGEN.  The fields </span>
+<span class="sd">        represent (Nuclide, Element, Summary).  The default value of (False, False, True) </span>
+<span class="sd">        only prints the summary tables. </span>
+<span class="sd">    out_table_laf :  length 3 sequence of bools, optional </span>
+<span class="sd">        Specifies whether to print the activation products (l), actinides (a), and </span>
+<span class="sd">        fission products (f).  By default all three are printed.</span>
+<span class="sd">    out_table_num : sequence of ints or None</span>
+<span class="sd">        Specifies which tables, by number, to print according to the rules given by </span>
+<span class="sd">        out_table_nes and out_table_laf.  For example the list [10, 5] would print </span>
+<span class="sd">        tables 5 and 10.  There are 24 tables available. If None, then all tables </span>
+<span class="sd">        are printed.   </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">irr_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;IRP&quot;</span><span class="p">,</span> <span class="s">&quot;IRF&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Irradiation type must be either &#39;IRP&#39; or &#39;IRF&#39;.&quot;</span><span class="p">)</span>
+    
+    <span class="c"># Make template fill-value dictionary</span>
+    <span class="n">tape5_kw</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;CUT_OFF&#39;</span><span class="p">:</span> <span class="s">&quot;{0:.3E}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cut_off</span><span class="p">),</span>
+        <span class="s">&#39;DECAY_NLB1&#39;</span><span class="p">:</span> <span class="n">decay_nlb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s">&#39;DECAY_NLB2&#39;</span><span class="p">:</span> <span class="n">decay_nlb</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s">&#39;DECAY_NLB3&#39;</span><span class="p">:</span> <span class="n">decay_nlb</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s">&#39;XSFPY_NLB1&#39;</span><span class="p">:</span> <span class="n">xsfpy_nlb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s">&#39;XSFPY_NLB2&#39;</span><span class="p">:</span> <span class="n">xsfpy_nlb</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s">&#39;XSFPY_NLB3&#39;</span><span class="p">:</span> <span class="n">xsfpy_nlb</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s">&#39;irr_type&#39;</span><span class="p">:</span> <span class="n">irr_type</span><span class="p">,</span>
+        <span class="s">&#39;irr_time&#39;</span><span class="p">:</span> <span class="s">&#39;{0:.10E}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">irr_time</span><span class="p">),</span>
+        <span class="s">&#39;irr_value&#39;</span><span class="p">:</span> <span class="s">&#39;{0:.10E}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">irr_value</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="n">no_print_string</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c"># Activation Product Print String</span>
+    <span class="k">if</span> <span class="n">out_table_laf</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">tape5_kw</span><span class="p">[</span><span class="s">&#39;optl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_out_table_string</span><span class="p">(</span><span class="n">out_table_nes</span><span class="p">,</span> <span class="n">out_table_num</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tape5_kw</span><span class="p">[</span><span class="s">&#39;optl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_print_string</span>
+
+    <span class="c"># Actinide Print String</span>
+    <span class="k">if</span> <span class="n">out_table_laf</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">tape5_kw</span><span class="p">[</span><span class="s">&#39;opta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_out_table_string</span><span class="p">(</span><span class="n">out_table_nes</span><span class="p">,</span> <span class="n">out_table_num</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tape5_kw</span><span class="p">[</span><span class="s">&#39;opta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_print_string</span>
+
+    <span class="c"># Fission Product Print String</span>
+    <span class="k">if</span> <span class="n">out_table_laf</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="n">tape5_kw</span><span class="p">[</span><span class="s">&#39;optf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_out_table_string</span><span class="p">(</span><span class="n">out_table_nes</span><span class="p">,</span> <span class="n">out_table_num</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tape5_kw</span><span class="p">[</span><span class="s">&#39;optf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_print_string</span>
+
+
+    <span class="c"># Fill the template and write it to a file</span>
+    <span class="n">tape5</span> <span class="o">=</span> <span class="n">_tape5_irradiation_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">tape5_kw</span><span class="p">)</span>
+
+    <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tape5</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+
+
+<span class="c">#</span>
+<span class="c"># Tape6 functions</span>
+<span class="c">#</span>
+</div>
+<span class="n">_rx_bu_data_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39; (TIME, SEC|NEUT. FLUX|SP POW,MW|BURNUP,MWD|K INFINITY|NEUT PRODN|NEUT DESTN|TOT BURNUP|AVG N FLUX|AVG SP POW) (.*)&#39;</span><span class="p">)</span>
+
+<span class="n">_rx_bu_key_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;TIME, SEC&quot;</span><span class="p">:</span>  <span class="s">&quot;time_sec&quot;</span><span class="p">,</span>
+    <span class="s">&quot;NEUT. FLUX&quot;</span><span class="p">:</span> <span class="s">&quot;flux&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;SP POW,MW&quot;</span><span class="p">:</span>  <span class="s">&quot;specific_power_MW&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;BURNUP,MWD&quot;</span><span class="p">:</span> <span class="s">&quot;burnup_MWD&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;K INFINITY&quot;</span><span class="p">:</span> <span class="s">&quot;k_inf&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;NEUT PRODN&quot;</span><span class="p">:</span> <span class="s">&quot;neutron_production_rate&quot;</span><span class="p">,</span>
+    <span class="s">&quot;NEUT DESTN&quot;</span><span class="p">:</span> <span class="s">&quot;neutron_destruction_rate&quot;</span><span class="p">,</span>
+    <span class="s">&quot;TOT BURNUP&quot;</span><span class="p">:</span> <span class="s">&quot;total_burnup&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;AVG N FLUX&quot;</span><span class="p">:</span> <span class="s">&quot;average_flux&quot;</span><span class="p">,</span>
+    <span class="s">&quot;AVG SP POW&quot;</span><span class="p">:</span> <span class="s">&quot;average_specific_power&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">_table_header_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;[ 0]\s+(\d+) (NUCLIDE|ELEMENT|SUMMARY) TABLE:([ A-Z]+),([ 0-9A-Za-z*]+)&quot;</span><span class="p">)</span>
+
+<span class="n">_table_header_alpha_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;[ 0]\s+(\d+) (NUCLIDE|ELEMENT|SUMMARY) TABLE:\s*(ALPHA RADIOACTIVITY)\s+([ 0-9A-Za-z*]+)&quot;</span><span class="p">)</span>
+
+<span class="n">_nuclide_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot; ([ A-Z][A-Z][ \d][ \d]\d[ M])\s+(.*)&quot;</span><span class="p">)</span>
+
+<span class="n">_element_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot; ([ A-Z][A-Z])   \s+(.*)&quot;</span><span class="p">)</span>
+
+<span class="n">_species_group_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;[ +]\s+(ACTIVATION PRODUCTS|ACTINIDES[+]DAUGHTERS|FISSION PRODUCTS)&#39;</span><span class="p">)</span>
+
+<span class="n">_group_key_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;ACTIVATION PRODUCTS&#39;</span><span class="p">:</span> <span class="s">&#39;activation_products&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ACTINIDES+DAUGHTERS&#39;</span><span class="p">:</span> <span class="s">&#39;actinides&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FISSION PRODUCTS&#39;</span><span class="p">:</span> <span class="s">&#39;fission_products&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">_alpha_n_header_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;\s*(\(ALPHA,N\) NEUTRON SOURCE), (NEUTRONS/SEC)&#39;</span><span class="p">)</span>
+
+<span class="n">_spont_fiss_header_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;\s*(SPONTANEOUS FISSION NEUTRON SOURCE), (NEUTRONS/SEC)&#39;</span><span class="p">)</span>
+
+<span class="n">_n_source_key_map</span> <span class="o">=</span><span class="p">{</span>
+    <span class="s">&#39;(ALPHA,N) NEUTRON SOURCE&#39;</span><span class="p">:</span> <span class="s">&#39;alpha_neutron_source&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SPONTANEOUS FISSION NEUTRON SOURCE&#39;</span><span class="p">:</span> <span class="s">&#39;spont_fiss_neutron_source&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">_photon_spec_header_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;\s+PHOTON SPECTRUM FOR(.*)&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="parse_tape6"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.parse_tape6">[docs]</a><span class="k">def</span> <span class="nf">parse_tape6</span><span class="p">(</span><span class="n">tape6</span><span class="o">=</span><span class="s">&quot;TAPE6.OUT&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses an ORIGEN 2.2 TAPE6.OUT file. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tape6 : str or file-like object</span>
+<span class="sd">        Path or file to read the tape6 file from.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : dict </span>
+<span class="sd">        Dictionary of parsed values.</span>
+
+<span class="sd">    Warnings</span>
+<span class="sd">    --------</span>
+<span class="sd">    This method currently only functions to extract neutronic data from TAPE6</span>
+<span class="sd">    files.  It does not yet parse out photonic data.  If you would like to see</span>
+<span class="sd">    this feature added, please contact the developers.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The results dictionary that is returned is highly structured and generally</span>
+<span class="sd">    matches the layout of the TAPE6 file.  Data is stored as 1d numpy float arrays</span>
+<span class="sd">    which (if the TAPE6 is well-formed) will all be of the same length and match</span>
+<span class="sd">    the time vector.  The possible layout of results is as follows::</span>
+
+<span class="sd">      |- &#39;time_sec&#39;: time per index in [seconds]</span>
+<span class="sd">      |- &#39;flux&#39;: neutron flux at this time [n/cm^2/s]</span>
+<span class="sd">      |- &#39;specific_power_MW&#39;: recator specific power at this time [MW]</span>
+<span class="sd">      |- &#39;burnup_MWD&#39;: reactor burnup since last time step [MWd/input mass [g] from TAPE4]</span>
+<span class="sd">      |- &#39;k_inf&#39;: infinite multiplication factor [unitless]</span>
+<span class="sd">      |- &#39;neutron_production_rate&#39;: Total reactor neutron production rate [n/s]</span>
+<span class="sd">      |- &#39;neutron_destruction_rate: Total reactor neutron destruction rate [n/s]</span>
+<span class="sd">      |- &#39;total_burnup&#39;: Cummulative burnup over all time [MWd/input mass [g] from TAPE4]</span>
+<span class="sd">      |- &#39;average_flux&#39;: average neutron flux over preceeding time interval [n/cm^2/s]</span>
+<span class="sd">      |- &#39;average_specific_power: recator specific power over preceeding time interval [MW]</span>
+<span class="sd">      |- &#39;materials&#39;: list of Materials of same length as &#39;time_sec&#39;, only present if </span>
+<span class="sd">      |               &#39;table_3&#39; or &#39;table_5&#39; exist and have &#39;nuclide&#39; output.</span>
+<span class="sd">      |- &#39;alpha_neutron_source&#39;: dict</span>
+<span class="sd">      |                          |- &#39;title&#39;: str</span>
+<span class="sd">      |                          |- &#39;units&#39;: str</span>
+<span class="sd">      |                          |- nuclide or element str: (alpha, n) neutron source [n/s] </span>
+<span class="sd">      |- &#39;spont_fiss_neutron_source&#39;: dict</span>
+<span class="sd">      |                          |- &#39;title&#39;: str</span>
+<span class="sd">      |                          |- &#39;units&#39;: str</span>
+<span class="sd">      |                          |- nuclide or element str: spontaneous fission neutron source [n/s] </span>
+<span class="sd">      |- &#39;table_{n}&#39;: dict</span>
+<span class="sd">      |               |- &#39;nuclide&#39;: dict</span>
+<span class="sd">      |               |             |- &#39;title&#39;: str</span>
+<span class="sd">      |               |             |- &#39;units&#39;: str</span>
+<span class="sd">      |               |             |- &#39;activation_products&#39;: dict of (nuc-zzaaam, data) pairs</span>
+<span class="sd">      |               |             |- &#39;actinides&#39;: dict of (nuc-zzaaam, data) pairs</span>
+<span class="sd">      |               |             |- &#39;fission_products&#39;: dict of (nuc-zzaaam, data) pairs</span>
+<span class="sd">      |               |- &#39;element&#39;: dict</span>
+<span class="sd">      |               |             |- &#39;title&#39;: str</span>
+<span class="sd">      |               |             |- &#39;units&#39;: str</span>
+<span class="sd">      |               |             |- &#39;activation_products&#39;: dict of (elem str, data) pairs</span>
+<span class="sd">      |               |             |- &#39;actinides&#39;: dict of (elem str, data) pairs</span>
+<span class="sd">      |               |             |- &#39;fission_products&#39;: dict of (elem str, data) pairs</span>
+<span class="sd">      |               |- &#39;summary&#39;: dict</span>
+<span class="sd">      |               |             |- &#39;title&#39;: str</span>
+<span class="sd">      |               |             |- &#39;units&#39;: str</span>
+<span class="sd">      |               |             |- &#39;activation_products&#39;: dict of (elem or nuc str, data) pairs</span>
+<span class="sd">      |               |             |- &#39;actinides&#39;: dict of (elem or nuc str, data) pairs</span>
+<span class="sd">      |               |             |- &#39;fission_products&#39;: dict of (elem or nuc str, data) pairs</span>
+<span class="sd"> </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Read the TAPE6 file</span>
+    <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tape6</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">tape6</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tape6</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">tape6</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+        <span class="n">tape6</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c"># Prep to parse the file</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c"># Defaults</span>
+    <span class="n">table_key</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">table_type</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">table_group</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="c"># Read in the file line-by-line</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="c"># Get reactivity and burnup data</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_rx_bu_data_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="n">_rx_bu_key_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">arr_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">curr_data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_key</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_data</span><span class="p">,</span> <span class="n">arr_data</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c"># Get table spcies group</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_species_group_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">table_group</span> <span class="o">=</span> <span class="n">_group_key_map</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="k">continue</span>
+
+        <span class="c"># Get table header info</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_table_header_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_table_header_alpha_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tnum</span><span class="p">,</span> <span class="n">ttype</span><span class="p">,</span> <span class="n">ttitle</span><span class="p">,</span> <span class="n">tunits</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+            <span class="n">table_key</span> <span class="o">=</span> <span class="s">&quot;table_{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tnum</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">table_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">table_type</span> <span class="o">=</span> <span class="n">ttype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">table_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">]:</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="s">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttitle</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="s">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">table_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">]:</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="n">table_group</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">continue</span>
+
+
+        <span class="c"># Grab nuclide data lines</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_nuclide_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">table_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">nuc</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+            <span class="n">nuc_name</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="c"># Don&#39;t know WTF element &#39;SF&#39; is suppossed to be! (Spent fuel, spontaneous fission)</span>
+            <span class="k">if</span> <span class="n">nuc_name</span> <span class="o">==</span> <span class="s">&#39;SF250&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc_name</span><span class="p">)</span>
+            <span class="n">nuc_key</span> <span class="o">=</span> <span class="n">nuc_zz</span> <span class="k">if</span> <span class="n">table_type</span> <span class="o">==</span> <span class="s">&#39;nuclide&#39;</span> <span class="k">else</span> <span class="n">nuc_name</span>
+            <span class="n">nuc_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">table_key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;table_&#39;</span><span class="p">):</span> 
+                <span class="n">curr_data</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="n">table_group</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nuc_key</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="n">table_group</span><span class="p">][</span><span class="n">nuc_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_data</span><span class="p">,</span> <span class="n">nuc_data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">curr_data</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nuc_key</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">nuc_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_data</span><span class="p">,</span> <span class="n">nuc_data</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c"># Grab element data line</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_element_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">table_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">elem</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="c"># Still don&#39;t know WTF element &#39;SF&#39; is suppossed to be! (Spent fuel, spontaneous fission)</span>
+            <span class="k">if</span> <span class="n">elem</span> <span class="o">==</span> <span class="s">&#39;SF&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">elem_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">table_key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;table_&#39;</span><span class="p">):</span> 
+                <span class="n">curr_data</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="n">table_group</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">table_type</span><span class="p">][</span><span class="n">table_group</span><span class="p">][</span><span class="n">elem</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_data</span><span class="p">,</span> <span class="n">elem_data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">curr_data</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="n">elem</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr_data</span><span class="p">,</span> <span class="n">elem_data</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c"># Grab (alpha, n) and spontaneous fission headers</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_alpha_n_header_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_spont_fiss_header_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ttitle</span><span class="p">,</span> <span class="n">tunits</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+            <span class="n">table_key</span> <span class="o">=</span> <span class="n">_n_source_key_map</span><span class="p">[</span><span class="n">ttitle</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">table_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">table_type</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">table_group</span> <span class="o">=</span> <span class="bp">None</span>
+
+            <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="s">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttitle</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">table_key</span><span class="p">][</span><span class="s">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">continue</span>
+
+        <span class="c"># Photon spectra parsing is not yet supported</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_photon_spec_header_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">table_key</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">table_type</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">table_group</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="c"># Done with parsing, try to convert to material</span>
+    <span class="n">tbl</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s">&#39;table_5&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s">&#39;nuclide&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s">&#39;table_5&#39;</span><span class="p">]):</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="s">&#39;table_5&#39;</span>
+        <span class="n">mat_gen</span> <span class="o">=</span> <span class="n">Material</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="s">&#39;table_3&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s">&#39;nuclide&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s">&#39;table_3&#39;</span><span class="p">]):</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="s">&#39;table_3&#39;</span>
+        <span class="n">mat_gen</span> <span class="o">=</span> <span class="n">from_atom_frac</span>
+
+    <span class="k">if</span> <span class="n">tbl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s">&#39;time_sec&#39;</span><span class="p">])</span>
+        <span class="n">mats</span> <span class="o">=</span> <span class="p">[</span><span class="n">Material</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">_group_key_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="s">&#39;nuclide&#39;</span><span class="p">]:</span>
+                <span class="n">mats</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="o">+</span> <span class="n">mat_gen</span><span class="p">({</span><span class="n">nuc</span><span class="p">:</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="s">&#39;nuclide&#39;</span><span class="p">][</span><span class="n">grp</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mats</span><span class="p">)]</span>
+
+        <span class="n">results</span><span class="p">[</span><span class="s">&#39;materials&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mats</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="c">#</span>
+<span class="c"># Tape9 functions</span>
+<span class="c">#</span>
+</div>
+<span class="n">title_card_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;(\d+)\s+(\S.*)&quot;</span><span class="p">)</span>
+
+<span class="c"># Decay library regex</span>
+<span class="n">decay_card1_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;(\d+)\s+(\d{{5,7}})\s+(\d)\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">_data_format</span><span class="p">))</span>
+<span class="n">decay_card2_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;(\d+)\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">_data_format</span><span class="p">))</span>
+
+<span class="c"># Cross section and fission product yeild library regex</span>
+<span class="n">xsfpy_card1_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;(\d+)\s+(\d{{5,7}})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+([+-]?{num})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">_data_format</span><span class="p">))</span>
+<span class="n">xsfpy_card2_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;(\d+)\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})\s+({num})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">_data_format</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_tape9_decay</span><span class="p">(</span><span class="n">deck</span><span class="p">):</span>
+    <span class="n">pdeck</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;_type&#39;</span><span class="p">:</span> <span class="s">&#39;decay&#39;</span><span class="p">}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_card_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">deck</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c"># Parse the cards into a structured arrau</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">n</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> 
+             <span class="n">izip</span><span class="p">(</span><span class="n">imap</span><span class="p">(</span><span class="n">decay_card1_re</span><span class="o">.</span><span class="n">match</span><span class="p">,</span> <span class="n">deck</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]),</span> <span class="n">imap</span><span class="p">(</span><span class="n">decay_card2_re</span><span class="o">.</span><span class="n">match</span><span class="p">,</span> <span class="n">deck</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">2</span><span class="p">]))]</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">card</span><span class="p">)</span> <span class="k">for</span> <span class="n">card</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">]</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;i4,i4&#39;</span> <span class="o">+</span> <span class="s">&#39;,f8&#39;</span><span class="o">*</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;_cards&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cards</span>
+
+    <span class="c"># Add the first cards</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;half_life&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">ORIGEN_TIME_UNITS</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">val</span> <span class="ow">or</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f1&#39;</span><span class="p">,</span> <span class="s">&#39;f2&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_beta_minus_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f3&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_beta_plus_or_electron_capture&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f4&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_beta_plus_or_electron_capture_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f5&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f6&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_isomeric_transition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f7&#39;</span><span class="p">]]}</span>
+
+    <span class="c"># Add the second cards</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_spont_fiss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f8&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_beta_n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f9&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;recoverable_energy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f10&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;frac_natural_abund&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span><span class="o">*</span><span class="mf">0.01</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f11&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;inhilation_concentration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f12&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;ingestion_concentration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f13&#39;</span><span class="p">]]}</span>
+
+    <span class="k">return</span> <span class="n">pdeck</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_tape9_xsfpy</span><span class="p">(</span><span class="n">deck</span><span class="p">):</span>
+    <span class="n">pdeck</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;_type&#39;</span><span class="p">:</span> <span class="s">&#39;xsfpy&#39;</span><span class="p">}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_card_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">deck</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c"># Pasre the deck</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">no_fpy</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;0.0&#39;</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="mi">8</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">deck_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">deck</span><span class="p">)</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">deck_size</span><span class="p">):</span>
+        <span class="n">first_card</span> <span class="o">=</span> <span class="n">xsfpy_card1_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">deck</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="n">first_card</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">second_card</span> <span class="o">=</span> <span class="n">xsfpy_card2_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">deck</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">second_card</span> <span class="o">=</span> <span class="n">no_fpy</span>
+        <span class="n">cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first_card</span> <span class="o">+</span> <span class="n">second_card</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">cards</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">card</span><span class="p">)</span> <span class="k">for</span> <span class="n">card</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">]</span>
+    <span class="n">cards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;i4&#39;</span> <span class="o">+</span> <span class="s">&#39;,f8&#39;</span><span class="o">*</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;_cards&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cards</span>
+
+    <span class="c"># Try to determine subtype</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">cards</span><span class="p">[</span><span class="s">&#39;f7&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">subtype</span> <span class="o">=</span> <span class="s">&#39;fission_products&#39;</span>
+    <span class="k">elif</span> <span class="mi">890000</span> <span class="o">&lt;</span> <span class="n">cards</span><span class="p">[</span><span class="s">&#39;f0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">():</span>
+        <span class="n">subtype</span> <span class="o">=</span> <span class="s">&#39;actinides&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">subtype</span> <span class="o">=</span> <span class="s">&#39;activation_products&#39;</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;_subtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subtype</span>
+
+
+    <span class="c"># Parse first cards</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;sigma_gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f1&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;sigma_2n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f2&#39;</span><span class="p">]]}</span>
+
+    <span class="n">f3_keys</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;fission_products&#39;</span><span class="p">:</span> <span class="s">&#39;sigma_alpha&#39;</span><span class="p">,</span> <span class="s">&#39;actinides&#39;</span><span class="p">:</span> <span class="s">&#39;sigma_3n&#39;</span><span class="p">,</span> <span class="s">&#39;activation_products&#39;</span><span class="p">:</span> <span class="s">&#39;sigma_alpha&#39;</span><span class="p">}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="n">f3_keys</span><span class="p">[</span><span class="n">subtype</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f3&#39;</span><span class="p">]]}</span>
+
+    <span class="n">f4_keys</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;fission_products&#39;</span><span class="p">:</span> <span class="s">&#39;sigma_p&#39;</span><span class="p">,</span> <span class="s">&#39;actinides&#39;</span><span class="p">:</span> <span class="s">&#39;sigma_f&#39;</span><span class="p">,</span> <span class="s">&#39;activation_products&#39;</span><span class="p">:</span> <span class="s">&#39;sigma_p&#39;</span><span class="p">}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="n">f4_keys</span><span class="p">[</span><span class="n">subtype</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f4&#39;</span><span class="p">]]}</span>
+
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;sigma_gamma_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f5&#39;</span><span class="p">]]}</span>
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;sigma_2n_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f6&#39;</span><span class="p">]]}</span>
+
+    <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;fiss_yields_present&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f7&#39;</span><span class="p">]]}</span>
+
+    <span class="c"># parse second cards if of correct subtype </span>
+    <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="s">&#39;fission_products&#39;</span><span class="p">:</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;TH232_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f8&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;U233_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f9&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;U235_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f10&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;U238_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f11&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;PU239_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f12&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;PU241_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f13&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;CM245_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f14&#39;</span><span class="p">]]}</span>
+        <span class="n">pdeck</span><span class="p">[</span><span class="s">&#39;CF249_fiss_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[[</span><span class="s">&#39;f0&#39;</span><span class="p">,</span> <span class="s">&#39;f15&#39;</span><span class="p">]]}</span>
+
+    <span class="k">return</span> <span class="n">pdeck</span>
+
+
+<div class="viewcode-block" id="parse_tape9"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.parse_tape9">[docs]</a><span class="k">def</span> <span class="nf">parse_tape9</span><span class="p">(</span><span class="n">tape9</span><span class="o">=</span><span class="s">&quot;TAPE9.INP&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses an ORIGEN 2.2 TAPE9 file and returns the data as a dictionary of nuclide dictionaries.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tape9 : str or file-like object, optional</span>
+<span class="sd">        Path to the tape9 file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    parsed : dict</span>
+<span class="sd">        A dictionary of the data from the TAPE9 file.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The TAPE9 format is highly structured. Therefore the in-memory representation contains a </span>
+<span class="sd">    non-trivial amount of nesting.  At the top level, the dictionary keys are the library </span>
+<span class="sd">    numbers::</span>
+
+<span class="sd">        tape9</span>
+<span class="sd">          |- keys : deck number (1, 2, 3, 241, ...) </span>
+<span class="sd">          |- values : sub-dictionaries for each deck.</span>
+
+<span class="sd">    Each deck contains keys which vary by deck type (and subtype).  All dictionary-typed data</span>
+<span class="sd">    maps zzaaam-nuclide integers to the appropriate value::</span>
+
+<span class="sd">        all decks</span>
+<span class="sd">          |- &#39;_type&#39; : str in [&#39;decay&#39;, &#39;xsfpy&#39;] # photon libs not yet supported</span>
+<span class="sd">          |- &#39;_subtype&#39; : str for &#39;xsfpy&#39; in [&#39;activation_products&#39;, &#39;actinides&#39;, &#39;fission_products&#39;]</span>
+<span class="sd">          |- &#39;title&#39; : str, deck name</span>
+<span class="sd">          |- &#39;_cards&#39; : optional, numpy structrued array of deck data</span>
+
+<span class="sd">        decay decks</span>
+<span class="sd">          |- &#39;half_life&#39; : float-valued dict [seconds]</span>
+<span class="sd">          |- &#39;frac_beta_minus_x&#39; : float-valued dict [fraction of decays via beta minus </span>
+<span class="sd">          |                        which leave an excited nucleus]</span>
+<span class="sd">          |- &#39;frac_beta_plus_or_electron_capture&#39; : float-valued dict [fraction of decays</span>
+<span class="sd">          |                                         via positron emission or electron capture]</span>
+<span class="sd">          |- &#39;frac_beta_plus_or_electron_capture_x&#39; : float-valued dict [fraction of decays</span>
+<span class="sd">          |                                           via positron emission or electron capture</span>
+<span class="sd">          |                                           which leave an excited nucleus]</span>
+<span class="sd">          |- &#39;frac_alpha&#39; : float-valued dict [fraction of decays via alpha emission]</span>
+<span class="sd">          |- &#39;frac_isomeric_transition&#39; : float-valued dict [fraction of decays from an excitied </span>
+<span class="sd">          |                               state to the ground state]</span>
+<span class="sd">          |- &#39;frac_spont_fiss&#39; : float-valued dict [fraction of decays via spontateous fission]</span>
+<span class="sd">          |- &#39;frac_beta_n&#39; : float-valued dict [fraction of decays via beta plus a neutron]</span>
+<span class="sd">          |- &#39;recoverable_energy&#39; : float-valued dict, Total recoverable energy [MeV / decay]</span>
+<span class="sd">          |- &#39;frac_natural_abund&#39; : float-valued dict, natrual occuring abundance [atom fraction]</span>
+<span class="sd">          |- &#39;inhilation_concentration&#39; : float-valued dict, continuous inhilation [RCG]</span>
+<span class="sd">          |- &#39;ingestion_concentration&#39; : float-valued dict, continuous ingestion [RCG]</span>
+
+<span class="sd">        cross section and fission product yield decks</span>
+<span class="sd">          |- &#39;sigma_gamma&#39; : float-valued dict, (n, gamma) cross section [barns]</span>
+<span class="sd">          |- &#39;sigma_2n&#39; : float-valued dict, (n, 2n) cross section [barns]</span>
+<span class="sd">          |- &#39;sigma_gamma_x&#39; : float-valued dict, (n, gamma *) cross section [barns]</span>
+<span class="sd">          |- &#39;sigma_2n_x&#39; : float-valued dict, (n, 2n *) cross section [barns]</span>
+<span class="sd">          |- &#39;fiss_yields_present&#39; : bool-valued dict, Whether fission product yields are </span>
+<span class="sd">                                     included for this nuclide.</span>
+
+<span class="sd">        activation product cross section decks</span>
+<span class="sd">          |- &#39;_subtype&#39; : &#39;activation_products&#39;</span>
+<span class="sd">          |- &#39;sigma_3n&#39; : float-valued dict, (n, 3n) cross section [barns]</span>
+<span class="sd">          |- &#39;sigma_p&#39; : float-valued dict, (n, proton) cross section [barns]</span>
+
+<span class="sd">        actinide cross section decks</span>
+<span class="sd">          |- &#39;_subtype&#39; : &#39;actinides&#39;</span>
+<span class="sd">          |- &#39;sigma_alpha&#39; : float-valued dict, (n, alpha) cross section [barns]</span>
+<span class="sd">          |- &#39;sigma_f&#39; : float-valued dict, (n, fission) cross section [barns]</span>
+
+<span class="sd">        fission product cross section and yield decks</span>
+<span class="sd">          |- &#39;_subtype&#39; : &#39;fission_products&#39;</span>
+<span class="sd">          |- &#39;sigma_3n&#39; : float-valued dict, (n, 3n) cross section [barns]</span>
+<span class="sd">          |- &#39;sigma_p&#39; : float-valued dict, (n, proton) cross section [barns]</span>
+<span class="sd">          |- &#39;TH232_fiss_yield&#39; : float-valued dict, yield from Th-232 fission [frac]</span>
+<span class="sd">          |- &#39;U233_fiss_yield&#39; : float-valued dict, yield from U-233 fission [frac]</span>
+<span class="sd">          |- &#39;U235_fiss_yield&#39; : float-valued dict, yield from U-235 fission [frac]</span>
+<span class="sd">          |- &#39;U238_fiss_yield&#39; : float-valued dict, yield from U-238 fission [frac]</span>
+<span class="sd">          |- &#39;PU239_fiss_yield&#39; : float-valued dict, yield from Pu-239 fission [frac]</span>
+<span class="sd">          |- &#39;PU241_fiss_yield&#39; : float-valued dict, yield from Pu-241 fission [frac]</span>
+<span class="sd">          |- &#39;CM245_fiss_yield&#39; : float-valued dict, yield from Cm-245 fission [frac]</span>
+<span class="sd">          |- &#39;CF249_fiss_yield&#39; : float-valued dict, yield from Cf-249 fission [frac]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Read and strip lines</span>
+    <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tape9</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">tape9</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tape9</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">tape9_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tape9</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+        <span class="n">tape9</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c"># Split lines into various decks.</span>
+    <span class="n">decks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">tape9_lines</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;-1&#39;</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">tape9_lines</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;-1&#39;</span><span class="p">)</span>
+        <span class="n">decks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tape9_lines</span><span class="p">[:</span><span class="n">n</span><span class="p">])</span>
+        <span class="n">tape9_lines</span> <span class="o">=</span> <span class="n">tape9_lines</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="c"># parse the individual decks.</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">deck</span> <span class="ow">in</span> <span class="n">decks</span><span class="p">:</span>
+        <span class="c"># Decay deck</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">decay_card1_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">deck</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">deck_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">parsed</span><span class="p">[</span><span class="n">deck_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">_parse_tape9_decay</span><span class="p">(</span><span class="n">deck</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c"># Cross section deck</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">xsfpy_card1_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">deck</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">deck_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">parsed</span><span class="p">[</span><span class="n">deck_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">_parse_tape9_xsfpy</span><span class="p">(</span><span class="n">deck</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+    <span class="k">return</span> <span class="n">parsed</span>
+
+
+</div>
+<div class="viewcode-block" id="merge_tape9"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.merge_tape9">[docs]</a><span class="k">def</span> <span class="nf">merge_tape9</span><span class="p">(</span><span class="n">tape9s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Merges a sequence of full or partial TAPE9s into a single tape9 dictionary.</span>
+<span class="sd">    Data from the first tape9 has precednce over the second, the second over the</span>
+<span class="sd">    third, etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tape9s : list or tuple</span>
+<span class="sd">        A sequence of full or partial tape9 dictionaries.  See parse_tape9()</span>
+<span class="sd">        for more information on the structure of these dictionaires.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tape9 : dictionary</span>
+<span class="sd">        A tape9 file which is the merger of the all of the tape9s.  See </span>
+<span class="sd">        parse_tape9() for more information on the structure of this dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tape9</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">t9</span> <span class="ow">in</span> <span class="n">tape9s</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">nlb</span><span class="p">,</span> <span class="n">deck</span> <span class="ow">in</span> <span class="n">t9</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">nlb</span> <span class="ow">in</span> <span class="n">tape9</span><span class="p">:</span>
+                <span class="c"># Make sure the decks are of the same type</span>
+                <span class="k">assert</span> <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">][</span><span class="s">&#39;_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">deck</span><span class="p">[</span><span class="s">&#39;_type&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="s">&#39;_subtype&#39;</span> <span class="ow">in</span> <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="s">&#39;_subtype&#39;</span> <span class="ow">in</span> <span class="n">deck</span><span class="p">):</span>
+                    <span class="k">assert</span> <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">][</span><span class="s">&#39;_subtype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">deck</span><span class="p">[</span><span class="s">&#39;_subtype&#39;</span><span class="p">]</span>
+
+                <span class="c"># _cards has been invalidated... remove it</span>
+                <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;_cards&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+                <span class="c"># Update all of the keys, except _cards</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">deck</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&#39;keys&#39;</span><span class="p">):</span>
+                        <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">key</span> <span class="o">!=</span> <span class="s">&#39;_cards&#39;</span><span class="p">:</span>
+                        <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># New library number, make a copy</span>
+                <span class="n">tape9</span><span class="p">[</span><span class="n">nlb</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">deck</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tape9</span>
+
+
+</div>
+<span class="k">def</span> <span class="nf">_double_get</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">key1</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">[</span><span class="n">key1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key2</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
+
+
+<span class="n">_deck_title_fmt</span> <span class="o">=</span> <span class="s">&quot;{nlb:&gt;4}    {title:^72}</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="n">_decay_card_fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;{nlb:&gt;4}{nuc:&gt;8}  {unit}     {time:&lt;9.{p}E} {fbx:&lt;9.{p}E} {fpec:&lt;9.{p}E} {fpecx:&lt;9.{p}E} {fa:&lt;9.{p}E} {fit:&lt;9.{p}E}</span><span class="se">\n</span><span class="s">&quot;</span>
+                   <span class="s">&quot;{nlb:&gt;4}                {fsf:&lt;9.{p}E} {fn:&lt;9.{p}E} {qrec:&lt;9.{p}E} {abund:&lt;9.{p}E} {arcg:&lt;9.{p}E} {wrcg:&lt;9.{p}E}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+<span class="n">_xs_card_fmt</span> <span class="o">=</span> <span class="s">&quot;{nlb:&gt;4}{nuc:&gt;8} {sg:&lt;9.{p}E} {s2n:&lt;9.{p}E} {s3n_or_a:&lt;9.{p}E} {sf_or_p:&lt;9.{p}E} {sg_x:&lt;9.{p}E} {s2n_x:&lt;9.{p}E} {fpy_flag:&gt;6.1F} </span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="n">_fpy_card_fmt</span> <span class="o">=</span> <span class="s">&quot;{nlb:&gt;4}     {y1:&lt;9.{p}E} {y2:&lt;9.{p}E} {y3:&lt;9.{p}E} {y4:&lt;9.{p}E} {y5:&lt;9.{p}E} {y6:&lt;9.{p}E} {y7:&lt;9.{p}E} {y8:&lt;9.{p}E}</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="k">def</span> <span class="nf">_decay_deck_2_str</span><span class="p">(</span><span class="n">nlb</span><span class="p">,</span> <span class="n">deck</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
+    <span class="c"># Get unique isotopes </span>
+    <span class="n">nucset</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span> <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">deck</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s">&#39;keys&#39;</span><span class="p">)])}</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">nucset</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">sec_to_time_unit</span><span class="p">(</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;half_life&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">_decay_card_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlb</span><span class="o">=</span><span class="n">nlb</span><span class="p">,</span>
+                                    <span class="n">nuc</span><span class="o">=</span><span class="n">nuc</span><span class="p">,</span>
+                                    <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+                                    <span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span>
+                                    <span class="n">fbx</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_beta_minus_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">fpec</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_beta_plus_or_electron_capture&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">fpecx</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_beta_plus_or_electron_capture_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">fa</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_alpha&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">fit</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_isomeric_transition&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">fsf</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_spont_fiss&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">fn</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_beta_n&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">qrec</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;recoverable_energy&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">abund</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;frac_natural_abund&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">arcg</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;inhilation_concentration&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">wrcg</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;ingestion_concentration&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                    <span class="n">p</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span>
+                                    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<span class="k">def</span> <span class="nf">_xs_deck_2_str</span><span class="p">(</span><span class="n">nlb</span><span class="p">,</span> <span class="n">deck</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
+    <span class="c"># Get unique isotopes </span>
+    <span class="n">nucset</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span> <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">deck</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s">&#39;keys&#39;</span><span class="p">)])}</span>
+
+    <span class="n">is_actinides</span> <span class="o">=</span> <span class="n">deck</span><span class="p">[</span><span class="s">&#39;_subtype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;actinides&#39;</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">nucset</span><span class="p">:</span>
+        <span class="n">fpy_flag</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="n">fpy_present</span> <span class="o">=</span> <span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;fiss_yields_present&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fpy_present</span><span class="p">:</span>
+            <span class="n">fpy_flag</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">_xs_card_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlb</span><span class="o">=</span><span class="n">nlb</span><span class="p">,</span>
+                                 <span class="n">nuc</span><span class="o">=</span><span class="n">nuc</span><span class="p">,</span>
+                                 <span class="n">sg</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_gamma&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">s2n</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_2n&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">s3n_or_a</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_alpha&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_actinides</span> <span class="k">else</span> <span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_3n&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">sf_or_p</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_f&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_actinides</span> <span class="k">else</span> <span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_p&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">sg_x</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_gamma_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">s2n_x</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_2n_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">fpy_flag</span><span class="o">=</span><span class="n">fpy_flag</span><span class="p">,</span>
+                                 <span class="n">p</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span>
+                                 <span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<span class="k">def</span> <span class="nf">_xsfpy_deck_2_str</span><span class="p">(</span><span class="n">nlb</span><span class="p">,</span> <span class="n">deck</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
+    <span class="c"># Get unique isotopes </span>
+    <span class="n">nucset</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span> <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">deck</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s">&#39;keys&#39;</span><span class="p">)])}</span>
+
+    <span class="n">is_actinides</span> <span class="o">=</span> <span class="n">deck</span><span class="p">[</span><span class="s">&#39;_subtype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;actinides&#39;</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">nucset</span><span class="p">:</span>
+        <span class="n">fpy_flag</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="n">fpy_present</span> <span class="o">=</span> <span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;fiss_yields_present&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fpy_present</span><span class="p">:</span>
+            <span class="n">fpy_flag</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">_xs_card_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlb</span><span class="o">=</span><span class="n">nlb</span><span class="p">,</span>
+                                 <span class="n">nuc</span><span class="o">=</span><span class="n">nuc</span><span class="p">,</span>
+                                 <span class="n">sg</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_gamma&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">s2n</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_2n&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">s3n_or_a</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_alpha&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_actinides</span> <span class="k">else</span> <span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_3n&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">sf_or_p</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_f&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_actinides</span> <span class="k">else</span> <span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_p&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">sg_x</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_gamma_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">s2n_x</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;sigma_2n_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">fpy_flag</span><span class="o">=</span><span class="n">fpy_flag</span><span class="p">,</span>
+                                 <span class="n">p</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span>
+                                 <span class="p">)</span>
+        <span class="k">if</span> <span class="n">fpy_present</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="n">_fpy_card_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlb</span><span class="o">=</span><span class="n">nlb</span><span class="p">,</span>
+                                 <span class="n">y1</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;TH232_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y2</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;U233_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y3</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;U235_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y4</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;U238_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y5</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;PU239_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y6</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;PU241_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y7</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;CM245_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">y8</span><span class="o">=</span><span class="n">_double_get</span><span class="p">(</span><span class="n">deck</span><span class="p">,</span> <span class="s">&#39;CF249_fiss_yield&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">),</span>
+                                 <span class="n">p</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span>
+                                 <span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<span class="n">_DECK_2_STR_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s">&#39;decay&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span> <span class="n">_decay_deck_2_str</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;xsfpy&#39;</span><span class="p">,</span> <span class="s">&#39;activation_products&#39;</span><span class="p">):</span> <span class="n">_xs_deck_2_str</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;xsfpy&#39;</span><span class="p">,</span> <span class="s">&#39;actinides&#39;</span><span class="p">):</span> <span class="n">_xs_deck_2_str</span><span class="p">,</span>
+    <span class="p">(</span><span class="s">&#39;xsfpy&#39;</span><span class="p">,</span> <span class="s">&#39;fission_products&#39;</span><span class="p">):</span> <span class="n">_xsfpy_deck_2_str</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="write_tape9"><a class="viewcode-back" href="../../libref/origen22.html#pyne.origen22.write_tape9">[docs]</a><span class="k">def</span> <span class="nf">write_tape9</span><span class="p">(</span><span class="n">tape9</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s">&quot;TAPE9.INP&quot;</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Writes an ORIGEN 2.2 TAPE9.INP file given a tape9 dictionary of values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tape9 : dict</span>
+<span class="sd">        A tape9 dictionary. See parse_tape9() for more information on the structure.</span>
+<span class="sd">    outfile : str or file-like object, optional</span>
+<span class="sd">        Path to the new tape9 file.</span>
+<span class="sd">    precision :  int, optional </span>
+<span class="sd">        The number of significant figures that all output data is given to beyond </span>
+<span class="sd">        the decimal point.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t9</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">nlb</span><span class="p">,</span> <span class="n">deck</span> <span class="ow">in</span> <span class="n">tape9</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">t9</span> <span class="o">+=</span> <span class="n">_deck_title_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlb</span><span class="o">=</span><span class="n">nlb</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">deck</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">])</span>
+        <span class="n">t9</span> <span class="o">+=</span> <span class="n">_DECK_2_STR_MAP</span><span class="p">[</span><span class="n">deck</span><span class="p">[</span><span class="s">&#39;_type&#39;</span><span class="p">],</span> <span class="n">deck</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_subtype&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)](</span><span class="n">nlb</span><span class="p">,</span> <span class="n">deck</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+        <span class="n">t9</span> <span class="o">+=</span> <span class="s">&quot;  -1</span><span class="se">\n</span><span class="s">&quot;</span>
+
+    <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">t9</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2011-2012, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+    <!-- cloud_sptheme 1.3 -->
+  </body>
+</html>

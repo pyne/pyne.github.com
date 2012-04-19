@@ -1,0 +1,256 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.utils &mdash; PyNE 0.1</title>
+    <link rel="stylesheet" href="../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/toggle_sections.js"></script>
+    <script type="text/javascript" src="../../_static/toggle_sidebar.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="top" title="PyNE 0.1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyne.utils</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">remove_tree</span>
+
+<span class="n">time_conv_dict</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s">&#39;as&#39;</span><span class="p">:</span> <span class="mf">1e-18</span><span class="p">,</span> 
+		  <span class="s">&#39;attosec&#39;</span><span class="p">:</span> <span class="mf">1e-18</span><span class="p">,</span> 
+		  <span class="s">&#39;attosecond&#39;</span><span class="p">:</span> <span class="mf">1e-18</span><span class="p">,</span> 
+		  <span class="s">&#39;attoseconds&#39;</span><span class="p">:</span> <span class="mf">1e-18</span><span class="p">,</span>
+          <span class="s">&#39;fs&#39;</span><span class="p">:</span> <span class="mf">1e-15</span><span class="p">,</span> 
+		  <span class="s">&#39;femtosec&#39;</span><span class="p">:</span> <span class="mf">1e-15</span><span class="p">,</span> 
+		  <span class="s">&#39;femtosecond&#39;</span><span class="p">:</span> <span class="mf">1e-15</span><span class="p">,</span> 
+		  <span class="s">&#39;femtoseconds&#39;</span><span class="p">:</span> <span class="mf">1e-15</span><span class="p">,</span>
+		  <span class="s">&#39;ps&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+		  <span class="s">&#39;picosec&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+		  <span class="s">&#39;picosecond&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+		  <span class="s">&#39;picoseconds&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+		  <span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="mf">1e-9</span><span class="p">,</span>
+		  <span class="s">&#39;nanosec&#39;</span><span class="p">:</span> <span class="mf">1e-9</span><span class="p">,</span>
+		  <span class="s">&#39;nanosecond&#39;</span><span class="p">:</span><span class="mf">1e-9</span><span class="p">,</span>
+		  <span class="s">&#39;nanoseconds&#39;</span> <span class="p">:</span> <span class="mf">1e-9</span><span class="p">,</span>
+		  <span class="s">&#39;us&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+		  <span class="s">&#39;microsec&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+		  <span class="s">&#39;microsecond&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+		  <span class="s">&#39;microseconds&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+		  <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+		  <span class="s">&#39;millisec&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+		  <span class="s">&#39;millisecond&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+		  <span class="s">&#39;milliseconds&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+		  <span class="s">&#39;s&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+		  <span class="s">&#39;sec&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+		  <span class="s">&#39;second&#39;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span>
+		  <span class="s">&#39;seconds&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+		  <span class="s">&#39;m&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+		  <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+		  <span class="s">&#39;minute&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+		  <span class="s">&#39;minutes&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+		  <span class="s">&#39;h&#39;</span><span class="p">:</span> <span class="mf">3600.0</span><span class="p">,</span>
+		  <span class="s">&#39;hour&#39;</span><span class="p">:</span> <span class="mf">3600.0</span><span class="p">,</span>
+		  <span class="s">&#39;hours&#39;</span><span class="p">:</span> <span class="mf">3600.0</span><span class="p">,</span>
+		  <span class="s">&#39;d&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+		  <span class="s">&#39;day&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+		  <span class="s">&#39;days&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+		  <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+		  <span class="s">&#39;year&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+		  <span class="s">&#39;years&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+		  <span class="s">&#39;ev&#39;</span><span class="p">:</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="mf">7.6e-8</span> <span class="o">/</span> <span class="mf">6.03</span><span class="p">,</span>
+		  <span class="s">&#39;kev&#39;</span><span class="p">:</span> <span class="mf">1e-12</span> <span class="o">*</span> <span class="mf">7.6e-8</span> <span class="o">/</span> <span class="mf">6.03</span><span class="p">,</span>
+		  <span class="s">&#39;mev&#39;</span><span class="p">:</span> <span class="mf">1e-15</span> <span class="o">*</span> <span class="mf">7.6e-8</span> <span class="o">/</span> <span class="mf">6.03</span><span class="p">,</span>
+		  <span class="p">}</span>
+
+<div class="viewcode-block" id="to_sec"><a class="viewcode-back" href="../../libref/utils.html#pyne.utils.to_sec">[docs]</a><span class="k">def</span> <span class="nf">to_sec</span><span class="p">(</span><span class="n">input_time</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a time with units to seconds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_time : number</span>
+<span class="sd">        Time value in [units].</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Units flag, eg &#39;min&#39;, &#39;ms&#39;, &#39;days&#39;, or even &#39;MeV&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sec_time : float</span>
+<span class="sd">        Time value in [sec]. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sec_time</span> <span class="o">=</span> <span class="n">input_time</span> <span class="o">*</span> <span class="n">time_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">sec_time</span>
+
+
+
+</div>
+<span class="n">barn_conv_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;mb&#39;</span><span class="p">:</span> <span class="mf">1E-3</span><span class="p">,</span>
+    <span class="s">&#39;ub&#39;</span><span class="p">:</span> <span class="mf">1E-6</span><span class="p">,</span>
+    <span class="s">&#39;microbarn&#39;</span><span class="p">:</span> <span class="mf">1E-6</span><span class="p">,</span>
+    <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s">&#39;barn&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s">&#39;barns&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s">&#39;kb&#39;</span><span class="p">:</span> <span class="mf">1E+3</span><span class="p">,</span>
+    <span class="s">&#39;kilobarn&#39;</span><span class="p">:</span> <span class="mf">1E+3</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+
+<div class="viewcode-block" id="to_barns"><a class="viewcode-back" href="../../libref/utils.html#pyne.utils.to_barns">[docs]</a><span class="k">def</span> <span class="nf">to_barns</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a cross section with units to barns.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : number</span>
+<span class="sd">        Cross section value in [units].</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Units flag, eg &#39;b&#39;, &#39;microbarn&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    barn_xs : float</span>
+<span class="sd">        Cross section value in [barns].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">barn_xs</span> <span class="o">=</span> <span class="n">xs</span> <span class="o">*</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">barn_xs</span>
+
+
+<span class="c">#########################</span>
+<span class="c">### message functions ###</span>
+<span class="c">#########################</span>
+</div>
+<span class="n">USE_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="s">&#39;posix&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Formats a message for printing.  If on a posix system the message will be in color.&quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\033</span><span class="s">[1;32m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s">&quot;*** MESSAGE ***: &quot;</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\033</span><span class="s">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span>
+
+
+<span class="k">def</span> <span class="nf">failure</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Formats a fail message for printing.  If on a posix system the message will be in color.&quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\033</span><span class="s">[1;31m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s">&quot;*** FAILURE ***: &quot;</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\033</span><span class="s">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span>
+
+
+
+
+<span class="c">##################################</span>
+<span class="c">### Path manipulation routines ###</span>
+<span class="c">##################################</span>
+
+<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes a path, or recursively a directory, or does nothing</span>
+<span class="sd">    if path is neither a file nor a directory.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">remove_tree</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2011-2012, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+    <!-- cloud_sptheme 1.3 -->
+  </body>
+</html>

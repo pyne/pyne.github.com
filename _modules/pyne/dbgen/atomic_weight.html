@@ -1,0 +1,342 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.atomic_weight &mdash; PyNE 0.1</title>
+    <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
+    <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyne.dbgen.atomic_weight</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;This module provides a way to grab and store raw data for atomic weights.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tables</span> <span class="kn">as</span> <span class="nn">tb</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.kaeri</span> <span class="kn">import</span> <span class="n">grab_kaeri_nuclide</span><span class="p">,</span> <span class="n">parse_for_natural_isotopes</span>
+
+<span class="c"># Note that since ground state and meta-stable isotopes are of the same atomic weight, </span>
+<span class="c"># the meta-stables have been discluded from the following data sets.</span>
+
+
+<div class="viewcode-block" id="grab_kaeri_atomic_abund"><a class="viewcode-back" href="../../../libref/dbgen/atomic_weight.html#pyne.dbgen.atomic_weight.grab_kaeri_atomic_abund">[docs]</a><span class="k">def</span> <span class="nf">grab_kaeri_atomic_abund</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the KAERI files needed for the atomic abundance calculation, </span>
+<span class="sd">    if not already present.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Major directory to place html files in. &#39;KAERI/&#39; will be appended.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Add kaeri to build_dir</span>
+    <span class="n">build_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s">&#39;KAERI&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">already_grabbed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">build_dir</span><span class="p">))</span>
+
+    <span class="c"># Grab and parse elemental summary files.</span>
+    <span class="n">natural_nuclides</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">element</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
+        <span class="k">if</span> <span class="n">htmlfile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_grabbed</span><span class="p">:</span>
+            <span class="n">grab_kaeri_nuclide</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+        <span class="n">natural_nuclides</span> <span class="o">=</span> <span class="n">natural_nuclides</span> <span class="o">|</span> <span class="n">parse_for_natural_isotopes</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">htmlfile</span><span class="p">))</span>
+
+    <span class="c"># Grab natural nuclide files</span>
+    <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">natural_nuclides</span><span class="p">:</span>
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">nuc</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
+        <span class="k">if</span> <span class="n">htmlfile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_grabbed</span><span class="p">:</span>
+            <span class="n">grab_kaeri_nuclide</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+
+</div>
+<span class="n">atomic_abund_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;&lt;li&gt;Atomic Percent Abundance: (\d+[.]?\d*?)%&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="parse_atomic_abund"><a class="viewcode-back" href="../../../libref/dbgen/atomic_weight.html#pyne.dbgen.atomic_weight.parse_atomic_abund">[docs]</a><span class="k">def</span> <span class="nf">parse_atomic_abund</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builds and returns a dictionary from nuclides to atomic abundence fractions.&quot;&quot;&quot;</span>
+    <span class="n">build_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s">&#39;KAERI&#39;</span><span class="p">)</span>
+
+    <span class="c"># Grab and parse elemental summary files.</span>
+    <span class="n">natural_nuclides</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">element</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span>
+        <span class="n">natural_nuclides</span> <span class="o">=</span> <span class="n">natural_nuclides</span> <span class="o">|</span> <span class="n">parse_for_natural_isotopes</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">htmlfile</span><span class="p">))</span>
+
+    <span class="n">atomic_abund</span> <span class="o">=</span> <span class="p">{}</span>    
+
+    <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">natural_nuclides</span><span class="p">:</span>
+        <span class="n">nuc_name</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">nuc_name</span> <span class="o">+</span> <span class="s">&#39;.html&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">htmlfile</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">atomic_abund_regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="mf">0.01</span>
+                    <span class="n">atomic_abund</span><span class="p">[</span><span class="n">nuc</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">atomic_abund</span>
+
+
+</div>
+<div class="viewcode-block" id="grab_atmoic_mass_adjustment"><a class="viewcode-back" href="../../../libref/dbgen/atomic_weight.html#pyne.dbgen.atomic_weight.grab_atmoic_mass_adjustment">[docs]</a><span class="k">def</span> <span class="nf">grab_atmoic_mass_adjustment</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the current atomic mass adjustment from the Atomic</span>
+<span class="sd">    Mass Data Center.  These are courtesy of Georges Audi and </span>
+<span class="sd">    Wang Meng via a private communication, April 2011.&quot;&quot;&quot;</span>
+    <span class="n">mass_file</span> <span class="o">=</span> <span class="s">&#39;mass.mas114&#39;</span>
+    <span class="n">bd_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mass_file</span> <span class="ow">in</span> <span class="n">bd_files</span><span class="p">:</span>
+        <span class="k">return</span> 
+
+    <span class="n">mass</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&#39;http://amdc.in2p3.fr/masstables/Ame2011int/mass.mas114&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">mass_file</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">mass</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+
+<span class="c"># Note, this regex specifically leaves our free neutrons</span>
+<span class="c">#amdc_regex = re.compile(&#39;[ \d-]*? (\d{1,3})[ ]{1,4}(\d{1,3}) [A-Z][a-z]? .*? (\d{1,3}) ([ #.\d]{10,11}) ([ #.\d]{1,10})[ ]*?$&#39;)</span></div>
+<span class="n">amdc_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;[ \d-]*? (\d{1,3})[ ]{1,4}(\d{1,3}) [A-Z][a-z]? .*? (\d{1,3}) ([ #.\d]{5,12}) ([ #.\d]+)[ ]*?$&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="parse_atmoic_mass_adjustment"><a class="viewcode-back" href="../../../libref/dbgen/atomic_weight.html#pyne.dbgen.atomic_weight.parse_atmoic_mass_adjustment">[docs]</a><span class="k">def</span> <span class="nf">parse_atmoic_mass_adjustment</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses the atomic mass adjustment data into a list of tuples of </span>
+<span class="sd">    the nuclide, atomic mass, and error.&quot;&quot;&quot;</span>
+    <span class="n">mass_file</span> <span class="o">=</span> <span class="s">&#39;mass.mas114&#39;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">mass_file</span><span class="p">),</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+
+    <span class="n">atomic_masses</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">amdc_regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">nuc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10000</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="mf">1E-6</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="mf">1E-6</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
+
+        <span class="n">atomic_masses</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nuc</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+        
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">atomic_masses</span>    
+
+
+
+</div>
+<span class="n">atomic_weight_desc</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;nuc_name&#39;</span><span class="p">:</span> <span class="n">tb</span><span class="o">.</span><span class="n">StringCol</span><span class="p">(</span><span class="n">itemsize</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;nuc_zz&#39;</span><span class="p">:</span>   <span class="n">tb</span><span class="o">.</span><span class="n">IntCol</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;mass&#39;</span><span class="p">:</span>     <span class="n">tb</span><span class="o">.</span><span class="n">FloatCol</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;error&#39;</span><span class="p">:</span>    <span class="n">tb</span><span class="o">.</span><span class="n">FloatCol</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="s">&#39;abund&#39;</span><span class="p">:</span>    <span class="n">tb</span><span class="o">.</span><span class="n">FloatCol</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+    <span class="p">}</span>
+
+<span class="n">atomic_weight_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+    <span class="p">(</span><span class="s">&#39;nuc_name&#39;</span><span class="p">,</span> <span class="s">&#39;S6&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;nuc_zz&#39;</span><span class="p">,</span>   <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;mass&#39;</span><span class="p">,</span>     <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;error&#39;</span><span class="p">,</span>    <span class="nb">float</span><span class="p">),</span> 
+    <span class="p">(</span><span class="s">&#39;abund&#39;</span><span class="p">,</span>    <span class="nb">float</span><span class="p">),</span> 
+    <span class="p">])</span>
+
+<div class="viewcode-block" id="make_atomic_weight_table"><a class="viewcode-back" href="../../../libref/dbgen/atomic_weight.html#pyne.dbgen.atomic_weight.make_atomic_weight_table">[docs]</a><span class="k">def</span> <span class="nf">make_atomic_weight_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes an atomic weight table in the nuc_data library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory to place html files in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Grab raw data</span>
+    <span class="n">atomic_abund</span>  <span class="o">=</span> <span class="n">parse_atomic_abund</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+    <span class="n">atomic_masses</span> <span class="o">=</span> <span class="n">parse_atmoic_mass_adjustment</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c"># Add normal isotopes to A</span>
+    <span class="k">for</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">atomic_masses</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="n">nuc_name</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nuc_zz</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">nuc_zz</span> <span class="ow">in</span> <span class="n">atomic_abund</span><span class="p">:</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">nuc_zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">nuc_name</span><span class="p">,</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">atomic_abund</span><span class="p">[</span><span class="n">nuc_zz</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">nuc_zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">nuc_name</span><span class="p">,</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="mf">0.0</span>
+
+    <span class="c"># Add naturally occuring elements</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="p">:</span>
+        <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">nuc_zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">,</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+        
+    <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">abund</span> <span class="ow">in</span> <span class="n">atomic_abund</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">zz</span> <span class="o">=</span> <span class="n">nuc</span> <span class="o">/</span> <span class="mi">10000</span>
+        <span class="n">element_zz</span> <span class="o">=</span> <span class="n">zz</span> <span class="o">*</span> <span class="mi">10000</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zz_name</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span>
+
+        <span class="n">nuc_name</span><span class="p">,</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="n">nuc_mass</span><span class="p">,</span> <span class="n">_error</span><span class="p">,</span> <span class="n">_abund</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">nuc</span><span class="p">]</span>
+        <span class="n">elem_name</span><span class="p">,</span> <span class="n">elem_zz</span><span class="p">,</span> <span class="n">elem_mass</span><span class="p">,</span> <span class="n">_error</span><span class="p">,</span> <span class="n">_abund</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">element_zz</span><span class="p">]</span>
+
+        <span class="n">new_elem_mass</span> <span class="o">=</span> <span class="n">elem_mass</span> <span class="o">+</span> <span class="p">(</span><span class="n">nuc_mass</span> <span class="o">*</span> <span class="n">abund</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">element_zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">,</span> <span class="n">element_zz</span><span class="p">,</span> <span class="n">new_elem_mass</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+
+
+    <span class="n">A</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c">#A = np.array(A, dtype=atomic_weight_dtype)</span>
+
+    <span class="c"># Open the HDF5 File</span>
+    <span class="n">kdb</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+
+    <span class="c"># Make a new the table</span>
+    <span class="n">Atable</span> <span class="o">=</span> <span class="n">kdb</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;atomic_weight&quot;</span><span class="p">,</span> <span class="n">atomic_weight_desc</span><span class="p">,</span> 
+                             <span class="s">&quot;Atomic Weight Data [amu]&quot;</span><span class="p">,</span> <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+    <span class="n">Atable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+    <span class="c"># Ensure that data was written to table</span>
+    <span class="n">Atable</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c"># Close the hdf5 file</span>
+    <span class="n">kdb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+
+</div>
+<div class="viewcode-block" id="make_atomic_weight"><a class="viewcode-back" href="../../../libref/dbgen/atomic_weight.html#pyne.dbgen.atomic_weight.make_atomic_weight">[docs]</a><span class="k">def</span> <span class="nf">make_atomic_weight</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Controller function for adding atomic_weights.&quot;&quot;&quot;</span>
+    <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s">&#39;atomic_weight&#39;</span><span class="p">):</span>
+                <span class="k">return</span> 
+
+    <span class="c"># First grab the atomic abundance data</span>
+    <span class="k">print</span> <span class="s">&quot;Grabing the atomic abundance from KAERI&quot;</span>
+    <span class="n">grab_kaeri_atomic_abund</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c"># Then grab mass data</span>
+    <span class="k">print</span> <span class="s">&quot;Grabing atomic mass data from AMDC&quot;</span>
+    <span class="n">grab_atmoic_mass_adjustment</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c"># Make atomic weight table once we have the array</span>
+    <span class="k">print</span> <span class="s">&quot;Making atomic weight data table.&quot;</span>
+    <span class="n">make_atomic_weight_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2011-2012, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+    <!-- cloud_sptheme 1.3 -->
+  </body>
+</html>

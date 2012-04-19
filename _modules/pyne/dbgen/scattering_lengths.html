@@ -1,0 +1,271 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.scattering_lengths &mdash; PyNE 0.1</title>
+    <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
+    <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyne.dbgen.scattering_lengths</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;This module provides a way to grab and store raw data for neutron scattering </span>
+<span class="sd">lengths.  This data comes from Neutron News, Vol. 3, No. 3, 1992, pp. 29-37 via </span>
+<span class="sd">a NIST webpage (http://www.ncnr.nist.gov/resources/n-lengths/list.html).  Please</span>
+<span class="sd">contact Alan Munter, &lt;alan.munter@nist.gov&gt; for more information.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tables</span> <span class="kn">as</span> <span class="nn">tb</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+
+
+
+<div class="viewcode-block" id="grab_scattering_lengths"><a class="viewcode-back" href="../../../libref/dbgen/scattering_lengths.html#pyne.dbgen.scattering_lengths.grab_scattering_lengths">[docs]</a><span class="k">def</span> <span class="nf">grab_scattering_lengths</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">file_out</span><span class="o">=</span><span class="s">&#39;scattering_lengths.html&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the scattering cross-section lengths for neutrons from the NIST website</span>
+<span class="sd">    or locally from this module.&quot;&quot;&quot;</span>
+    <span class="n">build_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">file_out</span><span class="p">)</span>
+    <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">file_out</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">build_filename</span><span class="p">)</span>
+        <span class="k">return</span> 
+
+    <span class="n">nist</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://www.ncnr.nist.gov/resources/n-lengths/list.html&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">build_filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nist</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+
+
+</div>
+<div class="viewcode-block" id="nist_num"><a class="viewcode-back" href="../../../libref/dbgen/scattering_lengths.html#pyne.dbgen.scattering_lengths.nist_num">[docs]</a><span class="k">def</span> <span class="nf">nist_num</span><span class="p">(</span><span class="n">nist_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a NIST style data point to a point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nist_data : str </span>
+<span class="sd">        A nist data point.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    d : float or complex</span>
+<span class="sd">        a data point.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nd</span> <span class="o">=</span> <span class="n">nist_data</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s">&#39;(&#39;</span> <span class="ow">in</span> <span class="n">nd</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s">&#39;)&#39;</span> <span class="ow">in</span> <span class="n">nd</span><span class="p">):</span>
+        <span class="n">nd_pre</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;(&#39;</span><span class="p">)</span>
+        <span class="n">nd_post</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">)</span>
+        <span class="n">nd</span> <span class="o">=</span> <span class="n">nd_pre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">nd_post</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">nd</span> <span class="o">==</span> <span class="s">&quot;---&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">nd</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">nd</span> <span class="o">=</span> <span class="s">&quot;0.0&quot;</span>
+
+    <span class="n">nd</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&lt;i&gt;i&lt;/i&gt;&quot;</span><span class="p">,</span> <span class="s">&#39;j&#39;</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">nd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span>
+
+</div>
+<span class="n">sl_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+    <span class="p">(</span><span class="s">&#39;nuc_name&#39;</span><span class="p">,</span>      <span class="s">&#39;S6&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;nuc_zz&#39;</span><span class="p">,</span>        <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;b_coherent&#39;</span><span class="p">,</span>    <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;b_incoherent&#39;</span><span class="p">,</span>  <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xs_coherent&#39;</span><span class="p">,</span>   <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xs_incoherent&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;xs&#39;</span><span class="p">,</span>            <span class="nb">float</span><span class="p">),</span>
+    <span class="p">])</span>
+
+<span class="n">scat_len_data</span> <span class="o">=</span> <span class="s">&quot;[ aeE()&lt;&gt;i/.+\d-]+?&quot;</span>
+<span class="n">scat_len_space</span> <span class="o">=</span> <span class="s">&quot;[ </span><span class="se">\t</span><span class="s">]+&quot;</span>
+<span class="n">scat_len_pattern</span> <span class="o">=</span> <span class="s">&quot;&lt;td&gt;{space}(?P&lt;iso&gt;[A-Za-z\d]+){space}&lt;td&gt;{space}(?P&lt;conc&gt;{data}){space}&lt;td&gt;{space}(?P&lt;b_coherent&gt;{data}){space}&lt;td&gt;{space}(?P&lt;b_incoherent&gt;{data}){space}&lt;td&gt;{space}(?P&lt;xs_coherent&gt;{data}){space}&lt;td&gt;{space}(?P&lt;xs_incoherent&gt;{data}){space}&lt;td&gt;{space}(?P&lt;xs&gt;{data}){space}&lt;td&gt;{space}(?P&lt;xs_a&gt;{data}){space}&lt;tr&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">scat_len_data</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="n">scat_len_space</span><span class="p">)</span>
+
+<div class="viewcode-block" id="parse_scattering_lengths"><a class="viewcode-back" href="../../../libref/dbgen/scattering_lengths.html#pyne.dbgen.scattering_lengths.parse_scattering_lengths">[docs]</a><span class="k">def</span> <span class="nf">parse_scattering_lengths</span><span class="p">(</span><span class="n">build_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts to scattering lenth data to a numpy array.&quot;&quot;&quot;</span>
+    <span class="n">build_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s">&quot;scattering_lengths.html&quot;</span><span class="p">)</span>
+    
+    <span class="c"># Read in cinder data file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">build_filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">sl_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># Iterate over all isotopes in the table</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">scat_len_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">):</span>
+        <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
+
+        <span class="n">slrow</span> <span class="o">=</span> <span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;iso&#39;</span><span class="p">]),</span>
+                 <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;iso&#39;</span><span class="p">]),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;b_coherent&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1E-13</span><span class="p">),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;b_incoherent&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1E-13</span><span class="p">),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;xs_coherent&#39;</span><span class="p">]),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;xs_incoherent&#39;</span><span class="p">]),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s">&#39;xs&#39;</span><span class="p">]))</span>
+
+        <span class="n">sl_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slrow</span><span class="p">)</span>
+
+    <span class="n">sl_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sl_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">sl_dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sl_array</span>
+
+
+</div>
+<div class="viewcode-block" id="make_scattering_lengths_table"><a class="viewcode-back" href="../../../libref/dbgen/scattering_lengths.html#pyne.dbgen.scattering_lengths.make_scattering_lengths_table">[docs]</a><span class="k">def</span> <span class="nf">make_scattering_lengths_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the neutron sacttering lengths to the nuc_data library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory to place html files in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sl_array</span> <span class="o">=</span> <span class="n">parse_scattering_lengths</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+
+    <span class="c"># Ensure that the appropriate file structure is present</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s">&#39;neutron&#39;</span><span class="p">):</span>
+        <span class="c"># Create neutron group</span>
+        <span class="n">neutron_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createGroup</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;neutron&#39;</span><span class="p">,</span> <span class="s">&#39;Neutron Data&#39;</span><span class="p">)</span>
+
+    <span class="c"># Init the neutron fission product info table</span>
+    <span class="n">sl_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/&#39;</span><span class="p">,</span> <span class="s">&#39;scattering_lengths&#39;</span><span class="p">,</span> <span class="n">sl_dtype</span><span class="p">,</span> 
+                              <span class="s">&#39;Neutron Scattering Lengths, b [cm], sigma [barns]&#39;</span><span class="p">,</span> 
+                              <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">sl_array</span><span class="p">))</span>
+    <span class="n">sl_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sl_array</span><span class="p">)</span>
+
+    <span class="c"># Write the table</span>
+    <span class="n">sl_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+</div>
+<div class="viewcode-block" id="make_scattering_lengths"><a class="viewcode-back" href="../../../libref/dbgen/scattering_lengths.html#pyne.dbgen.scattering_lengths.make_scattering_lengths">[docs]</a><span class="k">def</span> <span class="nf">make_scattering_lengths</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Controller function for adding scattering lengths.&quot;&quot;&quot;</span>
+    <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span>
+
+    <span class="c"># Check that the table exists</span>
+    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s">&#39;neutron&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s">&#39;scattering_lengths&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
+    <span class="c"># Grab the raw data</span>
+    <span class="k">print</span> <span class="s">&quot;Grabbing the scattering length data.&quot;</span>
+    <span class="n">grab_scattering_lengths</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c"># Make scatering table once we have the data</span>
+    <span class="k">print</span> <span class="s">&quot;Making neutron scattering length table.&quot;</span>
+    <span class="n">make_scattering_lengths_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2011-2012, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+    <!-- cloud_sptheme 1.3 -->
+  </body>
+</html>
