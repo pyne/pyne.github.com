@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.simple_xs &mdash; PyNE 0.1</title>
+    <title>pyne.dbgen.simple_xs &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -70,6 +70,7 @@
 
 <span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
 <span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">to_barns</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.api</span> <span class="kn">import</span> <span class="n">BASIC_FILTERS</span>
 <span class="kn">from</span> <span class="nn">pyne.dbgen.kaeri</span> <span class="kn">import</span> <span class="n">grab_kaeri_nuclide</span><span class="p">,</span> <span class="n">parse_for_all_isotopes</span>
 
 
@@ -266,7 +267,7 @@
     <span class="n">simple_xs_tables</span> <span class="o">=</span> <span class="n">parse_simple_xs</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
 
     <span class="c"># Open the HDF5 File</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
 
     <span class="c"># Create neutron group</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s">&#39;neutron&#39;</span><span class="p">):</span>
@@ -294,7 +295,7 @@
     <span class="sd">&quot;&quot;&quot;Controller function for adding basic cross section data.&quot;&quot;&quot;</span>
     <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span>
 
-    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s">&#39;neutron&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s">&#39;simple_xs&#39;</span><span class="p">):</span>
             <span class="k">return</span> 
 

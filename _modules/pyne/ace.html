@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.ace &mdash; PyNE 0.1</title>
+    <title>pyne.ace &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -93,6 +93,18 @@
 <div class="viewcode-block" id="Library"><a class="viewcode-back" href="../../libref/ace.html#pyne.ace.Library">[docs]</a><span class="k">class</span> <span class="nc">Library</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A Library objects represents an ACE-formatted file which may contain</span>
 <span class="sd">    multiple tables with data.</span>
+
+<span class="sd">    :attributes:</span>
+<span class="sd">      **binary** : bool</span>
+<span class="sd">        Identifies Whether the library is in binary format or not</span>
+
+<span class="sd">      **tables** : dict</span>
+<span class="sd">        Dictionary whose keys are the names of the ACE tables and whose values</span>
+<span class="sd">        are the instances of subclasses of AceTable (e.g. NeutronTable)</span>
+
+<span class="sd">      **verbose** : bool</span>
+<span class="sd">        Determines whether output is printed to the stdout when reading a</span>
+<span class="sd">        Library</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -293,7 +305,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 </div>
-<span class="k">class</span> <span class="nc">AceTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="AceTable"><a class="viewcode-back" href="../../libref/ace.html#pyne.ace.AceTable">[docs]</a><span class="k">class</span> <span class="nc">AceTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Abstract superclass of all other classes for cross section tables.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">awr</span><span class="p">,</span> <span class="n">temp</span><span class="p">):</span>
@@ -304,12 +316,64 @@
     <span class="k">def</span> <span class="nf">_read_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
         
-        
-<span class="k">class</span> <span class="nc">NeutronTable</span><span class="p">(</span><span class="n">AceTable</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="NeutronTable"><a class="viewcode-back" href="../../libref/ace.html#pyne.ace.NeutronTable">[docs]</a><span class="k">class</span> <span class="nc">NeutronTable</span><span class="p">(</span><span class="n">AceTable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A NeutronTable object contains continuous-energy neutron interaction data</span>
 <span class="sd">    read from an ACE-formatted Type I table. These objects are not normally</span>
 <span class="sd">    instantiated by the user but rather created when reading data using a</span>
-<span class="sd">    Library object and stored within the ``tables`` attribute of a Library object.</span>
+<span class="sd">    Library object and stored within the ``tables`` attribute of a Library</span>
+<span class="sd">    object.</span>
+
+<span class="sd">    :Attributes:</span>
+<span class="sd">      **awr** : float</span>
+<span class="sd">        Atomic weight ratio of the target nuclide.</span>
+
+<span class="sd">      **energy** : list of floats</span>
+<span class="sd">        The energy values (MeV) at which reaction cross-sections are tabulated.</span>
+
+<span class="sd">      **name** : str</span>
+<span class="sd">        ZAID identifier of the table, e.g. 92235.70c.</span>
+
+<span class="sd">      **nu_p_energy** : list of floats</span>
+<span class="sd">        Energies in MeV at which the number of prompt neutrons emitted per</span>
+<span class="sd">        fission is tabulated.</span>
+
+<span class="sd">      **nu_p_type** : str</span>
+<span class="sd">        Indicates how number of prompt neutrons emitted per fission is</span>
+<span class="sd">        stored. Can be either &quot;polynomial&quot; or &quot;tabular&quot;.</span>
+
+<span class="sd">      **nu_p_value** : list of floats</span>
+<span class="sd">        The number of prompt neutrons emitted per fission, if data is stored in</span>
+<span class="sd">        &quot;tabular&quot; form, or the polynomial coefficients for the &quot;polynomial&quot;</span>
+<span class="sd">        form.</span>
+
+<span class="sd">      **nu_t_energy** : list of floats</span>
+<span class="sd">        Energies in MeV at which the total number of neutrons emitted per</span>
+<span class="sd">        fission is tabulated.</span>
+
+<span class="sd">      **nu_t_type** : str</span>
+<span class="sd">        Indicates how total number of neutrons emitted per fission is</span>
+<span class="sd">        stored. Can be either &quot;polynomial&quot; or &quot;tabular&quot;.</span>
+
+<span class="sd">      **nu_t_value** : list of floats</span>
+<span class="sd">        The total number of neutrons emitted per fission, if data is stored in</span>
+<span class="sd">        &quot;tabular&quot; form, or the polynomial coefficients for the &quot;polynomial&quot;</span>
+<span class="sd">        form.</span>
+
+<span class="sd">      **reactions** : list of Reactions</span>
+<span class="sd">        A list of Reaction instances containing the cross sections, secondary</span>
+<span class="sd">        angle and energy distributions, and other associated data for each</span>
+<span class="sd">        reaction for this nuclide.</span>
+
+<span class="sd">      **sigma_a** : list of floats</span>
+<span class="sd">        The microscopic absorption cross section for each value on the energy</span>
+<span class="sd">        grid.</span>
+
+<span class="sd">      **sigma_t** : list of floats</span>
+<span class="sd">        The microscopic total cross section for each value on the energy grid.</span>
+
+<span class="sd">      **temp** : float</span>
+<span class="sd">        Temperature of the target nuclide in eV.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -352,7 +416,7 @@
         <span class="c"># Read LDLWP block</span>
         <span class="c"># Read DLWP block</span>
         <span class="c"># Read YP block</span>
-        <span class="c"># self._read_yp()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_yp</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_fis</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_unr</span><span class="p">()</span>
 
@@ -1058,7 +1122,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">NXS</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">JXS</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
             <span class="n">NYP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_int</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">MT_for_photon_yield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_int</span><span class="p">(</span><span class="n">NYP</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">NYP</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MT_for_photon_yield</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_int</span><span class="p">(</span><span class="n">NYP</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_fis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read total fission cross-section data if present. Generally,</span>
@@ -1137,8 +1202,52 @@
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">r</span>
 
+</div>
+<div class="viewcode-block" id="SabTable"><a class="viewcode-back" href="../../libref/ace.html#pyne.ace.SabTable">[docs]</a><span class="k">class</span> <span class="nc">SabTable</span><span class="p">(</span><span class="n">AceTable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A SabTable object contains thermal scattering data as represented by</span>
+<span class="sd">    an S(alpha, beta) table.</span>
 
-<span class="k">class</span> <span class="nc">SabTable</span><span class="p">(</span><span class="n">AceTable</span><span class="p">):</span>
+<span class="sd">    :Attributes:</span>
+<span class="sd">      **awr** : float</span>
+<span class="sd">        Atomic weight ratio of the target nuclide.</span>
+
+<span class="sd">      **elastic_e_in** : list of floats</span>
+<span class="sd">        Incoming energies in MeV for which the elastic cross section is</span>
+<span class="sd">        tabulated.</span>
+
+<span class="sd">      **elastic_P** : list of floats</span>
+<span class="sd">        Elastic scattering cross section for data derived in the incoherent</span>
+<span class="sd">        approximation, or Bragg edge parameters for data derived in the coherent</span>
+<span class="sd">        approximation.</span>
+
+<span class="sd">      **elastic_type** : str</span>
+<span class="sd">        Describes the behavior of the elastic cross section, i.e. whether it was</span>
+<span class="sd">        derived in the incoherent or coherent approximation.</span>
+
+<span class="sd">      **inelastic_e_in** : list of floats</span>
+<span class="sd">        Incoming energies in MeV for which the inelastic cross section is</span>
+<span class="sd">        tabulated.</span>
+
+<span class="sd">      **inelastic_sigma** : list of floats</span>
+<span class="sd">        Inelastic scattering cross section in barns at each energy.</span>
+
+<span class="sd">      **name** : str</span>
+<span class="sd">        ZAID identifier of the table, e.g. 92235.70c.</span>
+
+<span class="sd">      **temp** : float</span>
+<span class="sd">        Temperature of the target nuclide in eV.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        ZAID identifier of the table, e.g. lwtr.10t.</span>
+<span class="sd">    awr : float</span>
+<span class="sd">        Atomic weight ratio of the target nuclide.</span>
+<span class="sd">    temp : float</span>
+<span class="sd">        Temperature of the target nuclide in eV.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">awr</span><span class="p">,</span> <span class="n">temp</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SabTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">awr</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
@@ -1154,31 +1263,6 @@
             <span class="k">return</span> <span class="s">&quot;&lt;ACE Thermal S(a,b) Table: {0}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&lt;ACE Thermal S(a,b) Table&gt;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">plot_inelastic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="n">E_out</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e6</span> <span class="o">*</span> <span class="n">E</span> <span class="k">for</span> <span class="n">E</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inelastic_e_out</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span>
-        <span class="n">mu_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inelastic_mu_out</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-
-        <span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NXS</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">E_out</span>
-        <span class="n">X</span><span class="p">,</span><span class="n">Y</span> <span class="o">=</span> <span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z_function</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">E_out</span><span class="p">,</span><span class="n">mu_out</span><span class="p">)</span>
-        <span class="n">pcolor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span><span class="p">)</span>
-
-        <span class="c"># Plot options</span>
-        <span class="n">colorbar</span><span class="p">()</span>
-        <span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NXS</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
-        <span class="n">ylim</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">E_out</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">E_out</span><span class="p">)])</span>
-        <span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Equally likely cosine bin&#39;</span><span class="p">)</span>
-        <span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Outgoing Energy (eV)&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_z_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">E_out</span><span class="p">,</span> <span class="n">mu_out</span><span class="p">):</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
-            <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">mu_out</span><span class="p">[</span><span class="n">E_out</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">)][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span><span class="n">y_</span><span class="p">)])</span>
-        <span class="k">return</span> <span class="n">z</span>
 
     <span class="k">def</span> <span class="nf">_read_itie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1274,8 +1358,65 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="n">value</span>
 
-            
-<span class="k">class</span> <span class="nc">Reaction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            </div>
+<div class="viewcode-block" id="Reaction"><a class="viewcode-back" href="../../libref/ace.html#pyne.ace.Reaction">[docs]</a><span class="k">class</span> <span class="nc">Reaction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Reaction object represents a single reaction channel for a nuclide with</span>
+<span class="sd">    an associated cross section and, if present, a secondary angle and energy</span>
+<span class="sd">    distribution. These objects are stored within the ``reactions`` attribute on</span>
+<span class="sd">    subclasses of AceTable, e.g. NeutronTable.</span>
+
+<span class="sd">    :Attributes:</span>
+<span class="sd">      **ang_energy_in** : list of floats</span>
+<span class="sd">        Incoming energies in MeV at which angular distributions are tabulated.</span>
+
+<span class="sd">      **ang_energy_cos** : list of floats</span>
+<span class="sd">        Scattering cosines corresponding to each point of the angular distribution</span>
+<span class="sd">        functions.</span>
+
+<span class="sd">      **ang_energy_pdf** : list of floats</span>
+<span class="sd">        Probability distribution function for angular distribution.</span>
+
+<span class="sd">      **ang_energy_cdf** : list of floats</span>
+<span class="sd">        Cumulative distribution function for angular distribution.</span>
+
+<span class="sd">      **e_dist_energy** : list of floats</span>
+<span class="sd">        Incoming energies in MeV at which energy distributions are tabulated.</span>
+
+<span class="sd">      **e_dist_law** : int</span>
+<span class="sd">        ACE law used for secondary energy distribution.</span>
+
+<span class="sd">      **IE** : int</span>
+<span class="sd">        The index on the energy grid corresponding to the threshold of this</span>
+<span class="sd">        reaction.</span>
+
+<span class="sd">      **MT** : int</span>
+<span class="sd">        The ENDF MT number for this reaction. On occasion, MCNP uses MT numbers</span>
+<span class="sd">        that don&#39;t correspond exactly to the ENDF specification.</span>
+
+<span class="sd">      **Q** : float</span>
+<span class="sd">        The Q-value of this reaction in MeV.</span>
+
+<span class="sd">      **sigma** : list of floats</span>
+<span class="sd">        Microscopic cross section for this reaction at each point on the energy</span>
+<span class="sd">        grid above the threshold value.</span>
+
+<span class="sd">      **TY** : int</span>
+<span class="sd">        An integer whose absolute value is the number of neutrons emitted in</span>
+<span class="sd">        this reaction. If negative, it indicates that scattering should be</span>
+<span class="sd">        performed in the center-of-mass system. If positive, scattering should</span>
+<span class="sd">        be preformed in the laboratory system.</span>
+<span class="sd">      </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MT : int</span>
+<span class="sd">        The ENDF MT number for this reaction. On occasion, MCNP uses MT numbers</span>
+<span class="sd">        that don&#39;t correspond exactly to the ENDF specification.</span>
+<span class="sd">    table : AceTable</span>
+<span class="sd">        The ACE table which contains this reaction. This is useful if data on</span>
+<span class="sd">        the parent nuclide is needed (for instance, the energy grid at which</span>
+<span class="sd">        cross sections are tabulated)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MT</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span> <span class="c"># Reference to containing table</span>
@@ -1291,12 +1432,12 @@
     <span class="k">def</span> <span class="nf">broaden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T_high</span><span class="p">):</span>
         <span class="k">pass</span>        
 
-    <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Reaction.threshold"><a class="viewcode-back" href="../../libref/ace.html#pyne.ace.Reaction.threshold">[docs]</a>    <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return energy threshold for this reaction&quot;&quot;&quot;</span>
 
         <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span>
         <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">energy</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IE</span><span class="p">]</span>
-
+</div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&lt;ACE Reaction: MT={0} {1}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1304,7 +1445,7 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&lt;ACE Reaction: Unknown MT={0}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MT</span><span class="p">)</span>
 
-
+</div>
 <span class="k">class</span> <span class="nc">DosimetryTable</span><span class="p">(</span><span class="n">AceTable</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">awr</span><span class="p">,</span> <span class="n">temp</span><span class="p">):</span>

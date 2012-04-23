@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.decay &mdash; PyNE 0.1</title>
+    <title>pyne.dbgen.decay &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -73,6 +73,7 @@
 
 <span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
 <span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">ensdf</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.api</span> <span class="kn">import</span> <span class="n">BASIC_FILTERS</span>
 
 <div class="viewcode-block" id="grab_ensdf_decay"><a class="viewcode-back" href="../../../libref/dbgen/decay.html#pyne.dbgen.decay.grab_ensdf_decay">[docs]</a><span class="k">def</span> <span class="nf">grab_ensdf_decay</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Grabs the ENSDF decay data files</span>
@@ -155,7 +156,7 @@
     <span class="n">atomic_decay</span>  <span class="o">=</span> <span class="n">parse_decay</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
 
     <span class="c"># Open the HDF5 File</span>
-    <span class="n">decay_db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">decay_db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
 
     <span class="c"># Make a new the table</span>
     <span class="n">decaytable</span> <span class="o">=</span> <span class="n">decay_db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;atomic_decay&quot;</span><span class="p">,</span> <span class="n">atomic_decay_dtype</span><span class="p">,</span> 

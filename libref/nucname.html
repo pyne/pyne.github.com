@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Nuclide Naming Module – pyne.nucname &mdash; PyNE 0.1</title>
+    <title>Nuclide Naming Module – pyne.nucname &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../index.html" />
     <link rel="up" title="Library Reference" href="index.html" />
     <link rel="next" title="Basic Nuclear Data – pyne.data" href="data.html" />
     <link rel="prev" title="Library Reference" href="index.html" /> 
@@ -89,7 +89,7 @@ on how metastable isotopes are named, please consult the MCNPX documentation for
 letter in the chemical symbol is uppercase, the dash is always present, and the the meta-stable
 flag is lowercase.  For instance, &#8216;Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
 <li><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.  However, this
-convention contains not meta-stable information.  Moreover, the A-number comes before the
+convention contains no metastable information.  Moreover, the A-number comes before the
 element symbol.  For example, &#8216;242Am&#8217; is the valid NIST notation.</li>
 <li><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the placement of the Z- and
 A-numbers are swapped. Therefore, this format is effectively aaazzzm.  For example, &#8216;2420951&#8217; is
@@ -157,7 +157,7 @@ well as other helpful module attributes.</p>
 <dl class="function">
 <dt id="pyne.nucname.mcnp">
 <tt class="descclassname">pyne.nucname.</tt><tt class="descname">mcnp</tt><big>(</big><em>nuc</em><big>)</big><a class="headerlink" href="#pyne.nucname.mcnp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a nuclide to its MCNP form (95642).</p>
+<dd><p>Converts a nuclide to its MCNP form (92636).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -176,6 +176,11 @@ well as other helpful module attributes.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>Most metastables in this form add 300 + 100*m where 
+m is the isomeric state (U-236m = 92636).  However,
+MCNP special cases Am-242 and Am-242m by switching 
+the meaning. Thus Am-242m = 95242 and Am-242 = 95642.</p>
 </dd></dl>
 
 <hr class="docutils" />

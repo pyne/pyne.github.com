@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.nuc_data_make &mdash; PyNE 0.1</title>
+    <title>pyne.dbgen.nuc_data_make &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -62,6 +62,8 @@
   <h1>Source code for pyne.dbgen.nuc_data_make</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">from</span> <span class="nn">distutils.file_util</span> <span class="kn">import</span> <span class="n">copy_file</span><span class="p">,</span> <span class="n">move_file</span>
 <span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">mkpath</span><span class="p">,</span> <span class="n">remove_tree</span>
 
@@ -104,6 +106,20 @@
 <span class="s">                                     `  </span>
 <span class="s">&quot;&quot;&quot;</span>
 
+<span class="k">def</span> <span class="nf">_fetch_prebuilt</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span>
+    <span class="n">prebuilt_nuc_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s">&#39;prebuilt_nuc_data.h5&#39;</span><span class="p">)</span>
+    <span class="n">prebuilt_nuc_data_url</span> <span class="o">=</span> <span class="s">&quot;http://s3.amazonaws.com/pyne/prebuilt_nuc_data.h5&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">print</span> <span class="s">&quot;Fetching pre-built nuc_data.h5 from &quot;</span> <span class="o">+</span> <span class="n">prebuilt_nuc_data_url</span>
+    <span class="n">pnd</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">prebuilt_nuc_data_url</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pnd</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">,</span> <span class="n">nuc_data</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../libref/dbgen/nuc_data_make.html#pyne.dbgen.nuc_data_make.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Entry point for nuc_data_make utility.&quot;&quot;&quot;</span>
@@ -114,8 +130,9 @@
                   <span class="p">(</span><span class="s">&#39;decay&#39;</span><span class="p">,</span> <span class="n">make_decay</span><span class="p">),</span> 
                   <span class="p">(</span><span class="s">&#39;simple_xs&#39;</span><span class="p">,</span> <span class="n">make_simple_xs</span><span class="p">),</span> 
                   <span class="p">(</span><span class="s">&#39;cinder&#39;</span><span class="p">,</span> <span class="n">make_cinder</span><span class="p">),</span> 
-                 <span class="p">]</span>
+                  <span class="p">]</span>
     <span class="n">make_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">make_funcs</span><span class="p">)</span>
+    <span class="n">make_open</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;atomic_weight&#39;</span><span class="p">,</span> <span class="s">&#39;scattering_lengths&#39;</span><span class="p">,</span> <span class="s">&#39;simple_xs&#39;</span><span class="p">}</span>
 
     <span class="c"># Parse the command line arguments</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&#39;Make a nuclear data library.&#39;</span><span class="p">)</span>
@@ -125,6 +142,12 @@
                         <span class="n">help</span><span class="o">=</span><span class="s">&#39;path to the build directory.&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--datapath&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;datapath&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s">&#39;MCNP DATAPATH.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--fetch-prebuilt&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;fetch_prebuilt&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> 
+                        <span class="nb">type</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s">&#39;t&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&#39;y&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> 
+                        <span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;grab partially assembled file [y/n].&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--make-open-only&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;make_open_only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> 
+                        <span class="nb">type</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s">&#39;t&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&#39;y&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> 
+                        <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;only add open data to file [y/n].&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-m&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;make&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s">&#39;comma-separated parts of nuc_data to make: &#39;</span> <span class="o">+</span> \
                         <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">mf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">make_funcs</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#39;, all, and none.&#39;</span><span class="p">)</span>
@@ -157,9 +180,15 @@
     <span class="k">else</span><span class="p">:</span>   
         <span class="n">make_order</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">make</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
 
-    <span class="k">print</span> <span class="s">&quot;Making nuc_data at {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">make_open_only</span><span class="p">:</span>
+        <span class="n">make_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">mo</span> <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">make_order</span> <span class="k">if</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">make_open</span><span class="p">]</span>
+
+    <span class="c"># fetch prebuilt data library if possible</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">fetch_prebuilt</span><span class="p">:</span>
+        <span class="n">_fetch_prebuilt</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
     <span class="c"># Make the various tables</span>
+    <span class="k">print</span> <span class="s">&quot;Making nuc_data at {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">make_order</span><span class="p">:</span>
         <span class="n">make_map</span><span class="p">[</span><span class="n">mo</span><span class="p">](</span><span class="n">args</span><span class="p">)</span>
 

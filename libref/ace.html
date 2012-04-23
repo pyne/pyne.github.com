@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ACE Cross Sections – pyne.ace &mdash; PyNE 0.1</title>
+    <title>ACE Cross Sections – pyne.ace &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../index.html" />
     <link rel="up" title="Library Reference" href="index.html" />
     <link rel="next" title="ENSDF File Support – pyne.ensdf" href="ensdf.html" />
     <link rel="prev" title="CCCC Formats – pyne.cccc" href="cccc.html" /> 
@@ -96,6 +96,21 @@ multiple tables with data.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
+<tr class="field"><th class="field-name">Attributes :</th><td class="field-body"><dl class="first docutils">
+<dt><strong>binary</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Identifies Whether the library is in binary format or not</p>
+</dd>
+<dt><strong>tables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary whose keys are the names of the ACE tables and whose values
+are the instances of subclasses of AceTable (e.g. NeutronTable)</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Determines whether output is printed to the stdout when reading a
+Library</p>
+</dd>
+</dl>
+</td>
+</tr>
 <tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
 <blockquote class="last">
 <div><p>Path of the ACE library file to load.</p>
@@ -139,6 +154,234 @@ tables. If str, reads in only the single table of a matching name.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.AceTable">
+<em class="property">class </em><tt class="descclassname">pyne.ace.</tt><tt class="descname">AceTable</tt><big>(</big><em>name</em>, <em>awr</em>, <em>temp</em><big>)</big><a class="reference internal" href="../_modules/pyne/ace.html#AceTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ace.AceTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract superclass of all other classes for cross section tables.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.NeutronTable">
+<em class="property">class </em><tt class="descclassname">pyne.ace.</tt><tt class="descname">NeutronTable</tt><big>(</big><em>name</em>, <em>awr</em>, <em>temp</em><big>)</big><a class="reference internal" href="../_modules/pyne/ace.html#NeutronTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ace.NeutronTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A NeutronTable object contains continuous-energy neutron interaction data
+read from an ACE-formatted Type I table. These objects are not normally
+instantiated by the user but rather created when reading data using a
+Library object and stored within the <tt class="docutils literal"><span class="pre">tables</span></tt> attribute of a Library
+object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Attributes :</th><td class="field-body"><dl class="first docutils">
+<dt><strong>awr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Atomic weight ratio of the target nuclide.</p>
+</dd>
+<dt><strong>energy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The energy values (MeV) at which reaction cross-sections are tabulated.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">ZAID identifier of the table, e.g. 92235.70c.</p>
+</dd>
+<dt><strong>nu_p_energy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Energies in MeV at which the number of prompt neutrons emitted per
+fission is tabulated.</p>
+</dd>
+<dt><strong>nu_p_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Indicates how number of prompt neutrons emitted per fission is
+stored. Can be either &#8220;polynomial&#8221; or &#8220;tabular&#8221;.</p>
+</dd>
+<dt><strong>nu_p_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The number of prompt neutrons emitted per fission, if data is stored in
+&#8220;tabular&#8221; form, or the polynomial coefficients for the &#8220;polynomial&#8221;
+form.</p>
+</dd>
+<dt><strong>nu_t_energy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Energies in MeV at which the total number of neutrons emitted per
+fission is tabulated.</p>
+</dd>
+<dt><strong>nu_t_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Indicates how total number of neutrons emitted per fission is
+stored. Can be either &#8220;polynomial&#8221; or &#8220;tabular&#8221;.</p>
+</dd>
+<dt><strong>nu_t_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The total number of neutrons emitted per fission, if data is stored in
+&#8220;tabular&#8221; form, or the polynomial coefficients for the &#8220;polynomial&#8221;
+form.</p>
+</dd>
+<dt><strong>reactions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of Reactions</span></dt>
+<dd><p class="first last">A list of Reaction instances containing the cross sections, secondary
+angle and energy distributions, and other associated data for each
+reaction for this nuclide.</p>
+</dd>
+<dt><strong>sigma_a</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The microscopic absorption cross section for each value on the energy
+grid.</p>
+</dd>
+<dt><strong>sigma_t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The microscopic total cross section for each value on the energy grid.</p>
+</dd>
+<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Temperature of the target nuclide in eV.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>ZAID identifier of the table, e.g. 92235.70c.</p>
+</div></blockquote>
+<p><strong>awr</strong> : float</p>
+<blockquote>
+<div><p>Atomic weight ratio of the target nuclide.</p>
+</div></blockquote>
+<p><strong>temp</strong> : float</p>
+<blockquote class="last">
+<div><p>Temperature of the target nuclide in eV.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.SabTable">
+<em class="property">class </em><tt class="descclassname">pyne.ace.</tt><tt class="descname">SabTable</tt><big>(</big><em>name</em>, <em>awr</em>, <em>temp</em><big>)</big><a class="reference internal" href="../_modules/pyne/ace.html#SabTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ace.SabTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A SabTable object contains thermal scattering data as represented by
+an S(alpha, beta) table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Attributes :</th><td class="field-body"><dl class="first docutils">
+<dt><strong>awr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Atomic weight ratio of the target nuclide.</p>
+</dd>
+<dt><strong>elastic_e_in</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Incoming energies in MeV for which the elastic cross section is
+tabulated.</p>
+</dd>
+<dt><strong>elastic_P</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Elastic scattering cross section for data derived in the incoherent
+approximation, or Bragg edge parameters for data derived in the coherent
+approximation.</p>
+</dd>
+<dt><strong>elastic_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Describes the behavior of the elastic cross section, i.e. whether it was
+derived in the incoherent or coherent approximation.</p>
+</dd>
+<dt><strong>inelastic_e_in</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Incoming energies in MeV for which the inelastic cross section is
+tabulated.</p>
+</dd>
+<dt><strong>inelastic_sigma</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Inelastic scattering cross section in barns at each energy.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">ZAID identifier of the table, e.g. 92235.70c.</p>
+</dd>
+<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Temperature of the target nuclide in eV.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>ZAID identifier of the table, e.g. lwtr.10t.</p>
+</div></blockquote>
+<p><strong>awr</strong> : float</p>
+<blockquote>
+<div><p>Atomic weight ratio of the target nuclide.</p>
+</div></blockquote>
+<p><strong>temp</strong> : float</p>
+<blockquote class="last">
+<div><p>Temperature of the target nuclide in eV.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.Reaction">
+<em class="property">class </em><tt class="descclassname">pyne.ace.</tt><tt class="descname">Reaction</tt><big>(</big><em>MT</em>, <em>table=None</em><big>)</big><a class="reference internal" href="../_modules/pyne/ace.html#Reaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ace.Reaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Reaction object represents a single reaction channel for a nuclide with
+an associated cross section and, if present, a secondary angle and energy
+distribution. These objects are stored within the <tt class="docutils literal"><span class="pre">reactions</span></tt> attribute on
+subclasses of AceTable, e.g. NeutronTable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Attributes :</th><td class="field-body"><dl class="first docutils">
+<dt><strong>ang_energy_in</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Incoming energies in MeV at which angular distributions are tabulated.</p>
+</dd>
+<dt><strong>ang_energy_cos</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Scattering cosines corresponding to each point of the angular distribution
+functions.</p>
+</dd>
+<dt><strong>ang_energy_pdf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Probability distribution function for angular distribution.</p>
+</dd>
+<dt><strong>ang_energy_cdf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Cumulative distribution function for angular distribution.</p>
+</dd>
+<dt><strong>e_dist_energy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Incoming energies in MeV at which energy distributions are tabulated.</p>
+</dd>
+<dt><strong>e_dist_law</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">ACE law used for secondary energy distribution.</p>
+</dd>
+<dt><strong>IE</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The index on the energy grid corresponding to the threshold of this
+reaction.</p>
+</dd>
+<dt><strong>MT</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The ENDF MT number for this reaction. On occasion, MCNP uses MT numbers
+that don&#8217;t correspond exactly to the ENDF specification.</p>
+</dd>
+<dt><strong>Q</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The Q-value of this reaction in MeV.</p>
+</dd>
+<dt><strong>sigma</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Microscopic cross section for this reaction at each point on the energy
+grid above the threshold value.</p>
+</dd>
+<dt><strong>TY</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">An integer whose absolute value is the number of neutrons emitted in
+this reaction. If negative, it indicates that scattering should be
+performed in the center-of-mass system. If positive, scattering should
+be preformed in the laboratory system.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>MT</strong> : int</p>
+<blockquote>
+<div><p>The ENDF MT number for this reaction. On occasion, MCNP uses MT numbers
+that don&#8217;t correspond exactly to the ENDF specification.</p>
+</div></blockquote>
+<p><strong>table</strong> : AceTable</p>
+<blockquote class="last">
+<div><p>The ACE table which contains this reaction. This is useful if data on
+the parent nuclide is needed (for instance, the energy grid at which
+cross sections are tabulated)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.ace.Reaction.threshold">
+<tt class="descname">threshold</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pyne/ace.html#Reaction.threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ace.Reaction.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return energy threshold for this reaction</p>
 </dd></dl>
 
 </dd></dl>

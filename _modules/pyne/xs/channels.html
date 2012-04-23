@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.xs.channels &mdash; PyNE 0.1</title>
+    <title>pyne.xs.channels &mdash; PyNE 0.1-rc</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1-rc',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -60,6 +60,8 @@
           <div class="body">
             
   <h1>Source code for pyne.xs.channels</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">collections</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.integrate</span>
 <span class="kn">import</span> <span class="nn">tables</span> <span class="kn">as</span> <span class="nn">tb</span>
@@ -70,6 +72,7 @@
 <span class="kn">from</span> <span class="nn">pyne.xs.cache</span> <span class="kn">import</span> <span class="n">xs_cache</span>
 <span class="kn">from</span> <span class="nn">pyne.xs.models</span> <span class="kn">import</span> <span class="n">group_collapse</span>
 <span class="kn">from</span> <span class="nn">pyne.pyne_config</span> <span class="kn">import</span> <span class="n">pyne_conf</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span>
 
 <span class="c"># Hide warnings from numpy</span>
 <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
@@ -88,6 +91,31 @@
         <span class="n">xs_cache</span><span class="p">[</span><span class="s">&#39;phi_n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi_n</span>
 
 
+<span class="k">def</span> <span class="nf">_atom_weight_channel</span><span class="p">(</span><span class="n">chanfunc</span><span class="p">,</span> <span class="n">nucspec</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convolves a channel for several nuclides based on atomic weights.&quot;&quot;&quot;</span>
+    <span class="c"># convert to atom weights</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nucspec</span><span class="p">,</span> <span class="n">Material</span><span class="p">):</span>
+        <span class="n">aws</span> <span class="o">=</span> <span class="n">nucspec</span><span class="o">.</span><span class="n">to_atom_frac</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nucspec</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">aws</span> <span class="o">=</span> <span class="n">nucspec</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nucspec</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+        <span class="n">aws</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">nucspec</span><span class="p">)</span>
+
+    <span class="c"># tally the channels as we go</span>
+    <span class="n">weight_total</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">chan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs_cache</span><span class="p">[</span><span class="s">&#39;E_g&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">aws</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">weight_total</span> <span class="o">+=</span> <span class="n">weight</span>
+        <span class="n">nuc_chan</span> <span class="o">=</span> <span class="n">chanfunc</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">chan</span> <span class="o">+=</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">nuc_chan</span>
+
+    <span class="c"># re-normalize</span>
+    <span class="k">if</span> <span class="n">weight_total</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">chan</span> <span class="o">=</span> <span class="n">chan</span> <span class="o">/</span> <span class="n">weight_total</span>
+
+    <span class="k">return</span> <span class="n">chan</span>
+
+
 <div class="viewcode-block" id="sigma_f"><a class="viewcode-back" href="../../../libref/xs/channels.html#pyne.xs.channels.sigma_f">[docs]</a><span class="k">def</span> <span class="nf">sigma_f</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">E_g</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">E_n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">phi_n</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the neutron fission cross-section for a nuclide for a new, </span>
 <span class="sd">    lower resolution group structure using a higher fidelity flux.  Note that </span>
@@ -97,8 +125,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the fission cross-section.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        fission cross-section.</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
 <span class="sd">        New, lower fidelity energy group structure [MeV] that is of length G+1. </span>
 <span class="sd">    E_n : array-like of floats, optional</span>
@@ -118,6 +147,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">sigma_f</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span>
 
     <span class="c"># Get the fission XS</span>
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
@@ -147,8 +179,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the scattering kernel.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        scattering kernel.</span>
 <span class="sd">    T : float</span>
 <span class="sd">        Tempurature of the target material [kelvin].</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
@@ -179,6 +212,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">sigma_s_gh</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
     <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;sigma_s_gh&#39;</span><span class="p">,</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -234,8 +270,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the scattering cross section.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        scattering cross section.</span>
 <span class="sd">    T : float</span>
 <span class="sd">        Tempurature of the target material [kelvin].</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
@@ -253,6 +290,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">sigma_s</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
     <span class="n">key_g</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;sigma_s_g&#39;</span><span class="p">,</span> <span class="n">nuc_zz</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -282,8 +322,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the absorption reaction cross-section.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        absorption reaction cross-section.</span>
 <span class="sd">    rx : str</span>
 <span class="sd">        Reaction key. (&#39;gamma&#39;, &#39;alpha&#39;, &#39;p&#39;, etc.)</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
@@ -309,6 +350,9 @@
 <span class="sd">    pyne.xs.cache.ABSORPTION_RX_MAP </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">sigma_a_reaction</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span>
 
     <span class="c"># Get the absorption XS</span>
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
@@ -342,8 +386,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the metastable.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        metastable ratio.</span>
 <span class="sd">    rx : str</span>
 <span class="sd">        Reaction key. (&#39;gamma&#39;, &#39;alpha&#39;, &#39;p&#39;, etc.)</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
@@ -389,8 +434,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the absorption cross section.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        absorption cross section.</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
 <span class="sd">        New, lower fidelity energy group structure [MeV] that is of length G+1. </span>
 <span class="sd">    E_n : array-like of floats, optional</span>
@@ -410,6 +456,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">sigma_a</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span>
 
     <span class="c"># Get the absorption XS</span>
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
@@ -439,8 +488,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the neutron fission energy spectrum.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        neutron fission energy spectrum.</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
 <span class="sd">        New, lower fidelity energy group structure [MeV] that is of length G+1. </span>
 <span class="sd">    E_n : array-like of floats, optional</span>
@@ -461,6 +511,9 @@
 <span class="sd">    pyne.xs.models.chi : used under the covers by this function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">nuc</span><span class="p">)</span>
 
     <span class="c"># Get the fission XS</span>
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
@@ -512,8 +565,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nuc </span>
-<span class="sd">        A nuclide name for which to calculate the total cross section.</span>
+<span class="sd">    nuc : int, str, Material, or dict-like </span>
+<span class="sd">        A nuclide or nuclide-atom fraction mapping for which to calculate the </span>
+<span class="sd">        total cross section.</span>
 <span class="sd">    T : float, optional</span>
 <span class="sd">        Tempurature of the target material [kelvin].</span>
 <span class="sd">    E_g : array-like of floats, optional</span>
@@ -531,6 +585,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_prep_cache</span><span class="p">(</span><span class="n">E_g</span><span class="p">,</span> <span class="n">E_n</span><span class="p">,</span> <span class="n">phi_n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_atom_weight_channel</span><span class="p">(</span><span class="n">sigma_t</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
     <span class="c"># Get the total XS</span>
     <span class="n">nuc_zz</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
