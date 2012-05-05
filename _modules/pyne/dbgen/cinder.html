@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.cinder &mdash; PyNE 0.1-rc</title>
+    <title>pyne.dbgen.cinder &mdash; PyNE 0.1</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1-rc',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -70,31 +70,33 @@
 <span class="kn">import</span> <span class="nn">tables</span> <span class="kn">as</span> <span class="nn">tb</span>
 
 <span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">to_barns</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">to_barns</span><span class="p">,</span> <span class="n">failure</span>
 <span class="kn">from</span> <span class="nn">pyne.dbgen.api</span> <span class="kn">import</span> <span class="n">BASIC_FILTERS</span>
 
 <div class="viewcode-block" id="grab_cinder_dat"><a class="viewcode-back" href="../../../libref/dbgen/cinder.html#pyne.dbgen.cinder.grab_cinder_dat">[docs]</a><span class="k">def</span> <span class="nf">grab_cinder_dat</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Grabs the cinder.dat file from the DATAPATH directory if not already present.&quot;&quot;&quot;</span>
     <span class="n">build_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s">&#39;cinder.dat&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">build_filename</span><span class="p">):</span>
-        <span class="k">return</span> 
+        <span class="k">return</span> <span class="bp">True</span>
     
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">datapath</span><span class="p">):</span>
         <span class="k">pass</span>
     <span class="k">elif</span> <span class="s">&#39;DATAPATH&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
         <span class="n">datapath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;DATAPATH&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s">&quot;DATAPATH not defined in environment; cinder.dat not found.&quot;</span><span class="p">)</span>
-
-    <span class="k">print</span> <span class="s">&quot;Grabing cinder.dat from &quot;</span> <span class="o">+</span> <span class="n">datapath</span>
+        <span class="k">print</span> <span class="n">failure</span><span class="p">(</span><span class="s">&quot;DATAPATH not defined in environment; cinder.dat not found - skipping.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>
 
     <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="s">&quot;[Cc][Ii][Nn][Dd][Ee][Rr].[Dd][Aa][Tt]&quot;</span><span class="p">)</span>
     <span class="n">local_filename</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">local_filename</span><span class="p">)</span>
     <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Grabing cinder.dat from &quot;</span> <span class="o">+</span> <span class="n">datapath</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">local_filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">build_filename</span><span class="p">)</span>
+        <span class="n">rtn</span> <span class="o">=</span> <span class="bp">True</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s">&quot;cinder.dat file not found in DATAPATH dir.&quot;</span><span class="p">)</span>
-
+        <span class="k">print</span> <span class="n">failure</span><span class="p">(</span><span class="s">&quot;cinder.dat file not found in DATAPATH dir - skipping.&quot;</span><span class="p">)</span>
+        <span class="n">rtn</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">rtn</span>
 
 <span class="c"># These read in cinder.dat</span></div>
 <span class="n">cinder_float</span> <span class="o">=</span> <span class="s">&quot;[\d.+-Ee]+&quot;</span>
@@ -248,8 +250,9 @@
 
     <span class="c"># Init the neutron absorption table</span>
     <span class="n">absorption_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">absorption_dtype_tuple</span> <span class="o">+</span> <span class="p">[(</span><span class="s">&#39;xs&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">G_n</span><span class="p">)])</span>
-    <span class="n">absorption_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_xs/&#39;</span><span class="p">,</span> <span class="s">&#39;absorption&#39;</span><span class="p">,</span> <span class="n">absorption_dtype</span><span class="p">,</span> 
-                                       <span class="s">&#39;Neutron absorption reaction cross sections [barns]&#39;</span><span class="p">)</span>
+    <span class="n">absorption_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_xs/&#39;</span><span class="p">,</span> <span class="s">&#39;absorption&#39;</span><span class="p">,</span> 
+                                      <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">absorption_dtype</span><span class="p">),</span> 
+                                      <span class="s">&#39;Neutron absorption reaction cross sections [barns]&#39;</span><span class="p">)</span>
     <span class="n">abrow</span> <span class="o">=</span> <span class="n">absorption_table</span><span class="o">.</span><span class="n">row</span>
 
     <span class="c"># Init to_nuc_pattern</span>
@@ -342,8 +345,9 @@
 
     <span class="c"># Init the neutron absorption table</span>
     <span class="n">fission_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">fission_dtype_tuple</span> <span class="o">+</span> <span class="p">[(</span><span class="s">&#39;xs&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">G_n</span><span class="p">)])</span>
-    <span class="n">fission_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_xs/&#39;</span><span class="p">,</span> <span class="s">&#39;fission&#39;</span><span class="p">,</span> <span class="n">fission_dtype</span><span class="p">,</span> 
-                                    <span class="s">&#39;Neutron fission reaction cross sections [barns]&#39;</span><span class="p">)</span>
+    <span class="n">fission_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_xs/&#39;</span><span class="p">,</span> <span class="s">&#39;fission&#39;</span><span class="p">,</span> 
+                                   <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fission_dtype</span><span class="p">),</span> 
+                                   <span class="s">&#39;Neutron fission reaction cross sections [barns]&#39;</span><span class="p">)</span>
     <span class="n">frow</span> <span class="o">=</span> <span class="n">fission_table</span><span class="o">.</span><span class="n">row</span>
 
     <span class="c"># Init to_nuc_pattern</span>
@@ -431,8 +435,9 @@
 
     <span class="c"># Init the gamma absorption table</span>
     <span class="n">gamma_decay_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">gamma_decay_dtype_tuple</span> <span class="o">+</span> <span class="p">[(</span><span class="s">&#39;spectrum&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">G_g</span><span class="p">)])</span>
-    <span class="n">gamma_decay_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/photon/cinder_source/&#39;</span><span class="p">,</span> <span class="s">&#39;decay_spectra&#39;</span><span class="p">,</span> <span class="n">gamma_decay_dtype</span><span class="p">,</span> 
-                                        <span class="s">&#39;Gamma decay spectrum [MeV]&#39;</span><span class="p">)</span>
+    <span class="n">gamma_decay_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/photon/cinder_source/&#39;</span><span class="p">,</span> <span class="s">&#39;decay_spectra&#39;</span><span class="p">,</span> 
+                                       <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gamma_decay_dtype</span><span class="p">),</span> 
+                                       <span class="s">&#39;Gamma decay spectrum [MeV]&#39;</span><span class="p">)</span>
     <span class="n">gdrow</span> <span class="o">=</span> <span class="n">gamma_decay_table</span><span class="o">.</span><span class="n">row</span>
 
     <span class="c"># Init to_nuc_pattern</span>
@@ -608,8 +613,9 @@
     <span class="n">info_table</span> <span class="o">=</span> <span class="n">parse_neutron_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
 
     <span class="c"># Init the neutron fission product info table</span>
-    <span class="n">nfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;info&#39;</span><span class="p">,</span> <span class="n">fp_info_dtype</span><span class="p">,</span> 
-                                <span class="s">&#39;CINDER Neutron Fission Product Yield Information&#39;</span><span class="p">)</span>
+    <span class="n">nfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;info&#39;</span><span class="p">,</span> 
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">),</span> 
+                               <span class="s">&#39;CINDER Neutron Fission Product Yield Information&#39;</span><span class="p">)</span>
 
     <span class="c"># Append Rows</span>
     <span class="n">nfp_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_table</span><span class="p">)</span>
@@ -697,8 +703,9 @@
     <span class="n">info_table</span> <span class="o">=</span> <span class="n">grab_photon_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
 
     <span class="c"># Init the neutron fission product info table</span>
-    <span class="n">gfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/photon/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;info&#39;</span><span class="p">,</span> <span class="n">fp_info_dtype</span><span class="p">,</span> 
-                                <span class="s">&#39;CINDER Photofission Product Yield Information&#39;</span><span class="p">)</span>
+    <span class="n">gfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/photon/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;info&#39;</span><span class="p">,</span> 
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">),</span> 
+                               <span class="s">&#39;CINDER Photofission Product Yield Information&#39;</span><span class="p">)</span>
     <span class="n">gfp_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_table</span><span class="p">)</span>
 
     <span class="c"># Close the hdf5 file</span>
@@ -752,8 +759,9 @@
     <span class="n">nfp_yields_raw</span> <span class="o">=</span> <span class="n">m_yields</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c"># Init the neutron fission product info table</span>
-    <span class="n">nfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;yields&#39;</span><span class="p">,</span> <span class="n">fp_yields_dtype</span><span class="p">,</span> 
-                                <span class="s">&#39;CINDER Neutron Fission Product Yields&#39;</span><span class="p">)</span>
+    <span class="n">nfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/neutron/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;yields&#39;</span><span class="p">,</span> 
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_yields_dtype</span><span class="p">),</span> 
+                               <span class="s">&#39;CINDER Neutron Fission Product Yields&#39;</span><span class="p">)</span>
     <span class="n">nfprow</span> <span class="o">=</span> <span class="n">nfp_table</span><span class="o">.</span><span class="n">row</span>
 
     <span class="c"># Iterate over all to-nucs</span>
@@ -825,8 +833,9 @@
     <span class="n">gfp_yields_raw</span> <span class="o">=</span> <span class="n">m_yields</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c"># Init the neutron fission product info table</span>
-    <span class="n">gfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/photon/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;yields&#39;</span><span class="p">,</span> <span class="n">fp_yields_dtype</span><span class="p">,</span> 
-                                <span class="s">&#39;CINDER Photofission Product Yields&#39;</span><span class="p">)</span>
+    <span class="n">gfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&#39;/photon/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s">&#39;yields&#39;</span><span class="p">,</span> 
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_yields_dtype</span><span class="p">),</span> 
+                               <span class="s">&#39;CINDER Photofission Product Yields&#39;</span><span class="p">)</span>
     <span class="n">gfprow</span> <span class="o">=</span> <span class="n">gfp_table</span><span class="o">.</span><span class="n">row</span>
 
     <span class="c"># Iterate over all to-nucs</span>
@@ -873,7 +882,9 @@
             <span class="k">return</span>
 
     <span class="c"># First grab the atomic abundance data</span>
-    <span class="n">grab_cinder_dat</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">datapath</span><span class="p">)</span>
+    <span class="n">grabbed</span> <span class="o">=</span> <span class="n">grab_cinder_dat</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">datapath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">grabbed</span><span class="p">:</span>
+        <span class="k">return</span>
 
     <span class="c"># Add energy groups to file</span>
     <span class="k">print</span> <span class="s">&quot;Adding cinder data...&quot;</span>

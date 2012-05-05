@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.decay &mdash; PyNE 0.1-rc</title>
+    <title>pyne.dbgen.decay &mdash; PyNE 0.1</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1-rc',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -93,6 +93,7 @@
 
     <span class="c"># Grab ENSDF files and unzip them.</span>
     <span class="n">iaea_base_url</span> <span class="o">=</span> <span class="s">&#39;http://www-nds.iaea.org/ensdf_base_files/2010-November/&#39;</span>
+    <span class="n">s3_base_url</span> <span class="o">=</span> <span class="s">&#39;http://s3.amazonaws.com/pyne/&#39;</span>
     <span class="n">ensdf_zip</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ensdf_1010_099.zip&#39;</span><span class="p">,</span> <span class="s">&#39;ensdf_1010_199.zip&#39;</span><span class="p">,</span> <span class="s">&#39;ensdf_1010_294.zip&#39;</span><span class="p">,]</span>
 
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ensdf_zip</span><span class="p">:</span>
@@ -100,6 +101,11 @@
         <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">build_dir</span><span class="p">):</span>
             <span class="k">print</span> <span class="s">&quot;  grabing {0} and placing it in {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
             <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">iaea_base_url</span> <span class="o">+</span> <span class="n">f</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1048576</span><span class="p">:</span> 
+                <span class="k">print</span> <span class="s">&quot;  could not get {0} from IAEA; trying S3 mirror&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+                <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">s3_base_url</span> <span class="o">+</span> <span class="n">f</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
@@ -159,8 +165,10 @@
     <span class="n">decay_db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
 
     <span class="c"># Make a new the table</span>
-    <span class="n">decaytable</span> <span class="o">=</span> <span class="n">decay_db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;atomic_decay&quot;</span><span class="p">,</span> <span class="n">atomic_decay_dtype</span><span class="p">,</span> 
-                             <span class="s">&quot;Atomic Decay Data level [MeV], half_life [s], decay_const [1/s], branch_ratio [frac]&quot;</span><span class="p">,</span> <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">atomic_decay</span><span class="p">))</span>
+    <span class="n">decaytable</span> <span class="o">=</span> <span class="n">decay_db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;atomic_decay&quot;</span><span class="p">,</span> 
+                    <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">atomic_decay_dtype</span><span class="p">),</span> 
+                    <span class="s">&quot;Atomic Decay Data level [MeV], half_life [s], decay_const &quot;</span>
+                    <span class="s">&quot;[1/s], branch_ratio [frac]&quot;</span><span class="p">,</span> <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">atomic_decay</span><span class="p">))</span>
     <span class="n">decaytable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomic_decay</span><span class="p">)</span>
 
     <span class="c"># Ensure that data was written to table</span>

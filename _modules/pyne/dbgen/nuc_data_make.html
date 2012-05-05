@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.nuc_data_make &mdash; PyNE 0.1-rc</title>
+    <title>pyne.dbgen.nuc_data_make &mdash; PyNE 0.1</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1-rc',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -68,6 +68,7 @@
 <span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">mkpath</span><span class="p">,</span> <span class="n">remove_tree</span>
 
 <span class="kn">from</span> <span class="nn">pyne.api</span> <span class="kn">import</span> <span class="n">nuc_data</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">message</span>
 <span class="kn">from</span> <span class="nn">pyne.dbgen.api</span> <span class="kn">import</span> <span class="n">build_dir</span>
 <span class="kn">from</span> <span class="nn">pyne.dbgen.decay</span> <span class="kn">import</span> <span class="n">make_decay</span>
 <span class="kn">from</span> <span class="nn">pyne.dbgen.atomic_weight</span> <span class="kn">import</span> <span class="n">make_atomic_weight</span>
@@ -110,20 +111,20 @@
     <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span>
     <span class="n">prebuilt_nuc_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s">&#39;prebuilt_nuc_data.h5&#39;</span><span class="p">)</span>
     <span class="n">prebuilt_nuc_data_url</span> <span class="o">=</span> <span class="s">&quot;http://s3.amazonaws.com/pyne/prebuilt_nuc_data.h5&quot;</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">):</span>
-        <span class="k">return</span>
 
-    <span class="k">print</span> <span class="s">&quot;Fetching pre-built nuc_data.h5 from &quot;</span> <span class="o">+</span> <span class="n">prebuilt_nuc_data_url</span>
-    <span class="n">pnd</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">prebuilt_nuc_data_url</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pnd</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Fetching pre-built nuc_data.h5 from &quot;</span> <span class="o">+</span> <span class="n">prebuilt_nuc_data_url</span>
+        <span class="n">pnd</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">prebuilt_nuc_data_url</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pnd</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
-    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">,</span> <span class="n">nuc_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">prebuilt_nuc_data</span><span class="p">,</span> <span class="n">nuc_data</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../libref/dbgen/nuc_data_make.html#pyne.dbgen.nuc_data_make.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Entry point for nuc_data_make utility.&quot;&quot;&quot;</span>
-    <span class="k">print</span> <span class="n">pyne_logo</span>
+    <span class="k">print</span> <span class="n">message</span><span class="p">(</span><span class="n">pyne_logo</span><span class="p">)</span>
 
     <span class="n">make_funcs</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;atomic_weight&#39;</span><span class="p">,</span> <span class="n">make_atomic_weight</span><span class="p">),</span>
                   <span class="p">(</span><span class="s">&#39;scattering_lengths&#39;</span><span class="p">,</span> <span class="n">make_scattering_lengths</span><span class="p">),</span>
@@ -160,7 +161,7 @@
 
     <span class="c"># clean nuc data</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">clean</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
-        <span class="k">print</span> <span class="s">&quot;removing nuc_data from {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;Removing nuc_data from {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
@@ -168,7 +169,7 @@
 
     <span class="c"># Make the build dir</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">clean</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;removing build_dir from {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;Removing build_dir from {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
         <span class="n">remove_tree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
     <span class="n">mkpath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
 

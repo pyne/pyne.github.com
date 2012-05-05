@@ -8,14 +8,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyne.dbgen.simple_xs &mdash; PyNE 0.1-rc</title>
+    <title>pyne.dbgen.simple_xs &mdash; PyNE 0.1</title>
     <link rel="stylesheet" href="../../../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1-rc',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/toggle_sections.js"></script>
     <script type="text/javascript" src="../../../_static/toggle_sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
-    <link rel="top" title="PyNE 0.1-rc" href="../../../index.html" />
+    <link rel="top" title="PyNE 0.1" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -279,7 +279,8 @@
 
     <span class="c"># Create tables for every energy </span>
     <span class="k">for</span> <span class="n">eng</span><span class="p">,</span> <span class="n">eng_flag</span> <span class="ow">in</span> <span class="n">simple_xs_energy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">simple_xs_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="n">simple_xs_group</span><span class="p">,</span> <span class="n">eng</span><span class="p">,</span> <span class="n">simple_xs_dtype</span><span class="p">,</span> 
+        <span class="n">simple_xs_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createTable</span><span class="p">(</span><span class="n">simple_xs_group</span><span class="p">,</span> <span class="n">eng</span><span class="p">,</span> 
+                                         <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">simple_xs_dtype</span><span class="p">),</span> 
                                          <span class="s">&quot;{0} [barns]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eng_flag</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()),</span> 
                                          <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">simple_xs_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">]))</span>
         <span class="n">simple_xs_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simple_xs_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">])</span>

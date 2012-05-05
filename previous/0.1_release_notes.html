@@ -1,0 +1,290 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PyNE 0.1 Release Notes &mdash; PyNE 0.1</title>
+    <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/toggle_sections.js"></script>
+    <script type="text/javascript" src="../_static/toggle_sidebar.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="top" title="PyNE 0.1" href="../index.html" />
+    <link rel="up" title="Previous Versions" href="index.html" />
+    <link rel="next" title="PyNE Development Team" href="../dev_team.html" />
+    <link rel="prev" title="Previous Versions" href="index.html" /> 
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../dev_team.html" title="PyNE Development Team"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Previous Versions"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">Previous Versions</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pyne-0-1-release-notes">
+<h1>PyNE 0.1 Release Notes<a class="headerlink" href="#pyne-0-1-release-notes" title="Permalink to this headline">¶</a></h1>
+<p>PyNE 0.1 is the first release of Python for Nuclear Engineering project
+after an initial last year of effort.  PyNE is a free and open source
+(BSD licensed) project which is meant to compliment other project, such
+as NumPy and SciPy, as a necessary package in the computational nuclear
+engineer&#8217;s toolkit.  It is meant to play nicely with existing, industry
+standard nuclear engineering tools.  The goal of PyNE is to be both fast
+and useful.  As such, this is only the begging!</p>
+<p>Release highlights:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Support for many I/O routines.</li>
+<li>Nuclear data interface.</li>
+<li>C/C++ library which may be linked against independent of Python.</li>
+<li>Cython wrappers for C++ standard library containers.</li>
+</ul>
+</div></blockquote>
+<p>Please visit our website for more information: <a class="reference external" href="http://pyne.github.com/">http://pyne.github.com/</a></p>
+<p>PyNE requires Python 2.7, NumPy 1.5+, PyTables 2.1+.</p>
+<div class="section" id="new-features">
+<h2>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="nuclide-naming-in-pyne-nucname">
+<h3>Nuclide Naming in <tt class="docutils literal"><span class="pre">pyne.nucname</span></tt><a class="headerlink" href="#nuclide-naming-in-pyne-nucname" title="Permalink to this headline">¶</a></h3>
+<p>This module may be used to convert between various nuclide naming schemes.
+Currently the following naming conventions are supported: zzaaam, human
+readable names, MCNP, Serpent, NIST, and CINDER.  This module is
+implemented in C.</p>
+</div>
+<div class="section" id="basic-nuclear-data-via-pyne-data">
+<h3>Basic Nuclear Data via <tt class="docutils literal"><span class="pre">pyne.data</span></tt><a class="headerlink" href="#basic-nuclear-data-via-pyne-data" title="Permalink to this headline">¶</a></h3>
+<p>This aims to provide quick access to very high fidelity nuclear data. Usually
+values are taken from the nuc_data.h5 library which is generated with the new
+<tt class="docutils literal"><span class="pre">nuc_data_make</span></tt> utility at install.  Current data includes atomic masses,
+decay data, neutron scattering lengths, and simple cross section data. 63-group
+neutron cross sections, photon cross sections, and fission product yields are
+also added when CINDER is available.  This module is implemented in C.</p>
+</div>
+<div class="section" id="material-class-in-pyne-material">
+<h3>Material Class in <tt class="docutils literal"><span class="pre">pyne.material</span></tt><a class="headerlink" href="#material-class-in-pyne-material" title="Permalink to this headline">¶</a></h3>
+<p>Materials are the primary container for radionuclides throughout PyNE. They map
+nuclides to mass weights, though they contain methods for converting to/from
+atom fractions as well.  In many ways they take inspiration from numpy arrays
+and python dictionaries.  Materials are implemented in C++ and support both text
+and HDF5 I/O.</p>
+</div>
+<div class="section" id="cccc-formats-in-pyne-cccc">
+<h3>CCCC Formats in <tt class="docutils literal"><span class="pre">pyne.cccc</span></tt><a class="headerlink" href="#cccc-formats-in-pyne-cccc" title="Permalink to this headline">¶</a></h3>
+<p>The CCCC module contains a number of classes for reading various cross section,
+flux, geometry, and data files with specifications given by the Committee for
+Computer Code Coordination. The following types of files can be read using
+classes from this module: ISOTXS, DLAYXS, BRKOXS, RTFLUX, ATFLUX, RZFLUX, MATXS,
+and SPECTR.</p>
+</div>
+<div class="section" id="ace-cross-sections-in-pyne-ace">
+<h3>ACE Cross Sections in <tt class="docutils literal"><span class="pre">pyne.ace</span></tt><a class="headerlink" href="#ace-cross-sections-in-pyne-ace" title="Permalink to this headline">¶</a></h3>
+<p>This module is for reading ACE-format cross sections. ACE stands for &#8220;A Compact
+ENDF&#8221; format and originated from work on MCNP. It is used in a number of other
+Monte Carlo particle transport codes.</p>
+</div>
+<div class="section" id="cross-section-interface-via-pyne-xs">
+<h3>Cross Section Interface via <tt class="docutils literal"><span class="pre">pyne.xs</span></tt><a class="headerlink" href="#cross-section-interface-via-pyne-xs" title="Permalink to this headline">¶</a></h3>
+<p>This is a top-level interface for computing (and caching) multigroup neutron
+cross sections. These cross sections will be computed from a variety of
+available data sources (stored in nuc_data.h5).  In order of preference:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>CINDER 63-group cross sections,</li>
+<li>A two-point fast/thermal interpolation (using &#8216;simple_xs&#8217; data from KAERI),</li>
+<li>or physical models implemented in this sub-package.</li>
+</ol>
+</div></blockquote>
+<p>In the future, this package will support generating multigroup cross sections
+from user-specified pointwise data sources (such as ENDF or ACE files).</p>
+</div>
+<div class="section" id="origen-2-2-support-in-pyne-origen22">
+<h3>ORIGEN 2.2 Support in <tt class="docutils literal"><span class="pre">pyne.origen22</span></tt><a class="headerlink" href="#origen-2-2-support-in-pyne-origen22" title="Permalink to this headline">¶</a></h3>
+<p>This provides an interface for reading, writing, and merging certain ORIGEN 2.2
+input and output files.  Specifically, tapes 4, 5, 6, and 9 are supported.</p>
+</div>
+<div class="section" id="serpent-support-in-pyne-serpent">
+<h3>Serpent Support in <tt class="docutils literal"><span class="pre">pyne.serpent</span></tt><a class="headerlink" href="#serpent-support-in-pyne-serpent" title="Permalink to this headline">¶</a></h3>
+<p>Serpent is a continuous energy Monte Carlo reactor physics code.  Pyne contains
+support for reading in Serpent&#8217;s three types of output files: res, dep, and det.
+These are all in Matlab&#8217;s <tt class="docutils literal"><span class="pre">*.m</span></tt> format and are read in as Python dictionaries
+of numpy arrays and Materials.  They may be optionally written out to
+corresponding <tt class="docutils literal"><span class="pre">*.py</span></tt> files and imported later.</p>
+</div>
+<div class="section" id="c-standard-library-converters-in-pyne-stlconverters">
+<h3>C++ Standard Library Converters in <tt class="docutils literal"><span class="pre">pyne.stlconverters</span></tt><a class="headerlink" href="#c-standard-library-converters-in-pyne-stlconverters" title="Permalink to this headline">¶</a></h3>
+<p>This module contains wrapper classes for commonly used containers in the C++
+standard library.   This module is largely used by PyNE under the covers, in
+Cython and elsewhere. However, these classes are of more general interest so
+feel free to use them in your own code as well.  Currently implemented are
+SetInt, SetStr, MapStrInt, MapIntStr, MapIntDouble, and MapIntComplex.</p>
+</div>
+<div class="section" id="nuclear-data-generation-in-pyne-dbgen">
+<h3>Nuclear Data Generation in <tt class="docutils literal"><span class="pre">pyne.dbgen</span></tt><a class="headerlink" href="#nuclear-data-generation-in-pyne-dbgen" title="Permalink to this headline">¶</a></h3>
+<p>Pyne provides an easy-to-use, repeatable aggregation utility for nuclear data.
+This command line utility is called <tt class="docutils literal"><span class="pre">nuc_data_make</span></tt> builds and installs an HDF5
+file named <tt class="docutils literal"><span class="pre">nuc_data.h5</span></tt> to the current PyNE install.  Nuclear data is gathered
+from a variety of sources, including the web and the data files for other programs
+installed on your system (such as MCNP).</p>
+</div>
+</div>
+<div class="section" id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
+<p>This release contains code written by the following people (in alphabetical
+order):</p>
+<ul class="simple">
+<li>Christopher Dembia</li>
+<li>Robert Flanagan</li>
+<li>Paul Romano</li>
+<li>Anthony Scopatz</li>
+<li>Paul Wilson</li>
+</ul>
+<p>Additionally, we would like to thank the following people for their
+inspiration, guidance, and testing:</p>
+<ul class="simple">
+<li>Katy Huff</li>
+<li>Seth Johnson</li>
+<li>Joshua Peterson</li>
+<li>Rachel Slaybaugh</li>
+<li>Nick Touran</li>
+<li>Morgan White</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PyNE 0.1 Release Notes</a><ul>
+<li><a class="reference internal" href="#new-features">New features</a><ul>
+<li><a class="reference internal" href="#nuclide-naming-in-pyne-nucname">Nuclide Naming in <tt class="docutils literal"><span class="pre">pyne.nucname</span></tt></a></li>
+<li><a class="reference internal" href="#basic-nuclear-data-via-pyne-data">Basic Nuclear Data via <tt class="docutils literal"><span class="pre">pyne.data</span></tt></a></li>
+<li><a class="reference internal" href="#material-class-in-pyne-material">Material Class in <tt class="docutils literal"><span class="pre">pyne.material</span></tt></a></li>
+<li><a class="reference internal" href="#cccc-formats-in-pyne-cccc">CCCC Formats in <tt class="docutils literal"><span class="pre">pyne.cccc</span></tt></a></li>
+<li><a class="reference internal" href="#ace-cross-sections-in-pyne-ace">ACE Cross Sections in <tt class="docutils literal"><span class="pre">pyne.ace</span></tt></a></li>
+<li><a class="reference internal" href="#cross-section-interface-via-pyne-xs">Cross Section Interface via <tt class="docutils literal"><span class="pre">pyne.xs</span></tt></a></li>
+<li><a class="reference internal" href="#origen-2-2-support-in-pyne-origen22">ORIGEN 2.2 Support in <tt class="docutils literal"><span class="pre">pyne.origen22</span></tt></a></li>
+<li><a class="reference internal" href="#serpent-support-in-pyne-serpent">Serpent Support in <tt class="docutils literal"><span class="pre">pyne.serpent</span></tt></a></li>
+<li><a class="reference internal" href="#c-standard-library-converters-in-pyne-stlconverters">C++ Standard Library Converters in <tt class="docutils literal"><span class="pre">pyne.stlconverters</span></tt></a></li>
+<li><a class="reference internal" href="#nuclear-data-generation-in-pyne-dbgen">Nuclear Data Generation in <tt class="docutils literal"><span class="pre">pyne.dbgen</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Previous Versions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../dev_team.html"
+                        title="next chapter">PyNE Development Team</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/previous/0.1_release_notes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../dev_team.html" title="PyNE Development Team"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Previous Versions"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &raquo;</li>
+
+          <li><a href="index.html" >Previous Versions</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2011-2012, The PyNE Development Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+    <!-- cloud_sptheme 1.3 -->
+  </body>
+</html>
