@@ -1,0 +1,962 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.njoy &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.njoy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Purpose:</span>
+
+<span class="sd">  Automatic generation of Njoy input data, including dragr data.</span>
+<span class="sd">  Generation of DRAGLIB and ACELIB.  Please see the tutorial at </span>
+<span class="sd">  http://www.polymtl.ca/merlin/downloads/IGE305.pdf for more information.</span>
+
+<span class="sd">Copyright:</span>
+
+<span class="sd">  This code was originally distirbuted under the LGPL license (below).</span>
+<span class="sd">  However, we have been given written permission from the author Alain</span>
+<span class="sd">  Herbert to redistribute it under PyNE&#39;s BSD license.</span>
+<span class="sd">  </span>
+<span class="sd">Original Copyright:</span>
+
+<span class="sd">  Copyright (C) 2003 Ecole Polytechnique de Montreal</span>
+<span class="sd">  This library is free software; you can redistribute it and/or</span>
+<span class="sd">  modify it under the terms of the GNU Lesser General Public</span>
+<span class="sd">  License as published by the Free Software Foundation; either</span>
+<span class="sd">  version 2.1 of the License, or (at your option) any later version</span>
+
+
+<span class="sd">.. moduleauthor:: A. Hebert, R. Karthikeyan</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the NJOY module is untested and considered experimental&quot;</span><span class="p">,</span> 
+              <span class="ne">RuntimeWarning</span><span class="p">)</span>
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PyNjoyError"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.PyNjoyError">[docs]</a><span class="k">class</span> <span class="nc">PyNjoyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception indicating an error in PyNjoy.&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Njoy99"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99">[docs]</a><span class="k">class</span> <span class="nc">Njoy99</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The NJOY99 wrapper class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iwt</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legendre</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legendregg</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efiss</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">branching_ng</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">branching_n2n</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oldlib</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">purr</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Njoy99.pendf"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.pendf">[docs]</a>    <span class="k">def</span> <span class="nf">pendf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eaf</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a pointwise PENDF file from the ENDF raw data using the</span>
+<span class="sd">        MODER, RECONR, BROADR, PURR (if dilutions present), and THERMR</span>
+<span class="sd">        modules. This is the starting point for all other datatype generations</span>
+<span class="sd">        including DRAGLIB, ACE, WIMSD, etc.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        eaf : int</span>
+<span class="sd">            If eaf is 1, simplified processing is performed to be compatible</span>
+<span class="sd">            with the EAF nuclear library.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --- make pendf for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; ---&quot;</span><span class="p">)</span>
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;file_data&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;evaluation file &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span> 
+                              <span class="s2">&quot; not found&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">textdil</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="n">nbdil</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nbdil</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;cannot have more than 10 dilutions&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">dil</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+                <span class="n">textdil</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">dil</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nbdil</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nbtmp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temperatures</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nbtmp</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;cannot have more than 10 temperatures&quot;</span><span class="p">)</span>
+        <span class="n">texttmp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperatures</span><span class="p">:</span>
+            <span class="n">texttmp</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tmp</span>
+
+        <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">221</span>
+        <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Hydrogen in H20</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">222</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="c1"># Hydrogen in ZrH</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">225</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
+                <span class="c1"># Hydrogen in D20</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">228</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">26</span><span class="p">:</span>
+                <span class="c1"># Beryllium metal</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">231</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+                <span class="c1"># Beryllium in BeO </span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">233</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">31</span><span class="p">:</span>
+                <span class="c1"># Graphite</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">229</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">37</span><span class="p">:</span>
+                <span class="c1"># Hydrogen in CH2</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">223</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">40</span><span class="p">:</span>
+                <span class="c1"># Hydrogen in C6H6 (benzine)</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">227</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">58</span><span class="p">:</span>
+                <span class="c1"># Zirconium in ZrH</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">235</span>
+            <span class="n">unitlaw</span> <span class="o">=</span> <span class="o">-</span><span class="mi">27</span>
+            <span class="n">matlaw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span>
+            <span class="n">typelaw</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span> <span class="o">+</span> <span class="s2">&quot; tape26&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unitlaw</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">matlaw</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">typelaw</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;textdil&quot;</span><span class="p">:</span> <span class="n">textdil</span><span class="p">,</span> <span class="s2">&quot;nbdil&quot;</span><span class="p">:</span> <span class="n">nbdil</span><span class="p">,</span>
+                              <span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">,</span> <span class="s2">&quot;nbtmp&quot;</span><span class="p">:</span> <span class="n">nbtmp</span><span class="p">,</span>  
+                              <span class="s2">&quot;unitlaw&quot;</span><span class="p">:</span> <span class="n">unitlaw</span><span class="p">,</span> <span class="s2">&quot;matlaw&quot;</span><span class="p">:</span> <span class="n">matlaw</span><span class="p">,</span>
+                              <span class="s2">&quot;typelaw&quot;</span><span class="p">:</span> <span class="n">typelaw</span><span class="p">,</span> <span class="s2">&quot;nbatoms&quot;</span><span class="p">:</span> <span class="n">nbatoms</span><span class="p">,</span>
+                              <span class="s2">&quot;elasopt&quot;</span><span class="p">:</span> <span class="n">elasopt</span><span class="p">,</span> <span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span>
+                              <span class="s2">&quot;matsab_inc&quot;</span> <span class="p">:</span> <span class="n">matsab_inc</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">26 -27</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="s2">&quot;reconr</span><span class="se">\n</span><span class="s2">-21 -22</span><span class="se">\n</span><span class="s2">&#39;pendf tape from </span><span class="si">%(evaluation_name)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2"> 1/</span><span class="se">\n</span><span class="s2">0.001  0.  0.005/</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;broadr</span><span class="se">\n</span><span class="s2">-21 -22 -23</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0.001/</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">purr</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
+                <span class="s2">&quot;purr</span><span class="se">\n</span><span class="s2">-21 -23 -24</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(nbdil)d</span><span class="s2"> 20 32/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
+                <span class="s2">&quot;unresr</span><span class="se">\n</span><span class="s2">-21 -23 -24</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(nbdil)d</span><span class="s2"> 1/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
+                <span class="s2">&quot;thermr</span><span class="se">\n</span><span class="s2">0 -24 -35</span><span class="se">\n</span><span class="s2">0 </span><span class="si">%(mat)d</span><span class="s2"> 16 </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(typelaw)d</span><span class="s2"> 0 &quot;</span>
+                <span class="s2">&quot;</span><span class="si">%(nbatoms)d</span><span class="s2"> 221 0</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0.001 4.0</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
+                    <span class="s2">&quot;thermr</span><span class="se">\n</span><span class="si">%(unitlaw)d</span><span class="s2"> -23 -35</span><span class="se">\n</span><span class="si">%(matlaw)d</span><span class="s2"> </span><span class="si">%(mat)d</span><span class="s2"> 16 &quot;</span>
+                    <span class="s2">&quot;</span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(typelaw)d</span><span class="s2"> </span><span class="si">%(elasopt)d</span><span class="s2"> </span><span class="si">%(nbatoms)d</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;</span><span class="si">%(matsab_inc)d</span><span class="s2"> 0/</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0.001 4.0</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">eaf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
+                    <span class="s2">&quot;thermr</span><span class="se">\n</span><span class="s2">0 -23 -35</span><span class="se">\n</span><span class="s2">0 </span><span class="si">%(mat)d</span><span class="s2"> 16 </span><span class="si">%(nbtmp)d</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;</span><span class="si">%(typelaw)d</span><span class="s2"> 0 </span><span class="si">%(nbatoms)d</span><span class="s2"> 221 0</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;0.001 4.0</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
+                    <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">-23 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span> <span class="s2">&quot; tape20&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape29 pendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv file_data file_data_pendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv output out_pendf_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;chmod 644 out_pendf_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Njoy99.gendf"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.gendf">[docs]</a>    <span class="k">def</span> <span class="nf">gendf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eaf</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a multigroup GENDF file using the MODER and GROUPR</span>
+<span class="sd">        modules. This requires that the pendf() method has already been called.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        eaf : int</span>
+<span class="sd">            If eaf is 1, simplified processing is performed to be compatible</span>
+<span class="sd">            with the EAF nuclear library.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --- make gendf for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; ---&quot;</span><span class="p">)</span>
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;file_data&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;evaluation file &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span>
+                              <span class="s2">&quot; not found&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">221</span>
+        <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">222</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">225</span>        
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">226</span>        
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">228</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">26</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">231</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">232</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">233</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">234</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">31</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">229</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">230</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">37</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">223</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">224</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">40</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">227</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">58</span><span class="p">:</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">235</span>             
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">236</span>             
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iwt</span><span class="p">:</span>
+            <span class="n">newiwt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iwt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">newiwt</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="n">newiwt</span> <span class="o">=</span> <span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">newiwt</span><span class="p">)</span>
+            <span class="n">nbdil</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nbdil</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;cannot have more than 10 dilutions&quot;</span><span class="p">)</span>
+            <span class="n">textdil</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">dil</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+                <span class="n">textdil</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">dil</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">newiwt</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">newiwt</span><span class="p">)</span>
+            <span class="n">nbdil</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">textdil</span> <span class="o">=</span> <span class="s2">&quot;1.0e10&quot;</span>
+        <span class="n">nbtmp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temperatures</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nbtmp</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;cannot have more than 10 temperatures&quot;</span><span class="p">)</span>
+        <span class="n">texttmp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperatures</span><span class="p">:</span>
+            <span class="n">texttmp</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tmp</span>
+        <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;textdil&quot;</span><span class="p">:</span> <span class="n">textdil</span><span class="p">,</span>
+                              <span class="s2">&quot;nbdil&quot;</span>  <span class="p">:</span> <span class="n">nbdil</span><span class="p">,</span>
+                              <span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">,</span>
+                              <span class="s2">&quot;nbtmp&quot;</span>  <span class="p">:</span> <span class="n">nbtmp</span><span class="p">,</span>
+                              <span class="s2">&quot;htime&quot;</span>  <span class="p">:</span> <span class="n">htime</span><span class="p">,</span>
+                              <span class="s2">&quot;newiwt&quot;</span> <span class="p">:</span> <span class="n">newiwt</span><span class="p">,</span>
+                              <span class="s2">&quot;matsab_inc&quot;</span> <span class="p">:</span> <span class="n">matsab_inc</span><span class="p">,</span>
+                              <span class="s2">&quot;matsab_coh&quot;</span> <span class="p">:</span> <span class="n">matsab_coh</span><span class="p">,</span>
+                              <span class="s2">&quot;autosup&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">autolib</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+
+        <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">29 -25</span><span class="se">\n</span><span class="s2">groupr&quot;</span>
+                     <span class="s2">&quot;-21 -25 0 -26</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nstr)d</span><span class="s2"> </span><span class="si">%(gstr)d</span><span class="s2"> </span><span class="si">%(newiwt)d</span><span class="s2"> &quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(legendre)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(nbdil)d</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%(autosup)f</span><span class="s2"> </span><span class="si">%(potential)f</span><span class="s2"> 20000 / &quot;</span>
+                          <span class="s2">&quot;Homog. Flux Calc.Param&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wght</span>
+        <span class="k">elif</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="o">-</span><span class="mi">4</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;0.2 0.0253 820.3e3 1.40e6 / iwt=4 parameters&quot;</span>
+        <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperatures</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">eaf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">matsab_coh</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">3 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                  <span class="s2">&quot;3 </span><span class="si">%(matsab_coh)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">3 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+            <span class="k">else</span><span class="p">:</span>
+              <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fission</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3 452 /</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fission</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3 455 /</span><span class="se">\n</span><span class="s2">5 455 /</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;16 / photon interaction matrices</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">eaf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">matsab_coh</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">6 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">6 &quot;</span>
+                                  <span class="s2">&quot;</span><span class="si">%(matsab_coh)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">6 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;0/</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-26 30</span><span class="se">\n</span><span class="s2">stop&quot;</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span> <span class="s2">&quot; tape20&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s pendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; tape29&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv file_data file_data_gendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape30 gendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv output out_gendf_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;chmod 644 out_gendf_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Njoy99.gamma"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.gamma">[docs]</a>    <span class="k">def</span> <span class="nf">gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate photo-atomic (gamma) group ENDF file using the MODER,</span>
+<span class="sd">        RECONR, and GAMINR modules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --- make gamma gendf for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span> <span class="o">+</span> <span class="s2">&quot; ---&quot;</span><span class="p">)</span>
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;file_data&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span><span class="p">)):</span>
+          <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;evaluation file &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span>
+                            <span class="s2">&quot; not found&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
+
+        <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">40 -41</span><span class="se">\n</span><span class="s2">reconr</span><span class="se">\n</span><span class="s2">-41 -42</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;&#39;pendf tape from </span><span class="si">%(evaluation_name)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(matgg)d</span><span class="s2"> 1/</span><span class="se">\n</span><span class="s2">0.002 /</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmatgg)s</span><span class="s2"> (gamma) from &quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">gaminr</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;-41 -42 0 -43</span><span class="se">\n</span><span class="si">%(matgg)d</span><span class="s2"> </span><span class="si">%(gstr)d</span><span class="s2"> 3 </span><span class="si">%(legendregg)d</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;&#39;</span><span class="si">%(hmatgg)s</span><span class="s2"> (gamma) from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at &quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">-1 /</span><span class="se">\n</span><span class="s2">0 /</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-43 44</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> 
+                     <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span> <span class="s2">&quot; tape40&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape44 gamma&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv file_data file_data_gamma&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv output out_gamma_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;chmod 644 out_gamma_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+          <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+              <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Njoy99.draglib"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.draglib">[docs]</a>    <span class="k">def</span> <span class="nf">draglib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a DRAGLIB file using the MODER and DRAGR modules and</span>
+<span class="sd">        add/update the new isotopic data in the DRAGLIB file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fp : int</span>
+<span class="sd">            If fp is 1, the scattering information are stored as diagonal</span>
+<span class="sd">            matrices in the DRAGLIB.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;file_data&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span><span class="p">)):</span>
+          <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;evaluation file &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span>
+                            <span class="s2">&quot; not found&quot;</span><span class="p">)</span>
+        <span class="n">evaluation_name_base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oldlib</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv ../&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">oldlib</span> <span class="o">+</span> <span class="s2">&quot; draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;drag&quot;</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;drag&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span><span class="p">):</span>
+            <span class="n">iold</span> <span class="o">=</span> <span class="mi">29</span>
+            <span class="n">name1</span> <span class="o">=</span> <span class="s2">&quot;draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis.gz&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name1</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;cp draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span>
+                          <span class="s2">&quot; draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;gzip draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name2</span> <span class="o">=</span> <span class="s2">&quot;draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis2.gz&quot;</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;cp draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span>
+                          <span class="s2">&quot; draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis2&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;gzip draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis2&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name2</span><span class="p">):</span>
+                    <span class="n">len1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+                    <span class="n">len2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">name2</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+                    <span class="k">if</span> <span class="n">len2</span> <span class="o">&gt;</span> <span class="n">len1</span><span class="p">:</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">name2</span><span class="p">,</span> <span class="n">name1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name2</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot; tape29&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; append data for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; to existing draglib file&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iold</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; create a new draglib file for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span>
+                                  <span class="s2">&quot;iold&quot;</span> <span class="p">:</span> <span class="n">iold</span><span class="p">,</span>
+                                  <span class="s2">&quot;ss0&quot;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ss</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                  <span class="s2">&quot;ss1&quot;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ss</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                  <span class="s2">&quot;auto0&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">autolib</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                  <span class="s2">&quot;auto1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">autolib</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                  <span class="s2">&quot;auto2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">autolib</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                  <span class="s2">&quot;fp&quot;</span>   <span class="p">:</span> <span class="n">fp</span><span class="p">})</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">22 -23</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;dragr</span><span class="se">\n</span><span class="s2">-21 -23 -25 0 0 </span><span class="si">%(iold)d</span><span class="s2"> 30 </span><span class="si">%(fp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> 
+                         <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">iold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;&#39;draglib from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at &quot;</span>
+                              <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(hmat)s</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> (</span><span class="si">%(mat)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(ss0)E</span><span class="s2"> </span><span class="si">%(ss1)E</span><span class="s2"> /</span><span class="se">\n</span><span class="si">%(auto0)E</span><span class="s2"> </span><span class="si">%(auto1)E</span><span class="s2"> </span><span class="si">%(auto2)E</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;0/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span> <span class="s2">&quot;iold&quot;</span><span class="p">:</span> <span class="n">iold</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="p">})</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">dragr</span><span class="se">\n</span><span class="s2">-21 0 -25 0 0 &quot;</span>
+                         <span class="s2">&quot;</span><span class="si">%(iold)d</span><span class="s2"> 30 </span><span class="si">%(fp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">iold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;&#39;draglib from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                              <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(hmat)s</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> (</span><span class="si">%(mat)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;0.1 1.0E10 /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span> <span class="s2">&quot; tape20&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s pendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; tape22&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s gendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; tape24&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv file_data file_data_dendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="s2">&quot;tape30&quot;</span><span class="p">)</span> <span class="c1"># get the stats of the file</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="c1"># extract the file size in bytes from the stats list</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape30 draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape29 draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;draglib file for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; not created&quot;</span><span class="p">)</span>
+        <span class="n">file_in</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">file_out</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;out_draglib_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">line</span><span class="o">=</span><span class="n">file_in</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;???????????&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ind</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">efiss</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;self.efiss instance variable not set&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">ind</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">efiss</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">ind</span><span class="o">+</span><span class="mi">11</span><span class="p">:]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">efiss</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">branching_ng</span><span class="p">:</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39; ng &#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ind</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                  <span class="n">jnd</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">ind</span><span class="o">+</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39; 0.000 &#39;</span><span class="p">)</span>
+                  <span class="k">if</span> <span class="n">jnd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                      <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;unable to set the isomeric ng &quot;</span>
+                                        <span class="s2">&quot;branching ratio&quot;</span><span class="p">)</span>
+                  <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">ind</span><span class="o">+</span><span class="n">jnd</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%5.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">branching_ng</span> \
+                      <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">ind</span><span class="o">+</span><span class="n">jnd</span><span class="o">+</span><span class="mi">9</span><span class="p">:]</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">branching_ng</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">branching_n2n</span><span class="p">:</span>
+                <span class="n">ind</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39; n2n &#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ind</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">jnd</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">ind</span><span class="o">+</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39; 0.000 &#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">jnd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;unable to set the isomeric n2n &quot;</span>
+                                          <span class="s2">&quot;branching ratio&quot;</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">ind</span><span class="o">+</span><span class="n">jnd</span><span class="o">+</span><span class="mi">5</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%5.3f</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">branching_n2n</span> \
+                        <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">ind</span><span class="o">+</span><span class="n">jnd</span><span class="o">+</span><span class="mi">10</span><span class="p">:]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">branching_n2n</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">file_out</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">file_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">file_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;chmod 644 out_draglib_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;temp&#39;</span> <span class="ow">or</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Njoy99.matxs"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.matxs">[docs]</a>    <span class="k">def</span> <span class="nf">matxs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate an ASCII MATXS file using the MODER and MATXSR modules.&quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --- make matxs for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; ---&quot;</span><span class="p">)</span>
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;file_data&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">listGro</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">620</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
+                   <span class="mi">640</span><span class="p">,</span> <span class="mi">174</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">172</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">1968</span><span class="p">,</span> <span class="mi">315</span><span class="p">,</span> <span class="mi">172</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">281</span><span class="p">,</span> <span class="mi">349</span><span class="p">,</span> <span class="mi">89</span><span class="p">]</span>
+        <span class="n">listGro2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+        <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nbGro&quot;</span><span class="p">:</span> <span class="n">listGro</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nstr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                              <span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">matxsr</span><span class="se">\n</span><span class="s2">-25 0 28/</span><span class="se">\n</span><span class="s2">1 &#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
+                         <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> (</span><span class="si">%(mat)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;1 2 1 1</span><span class="se">\n</span><span class="s2">&#39;neutron library&#39;/</span><span class="se">\n</span><span class="s2">&#39;n&#39;</span><span class="se">\n</span><span class="si">%(nbGro)d</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;&#39;nscat&#39; &#39;ntherm&#39;/</span><span class="se">\n</span><span class="s2">1 1</span><span class="se">\n</span><span class="s2">1 1</span><span class="se">\n</span><span class="si">%(hmat)s</span><span class="s2"> </span><span class="si">%(mat)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nbGro2&quot;</span><span class="p">:</span> <span class="n">listGro2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]})</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">26 -27</span><span class="se">\n</span><span class="s2">matxsr</span><span class="se">\n</span><span class="s2">-25 -27 28/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;1 &#39;</span><span class="si">%(hmat)s</span><span class="s2"> coupled-set from </span><span class="si">%(evaluation_name)s</span><span class="s2"> &quot;</span>
+                         <span class="s2">&quot;(</span><span class="si">%(mat)d</span><span class="s2">+</span><span class="si">%(matgg)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">2 3 1 1</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;&#39;neutron-gamma library&#39;/</span><span class="se">\n</span><span class="s2">&#39;n&#39; &#39;g&#39;</span><span class="se">\n</span><span class="si">%(nbGro)d</span><span class="s2"> &quot;</span>
+                         <span class="s2">&quot;</span><span class="si">%(nbGro2)d</span><span class="se">\n</span><span class="s2">&#39;nscat&#39; &#39;ng&#39; &#39;gscat&#39; &#39;ntherm&#39;/</span><span class="se">\n</span><span class="s2">1 1 2 1</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;1 2 2 1</span><span class="se">\n</span><span class="si">%(hmat)s</span><span class="s2"> </span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(matgg)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> 
+                         <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s gamma&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span> <span class="o">+</span> <span class="s2">&quot; tape26&quot;</span><span class="p">)</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s gendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; tape24&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv file_data file_data_matxs&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape28 matxs&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv output out_matxs_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;chmod 644 out_matxs_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Njoy99.makefp"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.makefp">[docs]</a>    <span class="k">def</span> <span class="nf">makefp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eaf</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a PENDF, GENDF, and DRAGLIB file for a single fission</span>
+<span class="sd">        product.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        eaf : int</span>
+<span class="sd">            If eaf is 1, simplified processing is performed to be compatible</span>
+<span class="sd">            with the EAF nuclear library.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">keeplegendre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">legendre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legendre</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pendf</span><span class="p">(</span><span class="n">eaf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gendf</span><span class="p">(</span><span class="n">eaf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draglib</span><span class="p">(</span><span class="n">fp</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legendre</span> <span class="o">=</span> <span class="n">keeplegendre</span></div>
+
+<div class="viewcode-block" id="Njoy99.burnup"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.burnup">[docs]</a>    <span class="k">def</span> <span class="nf">burnup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process burnup data for the complete library. This requires a file</span>
+<span class="sd">        whose name starts with chain, e.g. chaincandu, that contains information</span>
+<span class="sd">        about the energy from all isotopes generated using single DRAGR</span>
+<span class="sd">        runs. The &#39;chain&#39; file is generated automatically.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;tempFile&quot;</span>
+        <span class="n">evaluation_name_base</span> <span class="o">=</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;drag&quot;</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;drag&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span><span class="p">):</span>
+            <span class="n">iold</span> <span class="o">=</span> <span class="mi">29</span>
+            <span class="n">name1</span> <span class="o">=</span> <span class="s2">&quot;draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis.gz&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name1</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;cp draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span>
+                          <span class="s2">&quot; draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;gzip draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name2</span> <span class="o">=</span> <span class="s2">&quot;draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis2.gz&quot;</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;cp draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span>
+                          <span class="s2">&quot; draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis2&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;gzip draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot;.bis2&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name2</span><span class="p">):</span>
+                    <span class="n">len1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+                    <span class="n">len2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">name2</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+                    <span class="k">if</span> <span class="n">len2</span> <span class="o">&gt;</span> <span class="n">len1</span><span class="p">:</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name1</span><span class="p">)</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">name2</span><span class="p">,</span> <span class="n">name1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name2</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span> <span class="o">+</span> <span class="s2">&quot; tape29&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iold</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;iold&quot;</span><span class="p">:</span> <span class="n">iold</span><span class="p">,</span> <span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
+        <span class="n">text_data</span> <span class="o">=</span> <span class="s2">&quot;dragr</span><span class="se">\n</span><span class="s2">0 0 0 23 24 </span><span class="si">%(iold)d</span><span class="s2"> 30/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+        <span class="k">if</span> <span class="n">iold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;&#39;draglib from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at &quot;</span>
+                        <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">yield_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fissionFile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">yield_file</span><span class="p">):</span>
+            <span class="n">tape23</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tape23&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">tape23</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;LIBRARY, DUMMY TAPE HEADER</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">yield_file</span><span class="p">):</span>
+                <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">yield_file</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+                <span class="n">tape23</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">tape23</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">tape23</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fissionFile</span> <span class="o">+</span> <span class="s2">&quot; tape23&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">decayFile</span> <span class="o">+</span> <span class="s2">&quot; tape24&quot;</span><span class="p">)</span>
+        <span class="n">chain_file_name</span> <span class="o">=</span> <span class="s1">&#39;chain&#39;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span>
+        <span class="n">list_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">chain_file_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_files</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Make the burnup chain file named </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chain_file_name</span><span class="p">))</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">mat_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">list_files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">11</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;out_draglib&#39;</span><span class="p">:</span>
+                    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="mi">41</span><span class="p">]</span> <span class="o">==</span> 
+                            <span class="s1">&#39; isotopic specification line for material&#39;</span><span class="p">):</span>
+                            <span class="n">mat</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">42</span><span class="p">:</span><span class="mi">49</span><span class="p">]</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                            <span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
+                            <span class="k">while</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39; -----&#39;</span><span class="p">:</span>
+                                <span class="n">info</span> <span class="o">=</span> <span class="n">info</span> <span class="o">+</span> <span class="n">line</span>
+                                <span class="n">line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                            <span class="n">data_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">mat_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                                <span class="n">mat_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">dictkeys</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">dictkeys</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">mat_dict</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">-</span> <span class="n">mat_dict</span><span class="p">[</span><span class="n">b</span><span class="p">])</span>
+            <span class="n">chain_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">chain_file_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dictkeys</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">pos</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">chain_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="n">pos</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">chain_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;end /</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">chain_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">chain_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Use existing burnup chain file named </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chain_file_name</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;cat file_data &quot;</span> <span class="o">+</span> <span class="n">chain_file_name</span> <span class="o">+</span> <span class="s2">&quot; &gt; tempFile&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape30 draglib&quot;</span> <span class="o">+</span> <span class="n">evaluation_name_base</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv output out_draglib_burnup&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;chmod 644 out_draglib_burnup&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tempFile file_data_burnup&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;temp&#39;</span> <span class="ow">or</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Njoy99.acer"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.Njoy99.acer">[docs]</a>    <span class="k">def</span> <span class="nf">acer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate ACE-format cross section libraries using the MODER, RECONR,</span>
+<span class="sd">        BROADR, PURR (if dilutions present), THERMR, and ACER modules.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mycwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">mynjoy</span> <span class="o">=</span> <span class="n">mycwd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execdir</span> <span class="o">+</span> <span class="s2">&quot;/xnjoy&lt;file_data&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;evaluation file &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span>
+                              <span class="s2">&quot; not found&quot;</span><span class="p">)</span>
+        <span class="n">texttmp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tempace</span><span class="p">:</span>
+            <span class="n">texttmp</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tmp</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">})</span>
+        <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">29 -25</span><span class="se">\n</span><span class="s2">acer</span><span class="se">\n</span><span class="s2">-21 -25 0 38 39</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;1 0 1 </span><span class="si">%(suff)f</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&#39;pendf tape from </span><span class="si">%(evaluation_name)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2">  </span><span class="si">%(texttmp)s</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">1 1/</span><span class="se">\n</span><span class="s2">0.001/</span><span class="se">\n</span><span class="s2">acer / &quot;</span>
+                     <span class="s2">&quot;Check ACE files</span><span class="se">\n</span><span class="s2">0 38 0 40 41</span><span class="se">\n</span><span class="s2">7 1 1 -1/</span><span class="se">\n</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> 
+                     <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
+            <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">221</span>
+            <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># H in H20</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">222</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="c1"># H in ZrH</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">225</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">226</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
+                <span class="c1"># D in D20</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">228</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">26</span><span class="p">:</span>
+                <span class="c1"># Beryllium metal</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">231</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">232</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+                <span class="c1"># Beryllium in BeO</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">233</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">234</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">31</span><span class="p">:</span>
+                <span class="c1"># C in Graphite</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">229</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">230</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">37</span><span class="p">:</span>
+                <span class="c1"># H in Polyethylene (CH2)</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">223</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">224</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">40</span><span class="p">:</span>
+                <span class="c1"># H in Benzine (C6H6)</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">227</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_mat</span> <span class="o">==</span> <span class="mi">58</span><span class="p">:</span>
+                <span class="c1"># Zirconium in ZrH</span>
+                <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">235</span>
+                <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">236</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;acer</span><span class="se">\n</span><span class="s2">-21 -25 0 48 49</span><span class="se">\n</span><span class="s2">2 0 1 </span><span class="si">%(suff)f</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;&#39;pendf tape from </span><span class="si">%(evaluation_name)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2">  </span><span class="si">%(texttmp)s</span><span class="s2"> </span><span class="si">%(scatName)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(za)d</span><span class="s2"> 0 0 /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(matsab_inc)d</span><span class="s2"> 16 </span><span class="si">%(matsab_coh)d</span><span class="s2"> </span><span class="si">%(elasopt)d</span><span class="s2"> &quot;</span>
+                          <span class="s2">&quot;</span><span class="si">%(nbatoms)d</span><span class="s2"> 4.0 0 0 /</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;acer / Check ACE files</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;0 48 0 50 51</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;7 1 1 -1/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;/</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_file</span> <span class="o">+</span> <span class="s2">&quot; tape20&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s pendf&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; tape29&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">mynjoy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;tape48&quot;</span><span class="p">):</span>
+            <span class="n">inp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tape48&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="n">outp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;acecandu&quot;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">outp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">inp1</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tape49&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="n">outp1</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;acexsdir&quot;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">inp1</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">outp1</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;tape38&quot;</span><span class="p">):</span>
+            <span class="n">inp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tape38&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="n">outp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;acecandu&quot;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">outp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">inp1</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tape39&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="n">outp1</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;acexsdir&quot;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">inp1</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">outp1</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; ace file for&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot;created&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mv tape38 &quot;</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirname</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> 
+                      <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempace</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">&quot;.ace&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PyNjoyError</span><span class="p">(</span><span class="s2">&quot;ace file for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmat</span> <span class="o">+</span> <span class="s2">&quot; not created&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">file_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tape&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">mycwd</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Spatialsolver Support – pyne.spatialsolver &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="spatialsolver-support-pyne-spatialsolver">
+<span id="pyne-spatialsolver"></span><h1>Spatialsolver Support &#8211; <code class="xref py py-mod docutils literal"><span class="pre">pyne.spatialsolver</span></code><a class="headerlink" href="#spatialsolver-support-pyne-spatialsolver" title="Permalink to this headline">¶</a></h1>
+<p>Spatialsolver is a pyne module that contains seven neutron transport equation solvers.  Each
+solver is its own unique nodal method.  The solvers included in this module are listed below.  The theory and methodology behind each
+can be found in the <a class="reference internal" href="../theorymanual/spatial_solvers.html#theorymanual-spatialsolver"><span class="std std-ref">theory documentation</span></a>.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><strong>AHOTN-LN</strong>: Arbitrarily higher order transport method of the nodal type
+linear-nodal method</li>
+<li><strong>AHOTN-LL</strong>:  Arbitrarily higher order transport method of the nodal type
+linear-linear method</li>
+<li><strong>AHOTN-NEFD</strong>: Arbitrarily higher order transport method of the nodal type
+that makes use of the unknown nodal flux moments (NEFD algorithm).</li>
+<li><strong>DGFEM-LD</strong>: The Discontinuous Galerkin Finite Element Method (DGFEM) with
+a linear discontinuous (LD) approximation for angular flux.</li>
+<li><strong>DGFEM-DENSE</strong>: The Discontinuous Galerkin Finite Element Method (DGFEM)
+that use Lagrange polynomials to create a function space in each  dimension.</li>
+<li><strong>DGFEM-LAGRANGE</strong>:   The Discontinuous Galerkin Finite Element Method (DGFEM)
+uses Lagrange polynomials to create a function space in each dimension.</li>
+<li><strong>SCTSTEP</strong>: SCT Step algorithm uses a step approximation in all cells that
+are intersected by lines and planes of non-smoothness.</li>
+</ol>
+</div></blockquote>
+<div class="section" id="spatialsolver-api">
+<h2>Spatialsolver API<a class="headerlink" href="#spatialsolver-api" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>As these are complicated solvers, they require a large amount of input data
+supplied by the user.  This information needs to be entered as a Python
+dictionary. Of the many key-pair values listed below, most are required, but
+some are optional.  The optional entries will be overridden by default values
+if not present/specified.</div></blockquote>
+</div>
+<div class="section" id="input-dictionary-entries">
+<h2>Input Dictionary Entries<a class="headerlink" href="#input-dictionary-entries" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>Input Dictionary Entry: Solver type (AHOTN, DGFEM or SCTSTEP)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;solver&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">ex</span><span class="p">:</span> <span class="s2">&quot;AHOTN&quot;</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">no</span> <span class="n">default</span>
+<span class="n">Note</span><span class="p">:</span>  <span class="n">The</span> <span class="n">three</span> <span class="n">supported</span> <span class="s2">&quot;solver&quot;</span><span class="n">s</span> <span class="n">are</span> <span class="n">the</span> <span class="n">following</span><span class="p">:</span>
+  <span class="mf">1.</span>  <span class="s2">&quot;AHOTN&quot;</span>
+  <span class="mf">2.</span>  <span class="s2">&quot;DGFEM&quot;</span>
+  <span class="mf">3.</span>  <span class="s2">&quot;SCTSTEP&quot;</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Spatial expansion order</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;solver_type&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">ex</span><span class="p">:</span> <span class="s2">&quot;LN&quot;</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="n">Note</span><span class="p">:</span> <span class="n">This</span> <span class="n">entry</span> <span class="ow">is</span> <span class="n">dependent</span> <span class="n">on</span> <span class="n">the</span> <span class="s2">&quot;solver&quot;</span> <span class="n">entry</span><span class="o">.</span>
+  <span class="n">For</span> <span class="n">AHOTN</span> <span class="n">solver</span><span class="p">,</span> <span class="n">there</span> <span class="n">exist</span> <span class="n">the</span> <span class="s2">&quot;LN&quot;</span><span class="p">,</span> <span class="s2">&quot;LL&quot;</span><span class="p">,</span> <span class="ow">and</span> <span class="s2">&quot;NEFD&quot;</span> <span class="n">solver</span> <span class="n">types</span>
+  <span class="n">For</span> <span class="n">the</span> <span class="n">DGFEM</span> <span class="n">solvers</span><span class="p">,</span> <span class="n">there</span> <span class="n">exist</span> <span class="n">the</span> <span class="s2">&quot;LD&quot;</span><span class="p">,</span> <span class="s2">&quot;DENSE&quot;</span><span class="p">,</span> <span class="ow">and</span> <span class="s2">&quot;LAGRANGE&quot;</span> <span class="n">solver</span> <span class="n">types</span>
+  <span class="n">For</span> <span class="n">the</span> <span class="n">SCTSTEP</span> <span class="n">solver</span><span class="p">,</span> <span class="n">the</span> <span class="s2">&quot;solver_type&quot;</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">used</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Spatial expansion order (lambda; ahot spatial order, 0, 1, or 2)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;spatial_order&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">default</span><span class="p">:</span> <span class="mi">1</span>
+
+<span class="n">The</span> <span class="n">Spatial</span> <span class="n">expansion</span> <span class="n">order</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">expansion</span> <span class="n">order</span> <span class="n">of</span> <span class="n">the</span> <span class="n">spatial</span> <span class="n">moment</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Angular quadrature order</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>key: &quot;quadrature_order&quot;
+type: Integer
+ex: 4
+default: 4
+
+The angular quadrature order is the number of angles to be used per octant.
+For N sets of angles, there will be (N * (N + 2) / 8) ordinates per octant.
+The quadrature order may only be an even number!
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Quadrature type:</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;quadrature_type&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">default</span><span class="p">:</span> <span class="mi">1</span>
+
+<span class="n">The</span> <span class="n">quadrature</span> <span class="nb">type</span> <span class="ow">is</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">quadrature</span> <span class="n">scheme</span> <span class="n">the</span> <span class="n">code</span> <span class="n">uses</span><span class="o">.</span>
+<span class="n">The</span> <span class="n">possibilities</span> <span class="n">are</span><span class="p">:</span>
+  <span class="mi">1</span> <span class="o">-</span> <span class="n">TWOTRAN</span>
+  <span class="mi">2</span> <span class="o">-</span> <span class="n">EQN</span>
+  <span class="mi">3</span> <span class="o">-</span> <span class="n">Read</span><span class="o">-</span><span class="ow">in</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Number of spatial nodes in x, y, and z directions (nx/ny/nz)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;nodes_xyz&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Number of energy groups (ng)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;num_groups&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Number of materials (nm)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;num_materials&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: x-size of cells (dx)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;x_cells_widths&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">double</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: y-size of cells (dy)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;y_cells_widths&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">double</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: z-size of cells (dz)</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;z_cells_widths&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">double</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: x start and end boundary conditions</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;x_boundry_conditions&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="s1">&#39;x_boundary_conditions&#39;</span> <span class="n">are</span> <span class="n">the</span> <span class="n">x</span> <span class="n">boundary</span> <span class="n">conditions</span> <span class="k">for</span> <span class="n">each</span> <span class="n">face</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cubic</span> <span class="n">mesh</span><span class="o">.</span>
+<span class="n">The</span> <span class="n">entries</span> <span class="n">are</span><span class="p">:</span>
+   <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span> <span class="n">starting</span> <span class="n">bc</span><span class="p">;</span> <span class="n">the</span> <span class="n">left</span>
+   <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span> <span class="n">ending</span> <span class="n">bc</span><span class="p">;</span> <span class="n">the</span> <span class="n">right</span>
+   <span class="n">The</span> <span class="n">following</span> <span class="n">are</span> <span class="n">supported</span> <span class="n">boundary</span> <span class="n">conditions</span><span class="p">:</span>
+     <span class="mi">0</span> <span class="o">-</span> <span class="n">vacuum</span>
+     <span class="mi">1</span> <span class="o">-</span> <span class="n">reflective</span>
+     <span class="mi">2</span> <span class="o">-</span> <span class="n">fixed</span> <span class="n">inflow</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: y start and end boundary conditions</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;y_boundry_conditions&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="s1">&#39;y_boundary_conditions&#39;</span> <span class="n">are</span> <span class="n">the</span> <span class="n">y</span> <span class="n">boundary</span> <span class="n">conditions</span> <span class="k">for</span> <span class="n">each</span> <span class="n">face</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cubic</span> <span class="n">mesh</span><span class="o">.</span>
+<span class="n">The</span> <span class="n">entries</span> <span class="n">are</span><span class="p">:</span>
+   <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="n">starting</span> <span class="n">bc</span><span class="p">;</span> <span class="n">the</span> <span class="n">front</span>
+   <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="n">ending</span> <span class="n">bc</span><span class="p">;</span> <span class="n">the</span> <span class="n">back</span>
+   <span class="n">The</span> <span class="n">following</span> <span class="n">are</span> <span class="n">supported</span> <span class="n">boundary</span> <span class="n">conditions</span><span class="p">:</span>
+     <span class="mi">0</span> <span class="o">-</span> <span class="n">vacuum</span>
+     <span class="mi">1</span> <span class="o">-</span> <span class="n">reflective</span>
+     <span class="mi">2</span> <span class="o">-</span> <span class="n">fixed</span> <span class="n">inflow</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: z start and end boundary conditions</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;z_boundry_conditions&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="s1">&#39;z_boundary_conditions&#39;</span> <span class="n">are</span> <span class="n">the</span> <span class="n">z</span> <span class="n">boundary</span> <span class="n">conditions</span> <span class="k">for</span> <span class="n">each</span> <span class="n">face</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cubic</span> <span class="n">mesh</span><span class="o">.</span>
+<span class="n">The</span> <span class="n">entries</span> <span class="n">are</span><span class="p">:</span>
+   <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span> <span class="n">starting</span> <span class="n">bc</span><span class="p">;</span> <span class="n">the</span> <span class="n">bottom</span>
+   <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span> <span class="n">ending</span> <span class="n">bc</span><span class="p">;</span> <span class="n">the</span> <span class="n">top</span>
+   <span class="n">The</span> <span class="n">following</span> <span class="n">are</span> <span class="n">supported</span> <span class="n">boundary</span> <span class="n">conditions</span><span class="p">:</span>
+     <span class="mi">0</span> <span class="o">-</span> <span class="n">vacuum</span>
+     <span class="mi">1</span> <span class="o">-</span> <span class="n">reflective</span>
+     <span class="mi">2</span> <span class="o">-</span> <span class="n">fixed</span> <span class="n">inflow</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Material info</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;material_id&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span> <span class="mi">3</span> <span class="n">dimensional</span> <span class="n">array</span>
+<span class="n">ex</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">]</span>
+      <span class="p">[</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">]</span>
+      <span class="p">[</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span> <span class="p">]</span> <span class="p">]</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">Dimensions</span> <span class="n">must</span> <span class="n">match</span> <span class="n">cells</span> <span class="n">such</span> <span class="n">that</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">one</span> <span class="n">material</span> <span class="n">number</span>
+      <span class="ow">in</span> <span class="n">each</span> <span class="n">spatial</span> <span class="n">cell</span><span class="o">.</span> <span class="n">The</span> <span class="n">cells</span> <span class="n">are</span> <span class="n">ordered</span> <span class="k">as</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: &#8220;quadrature_file&#8221; [optional; only needed for quadrature type 2]</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;quad_file&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">ex</span><span class="p">:</span> <span class="s1">&#39;quad_file&#39;</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">See</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">formatting</span> <span class="n">notes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Quadrature</span> <span class="n">File</span> <span class="n">Formatting</span> <span class="n">section</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: cross section info file name</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;xs_file&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">default</span><span class="p">:</span> <span class="s1">&#39;xs_file&#39;</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">See</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">formatting</span> <span class="n">notes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Cross</span> <span class="n">Section</span> <span class="n">File</span> <span class="n">Formatting</span> <span class="n">section</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: source file name</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;source_input_file&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">default</span><span class="p">:</span> <span class="s1">&#39;src.dat&#39;</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">See</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">formatting</span> <span class="n">notes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Source</span> <span class="n">File</span> <span class="n">Formatting</span> <span class="n">section</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: boundary condition file name [optional]</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;bc_input_file&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">default</span><span class="p">:</span> <span class="n">No</span> <span class="n">default</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">See</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">formatting</span> <span class="n">notes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Boundry</span> <span class="n">Condition</span> <span class="n">File</span> <span class="n">Formatting</span> <span class="n">section</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: output file name [optional]</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;flux_output_file&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+<span class="n">default</span><span class="p">:</span> <span class="s1">&#39;flux.out&#39;</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">See</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">formatting</span> <span class="n">notes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Flux</span> <span class="n">Output</span> <span class="p">(</span><span class="mf">5.</span><span class="p">)</span> <span class="n">File</span> <span class="n">Formatting</span> <span class="n">section</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Convergence Criterion</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;convergence_criterion&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="nb">float</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mf">1.e-5</span>
+<span class="n">default</span><span class="p">:</span> <span class="mf">1.e-5</span>
+<span class="n">The</span> <span class="n">solution</span> <span class="ow">is</span> <span class="n">considered</span> <span class="n">converged</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">calculation</span> <span class="n">completes</span> <span class="n">when</span> <span class="n">the</span> <span class="n">flux</span>
+<span class="ow">in</span> <span class="n">each</span> <span class="n">cell</span> <span class="n">at</span> <span class="n">the</span> <span class="n">current</span> <span class="n">iteration</span> <span class="ow">is</span> <span class="n">within</span> <span class="s2">&quot;convergence_criterion&quot;</span> <span class="n">of</span> <span class="n">the</span>
+<span class="n">previous</span> <span class="n">iterate</span><span class="o">.</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">generally</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">difference</span><span class="p">,</span> <span class="n">but</span> <span class="ow">in</span> <span class="n">cases</span> <span class="n">of</span>
+<span class="n">very</span> <span class="n">small</span> <span class="n">flux</span> <span class="n">values</span> <span class="n">the</span> <span class="n">absolute</span> <span class="n">difference</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">instead</span> <span class="p">(</span><span class="n">see</span> <span class="n">the</span>
+<span class="n">Convergence</span> <span class="n">Tolerance</span> <span class="n">entry</span> <span class="n">below</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Tolerance</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;converge_tolerance&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="nb">float</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mf">1.e-10</span>
+<span class="n">default</span><span class="p">:</span> <span class="mf">1.e-10</span>
+<span class="n">Converge</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">tolerance</span> <span class="n">that</span> <span class="n">determines</span> <span class="n">how</span> <span class="n">the</span> <span class="n">difference</span> <span class="n">between</span>
+<span class="n">flux</span> <span class="n">iterates</span> <span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="n">that</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">determine</span> <span class="n">convergence</span> <span class="n">will</span> <span class="n">be</span> <span class="n">calculated</span><span class="o">.</span>
+<span class="n">df</span> <span class="ow">is</span> <span class="n">calculated</span> <span class="k">as</span> <span class="n">follows</span><span class="p">:</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="n">current</span> <span class="n">flux</span> <span class="n">value</span>
+  <span class="n">ct</span> <span class="o">=</span> <span class="n">convergence</span> <span class="n">tolerance</span> <span class="p">(</span><span class="n">value</span> <span class="k">for</span> <span class="n">this</span> <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;converge_tolerance&quot;</span><span class="p">)</span>
+  <span class="n">f1</span> <span class="o">=</span> <span class="n">flux</span> <span class="n">value</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">previous</span> <span class="n">iteration</span>
+  <span class="n">If</span> <span class="n">f1</span> <span class="o">&gt;</span> <span class="n">ct</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">absolute</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">f1</span><span class="p">)</span> <span class="o">/</span> <span class="n">f1</span>
+  <span class="n">Else</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">absolute</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">f1</span><span class="p">)</span>
+<span class="n">The</span> <span class="n">idea</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">absolute</span> <span class="n">difference</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">difference</span>
+<span class="n">between</span> <span class="n">iterates</span> <span class="n">when</span> <span class="n">the</span> <span class="n">flux</span> <span class="ow">is</span> <span class="n">very</span> <span class="n">small</span> <span class="n">to</span> <span class="n">help</span> <span class="n">avoid</span> <span class="n">rounding</span> <span class="n">error</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Maximum Iterations</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;max_iterations&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mi">10000</span>
+<span class="n">default</span><span class="p">:</span> <span class="mi">10000</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">If</span> <span class="n">this</span> <span class="n">number</span> <span class="n">of</span> <span class="n">iterations</span> <span class="ow">is</span> <span class="n">reached</span> <span class="n">before</span> <span class="n">the</span> <span class="n">convergence</span> <span class="n">criterion</span>
+      <span class="ow">is</span> <span class="n">satisfied</span><span class="p">,</span> <span class="n">the</span> <span class="n">calculation</span> <span class="n">will</span> <span class="n">terminate</span> <span class="ow">and</span> <span class="n">report</span> <span class="n">the</span> <span class="n">current</span> <span class="n">flux</span>
+      <span class="n">estimate</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Input Dictionary Entry: Moments Converged</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;moments_converged&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="nb">int</span>
+<span class="n">ex</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">default</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">Moments</span> <span class="n">converged</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">moments</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span> <span class="n">converged</span> <span class="n">upon</span> <span class="k">for</span> <span class="n">each</span> <span class="n">quadrature</span> <span class="ow">in</span> <span class="n">the</span>
+<span class="n">solution</span> <span class="n">space</span><span class="o">.</span>  <span class="n">Value</span> <span class="k">for</span> <span class="n">moments</span> <span class="n">converged</span> <span class="n">must</span> <span class="n">be</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">spatial_order_in</span><span class="p">]</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="output-dictionary-entries">
+<h2>Output Dictionary Entries<a class="headerlink" href="#output-dictionary-entries" title="Permalink to this headline">¶</a></h2>
+<p>When run, the solvers return a dictionary of useful solution data.  It contains the following key-pair entries:</p>
+<p><strong>Output Dictionary Entry: Flux output array</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span>  <span class="s2">&quot;flux&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Double</span> <span class="n">Array</span> <span class="n">of</span> <span class="mi">3</span> <span class="n">dimensions</span>
+<span class="nb">format</span><span class="p">:</span> <span class="n">Flux</span> <span class="n">output</span> <span class="n">array</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">following</span> <span class="nb">format</span><span class="p">:</span>
+<span class="n">Each</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">array</span> <span class="n">has</span> <span class="n">a</span> <span class="n">scalar</span> <span class="n">flux</span><span class="p">,</span> <span class="n">the</span> <span class="n">integral</span> <span class="n">of</span> <span class="n">the</span> <span class="n">angular</span>
+<span class="n">flux</span> <span class="n">over</span> <span class="nb">all</span> <span class="n">angles</span> <span class="ow">in</span> <span class="n">that</span> <span class="n">cell</span><span class="o">.</span>   <span class="n">The</span> <span class="n">first</span> <span class="n">index</span> <span class="n">refers</span> <span class="n">to</span> <span class="n">the</span>
+<span class="n">plane</span> <span class="n">on</span> <span class="n">the</span> <span class="n">z</span> <span class="n">axis</span><span class="p">,</span> <span class="n">beginning</span> <span class="n">at</span> <span class="mi">0</span> <span class="k">with</span> <span class="n">the</span> <span class="n">lowest</span> <span class="n">plane</span><span class="p">,</span> <span class="ow">and</span> <span class="n">moving</span>
+<span class="n">upwards</span> <span class="n">to</span> <span class="n">the</span> <span class="n">highest</span> <span class="n">plane</span> <span class="n">on</span> <span class="n">the</span> <span class="n">mesh</span><span class="o">.</span>  <span class="n">The</span> <span class="n">second</span> <span class="n">index</span> <span class="ow">is</span> <span class="n">the</span>
+<span class="n">row</span> <span class="n">on</span> <span class="n">the</span> <span class="n">z</span> <span class="n">plane</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">third</span> <span class="n">index</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">row</span><span class="o">.</span>
+
+<span class="nb">format</span> <span class="n">examples</span><span class="p">:</span> <span class="n">If</span> <span class="n">you</span> <span class="n">had</span> <span class="n">a</span> <span class="n">mesh</span> <span class="k">with</span> <span class="mi">4</span> <span class="n">by</span> <span class="mi">4</span> <span class="n">by</span> <span class="mi">4</span> <span class="n">cells</span> <span class="n">extending</span>
+<span class="ow">in</span> <span class="n">the</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">and</span> <span class="n">z</span> <span class="n">directions</span><span class="p">,</span> <span class="n">then</span> <span class="n">to</span> <span class="n">get</span> <span class="n">the</span> <span class="n">following</span> <span class="n">flux</span> <span class="n">values</span><span class="p">,</span>
+<span class="n">you</span> <span class="n">would</span> <span class="n">use</span> <span class="n">the</span> <span class="n">following</span> <span class="n">indices</span><span class="p">:</span>
+
+<span class="p">(</span><span class="mf">1.</span><span class="p">)</span> <span class="n">Scalar</span> <span class="n">flux</span> <span class="n">across</span> <span class="n">top</span> <span class="n">of</span> <span class="n">cell</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span>  <span class="n">flux_array</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+     <span class="n">Geometric</span> <span class="n">location</span> <span class="n">of</span> <span class="n">this</span> <span class="n">cell</span><span class="p">:</span>
+        <span class="n">Plane</span><span class="p">:</span> <span class="n">Bottom</span> <span class="n">of</span> <span class="n">cube</span>
+        <span class="n">Row</span><span class="p">:</span> <span class="n">First</span> <span class="n">y</span> <span class="n">row</span> <span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="n">of</span> <span class="n">cells</span>
+        <span class="n">Cell</span><span class="p">:</span> <span class="n">First</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">x</span> <span class="n">direction</span>
+<span class="p">(</span><span class="mf">2.</span><span class="p">)</span> <span class="n">Scalar</span> <span class="n">flux</span> <span class="n">across</span> <span class="n">top</span> <span class="n">of</span> <span class="n">cell</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span>  <span class="n">flux_array</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+     <span class="n">Geometric</span> <span class="n">location</span> <span class="n">of</span> <span class="n">this</span> <span class="n">cell</span><span class="p">:</span>
+        <span class="n">Plane</span><span class="p">:</span> <span class="n">Bottom</span> <span class="n">of</span> <span class="n">cube</span>
+        <span class="n">Row</span><span class="p">:</span> <span class="n">First</span> <span class="n">y</span> <span class="n">row</span> <span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="n">of</span> <span class="n">cells</span>
+        <span class="n">Cell</span><span class="p">:</span> <span class="n">Second</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">x</span> <span class="n">direction</span>
+<span class="p">(</span><span class="mf">3.</span><span class="p">)</span> <span class="n">Scalar</span> <span class="n">flux</span> <span class="n">across</span> <span class="n">top</span> <span class="n">of</span> <span class="n">cell</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span>  <span class="n">flux_array</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+     <span class="n">Geometric</span> <span class="n">location</span> <span class="n">of</span> <span class="n">this</span> <span class="n">cell</span><span class="p">:</span>
+        <span class="n">Plane</span><span class="p">:</span> <span class="n">Bottom</span> <span class="n">of</span> <span class="n">cube</span>
+        <span class="n">Row</span><span class="p">:</span> <span class="n">Second</span> <span class="n">y</span> <span class="n">row</span> <span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="n">of</span> <span class="n">cells</span>
+        <span class="n">Cell</span><span class="p">:</span> <span class="n">First</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">x</span> <span class="n">direction</span>
+<span class="p">(</span><span class="mf">4.</span><span class="p">)</span> <span class="n">Scalar</span> <span class="n">flux</span> <span class="n">across</span> <span class="n">top</span> <span class="n">of</span> <span class="n">cell</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span>  <span class="n">flux_array</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+     <span class="n">Geometric</span> <span class="n">location</span> <span class="n">of</span> <span class="n">this</span> <span class="n">cell</span><span class="p">:</span>
+        <span class="n">Plane</span><span class="p">:</span> <span class="n">Top</span> <span class="n">of</span> <span class="n">one</span> <span class="n">cell</span> <span class="n">up</span> <span class="kn">from</span> <span class="nn">bottom</span> <span class="n">of</span> <span class="n">cube</span>
+        <span class="n">Row</span><span class="p">:</span> <span class="n">First</span> <span class="n">y</span> <span class="n">row</span> <span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="n">of</span> <span class="n">cells</span>
+        <span class="n">Cell</span><span class="p">:</span> <span class="n">First</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">x</span> <span class="n">direction</span>
+</pre></div>
+</div>
+<p><strong>Output Dictionary Entry: Solver success code</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span>  <span class="s2">&quot;success&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">Integer</span>
+<span class="nb">format</span><span class="p">:</span> <span class="mi">1</span> <span class="n">means</span> <span class="n">yes</span><span class="p">,</span> <span class="n">the</span> <span class="n">solve</span> <span class="n">succeeded</span><span class="o">.</span>  <span class="mi">0</span> <span class="n">means</span> <span class="n">it</span> <span class="n">failed</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Output Dictionary Entry: Raw system time of solver start</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">time_start</span> <span class="n">provides</span> <span class="n">you</span> <span class="k">with</span> <span class="n">the</span> <span class="n">system</span> <span class="n">time</span> <span class="n">when</span> <span class="n">the</span> <span class="n">solver</span> <span class="n">began</span> <span class="n">running</span><span class="o">.</span>
+<span class="n">key</span><span class="p">:</span>  <span class="s2">&quot;time_start&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">double</span>
+<span class="nb">format</span><span class="p">:</span> <span class="n">system</span> <span class="n">time</span>
+</pre></div>
+</div>
+<p><strong>Output Dictionary Entry: Total run time</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">total_time</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">total</span> <span class="n">time</span> <span class="n">the</span> <span class="n">solver</span> <span class="n">took</span> <span class="n">to</span> <span class="n">solve</span><span class="o">.</span>
+<span class="n">key</span><span class="p">:</span>  <span class="s2">&quot;total_time&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">double</span>
+<span class="nb">format</span><span class="p">:</span> <span class="n">system</span> <span class="n">time</span>
+</pre></div>
+</div>
+<p><strong>Output Dictionary Entry: Total print time</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">print_time</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">total</span> <span class="n">time</span> <span class="n">the</span> <span class="n">solver</span> <span class="n">took</span> <span class="n">to</span> <span class="nb">print</span> <span class="n">results</span><span class="o">.</span>
+<span class="n">key</span><span class="p">:</span>  <span class="s2">&quot;print_time&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">double</span>
+<span class="nb">format</span><span class="p">:</span> <span class="n">system</span> <span class="n">time</span>
+</pre></div>
+</div>
+<p><strong>Output Dictionary Entry: Error Message</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">If</span> <span class="n">the</span> <span class="n">solver</span> <span class="n">fails</span><span class="p">,</span> <span class="n">error_msg</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">string</span> <span class="n">describing</span> <span class="n">why</span> <span class="n">the</span> <span class="n">solver</span> <span class="n">failed</span><span class="o">.</span>
+<span class="n">key</span><span class="p">:</span>  <span class="s2">&quot;error_msg&quot;</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
+</pre></div>
+</div>
+<p><strong>Output Dictionary Entries</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">output</span> <span class="n">dictionary</span> <span class="n">also</span> <span class="n">contains</span> <span class="nb">all</span> <span class="n">of</span> <span class="n">the</span> <span class="n">relevant</span> <span class="nb">input</span> <span class="n">values</span> <span class="n">found</span> <span class="ow">in</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">dictionary</span><span class="o">.</span>  <span class="n">If</span> <span class="n">one</span>
+<span class="n">of</span> <span class="n">the</span> <span class="n">optional</span> <span class="nb">input</span> <span class="n">entries</span> <span class="n">was</span> <span class="ow">not</span> <span class="n">present</span><span class="p">,</span> <span class="n">the</span> <span class="n">default</span> <span class="n">key</span><span class="o">-</span><span class="n">pair</span> <span class="n">value</span> <span class="n">will</span> <span class="n">be</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">new</span> <span class="n">output</span>
+<span class="n">dictionary</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h3>::<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="source-file-formatting">
+<h3>Source File Formatting<a class="headerlink" href="#source-file-formatting" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>The spatial solver dictionary requires multiple input binary source files.  The required files are the following:</dt>
+<dd><ol class="first last arabic simple">
+<li>XS file</li>
+<li>Source input file</li>
+<li>BC input file</li>
+<li>Quad file (optional)</li>
+</ol>
+</dd>
+</dl>
+<p>Here is a brief description of how each should be (or is) formatted.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>(1.) XS file:</dt>
+<dd><p class="first">The xs file contains information about the cross sections for materials used.  Each material should be assigned an ID,
+and the cross section data should be in the following format.  It should be saved as either an extensionless or .txt file.</p>
+<blockquote class="last">
+<div><p>! Cross section file</p>
+<blockquote>
+<div><p>! Material # 1</p>
+<p>! Group #1</p>
+<p>1.1          ! Total XS</p>
+<p>0.2         ! Scattering matrix</p>
+<p>! Material 2</p>
+<p>. . .</p>
+<p>! End Cross section file</p>
+</div></blockquote>
+</div></blockquote>
+</dd>
+<dt>(2.) Source file:</dt>
+<dd><p class="first">The source file is a file containing source information for each cell.  The formatting is dependant on the solver
+you select.</p>
+<p>For the AHOTN and DGFEM solvers, the source file should be formatted as following.
+There should be ng * nx * ny * nz * lambda * lambda * lambda source entries present.
+We will refer to the index of each source value as (ng, nx, ny, nz, lambda_x, lambda_y, lambda_z).
+The source entries should be in the following order:</p>
+<blockquote>
+<div><p>(1,1,1,1,1,1,1)</p>
+<p>(1,1,1,1,1,1,2)</p>
+<p>(1,1,1,1,1,1,.)</p>
+<p>(1,1,1,1,1,2,1)</p>
+<p>(1,1,1,1,1,2,2)</p>
+<p>(1,1,1,1,1,2,.)</p>
+<p>(1,1,1,1,1,.,.)</p>
+<p>(1,1,1,1,2,1,1)</p>
+<p>(1,1,1,1,2,1,2)</p>
+<p>(1,1,1,1,2,1,.)</p>
+<p>(1,1,1,1,2,2,1)</p>
+<p>(1,1,1,1,2,2,2)</p>
+<p>(1,1,1,1,2,2,.)</p>
+<p>(1,1,1,1,2,.,.)</p>
+<p>(1,1,1,1,.,.,.)</p>
+<p>(1,1,1,2,1,1,1)</p>
+<p>(1,1,1,2,1,1,2)</p>
+<p>(1,1,1,2,1,1,.)</p>
+<p>(1,1,1,2,1,2,1)</p>
+<p>(1,1,1,2,1,2,2)</p>
+<p>(1,1,1,2,1,2,.)</p>
+<p>(1,1,1,2,1,.,.)</p>
+<p>(1,1,1,2,2,1,1)</p>
+<p>(1,1,1,2,2,1,2)</p>
+<p>(1,1,1,2,2,1,.)</p>
+<p>(1,1,1,2,2,2,1)</p>
+<p>(1,1,1,2,2,2,2)</p>
+<p>(1,1,1,2,2,2,.)</p>
+<p>(1,1,1,2,2,.,.)</p>
+<p>(1,1,1,.,.,.,.)</p>
+<p>...</p>
+<p>(1,1,.,.,.,.,.)</p>
+<p>...</p>
+<p>(1,.,.,.,.,.,.)</p>
+<p>...</p>
+<p>(.,.,.,.,.,.,.)</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>When being read in, they will be iterated over by the following loop:</dt>
+<dd><dl class="first last docutils">
+<dt>DO g=1,ng</dt>
+<dd><dl class="first last docutils">
+<dt>DO ix=1,nx</dt>
+<dd><dl class="first last docutils">
+<dt>DO iy=1,ny</dt>
+<dd><dl class="first last docutils">
+<dt>DO iz=1,nz</dt>
+<dd><dl class="first last docutils">
+<dt>DO jx=0,lambda</dt>
+<dd><dl class="first last docutils">
+<dt>DO jy=0,lambda</dt>
+<dd><dl class="first last docutils">
+<dt>DO jz=0,lambda</dt>
+<dd>READ(12) s(jx,jy,jz,ix,iy,iz,g)</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>For the SCT STEP solver, the source file should be formatted as following.
+There should be ng * nx * ny * nz source entries present.
+We will refer to the index of each source value as (ng, nx, ny, nz).
+The source entries should be in the following order:</p>
+<blockquote>
+<div><p>(1,1,1,1)</p>
+<p>(1,1,1,2)</p>
+<p>(1,1,1,.)</p>
+<p>(1,1,2,1)</p>
+<p>(1,1,2,2)</p>
+<p>(1,1,2,.)</p>
+<p>(1,1,.,.)</p>
+<p>(1,2,1,1)</p>
+<p>(1,2,1,2)</p>
+<p>(1,2,1,.)</p>
+<p>(1,2,2,1)</p>
+<p>(1,2,2,2)</p>
+<p>(1,2,2,.)</p>
+<p>(1,2,.,.)</p>
+<p>(1,.,.,.)</p>
+<p>(2,1,1,1)</p>
+<p>(2,1,1,2)</p>
+<p>(2,1,1,.)</p>
+<p>(2,1,2,1)</p>
+<p>(2,1,2,2)</p>
+<p>(2,1,2,.)</p>
+<p>(2,1,.,.)</p>
+<p>(2,2,1,1)</p>
+<p>(2,2,1,2)</p>
+<p>(2,2,1,.)</p>
+<p>(2,2,2,1)</p>
+<p>(2,2,2,2)</p>
+<p>(2,2,2,.)</p>
+<p>(2,2,.,.)</p>
+<p>(.,.,.,.)</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>When being read in, they will be iterated over by the following loop:</dt>
+<dd><dl class="first last docutils">
+<dt>DO g=1,ng</dt>
+<dd><dl class="first last docutils">
+<dt>DO ix=1,nx</dt>
+<dd><dl class="first last docutils">
+<dt>DO iy=1,ny</dt>
+<dd><dl class="first last docutils">
+<dt>DO iz=1,nz</dt>
+<dd>READ(12) s(ix,iy,iz,g,1,1,1)</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>(3.) Boundary Condition file (only needed if one of the boundary conditions specified above is 2):</dt>
+<dd>The boundary condition file contains information about the incoming scalar flux on each face of each cell.</dd>
+<dt>(4.) Quadrature file (optional):</dt>
+<dd>If the quadrature type you selected was 2, a quadrature file is required for running the solver.  If the quadrature type is not 2, no quadrature file is necessary.</dd>
+<dt>(5.) Flux output file (output &amp; optional):</dt>
+<dd><p class="first">If a output file name was specified, the final flux will be printed to that file in the following format.  Note that all flux values will be printed as a fortran REAL, and the termination key will be 0.0d0 (to indicate the end of the flux info)</p>
+<p>AHOTN Solvers:  Unformatted file, with all mesh scalar flux values in the following order:</p>
+<p>NOTE ORDERING: flux(ng,nx,ny,nz,jx,jy,jz)</p>
+<blockquote>
+<div><p>(0,0,0,0,0,0,0)</p>
+<p>(0,0,0,0,0,0,1)</p>
+<p>(0,0,0,0,0,1,0)</p>
+<p>(0,0,0,0,0,1,1)</p>
+<p>...</p>
+<p>(0,0,0,0,0,.,.)</p>
+<p>...</p>
+<p>(0,0,0,0,.,.,.)</p>
+<p>...</p>
+<p>(0,0,0,nz,.,.,.)</p>
+<p>...</p>
+<p>(0,0,0,.,.,.,.)</p>
+<p>...</p>
+<p>(0,0,ny,.,.,.,.)</p>
+<p>...</p>
+<p>(0,0,.,.,.,.,.)</p>
+<p>...</p>
+<p>(0,nz,.,.,.,.,.)</p>
+<p>...</p>
+<p>(0,.,.,.,.,.,.)</p>
+<p>...</p>
+<p>(ng,.,.,.,.,.,.)</p>
+<p>...</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>DGFEM Solvers: Unformatted file, with all mesh scalar flux values in the following order:</dt>
+<dd><p class="first">NOTE ORDERING: flux(ng,nx,ny,nz,spatial_order,spatial_order,spatial_order)</p>
+<blockquote class="last">
+<div><p>(0,0,0,0,0,0,0)</p>
+<p>(0,0,0,0,0,0,1)</p>
+<p>...</p>
+<p>(0,0,0,0,0,0,spatial_order)</p>
+<p>(0,0,0,0,0,1,0)</p>
+<p>(0,0,0,0,0,1,1)</p>
+<p>...</p>
+<p>(0,0,0,0,0,1,spatial_order)</p>
+<p>...</p>
+<p>(0,0,0,0,0,spatial_order,.)</p>
+<p>...</p>
+<p>(0,0,0,0,spatial_order,.,.)</p>
+<p>...</p>
+<p>(0,0,0,0,.,.,.)</p>
+<p>...</p>
+<p>(0,0,0,nz,.,.,.)</p>
+<p>...</p>
+<p>(0,0,0,.,.,.,.)</p>
+<p>...</p>
+<p>(0,0,ny,.,.,.,.)</p>
+<p>...</p>
+<p>(0,0,.,.,.,.,.)</p>
+<p>...</p>
+<p>(0,nz,.,.,.,.,.)</p>
+<p>...</p>
+<p>(0,.,.,.,.,.,.)</p>
+<p>...</p>
+<p>(ng,.,.,.,.,.,.)</p>
+<p>...</p>
+</div></blockquote>
+</dd>
+</dl>
+<p class="last">SCTSTEP Solvers: SCTSTEP Currently not supported.  Nothing will be printed to file (although file may still be created).</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">spatialsolver</span></code> package:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">spatialsolver</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Spatialsolver Support &#8211; <code class="docutils literal"><span class="pre">pyne.spatialsolver</span></code></a><ul>
+<li><a class="reference internal" href="#spatialsolver-api">Spatialsolver API</a></li>
+<li><a class="reference internal" href="#input-dictionary-entries">Input Dictionary Entries</a></li>
+<li><a class="reference internal" href="#output-dictionary-entries">Output Dictionary Entries</a><ul>
+<li><a class="reference internal" href="#id1">::</a></li>
+<li><a class="reference internal" href="#source-file-formatting">Source File Formatting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

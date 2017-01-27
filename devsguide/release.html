@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Release Instructions &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="release-instructions">
+<h1>Release Instructions<a class="headerlink" href="#release-instructions" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of this document is to act as a guideline and checklist for how
+to release the pyne code base.</p>
+<div class="section" id="release-candidates-branches">
+<h2>Release Candidates &amp; Branches<a class="headerlink" href="#release-candidates-branches" title="Permalink to this headline">¶</a></h2>
+<p>All releases should have a release candidate (&#8216;-rc1&#8217;) that comes out 2 - 5 days
+prior to the scheduled release.  During this time, no changes should occur to
+a special release branch (&#8216;vX.X.X-release&#8217;).</p>
+<p>The release branch is there so that development can continue on the
+develop branch while the release candidates (rc) are out and under review.
+This is because otherwise any new developments would have to wait until
+post-release to be merged into develop to prevent them from accidentally
+getting released early.</p>
+<p>As such, the &#8216;vX.X.X-release&#8217; branch should only exist while there are
+release candidates out.  They are akin to a temporary second level of staging
+to be used to keep master clean and safe.  As such, everything that is in this
+branch should also be part of develop.  Graphically,</p>
+<div class="figure align-center" id="id1">
+<img alt="../_images/release-1.svg" src="../_images/release-1.svg" /><p class="caption"><span class="caption-text"><strong>Figure 1:</strong> Branch hierarchy under release.</span></p>
+</div>
+<p>Every time a new release candidate comes out the vX.X.X-release should be
+tagged with the name &#8216;X.X.X-rcX&#8217;.  There should be a 2 - 5 day period of time
+in between release candidates.  When the full and final release happens, the
+&#8216;vX.X.X-release&#8217; branch is merged into master and then deleted.</p>
+<p>If you have a new fix that needs to be in the next release candidate, you should
+make a topical branch and then pull request it into the release branch.  After this
+has been accepted, the topical branch should be merged with develop as well.</p>
+<p>The release branch must be quiet and untouched for 2 - 5 days prior to the full
+release.</p>
+</div>
+<div class="section" id="checklist">
+<h2>Checklist<a class="headerlink" href="#checklist" title="Permalink to this headline">¶</a></h2>
+<p>When releasing pyne, make sure to do the following items in order:</p>
+<ol class="arabic simple">
+<li>Review <strong>ALL</strong> issues in the issue tracker, reassigning or closing them as needed.</li>
+<li>Ensure that all issues in this release&#8217;s milestone have been closed.  Moving issues
+to the next release&#8217;s milestone is a perfectly valid strategy for completing this
+milestone.</li>
+<li>Perform maintainence tasks for this project, see below.</li>
+<li>Write and commit the release notes.</li>
+<li>Review the current state of documentation and make approriate updates.</li>
+<li>Bump the version (in code, documentation, etc.) and commit the change.</li>
+<li>If this is a release candidate, tag the release branch with a name that matches
+that of the release:<ul>
+<li>If this is the first release candidate, create a release branch called
+&#8216;vX.X.X-release&#8217; off of develop.  Tag this branch with the name &#8216;X.X.X-rc1&#8217;.</li>
+<li>If this is the second or later release candidate, tag the release branch
+with the name &#8216;X.X.X-rcX&#8217;.</li>
+</ul>
+</li>
+<li>If this is the full and final release (and not a release candidate),
+merge the release branch into the master branch.  Next, tag the master branch
+with the name &#8216;X.X.X&#8217;.  Finally, delete the release branch.</li>
+<li>Push the tags upstream</li>
+<li>Update release information on the website.</li>
+</ol>
+</div>
+<div class="section" id="maintainence-tasks">
+<h2>Maintainence Tasks<a class="headerlink" href="#maintainence-tasks" title="Permalink to this headline">¶</a></h2>
+<p>PyNE may have associated maintenance tasks which may need to be performed at
+least as often as every minor release.  These are as follows (all commands are run
+from the root dir):</p>
+<p><strong>Recreate prebuilt nuclear data:</strong></p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ nuc_data_make --fetch-prebuilt False --make-open-only True -o prebuilt_nuc_data.h5
+</pre></div>
+</div>
+<p><strong>Set symbolic enrichment to 40 species:</strong></p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="s1">&#39;#include &quot;enrichment_symbolic40.cpp&quot;&#39;</span> &gt; cpp/enrichment_symbolic.cpp
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Release Instructions</a><ul>
+<li><a class="reference internal" href="#release-candidates-branches">Release Candidates &amp; Branches</a></li>
+<li><a class="reference internal" href="#checklist">Checklist</a></li>
+<li><a class="reference internal" href="#maintainence-tasks">Maintainence Tasks</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

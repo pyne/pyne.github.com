@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building Conda Binaries &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="building-conda-binaries">
+<h1>Building Conda Binaries<a class="headerlink" href="#building-conda-binaries" title="Permalink to this headline">¶</a></h1>
+<p>The basic strategy for building conda binaries is to use the recipe at
+<a class="reference external" href="https://github.com/conda/conda-recipes">https://github.com/conda/conda-recipes</a> to build pyne and change the yaml
+file to the desired branch/tag.</p>
+<p>Get the latest conda-recipes</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ git clone https://github.com/conda/conda-recipes.git
+$ <span class="nb">cd</span> conda-recipes
+</pre></div>
+</div>
+<p>Now edit the &#8220;url:&#8221; line and the version line to match the desired tag and
+version. After this build pyne, install pyne, run nuc_data_make and run the
+tests. In order to use the steps shown below you need jinja2, conda-build,
+binstar and nose installed.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ conda build pyne
+$ <span class="nv">pyneout</span><span class="o">=</span><span class="k">$(</span>conda build --output pyne<span class="k">)</span>
+$ conda install <span class="nv">$pyneout</span>
+$ nuc_data_make
+$ <span class="nb">cd</span> ..
+$ git clone https://github.com/pyne/pyne.git
+$ <span class="nb">cd</span> pyne/tests
+$ nosetests
+</pre></div>
+</div>
+<p>If all expected tests pass the binary should now be ready to upload to binstar.
+If you are uploading to your personal repo (a good idea so you can test on a
+clean VM before bricking the primary pyne binary) don&#8217;t specify a user.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ binstar upload <span class="nv">$pyneout</span>
+</pre></div>
+</div>
+<p>In order to upload to the primary pyne binary repo specify the user pyne (you
+need the proper priveleges to do this)</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ binstar upload -u pyne <span class="nv">$pyneout</span>
+</pre></div>
+</div>
+<p>You may need to add the &#8211;force option depending on if binstar has added support
+for multiple simultaneous versions (currently not available).</p>
+<p>The strategy is similar on windows but you need to:</p>
+<ol class="arabic simple">
+<li>Install your own copy of cmake</li>
+<li>Use mingw-get to get mingw32-make</li>
+<li>Add just mingw32-make to your path (Do not install gcc with mingw-get!)</li>
+<li>Use the pynewin branch from &#64;crbates <a class="reference external" href="https://github.com/crbates/pyne/tree/pynewin">https://github.com/crbates/pyne/tree/pynewin</a></li>
+<li>Download and install the hdf5 1.8.11 shared library version (VS9 or VS10
+32-bit)</li>
+<li>Add the hdf5 dll&#8217;s to your path</li>
+<li>Write a bld.bat script to build pyne and copy the necessary hdf5 libraries</li>
+<li>Edit the pyne meta.yaml file to include libpython and mingw and remove hdf5
+from both the build and run steps.</li>
+<li>build, test, and upload pyne</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

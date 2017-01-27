@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Integrating Fortran with PyNE &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="integrating-fortran-with-pyne">
+<span id="devsguide-fortran"></span><h1>Integrating Fortran with PyNE<a class="headerlink" href="#integrating-fortran-with-pyne" title="Permalink to this headline">¶</a></h1>
+<p>Using the f2py tool distributed under numpy, PyNE can now support development
+with fortran.  The Spatial Solver component of PyNE uses this in the manner
+outlined below:</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>F2py is a tool that can generate both python and c interfaces for fortran codes.  Because PyNE uses the CMAKE build system, all f2py interface building is done via CMAKE.  When the initial build process occurs, CMAKE:</dt>
+<dd><ol class="first last arabic simple">
+<li>Creates fortran objects for each of the required source files (as specified in the CMAKELISTS.TXT files)</li>
+<li>Wraps them with f2py, creating a shared object</li>
+<li>Links that shared object with the PyNE python interface</li>
+</ol>
+</dd>
+</dl>
+<div class="section" id="where-fortran-files-live">
+<h3>Where Fortran Files Live<a class="headerlink" href="#where-fortran-files-live" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>All fortran files currently live in the pyne/src folder.  For Spatial Solver, all files live in pyne/src/transport_spatial_methods.</li>
+</ul>
+</div>
+<div class="section" id="spatial-solver-specifics">
+<h3>Spatial Solver Specifics<a class="headerlink" href="#spatial-solver-specifics" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The Spatial Solver module has a fortran API, but it is not accessible through PyNE. The only
+accessible API is the wrapped and linked python interface that uses the fortran codes through
+f2py.  Pyne currently has no frameworks for a direct fortran API to be set up with.</li>
+</ul>
+</div>
+<div class="section" id="steps-for-wrapping-with-cmake">
+<h3>Steps for wrapping with CMAKE<a class="headerlink" href="#steps-for-wrapping-with-cmake" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">All fortran files, except for the one being wrapped, must be declared in a CMakeLists.txt file located in the fortran source directory???</p>
+</li>
+<li><p class="first">Following the file declaration, the file grouping must be linked.  The following is the linking for the spatial solver module:</p>
+<blockquote>
+<div><p># compile and link library</p>
+<p>add_library(ahot ${AHOT_SRCS})</p>
+<p>target_link_libraries(ahot blas lapack)</p>
+</div></blockquote>
+</li>
+<li><p class="first">F2py wrapping must then be done in pyne/pyne/CMakeLists.txt.  The spatial solver wrapping (and linking) is done as following:</p>
+</li>
+</ul>
+<p>add_custom_target(transport_spatial_methods ALL DEPENDS transport_spatial_methods${CMAKE_SHARED_LIBRARY_SUFFIX})</p>
+<p>add_custom_command(OUTPUT transport_spatial_methods${CMAKE_SHARED_LIBRARY_SUFFIX}</p>
+<blockquote>
+<div><p>COMMAND f2py -m transport_spatial_methods -I${PROJECT_BINARY_DIR}/src -L${PROJECT_BINARY_DIR}/src</p>
+<blockquote>
+<div><p>&#8211;f90flags=&#8221;-fdefault-real-8&#8221;</p>
+<p>-c ${PROJECT_SOURCE_DIR}/src/transport_spatial_methods/3d/main.f90</p>
+<p>-lpyne</p>
+<p>#-lpyne &#8211;debug-capi</p>
+</div></blockquote>
+<p>DEPENDS pyne</p>
+<p>)</p>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Integrating Fortran with PyNE</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#where-fortran-files-live">Where Fortran Files Live</a></li>
+<li><a class="reference internal" href="#spatial-solver-specifics">Spatial Solver Specifics</a></li>
+<li><a class="reference internal" href="#steps-for-wrapping-with-cmake">Steps for wrapping with CMAKE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

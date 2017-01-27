@@ -1,0 +1,855 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.alara &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.alara</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module contains functions relevant to the ALARA activation code and the Chebyshev Rational Approximation Method</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span><span class="p">,</span> <span class="n">iBase</span><span class="p">,</span> <span class="n">iMeshExtensions</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
+                  <span class="s2">&quot;Some aspects of the alara module may be incomplete.&quot;</span><span class="p">,</span>
+                  <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">MeshError</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">from_atom_frac</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.nucname</span> <span class="k">import</span> <span class="n">serpent</span><span class="p">,</span> <span class="n">alara</span><span class="p">,</span> <span class="n">znum</span><span class="p">,</span> <span class="n">anum</span>
+<span class="kn">from</span> <span class="nn">pyne.data</span> <span class="k">import</span> <span class="n">N_A</span><span class="p">,</span> <span class="n">decay_const</span><span class="p">,</span> <span class="n">decay_children</span><span class="p">,</span> <span class="n">branch_ratio</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.data_source</span> <span class="k">import</span> <span class="n">SimpleDataSource</span>
+
+
+<div class="viewcode-block" id="mesh_to_fluxin"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.mesh_to_fluxin">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_fluxin</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="n">flux_tag</span><span class="p">,</span> <span class="n">fluxin</span><span class="o">=</span><span class="s2">&quot;fluxin.out&quot;</span><span class="p">,</span>
+                   <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function creates an ALARA fluxin file from fluxes tagged on a PyNE</span>
+<span class="sd">    Mesh object. Fluxes are printed in the order of the flux_mesh.__iter__().</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flux_mesh : PyNE Mesh object</span>
+<span class="sd">        Contains the mesh with fluxes tagged on each volume element.</span>
+<span class="sd">    flux_tag : string</span>
+<span class="sd">        The name of the tag of the flux mesh. Flux values for different energy</span>
+<span class="sd">        groups are assumed to be represented as vector tags.</span>
+<span class="sd">    fluxin : string</span>
+<span class="sd">        The name of the ALARA fluxin file to be output.</span>
+<span class="sd">    reverse : bool</span>
+<span class="sd">        If true, fluxes will be printed in the reverse order as they appear in</span>
+<span class="sd">        the flux vector tagged on the mesh.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tag_flux</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">flux_tag</span><span class="p">)</span>
+
+    <span class="c1"># find number of e_groups</span>
+    <span class="n">e_groups</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">flux_tag</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span>
+        <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+                               <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">))[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">e_groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">e_groups</span><span class="p">)</span>
+    <span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">e_groups</span><span class="p">)</span>
+
+    <span class="c1"># Establish for loop bounds based on if forward or backward printing</span>
+    <span class="c1"># is requested</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">num_e_groups</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">num_e_groups</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">flux_mesh</span><span class="p">:</span>
+        <span class="c1"># print flux data to file</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">flux_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">tag_flux</span><span class="p">[</span><span class="n">ve</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{:.6E}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flux_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="c1"># fluxin formatting: create a new line after every 6th entry</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">6</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fluxin</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="photon_source_to_hdf5"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.photon_source_to_hdf5">[docs]</a><span class="k">def</span> <span class="nf">photon_source_to_hdf5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">chunkshape</span><span class="o">=</span><span class="p">(</span><span class="mi">10000</span><span class="p">,)):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a plaintext photon source file to an HDF5 version for</span>
+<span class="sd">    quick later use.</span>
+
+<span class="sd">    This function produces a single HDF5 file named &lt;filename&gt;.h5 containing the</span>
+<span class="sd">    table headings:</span>
+
+<span class="sd">        idx : int</span>
+<span class="sd">            The volume element index assuming the volume elements appear in xyz</span>
+<span class="sd">            order (z changing fastest) within the photon source file in the case of</span>
+<span class="sd">            a structured mesh or imesh.iterate() order for an unstructured mesh.</span>
+<span class="sd">        nuc : str</span>
+<span class="sd">            The nuclide name as it appears in the photon source file.</span>
+<span class="sd">        time : str</span>
+<span class="sd">            The decay time as it appears in the photon source file.</span>
+<span class="sd">        phtn_src : 1D array of floats</span>
+<span class="sd">            Contains the photon source density for each energy group.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The path to the file</span>
+<span class="sd">    chunkshape : tuple of int</span>
+<span class="sd">        A 1D tuple of the HDF5 chunkshape.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;idx&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;nuc&#39;</span><span class="p">,</span> <span class="s1">&#39;S6&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;S20&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;phtn_src&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">G</span><span class="p">),</span>
+        <span class="p">])</span>
+
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">complevel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">complib</span><span class="o">=</span><span class="s1">&#39;zlib&#39;</span><span class="p">)</span>
+    <span class="n">h5f</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+    <span class="n">tab</span> <span class="o">=</span> <span class="n">h5f</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">chunkshape</span><span class="o">=</span><span class="n">chunkshape</span><span class="p">)</span>
+
+    <span class="n">chunksize</span> <span class="o">=</span> <span class="n">chunkshape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">old</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Keep track of the idx by delimiting by the last TOTAL line in a</span>
+        <span class="c1"># volume element.</span>
+        <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;TOTAL&#39;</span> <span class="ow">and</span> <span class="n">old</span> <span class="o">==</span> <span class="s1">&#39;TOTAL&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">chunksize</span>
+        <span class="n">rows</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                   <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+        <span class="c1"># Save the nuclide in order to keep track of idx</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">chunksize</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">chunksize</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">tab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rows</span><span class="p">[:</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">h5f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="photon_source_hdf5_to_mesh"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.photon_source_hdf5_to_mesh">[docs]</a><span class="k">def</span> <span class="nf">photon_source_hdf5_to_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads in an hdf5 file produced by photon_source_to_hdf5</span>
+<span class="sd">    and tags the requested data to the mesh of a PyNE Mesh object. Any</span>
+<span class="sd">    combinations of nuclides and decay times are allowed. The photon source</span>
+<span class="sd">    file is assumed to be in mesh.__iter__() order</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : PyNE Mesh</span>
+<span class="sd">       The object containing the imesh instance to be tagged.</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The path of the hdf5 version of the photon source file.</span>
+<span class="sd">    tags: dict</span>
+<span class="sd">        A dictionary were the keys are tuples with two values. The first is a</span>
+<span class="sd">        string denoting an nuclide in any form that is understood by</span>
+<span class="sd">        pyne.nucname (e.g. &#39;1001&#39;, &#39;U-235&#39;, &#39;242Am&#39;) or &#39;TOTAL&#39; for all</span>
+<span class="sd">        nuclides. The second is a string denoting the decay time as it appears</span>
+<span class="sd">        in the file (e.g. &#39;shutdown&#39;, &#39;1 h&#39; &#39;3 d&#39;). The values of the</span>
+<span class="sd">        dictionary are the requested tag names for the combination of nuclide</span>
+<span class="sd">        and decay time. For example if one wanted tags for the photon source</span>
+<span class="sd">        densities from U235 at shutdown and from all nuclides at 1 hour, the</span>
+<span class="sd">        dictionary could be:</span>
+
+<span class="sd">        tags = {(&#39;U-235&#39;, &#39;shutdown&#39;) : &#39;tag1&#39;, (&#39;TOTAL&#39;, &#39;1 h&#39;) : &#39;tag2&#39;}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># find number of energy groups</span>
+    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
+        <span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">h5f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="c1"># create a dict of tag handles for all keys of the tags dict</span>
+    <span class="n">tag_handles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">tag_handles</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">num_e_groups</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># iterate through each requested nuclide/dectay time</span>
+    <span class="k">for</span> <span class="n">cond</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
+            <span class="c1"># Convert nuclide to the form found in the ALARA phtn_src</span>
+            <span class="c1"># file, which is similar to the Serpent form. Note this form is</span>
+            <span class="c1"># different from the ALARA input nuclide form found in nucname.</span>
+            <span class="k">if</span> <span class="n">cond</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;TOTAL&quot;</span><span class="p">:</span>
+                <span class="n">nuc</span> <span class="o">=</span> <span class="n">serpent</span><span class="p">(</span><span class="n">cond</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nuc</span> <span class="o">=</span> <span class="s2">&quot;TOTAL&quot;</span>
+            <span class="c1"># create of array of rows that match the nuclide/decay criteria</span>
+            <span class="n">matched_data</span> <span class="o">=</span> <span class="n">h5f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">read_where</span><span class="p">(</span>
+                <span class="s2">&quot;(nuc == &#39;</span><span class="si">{0}</span><span class="s2">&#39;) &amp; (time == &#39;</span><span class="si">{1}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">cond</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">matched_data</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">tag_handles</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="n">cond</span><span class="p">]][</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> <span class="n">matched_data</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tag_handles</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="n">cond</span><span class="p">]][</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_e_groups</span></div>
+
+<div class="viewcode-block" id="record_to_geom"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.record_to_geom">[docs]</a><span class="k">def</span> <span class="nf">record_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">cell_fracs</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">,</span> <span class="n">geom_file</span><span class="p">,</span> <span class="n">matlib_file</span><span class="p">,</span>
+                   <span class="n">sig_figs</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function preforms the same task as alara.mesh_to_geom, except the</span>
+<span class="sd">    geometry is on the basis of the stuctured array output of</span>
+<span class="sd">    dagmc.discretize_geom rather than a PyNE material object with materials.</span>
+<span class="sd">    This allows for more efficient ALARA runs by minimizing the number of</span>
+<span class="sd">    materials in the ALARA matlib. This is done by treating mixtures that are</span>
+<span class="sd">    equal up to &lt;sig_figs&gt; digits to be the same mixture within ALARA.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : PyNE Mesh object</span>
+<span class="sd">        The Mesh object for which the geometry is discretized.</span>
+<span class="sd">     cell_fracs : structured array</span>
+<span class="sd">        The output from dagmc.discretize_geom(). A sorted, one dimensional</span>
+<span class="sd">        array, each entry containing the following fields:</span>
+
+<span class="sd">            :idx: int</span>
+<span class="sd">                The volume element index.</span>
+<span class="sd">            :cell: int</span>
+<span class="sd">                The geometry cell number.</span>
+<span class="sd">            :vol_frac: float</span>
+<span class="sd">                The volume fraction of the cell withing the mesh ve.</span>
+<span class="sd">            :rel_error: float</span>
+<span class="sd">                The relative error associated with the volume fraction.</span>
+
+<span class="sd">     cell_mats : dict</span>
+<span class="sd">        Maps geometry cell numbers to PyNE Material objects. Each PyNE material</span>
+<span class="sd">        object must have &#39;name&#39; specified in Material.metadata.</span>
+<span class="sd">    geom_file : str</span>
+<span class="sd">        The name of the file to print the geometry and material blocks.</span>
+<span class="sd">    matlib_file : str</span>
+<span class="sd">        The name of the file to print the matlib.</span>
+<span class="sd">    sig_figs : int</span>
+<span class="sd">        The number of significant figures that two mixtures must have in common</span>
+<span class="sd">        to be treated as the same mixture within ALARA.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create geometry information header. Note that the shape of the geometry</span>
+    <span class="c1"># (rectangular) is actually inconsequential to the ALARA calculation so</span>
+    <span class="c1"># unstructured meshes are not adversely affected.</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="s1">&#39;geometry rectangular</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+    <span class="c1"># Create three strings in order to create all ALARA input blocks in a</span>
+    <span class="c1"># single mesh iteration.</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="s1">&#39;volume</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># volume input block</span>
+    <span class="n">mat_loading</span> <span class="o">=</span> <span class="s1">&#39;mat_loading</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># material loading input block</span>
+    <span class="n">mixture</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># mixture blocks</span>
+
+    <span class="n">unique_mixtures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
+        <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;    </span><span class="si">{0: 1.6E}</span><span class="s1">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ve</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="n">ve_mixture</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">[</span><span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">]:</span>
+            <span class="n">cell_mat</span> <span class="o">=</span> <span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">cell_mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">_is_void</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mat_void&#39;</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">ve_mixture</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sig_figs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ve_mixture</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sig_figs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ve_mixture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_mixtures</span><span class="p">:</span>
+            <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">)</span>
+            <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;mixture mix_</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                           <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;    material </span><span class="si">{0}</span><span class="s1"> 1 </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+            <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+        <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;    zone_</span><span class="si">{0}</span><span class="s1">    mix_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span>
+                        <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+
+    <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+    <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">geom_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geometry</span> <span class="o">+</span> <span class="n">volume</span> <span class="o">+</span> <span class="n">mat_loading</span> <span class="o">+</span> <span class="n">mixture</span><span class="p">)</span>
+
+    <span class="n">matlib</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># ALARA material library string</span>
+
+    <span class="n">printed_mats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">print_void</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">cell_mats</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">_is_void</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">print_void</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">printed_mats</span><span class="p">:</span>
+            <span class="n">printed_mats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">    </span><span class="si">{1: 1.6E}</span><span class="s1">    </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">density</span><span class="p">,</span>
+                                                         <span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">comp</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">mat</span><span class="o">.</span><span class="n">comp</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">    </span><span class="si">{1: 1.6E}</span><span class="s1">    </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alara</span><span class="p">(</span><span class="n">nuc</span><span class="p">),</span>
+                                                      <span class="n">comp</span><span class="o">*</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">znum</span><span class="p">(</span><span class="n">nuc</span><span class="p">))</span>
+            <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">if</span> <span class="n">print_void</span><span class="p">:</span>
+       <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;# void material</span><span class="se">\n</span><span class="s1">mat_void 0.0 1</span><span class="se">\n</span><span class="s1">he 1 2</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">matlib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">matlib</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">_is_void</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Private function for determining if a material name specifies void.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lname</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;vacuum&#39;</span> <span class="ow">in</span> <span class="n">lname</span> <span class="ow">or</span> <span class="s1">&#39;void&#39;</span> <span class="ow">in</span> <span class="n">lname</span> <span class="ow">or</span> <span class="s1">&#39;graveyard&#39;</span> <span class="ow">in</span> <span class="n">lname</span>
+
+<div class="viewcode-block" id="mesh_to_geom"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.mesh_to_geom">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">geom_file</span><span class="p">,</span> <span class="n">matlib_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads the materials of a PyNE mesh object and prints the</span>
+<span class="sd">    geometry and materials portion of an ALARA input file, as well as a</span>
+<span class="sd">    corresponding matlib file. If the mesh is structured, xyz ordering is used</span>
+<span class="sd">    (z changing fastest). If the mesh is unstructured iMesh.iterate order is</span>
+<span class="sd">    used.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : PyNE Mesh object</span>
+<span class="sd">        The Mesh object containing the materials to be printed.</span>
+<span class="sd">    geom_file : str</span>
+<span class="sd">        The name of the file to print the geometry and material blocks.</span>
+<span class="sd">    matlib_file : str</span>
+<span class="sd">        The name of the file to print the matlib.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create geometry information header. Note that the shape of the geometry</span>
+    <span class="c1"># (rectangular) is actually inconsequential to the ALARA calculation so</span>
+    <span class="c1"># unstructured meshes are not adversely affected.</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="s2">&quot;geometry rectangular</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Create three strings in order to create all ALARA input blocks in a</span>
+    <span class="c1"># single mesh iteration.</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="s2">&quot;volume</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="c1"># volume input block</span>
+    <span class="n">mat_loading</span> <span class="o">=</span> <span class="s2">&quot;mat_loading</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="c1"># material loading input block</span>
+    <span class="n">mixture</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># mixture blocks</span>
+    <span class="n">matlib</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># ALARA material library string</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
+        <span class="n">volume</span> <span class="o">+=</span> <span class="s2">&quot;    </span><span class="si">{0: 1.6E}</span><span class="s2">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ve</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s2">&quot;    zone_</span><span class="si">{0}</span><span class="s2">    mix_</span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">matlib</span> <span class="o">+=</span> <span class="s2">&quot;mat_</span><span class="si">{0}</span><span class="s2">    </span><span class="si">{1: 1.6E}</span><span class="s2">    </span><span class="si">{2}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">density</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                         <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">comp</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">mixture</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;mixture mix_</span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;    material mat_</span><span class="si">{0}</span><span class="s2"> 1 1</span><span class="se">\n</span><span class="s2">end</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">comp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">matlib</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">    </span><span class="si">{1: 1.6E}</span><span class="s2">    </span><span class="si">{2}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alara</span><span class="p">(</span><span class="n">nuc</span><span class="p">),</span> <span class="n">comp</span><span class="o">*</span><span class="mf">100.0</span><span class="p">,</span>
+                                                         <span class="n">znum</span><span class="p">(</span><span class="n">nuc</span><span class="p">))</span>
+        <span class="n">matlib</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">volume</span> <span class="o">+=</span> <span class="s2">&quot;end</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s2">&quot;end</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">geom_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geometry</span> <span class="o">+</span> <span class="n">volume</span> <span class="o">+</span> <span class="n">mat_loading</span> <span class="o">+</span> <span class="n">mixture</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">matlib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">matlib</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="num_density_to_mesh"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.num_density_to_mesh">[docs]</a><span class="k">def</span> <span class="nf">num_density_to_mesh</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;num_density_to_mesh(lines, time, m)</span>
+<span class="sd">    This function reads ALARA output containing number density information and</span>
+<span class="sd">    creates material objects which are then added to a supplied PyNE Mesh object.</span>
+<span class="sd">    The volumes within ALARA are assummed to appear in the same order as the</span>
+<span class="sd">    idx on the Mesh object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lines : list or str</span>
+<span class="sd">        ALARA output from ALARA run with &#39;number_density&#39; in the &#39;output&#39; block</span>
+<span class="sd">        of the input file. Lines can either be a filename or the equivalent to</span>
+<span class="sd">        calling readlines() on an ALARA output file. If reading in ALARA output</span>
+<span class="sd">        from stdout, call split(&#39;\n&#39;) before passing it in as the lines parameter.</span>
+<span class="sd">    time : str</span>
+<span class="sd">        The decay time for which number densities are requested (e.g. &#39;1 h&#39;,</span>
+<span class="sd">        &#39;shutdown&#39;, etc.)</span>
+<span class="sd">    m : PyNE Mesh</span>
+<span class="sd">        Mesh object for which mats will be applied to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Lines argument not a file or sequence.&quot;</span><span class="p">)</span>
+    <span class="c1"># Advance file to number density portion.</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Number Density [atoms/cm3]&#39;</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="o">!=</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Get decay time index from next line (the column the decay time answers</span>
+    <span class="c1"># appear in.</span>
+    <span class="n">line_strs</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;  &#39;</span><span class="p">)</span>
+    <span class="n">time_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">line_strs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">)</span>
+                  <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="c1"># Create a dict of mats for the mesh.</span>
+    <span class="n">mats</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Read through file until enough material objects are create to fill mesh.</span>
+    <span class="k">while</span> <span class="n">count</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="c1"># Pop lines to the start of the next material.</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Create a new material object and add to mats dict.</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">nucvec</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># Read lines until &#39;=&#39; delimiter at the end of a material.</span>
+        <span class="k">while</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+            <span class="n">nuc</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">time_index</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">nucvec</span><span class="p">[</span><span class="n">nuc</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+                <span class="n">density</span> <span class="o">+=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">anum</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span><span class="o">/</span><span class="n">N_A</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">from_atom_frac</span><span class="p">(</span><span class="n">nucvec</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">mats</span><span class="p">[</span><span class="n">count</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">mats</span> <span class="o">=</span> <span class="n">mats</span></div>
+
+
+<div class="viewcode-block" id="irradiation_blocks"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.irradiation_blocks">[docs]</a><span class="k">def</span> <span class="nf">irradiation_blocks</span><span class="p">(</span><span class="n">material_lib</span><span class="p">,</span> <span class="n">element_lib</span><span class="p">,</span> <span class="n">data_library</span><span class="p">,</span> <span class="n">cooling</span><span class="p">,</span>
+                       <span class="n">flux_file</span><span class="p">,</span> <span class="n">irr_time</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;number_density&quot;</span><span class="p">,</span>
+                       <span class="n">truncation</span><span class="o">=</span><span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="n">impurity</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="n">E</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">3</span><span class="p">),</span>
+                       <span class="n">dump_file</span> <span class="o">=</span> <span class="s2">&quot;dump_file&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;irradiation_blocks(material_lib, element_lib, data_library, cooling,</span>
+<span class="sd">                       flux_file, irr_time, output = &quot;number_density&quot;,</span>
+<span class="sd">                       truncation=1E-12, impurity = (5E-6, 1E-3),</span>
+<span class="sd">                       dump_file = &quot;dump_file&quot;)</span>
+
+<span class="sd">    This function returns a string of the irradation-related input blocks. This</span>
+<span class="sd">    function is meant to be used with files created by the mesh_to_geom</span>
+<span class="sd">    function, in order to append the remaining input blocks to form a complete</span>
+<span class="sd">    ALARA input file. Only the simplest irradiation schedule is supported: a</span>
+<span class="sd">    single pulse of time &lt;irr_time&gt;. The notation in this function is consistent</span>
+<span class="sd">    with the ALARA users&#39; guide, found at:</span>
+
+<span class="sd">    http://alara.engr.wisc.edu/users.guide.html/</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    material_lib : str</span>
+<span class="sd">        Path to material library.</span>
+<span class="sd">    element_lib : str</span>
+<span class="sd">        Path to element library.</span>
+<span class="sd">    data_library : str</span>
+<span class="sd">        The data_library card (see ALARA user&#39;s guide).</span>
+<span class="sd">    cooling : str or iterable of str</span>
+<span class="sd">        Cooling times for which output is requested. Given in ALARA form (e.g.</span>
+<span class="sd">        &quot;1 h&quot;, &quot;0.5 y&quot;). Note that &quot;shutdown&quot; is always implicitly included.</span>
+<span class="sd">    flux_file : str</span>
+<span class="sd">        Path to the &quot;fluxin&quot; file.</span>
+<span class="sd">    irr_time : str</span>
+<span class="sd">        The duration of the single pulse irradiation. Given in the ALARA form</span>
+<span class="sd">        (e.g. &quot;1 h&quot;, &quot;0.5 y&quot;).</span>
+<span class="sd">    output : str or iterable of str, optional.</span>
+<span class="sd">        The requested output blocks (see ALARA users&#39; guide).</span>
+<span class="sd">    truncation : float, optional</span>
+<span class="sd">        The chain truncation value (see ALARA users&#39; guide).</span>
+<span class="sd">    impurity : tuple of two floats, optional</span>
+<span class="sd">       The impurity parameters (see ALARA users&#39; guide).</span>
+<span class="sd">    dump_file: str, optional</span>
+<span class="sd">       Path to the dump file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : str</span>
+<span class="sd">        Irradition-related ALARA input blocks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># Material, element, and data_library blocks</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;material_lib </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">material_lib</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;element_lib </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">element_lib</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;data_library </span><span class="si">{0}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_library</span><span class="p">)</span>
+
+    <span class="c1"># Cooling times</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;cooling</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cooling</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cooling</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cooling</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cooling</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;end</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Flux block</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;flux flux_1 </span><span class="si">{0}</span><span class="s2"> 1.0 0 default</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flux_file</span><span class="p">)</span>
+
+    <span class="c1"># Flux schedule</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;schedule simple_schedule</span><span class="se">\n</span><span class="s2">&quot;</span>
+         <span class="s2">&quot;    </span><span class="si">{0}</span><span class="s2"> flux_1 pulse_once 0 s</span><span class="se">\n</span><span class="s2">end</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">irr_time</span><span class="p">))</span>
+
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;pulsehistory pulse_once</span><span class="se">\n</span><span class="s2">    1 0.0 s</span><span class="se">\n</span><span class="s2">end</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Output block</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;output zone</span><span class="se">\n</span><span class="s2">    units Ci cm3</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;end</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Other parameters</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;truncation </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">truncation</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;impurity </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">impurity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">impurity</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;dump_file </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="phtn_src_energy_bounds"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.phtn_src_energy_bounds">[docs]</a><span class="k">def</span> <span class="nf">phtn_src_energy_bounds</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads an ALARA input file and extracts the energy bounds from the </span>
+<span class="sd">    photon_source block.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_file : str</span>
+<span class="sd">         The ALARA input file name, which must contain a photon_source block.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    e_bounds : list of floats</span>
+<span class="sd">        The lower and upper energy bounds for the photon_source discretization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">phtn_src_lines</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39; photon_source &#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">num_groups</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">upper_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">4</span><span class="p">:]]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">upper_bounds</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_groups</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">upper_bounds</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+    <span class="n">e_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">+</span> <span class="n">upper_bounds</span>
+    <span class="k">return</span> <span class="n">e_bounds</span></div>
+
+
+<span class="k">def</span> <span class="nf">_build_matrix</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This function  builds burnup matrix, A. Decay only.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">N</span><span class="p">)))</span>
+
+    <span class="c1"># convert N to id form</span>
+    <span class="n">N_id</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">N</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">ID</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ID</span> <span class="o">=</span> <span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">N_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span>
+
+    <span class="n">sds</span> <span class="o">=</span> <span class="n">SimpleDataSource</span><span class="p">()</span>
+
+    <span class="c1"># Decay</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">N</span><span class="p">)):</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">decay_const</span><span class="p">(</span><span class="n">N_id</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1"># Find decay parents</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">N</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">N_id</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">decay_children</span><span class="p">(</span><span class="n">N_id</span><span class="p">[</span><span class="n">k</span><span class="p">]):</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">branch_ratio</span><span class="p">(</span><span class="n">N_id</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">N_id</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">decay_const</span><span class="p">(</span><span class="n">N_id</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">A</span>
+
+<span class="k">def</span> <span class="nf">_rat_apprx_14</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; CRAM of order 14</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ---------</span>
+<span class="sd">    A : numpy array</span>
+<span class="sd">	Burnup matrix</span>
+<span class="sd">    t : float</span>
+<span class="sd">	Time step</span>
+<span class="sd">    n_0: numpy array</span>
+<span class="sd">	Inital composition vector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="o">-</span><span class="mf">8.8977731864688888199</span> <span class="o">+</span> <span class="mf">16.630982619902085304</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-</span><span class="mf">3.7032750494234480603</span> <span class="o">+</span> <span class="mf">13.656371871483268171</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-.</span><span class="mi">2087586382501301251</span> <span class="o">+</span> <span class="mf">10.991260561901260913</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">3.9933697105785685194</span> <span class="o">+</span> <span class="mf">6.0048316422350373178</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">5.0893450605806245066</span> <span class="o">+</span> <span class="mf">3.5888240290270065102</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">5.6231425727459771248</span> <span class="o">+</span> <span class="mf">1.1940690463439669766</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">2.2697838292311127097</span> <span class="o">+</span> <span class="mf">8.4617379730402214019</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-.</span><span class="mi">000071542880635890672853</span> <span class="o">+</span> <span class="o">.</span><span class="mi">00014361043349541300111</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">.</span><span class="mi">0094390253107361688779</span> <span class="o">-</span> <span class="o">.</span><span class="mi">01784791958483017511</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-.</span><span class="mi">37636003878226968717</span> <span class="o">+</span> <span class="o">.</span><span class="mi">33518347029450104214</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-</span><span class="mf">23.498232091082701191</span> <span class="o">-</span> <span class="mf">5.8083591297142074004</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">46.933274488831293047</span> <span class="o">+</span> <span class="mf">45.643649768827760791</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-</span><span class="mf">27.875161940145646468</span> <span class="o">-</span> <span class="mf">102.14733999056451434</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">4.8071120988325088907</span> <span class="o">-</span> <span class="mf">1.3209793837428723881</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">alpha_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.8321743782540412751e-14</span><span class="p">])</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">*</span><span class="n">t</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="o">*</span><span class="n">n_0</span>
+
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">n_0</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">.</span><span class="n">real</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">alpha_0</span><span class="o">*</span><span class="n">n_0</span>
+
+    <span class="k">return</span> <span class="n">n</span>
+
+<span class="k">def</span> <span class="nf">_rat_apprx_16</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; CRAM of order 16</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ---------</span>
+<span class="sd">    A : numpy array</span>
+<span class="sd">        Burnup matrix</span>
+<span class="sd">    t : float</span>
+<span class="sd">        Time step</span>
+<span class="sd">    n_0: numpy array</span>
+<span class="sd">        Inital composition vector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="o">-</span><span class="mf">10.843917078696988026</span> <span class="o">+</span> <span class="mf">19.277446167181652284</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-</span><span class="mf">5.2649713434426468895</span> <span class="o">+</span> <span class="mf">16.220221473167927305</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">5.9481522689511774808</span> <span class="o">+</span> <span class="mf">3.5874573620183222829</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">3.5091036084149180974</span> <span class="o">+</span> <span class="mf">8.4361989858843750826</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">6.4161776990994341923</span> <span class="o">+</span> <span class="mf">1.1941223933701386874</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">1.4193758971856659786</span> <span class="o">+</span> <span class="mf">10.925363484496722585</span><span class="n">j</span><span class="p">,</span>
+                   <span class="mf">4.9931747377179963991</span> <span class="o">+</span> <span class="mf">5.9968817136039422260</span><span class="n">j</span><span class="p">,</span>
+                   <span class="o">-</span><span class="mf">1.4139284624888862114</span> <span class="o">+</span> <span class="mf">13.497725698892745389</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="o">-.</span><span class="mi">0000005090152186522491565</span> <span class="o">-</span> <span class="o">.</span><span class="mi">00002422001765285228797</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">.</span><span class="mi">00021151742182466030907</span> <span class="o">+</span> <span class="o">.</span><span class="mi">0043892969647380673918</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">113.39775178483930527</span> <span class="o">+</span> <span class="mf">101.9472170421585645</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">15.059585270023467528</span> <span class="o">-</span> <span class="mf">5.7514052776421819979</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">64.500878025539646595</span> <span class="o">-</span> <span class="mf">224.59440762652096056</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">1.4793007113557999718</span> <span class="o">+</span> <span class="mf">1.7686588323782937906</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">62.518392463207918892</span> <span class="o">-</span> <span class="mf">11.19039109428322848</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">.</span><span class="mi">041023136835410021273</span> <span class="o">-</span> <span class="o">.</span><span class="mi">15743466173455468191</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">alpha_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.1248537104952237488e-16</span><span class="p">])</span>
+
+
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">*</span><span class="n">t</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="o">*</span><span class="n">n_0</span>
+
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">n_0</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">.</span><span class="n">real</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">alpha_0</span><span class="o">*</span><span class="n">n_0</span>
+    <span class="k">return</span> <span class="n">n</span>
+
+<div class="viewcode-block" id="cram"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.cram">[docs]</a><span class="k">def</span> <span class="nf">cram</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This function returns matrix exponential solution n using CRAM14 or CRAM16</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : list or array</span>
+<span class="sd">	Array of nuclides under consideration</span>
+<span class="sd">    t : float</span>
+<span class="sd">	Time step</span>
+<span class="sd">    n_0 : list or array</span>
+<span class="sd">	Nuclide concentration vector</span>
+<span class="sd">    order : int</span>
+<span class="sd">	Order of method. Only 14 and 16 are supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_0</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">_build_matrix</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_rat_apprx_14</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_rat_apprx_16</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Rational approximation of degree </span><span class="si">{0}</span><span class="s1"> is not supported.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1031 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.cinder &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.dbgen.cinder</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides a way to locate, parse, and store CINDER cross</span>
+<span class="sd">sections.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">warning</span>
+<span class="kn">from</span> <span class="nn">.api</span> <span class="k">import</span> <span class="n">BASIC_FILTERS</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="grab_cinder_dat"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.grab_cinder_dat">[docs]</a><span class="k">def</span> <span class="nf">grab_cinder_dat</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the cinder.dat file from the DATAPATH directory if not already</span>
+<span class="sd">    present.&quot;&quot;&quot;</span>
+    <span class="n">build_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">build_filename</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">datapath</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="s1">&#39;DATAPATH&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="n">datapath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;DATAPATH&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;DATAPATH not defined in environment; cinder.dat not &quot;</span>
+                      <span class="s2">&quot;found - skipping.&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="s2">&quot;[Cc][Ii][Nn][Dd][Ee][Rr].&quot;</span>
+                                            <span class="s2">&quot;[Dd][Aa][Tt]&quot;</span><span class="p">)</span>
+    <span class="n">local_filename</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">local_filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing cinder.dat from &quot;</span> <span class="o">+</span> <span class="n">datapath</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;cinder.dat contains export controlled information &quot;</span>
+                      <span class="s2">&quot;nuc_data.h5 is now export controlled!&quot;</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">local_filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">build_filename</span><span class="p">)</span>
+        <span class="n">rtn</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;cinder.dat file not found in DATAPATH dir - skipping.&quot;</span><span class="p">))</span>
+        <span class="n">rtn</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">rtn</span></div>
+
+<span class="c1"># These read in cinder.dat</span>
+<span class="n">cinder_float</span> <span class="o">=</span> <span class="s2">&quot;[\d.+-Ee]+&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initializes a multigroup cross-section part of the database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db : tables.File</span>
+<span class="sd">        A nuclear data hdf5 file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create neutron and photon groups</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">):</span>
+        <span class="n">neutron_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;Neutron Interaction Data&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;photon&#39;</span><span class="p">):</span>
+        <span class="n">photon_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;photon&#39;</span><span class="p">,</span> <span class="s1">&#39;Photon Interaction Data&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create xs group</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;cinder_xs&#39;</span><span class="p">):</span>
+        <span class="n">nxs_mg_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;/neutron&quot;</span><span class="p">,</span> <span class="s2">&quot;cinder_xs&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;CINDER Multi-Group Neutron Cross &quot;</span>
+                                      <span class="s2">&quot;Section Data&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create source groups</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">photon</span><span class="p">,</span> <span class="s1">&#39;cinder_source&#39;</span><span class="p">):</span>
+        <span class="n">gxs_mg_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;/photon&quot;</span><span class="p">,</span> <span class="s2">&quot;cinder_source&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;CINDER Multi-Group Photon Source Data&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create fission_yield groups</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;cinder_fission_products&#39;</span><span class="p">):</span>
+        <span class="n">nxs_mg_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;/neutron&quot;</span><span class="p">,</span> <span class="s2">&quot;cinder_fission_products&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;CINDER Neutron Fission Product &quot;</span>
+                                      <span class="s2">&quot;Yield Data&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">photon</span><span class="p">,</span> <span class="s1">&#39;cinder_fission_products&#39;</span><span class="p">):</span>
+        <span class="n">nxs_mg_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;/photon&quot;</span><span class="p">,</span> <span class="s2">&quot;cinder_fission_products&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;CINDER Photofission Product Yield Data&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_group_sizes"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.get_group_sizes">[docs]</a><span class="k">def</span> <span class="nf">get_group_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the number of nuclides and groups in this data file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_data : str</span>
+<span class="sd">        Input cinder.dat data file as a string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nuclides : int</span>
+<span class="sd">        The number of nuclides in the dataset</span>
+<span class="sd">    G_n : int</span>
+<span class="sd">        The number of neutron energy groups in the dataset</span>
+<span class="sd">    G_p : int</span>
+<span class="sd">        The number of proton energy groups in the dataset</span>
+<span class="sd">    G_g : int</span>
+<span class="sd">        The number of photon energy groups in the dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Search for the group pattern</span>
+    <span class="n">G_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;(\d+) nuclides,\s+(\d+) neutron groups,\s+(\d+) proton &quot;</span>
+                 <span class="s2">&quot;groups,\s+(\d+) photon groups&quot;</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">G_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+    <span class="c1"># Convert to ints</span>
+    <span class="n">nuclides</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">G_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">G_p</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">G_g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span></div>
+
+
+<div class="viewcode-block" id="safe_decode"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.safe_decode">[docs]</a><span class="k">def</span> <span class="nf">safe_decode</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">encs</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="s1">&#39;latin-1&#39;</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Tries to decode a bytes array in a few different ways.&quot;&quot;&quot;</span>
+    <span class="n">enc</span><span class="p">,</span> <span class="n">encs</span> <span class="o">=</span> <span class="n">encs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">encs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">if</span> <span class="n">enc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">encs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">encs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="make_mg_group_structure"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_mg_group_structure">[docs]</a><span class="k">def</span> <span class="nf">make_mg_group_structure</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the energy group bounds arrays to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Get group sizes</span>
+    <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span> <span class="o">=</span> <span class="n">get_group_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Find &amp; write neutron group structure</span>
+    <span class="n">n_E_g_pattern</span> <span class="o">=</span> <span class="s2">&quot;Neutron group .*, MeV&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;\s+(&quot;</span><span class="o">+</span><span class="n">cinder_float</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">G_n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">n_E_g_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+    <span class="n">n_E_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/neutron/cinder_xs&#39;</span><span class="p">,</span> <span class="s1">&#39;E_g&#39;</span><span class="p">,</span> <span class="n">n_E_g</span><span class="p">,</span> <span class="s1">&#39;Neutron energy group bounds [MeV]&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Find &amp; write photon group structure</span>
+    <span class="n">g_E_g_pattern</span> <span class="o">=</span> <span class="s2">&quot;Gamma structure, MeV&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;\s+(&quot;</span><span class="o">+</span><span class="n">cinder_float</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">G_g</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">g_E_g_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+    <span class="n">g_E_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/photon/cinder_source&#39;</span><span class="p">,</span> <span class="s1">&#39;E_g&#39;</span><span class="p">,</span> <span class="n">g_E_g</span><span class="p">,</span> <span class="s1">&#39;Photon energy group bounds [MeV]&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="c1"># Helpful patterns</span>
+<span class="n">from_nuc_pattern</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">#[\s\d]</span><span class="si">{4}</span><span class="s2">:\s+(\d+).*?</span><span class="se">\n</span><span class="s2">(_______________________| [\w/-]+ Fission Yield Data)&quot;</span>
+<span class="n">to_nuc_base</span> <span class="o">=</span> <span class="s2">&quot;#[\s\d]</span><span class="si">{4}</span><span class="s2">:\s+(\d+) produced by the following C-X  \((.</span><span class="si">{4}</span><span class="s2">)\) REF:.*?</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="n">absorption_dtype_tuple</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;from_nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;to_nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;reaction_type&#39;</span><span class="p">,</span> <span class="s1">&#39;S4&#39;</span><span class="p">),</span>
+    <span class="c1"># Extra &#39;xs&#39; entry should be appended with value (&#39;xs&#39;, float, G_n)</span>
+    <span class="p">]</span>
+
+
+<div class="viewcode-block" id="make_mg_absorption"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_mg_absorption">[docs]</a><span class="k">def</span> <span class="nf">make_mg_absorption</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the absorption reaction rate cross sections to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Get group sizes</span>
+    <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span> <span class="o">=</span> <span class="n">get_group_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Init the neutron absorption table</span>
+    <span class="n">absorption_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">absorption_dtype_tuple</span> <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">G_n</span><span class="p">)])</span>
+    <span class="n">absorption_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/neutron/cinder_xs/&#39;</span><span class="p">,</span> <span class="s1">&#39;absorption&#39;</span><span class="p">,</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">absorption_dtype</span><span class="p">),</span>
+                                      <span class="s1">&#39;Neutron absorption reaction cross sections [barns]&#39;</span><span class="p">)</span>
+    <span class="n">abrow</span> <span class="o">=</span> <span class="n">absorption_table</span><span class="o">.</span><span class="n">row</span>
+
+    <span class="c1"># Init to_nuc_pattern</span>
+    <span class="n">to_nuc_pattern</span> <span class="o">=</span> <span class="n">to_nuc_base</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;\s+(&quot;</span><span class="o">+</span><span class="n">cinder_float</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">*</span><span class="n">G_n</span>
+
+    <span class="c1"># Iterate through all from nuctopes.</span>
+    <span class="k">for</span> <span class="n">m_from</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">from_nuc_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="n">from_nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m_from</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># Check matestable state</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">from_nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="c1"># Metastable state too high!</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Grab the string for this from_nuc in order to get all of the to_nucs</span>
+        <span class="n">from_nuc_part</span> <span class="o">=</span> <span class="n">m_from</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Iterate over all to_nucs</span>
+        <span class="k">for</span> <span class="n">m_to</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">to_nuc_pattern</span><span class="p">,</span> <span class="n">from_nuc_part</span><span class="p">):</span>
+            <span class="n">to_nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m_to</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+            <span class="c1"># Check matestable state</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">to_nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="c1"># Metastable state too high!</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Munge reaction type</span>
+            <span class="n">rx_type</span> <span class="o">=</span> <span class="n">m_to</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">rx_type</span> <span class="o">=</span> <span class="n">rx_type</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="c1"># Setup XS array</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m_to</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">G_n</span><span class="p">,</span> <span class="p">)</span>
+
+            <span class="c1"># Write this row to the absorption table</span>
+            <span class="n">abrow</span><span class="p">[</span><span class="s1">&#39;from_nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_nuc</span>
+            <span class="n">abrow</span><span class="p">[</span><span class="s1">&#39;to_nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_nuc</span>
+            <span class="n">abrow</span><span class="p">[</span><span class="s1">&#39;reaction_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rx_type</span>
+            <span class="n">abrow</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span>
+
+            <span class="n">abrow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
+
+        <span class="c1"># Flush this from nuc</span>
+        <span class="n">absorption_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="n">fission_base</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">([\s\d]+),([\s\d]+),([\s\d]+)=\(n,f\) yield sets\. If &gt; 0,[\s\d]</span><span class="si">{4}</span><span class="s2">-gp fisn CX follows\..*?</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="n">fission_dtype_tuple</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;thermal_yield&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;fast_yield&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;high_energy_yield&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span>
+    <span class="c1"># Extra &#39;xs&#39; entry should be appended with value (&#39;xs&#39;, float, G_n)</span>
+    <span class="p">]</span>
+
+
+<div class="viewcode-block" id="make_mg_fission"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_mg_fission">[docs]</a><span class="k">def</span> <span class="nf">make_mg_fission</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the fission reaction rate cross sections to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Get group sizes</span>
+    <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span> <span class="o">=</span> <span class="n">get_group_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Init the neutron absorption table</span>
+    <span class="n">fission_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">fission_dtype_tuple</span> <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">G_n</span><span class="p">)])</span>
+    <span class="n">fission_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/neutron/cinder_xs/&#39;</span><span class="p">,</span> <span class="s1">&#39;fission&#39;</span><span class="p">,</span>
+                                   <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fission_dtype</span><span class="p">),</span>
+                                   <span class="s1">&#39;Neutron fission reaction cross sections [barns]&#39;</span><span class="p">)</span>
+    <span class="n">frow</span> <span class="o">=</span> <span class="n">fission_table</span><span class="o">.</span><span class="n">row</span>
+
+    <span class="c1"># Init to_nuc_pattern</span>
+    <span class="n">fission_pattern</span> <span class="o">=</span> <span class="n">fission_base</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;\s+(&quot;</span><span class="o">+</span><span class="n">cinder_float</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">*</span><span class="n">G_n</span>
+
+    <span class="c1"># Iterate through all from nuctopes.</span>
+    <span class="k">for</span> <span class="n">m_from</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">from_nuc_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="n">from_nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m_from</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># Check matestable state</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">from_nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="c1"># Metastable state too high!</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Grab the string for this from_nuc in order to get all of the to_nucs</span>
+        <span class="n">from_nuc_part</span> <span class="o">=</span> <span class="n">m_from</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Grab the fission part</span>
+        <span class="n">m_fission</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">fission_pattern</span><span class="p">,</span> <span class="n">from_nuc_part</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m_fission</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Grab yield indexes</span>
+        <span class="n">yield_t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_fission</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">yield_f</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_fission</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">yield_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_fission</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+        <span class="c1"># Grab XS array</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m_fission</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">G_n</span><span class="p">,</span> <span class="p">)</span>
+
+        <span class="c1"># Write fission table row</span>
+        <span class="n">frow</span><span class="p">[</span><span class="s1">&#39;nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_nuc</span>
+
+        <span class="n">frow</span><span class="p">[</span><span class="s1">&#39;thermal_yield&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">yield_t</span>
+        <span class="n">frow</span><span class="p">[</span><span class="s1">&#39;fast_yield&#39;</span><span class="p">]</span>        <span class="o">=</span> <span class="n">yield_f</span>
+        <span class="n">frow</span><span class="p">[</span><span class="s1">&#39;high_energy_yield&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yield_h</span>
+
+        <span class="n">frow</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span>
+
+        <span class="c1"># Write out this row</span>
+        <span class="n">frow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
+        <span class="n">fission_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="n">gamma_decay_base</span> <span class="o">=</span> <span class="s2">&quot;gamma spectra from .</span><span class="si">{3}</span><span class="s2"> multiplied by\s+(&quot;</span> <span class="o">+</span> <span class="n">cinder_float</span> <span class="o">+</span> <span class="s2">&quot;)\s+to agree w/ Eg=\s*(&quot;</span> <span class="o">+</span>\
+                   <span class="n">cinder_float</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+<span class="n">gamma_decay_dtype_tuple</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;scaling_factor&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="c1"># Extra &#39;spectrum&#39; entry should be appended with value (&#39;spectrum&#39;, float, G_g)</span>
+    <span class="p">]</span>
+
+
+<div class="viewcode-block" id="make_mg_gamma_decay"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_mg_gamma_decay">[docs]</a><span class="k">def</span> <span class="nf">make_mg_gamma_decay</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the gamma decay spectrum information to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Get group sizes</span>
+    <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span> <span class="o">=</span> <span class="n">get_group_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Init the gamma absorption table</span>
+    <span class="n">gamma_decay_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">gamma_decay_dtype_tuple</span> <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;spectrum&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">G_g</span><span class="p">)])</span>
+    <span class="n">gamma_decay_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/photon/cinder_source/&#39;</span><span class="p">,</span> <span class="s1">&#39;decay_spectra&#39;</span><span class="p">,</span>
+                                       <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gamma_decay_dtype</span><span class="p">),</span>
+                                       <span class="s1">&#39;Gamma decay spectrum [MeV]&#39;</span><span class="p">)</span>
+    <span class="n">gdrow</span> <span class="o">=</span> <span class="n">gamma_decay_table</span><span class="o">.</span><span class="n">row</span>
+
+    <span class="c1"># Init to_nuc_pattern</span>
+    <span class="n">gamma_decay_pattern</span> <span class="o">=</span> <span class="n">gamma_decay_base</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;\s+(&quot;</span><span class="o">+</span><span class="n">cinder_float</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">*</span><span class="n">G_g</span>
+
+    <span class="c1"># Iterate through all from nuctopes.</span>
+    <span class="k">for</span> <span class="n">m_from</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">from_nuc_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="n">from_nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m_from</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># Check matestable state</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">from_nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="c1"># Metastable state too high!</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Grab the string for this from_nuc in order to get all of the to_nucs</span>
+        <span class="n">from_nuc_part</span> <span class="o">=</span> <span class="n">m_from</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Grab the fission part</span>
+        <span class="n">m_gd</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">gamma_decay_pattern</span><span class="p">,</span> <span class="n">from_nuc_part</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m_gd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Grab base data</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m_gd</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">m_gd</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="c1"># Grab spectrum</span>
+        <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m_gd</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">G_g</span><span class="p">,</span> <span class="p">)</span>
+
+        <span class="c1"># Prepare the row</span>
+        <span class="n">gdrow</span><span class="p">[</span><span class="s1">&#39;nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_nuc</span>
+
+        <span class="n">gdrow</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">energy</span>
+        <span class="n">gdrow</span><span class="p">[</span><span class="s1">&#39;scaling_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+
+        <span class="n">gdrow</span><span class="p">[</span><span class="s1">&#39;spectrum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span>
+
+        <span class="c1"># Write out the row</span>
+        <span class="n">gdrow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
+        <span class="n">gamma_decay_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_fp_sizes"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.get_fp_sizes">[docs]</a><span class="k">def</span> <span class="nf">get_fp_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the number of fission product yield data sets in this file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : str</span>
+<span class="sd">        Input cinder.dat data file as a string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    N_n : int</span>
+<span class="sd">        The number of neutron fission product yield datasets in the file.</span>
+<span class="sd">    N_g int</span>
+<span class="sd">        The number of photon fission product yield datasets in the file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Search for the neutron pattern</span>
+    <span class="n">N_n_pattern</span> <span class="o">=</span> <span class="s2">&quot;Fission Yield Data.*?</span><span class="se">\n</span><span class="s2">\s*(\d+)\s+yield sets&quot;</span>
+    <span class="n">m_n</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">N_n_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">N_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_n</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Search for the photon pattern</span>
+    <span class="n">N_g_pattern</span> <span class="o">=</span> <span class="s2">&quot;Photofission Yield Data.*?</span><span class="se">\n</span><span class="s2">\s*(\d+)\s+yield sets&quot;</span>
+    <span class="n">m_g</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">N_g_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
+    <span class="n">N_g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_g</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span></div>
+
+
+<span class="n">fp_info_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;S11&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">])</span>
+
+<span class="n">fp_type_flag</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="s1">&#39;thermal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="s1">&#39;fast&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="s1">&#39;high_energy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="s1">&#39;spontaneous&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">iit_pattern</span> <span class="o">=</span> <span class="s2">&quot;(\d{1,3})\s+\d{2,3}-\s?([A-Z]{1,2}-[ Mm\d]</span><span class="si">{3}</span><span class="s2">)([tfhs])&quot;</span>
+<span class="n">mass_pattern</span> <span class="o">=</span> <span class="s2">&quot;\d{1,3}\.\d{1,4}&quot;</span>
+
+<span class="n">nfp_info_pattern</span> <span class="o">=</span> <span class="s2">&quot;Fission Yield Data.*?fission products&quot;</span>
+
+
+<div class="viewcode-block" id="parse_neutron_fp_info"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.parse_neutron_fp_info">[docs]</a><span class="k">def</span> <span class="nf">parse_neutron_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the neutron fission product info.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_data : str</span>
+<span class="sd">        string of the cinder.dat data file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info_table : array</span>
+<span class="sd">        Structured array with the form &quot;(index, nuc, type, mass)&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get group sizes</span>
+    <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span> <span class="o">=</span> <span class="n">get_fp_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Grab the part of the file that is a neutron fission product yield info</span>
+    <span class="n">m_info</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">nfp_info_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+    <span class="n">nfp_info_raw</span> <span class="o">=</span> <span class="n">m_info</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Grab the index, nuctope, and type</span>
+    <span class="n">iits</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">iit_pattern</span><span class="p">,</span> <span class="n">nfp_info_raw</span><span class="p">)</span>
+
+    <span class="c1"># Grab the masses</span>
+    <span class="n">masses</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">mass_pattern</span><span class="p">,</span> <span class="n">nfp_info_raw</span><span class="p">)</span>
+
+    <span class="c1"># Make sure data is the right size</span>
+    <span class="k">assert</span> <span class="n">N_n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">iits</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">N_n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span>
+
+    <span class="c1"># Make info table rows</span>
+    <span class="n">info_table</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_n</span><span class="p">):</span>
+        <span class="n">iit</span> <span class="o">=</span> <span class="n">iits</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">iit</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># Correct for metastable flag</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="n">nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">nuc</span> <span class="o">=</span> <span class="n">nuc</span> <span class="o">+</span> <span class="mi">2000</span>
+
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">fp_type_flag</span><span class="p">[</span><span class="n">iit</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">masses</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+
+        <span class="n">info_row</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span>
+        <span class="n">info_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_row</span><span class="p">)</span>
+
+    <span class="n">info_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">info_table</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">info_table</span></div>
+
+
+<div class="viewcode-block" id="make_neutron_fp_info"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_neutron_fp_info">[docs]</a><span class="k">def</span> <span class="nf">make_neutron_fp_info</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the neutron fission product yield info to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># get the info table</span>
+    <span class="n">info_table</span> <span class="o">=</span> <span class="n">parse_neutron_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Init the neutron fission product info table</span>
+    <span class="n">nfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/neutron/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">),</span>
+                               <span class="s1">&#39;CINDER Neutron Fission Product Yield Information&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Append Rows</span>
+    <span class="n">nfp_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_table</span><span class="p">)</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="n">gfp_info_pattern</span> <span class="o">=</span> <span class="s2">&quot;Photofission Yield Data.*?fission products&quot;</span>
+
+
+<div class="viewcode-block" id="grab_photon_fp_info"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.grab_photon_fp_info">[docs]</a><span class="k">def</span> <span class="nf">grab_photon_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the photon fission product info.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_data : str</span>
+<span class="sd">        string of the cinder.dat data file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info_table : array</span>
+<span class="sd">        Structured array with the form &quot;(index, nuc, type, mass)&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get group sizes</span>
+    <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span> <span class="o">=</span> <span class="n">get_fp_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Grab the part of the file that is a neutron fission product yield info</span>
+    <span class="n">m_info</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">gfp_info_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+    <span class="n">gfp_info_raw</span> <span class="o">=</span> <span class="n">m_info</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Grab the index, nuctope, and type</span>
+    <span class="n">iits</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">iit_pattern</span><span class="p">,</span> <span class="n">gfp_info_raw</span><span class="p">)</span>
+
+    <span class="c1"># Grab the masses</span>
+    <span class="n">masses</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">mass_pattern</span><span class="p">,</span> <span class="n">gfp_info_raw</span><span class="p">)</span>
+
+    <span class="c1"># Make sure data is the right size</span>
+    <span class="k">assert</span> <span class="n">N_g</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">iits</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">N_g</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span>
+
+    <span class="c1"># Make info table rows</span>
+    <span class="n">info_table</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_g</span><span class="p">):</span>
+        <span class="n">iit</span> <span class="o">=</span> <span class="n">iits</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">iit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">iit</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># Correct for metastable flag</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="n">nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">nuc</span> <span class="o">=</span> <span class="n">nuc</span> <span class="o">+</span> <span class="mi">2000</span>
+
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">fp_type_flag</span><span class="p">[</span><span class="n">iit</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">masses</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+
+        <span class="n">info_row</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span>
+        <span class="n">info_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_row</span><span class="p">)</span>
+
+    <span class="n">info_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">info_table</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">info_table</span></div>
+
+
+<div class="viewcode-block" id="make_photon_fp_info"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_photon_fp_info">[docs]</a><span class="k">def</span> <span class="nf">make_photon_fp_info</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the photofission product yield info to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Grab photon info table</span>
+    <span class="n">info_table</span> <span class="o">=</span> <span class="n">grab_photon_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Init the neutron fission product info table</span>
+    <span class="n">gfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/photon/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">),</span>
+                               <span class="s1">&#39;CINDER Photofission Product Yield Information&#39;</span><span class="p">)</span>
+    <span class="n">gfp_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_table</span><span class="p">)</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="n">fp_yields_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;from_nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;to_nuc&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;mass_frac&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">])</span>
+
+
+<span class="n">fp_to_nuc_insert</span> <span class="o">=</span> <span class="s2">&quot;\s{1,3}&quot;</span> <span class="o">+</span> <span class="n">cinder_float</span>
+<span class="n">fp_to_nuc_base</span> <span class="o">=</span> <span class="s2">&quot;  ([ \d]</span><span class="si">{4}</span><span class="s2">) ([ \d]</span><span class="si">{7}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">(&quot;</span>
+
+<span class="n">nfp_yields_pattern</span> <span class="o">=</span> <span class="s2">&quot;Fission Yield Data.*Photofission Yield Data&quot;</span>
+
+
+<div class="viewcode-block" id="make_neutron_fp_yields"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_neutron_fp_yields">[docs]</a><span class="k">def</span> <span class="nf">make_neutron_fp_yields</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the neutron fission product yields to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Get group sizes</span>
+    <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span> <span class="o">=</span> <span class="n">get_fp_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># get the info table</span>
+    <span class="n">info_table</span> <span class="o">=</span> <span class="n">parse_neutron_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Grab the part of the file that is a neutron fission product yields</span>
+    <span class="n">m_yields</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">nfp_yields_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+    <span class="n">nfp_yields_raw</span> <span class="o">=</span> <span class="n">m_yields</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Init the neutron fission product info table</span>
+    <span class="n">nfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/neutron/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s1">&#39;yields&#39;</span><span class="p">,</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_yields_dtype</span><span class="p">),</span>
+                               <span class="s1">&#39;CINDER Neutron Fission Product Yields&#39;</span><span class="p">)</span>
+    <span class="n">nfprow</span> <span class="o">=</span> <span class="n">nfp_table</span><span class="o">.</span><span class="n">row</span>
+
+    <span class="c1"># Iterate over all to-nucs</span>
+    <span class="n">fp_to_nuc_pattern</span> <span class="o">=</span> <span class="n">fp_to_nuc_base</span> <span class="o">+</span> <span class="n">N_n</span><span class="o">*</span><span class="n">fp_to_nuc_insert</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">for</span> <span class="n">m_to</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">fp_to_nuc_pattern</span><span class="p">,</span> <span class="n">nfp_yields_raw</span><span class="p">):</span>
+        <span class="n">to_nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m_to</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+        <span class="c1"># Check matestable state</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">to_nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="c1"># Metastable state too high!</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Get the array of yield data</span>
+        <span class="n">yields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m_to</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">yields</span><span class="p">)</span> <span class="o">==</span> <span class="n">N_n</span>
+
+        <span class="c1"># Prep rows to the table</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_n</span><span class="p">):</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">info_table</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">nfprow</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">nfprow</span><span class="p">[</span><span class="s1">&#39;from_nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">nfprow</span><span class="p">[</span><span class="s1">&#39;to_nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_nuc</span>
+            <span class="n">nfprow</span><span class="p">[</span><span class="s1">&#39;mass_frac&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yields</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">nfprow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
+
+        <span class="c1"># Write the table</span>
+        <span class="n">nfp_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="n">gfp_yields_pattern</span> <span class="o">=</span> <span class="s2">&quot;Photofission Yield Data.*&quot;</span>
+
+
+<div class="viewcode-block" id="make_photon_fp_yields"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_photon_fp_yields">[docs]</a><span class="k">def</span> <span class="nf">make_photon_fp_yields</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds the photofission product yields to the hdf5 library.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory with cinder.dat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="n">_init_cinder</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+    <span class="c1"># Read in cinder data file</span>
+    <span class="n">cinder_dat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;cinder.dat&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">cinder_dat</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Get group sizes</span>
+    <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span> <span class="o">=</span> <span class="n">get_fp_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># get the info table</span>
+    <span class="n">info_table</span> <span class="o">=</span> <span class="n">grab_photon_fp_info</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+
+    <span class="c1"># Grab the part of the file that is a neutron fission product yields</span>
+    <span class="n">m_yields</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">gfp_yields_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+    <span class="n">gfp_yields_raw</span> <span class="o">=</span> <span class="n">m_yields</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Init the neutron fission product info table</span>
+    <span class="n">gfp_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;/photon/cinder_fission_products/&#39;</span><span class="p">,</span> <span class="s1">&#39;yields&#39;</span><span class="p">,</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_yields_dtype</span><span class="p">),</span>
+                               <span class="s1">&#39;CINDER Photofission Product Yields&#39;</span><span class="p">)</span>
+    <span class="n">gfprow</span> <span class="o">=</span> <span class="n">gfp_table</span><span class="o">.</span><span class="n">row</span>
+
+    <span class="c1"># Iterate over all to-nucs</span>
+    <span class="n">fp_to_nuc_pattern</span> <span class="o">=</span> <span class="n">fp_to_nuc_base</span> <span class="o">+</span> <span class="n">N_g</span><span class="o">*</span><span class="n">fp_to_nuc_insert</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">for</span> <span class="n">m_to</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">fp_to_nuc_pattern</span><span class="p">,</span> <span class="n">gfp_yields_raw</span><span class="p">):</span>
+        <span class="n">to_nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m_to</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+        <span class="c1"># Check matestable state</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">to_nuc</span> <span class="o">%</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="c1"># Metastable state too high!</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Get the array of yield data</span>
+        <span class="n">yields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m_to</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">yields</span><span class="p">)</span> <span class="o">==</span> <span class="n">N_g</span>
+
+        <span class="c1"># Prep rows to the table</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_g</span><span class="p">):</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">info_table</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">gfprow</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">gfprow</span><span class="p">[</span><span class="s1">&#39;from_nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">gfprow</span><span class="p">[</span><span class="s1">&#39;to_nuc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_nuc</span>
+            <span class="n">gfprow</span><span class="p">[</span><span class="s1">&#39;mass_frac&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yields</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">gfprow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
+
+        <span class="c1"># Write the table</span>
+        <span class="n">gfp_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="make_cinder"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_cinder">[docs]</a><span class="k">def</span> <span class="nf">make_cinder</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Controller function for adding cinder data.&quot;&quot;&quot;</span>
+    <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">,</span> <span class="n">datapath</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">datapath</span>
+
+    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;cinder_xs&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;cinder_fission_products&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;skipping Cinder XS data table creation; already exists.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="c1"># First grab the atomic abundance data</span>
+    <span class="n">grabbed</span> <span class="o">=</span> <span class="n">grab_cinder_dat</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">datapath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">grabbed</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Add energy groups to file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding cinder data...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  energy group boundaries.&quot;</span><span class="p">)</span>
+    <span class="n">make_mg_group_structure</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add neutron absorption to file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  neutron absorption cross sections.&quot;</span><span class="p">)</span>
+    <span class="n">make_mg_absorption</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add fission to file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  neutron fission cross sections.&quot;</span><span class="p">)</span>
+    <span class="n">make_mg_fission</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add gamma decay spectrum to file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  gamma decay spectra.&quot;</span><span class="p">)</span>
+    <span class="n">make_mg_gamma_decay</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add neutron info table</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  neutron fission product info.&quot;</span><span class="p">)</span>
+    <span class="n">make_neutron_fp_info</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add neutron yield table</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  neutron fission product yields.&quot;</span><span class="p">)</span>
+    <span class="n">make_neutron_fp_yields</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add photon info table</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  photofission product info.&quot;</span><span class="p">)</span>
+    <span class="n">make_photon_fp_info</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Add neutron yield table</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  photofission product yields.&quot;</span><span class="p">)</span>
+    <span class="n">make_photon_fp_yields</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...finished with cinder.&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../../install/index.html">Install</a></li>
+    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../../pubs.html">Publications</a></li>
+    <li><a href="../../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

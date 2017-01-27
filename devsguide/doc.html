@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How to Document PyNE &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-document-pyne">
+<span id="devsguide-doc"></span><h1>How to Document PyNE<a class="headerlink" href="#how-to-document-pyne" title="Permalink to this headline">¶</a></h1>
+<p>Documentation takes many forms. This will guide you through the steps of
+successful documentation.</p>
+<div class="section" id="docstrings">
+<h2>Docstrings<a class="headerlink" href="#docstrings" title="Permalink to this headline">¶</a></h2>
+<p>No matter what language you are writing in, you should always have documentation
+strings along with you code. This is so important that it is part of the
+style guide.  When writing in Python or Cython, your docstrings should be in
+reStructured Text using the numpydoc format. When writing in C, C++, or
+Fortran you should write your docstrings in Doxygen.</p>
+</div>
+<div class="section" id="auto-documentation-hooks">
+<h2>Auto-Documentation Hooks<a class="headerlink" href="#auto-documentation-hooks" title="Permalink to this headline">¶</a></h2>
+<p>The docstrings that you have written will automatically be connected to the
+website, once the appropriate hooks have been setup.  At this stage, all
+documentation lives within pyne&#8217;s top-level <code class="docutils literal"><span class="pre">docs</span></code> directory.
+PyNE uses the sphinx tool to manage and generate the documentation, which
+you can learn about from <a class="reference external" href="http://sphinx-doc.org/">the sphinx website</a>.
+If you want to generate the documentaion, first pyne itself must be installed
+and then you may run the following command from the <code class="docutils literal"><span class="pre">docs</span></code> dir:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>~/pyne/docs $ make html
+</pre></div>
+</div>
+<p>For each new
+module, you will have to supply the appropriate hooks. This should be done the
+first time that the module appears in a pull request.  From here, call the
+new module <code class="docutils literal"><span class="pre">mymod</span></code>.  The following explains how to add hooks based on language:</p>
+<div class="section" id="python-cython-hooks">
+<h3>Python &amp; Cython Hooks<a class="headerlink" href="#python-cython-hooks" title="Permalink to this headline">¶</a></h3>
+<p>Python and Cython documentation lives in the <code class="docutils literal"><span class="pre">docs/pyapi</span></code> directory.
+First create a file in this directory that represents the new module called
+<code class="docutils literal"><span class="pre">mymod.rst</span></code>.
+The <code class="docutils literal"><span class="pre">docs/pyapi</span></code> directory matches the structure of the <code class="docutils literal"><span class="pre">pyne</span></code> directory.
+So if your module is in a sub-package, you&#8217;ll need to go into the sub-package&#8217;s
+directory before creating <code class="docutils literal"><span class="pre">mymod.rst</span></code>.
+The contents of this file should be as follows:</p>
+<p><strong>mymod.rst:</strong></p>
+<div class="highlight-rst"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="nt">_pyne_mymod:</span>
+
+<span class="gh">======================================</span>
+<span class="gh">My Awesome Module -- :mod:`pyne.mymod`</span>
+<span class="gh">======================================</span>
+
+<span class="p">..</span> <span class="ow">currentmodule</span><span class="p">::</span> pyne.mymod
+
+<span class="p">..</span> <span class="ow">automodule</span><span class="p">::</span> pyne.mymod
+    <span class="nc">:members:</span>
+</pre></div>
+</div>
+<p>This will discover all of the docstrings in <code class="docutils literal"><span class="pre">mymod</span></code> and create the appropriate
+webpage. Now, you need to hook this page up to the rest of the website.</p>
+<p>Go into the <code class="docutils literal"><span class="pre">index.rst</span></code> file in <code class="docutils literal"><span class="pre">docs/pyne</span></code> or other subdirectory and add
+<code class="docutils literal"><span class="pre">mymod</span></code> to the appropriate <code class="docutils literal"><span class="pre">toctree</span></code> (which stands for table-of-contents tree).
+Note that every sub-package has its own <code class="docutils literal"><span class="pre">index.rst</span></code> file.</p>
+</div>
+<div class="section" id="c-et-al-hooks">
+<h3>C++ et al. Hooks<a class="headerlink" href="#c-et-al-hooks" title="Permalink to this headline">¶</a></h3>
+<p>This is very similar to the Python hooks except that all of the pages live in the
+<code class="docutils literal"><span class="pre">docs/cppapi</span></code> directory.  Again, create a <code class="docutils literal"><span class="pre">mymod.rst</span></code> file in the appropriate
+place. This file will have contents as follows:</p>
+<p><strong>mymod.rst:</strong></p>
+<div class="highlight-rst"><div class="highlight"><pre><span></span><span class="gh">My Awesome Module</span>
+<span class="gh">=====================================</span>
+
+<span class="p">..</span> <span class="ow">autodoxygenindex</span><span class="p">::</span> mymod.h
+    <span class="nc">:source:</span> <span class="nf">pyne_mymod</span>
+</pre></div>
+</div>
+<p>This must be performed for every header file.  Again, open up the <code class="docutils literal"><span class="pre">index.rst</span></code> file
+edit the <code class="docutils literal"><span class="pre">toctree</span></code> to indclue <code class="docutils literal"><span class="pre">mymod</span></code> where appropriate.</p>
+</div>
+</div>
+<div class="section" id="user-s-guide">
+<h2>User&#8217;s Guide<a class="headerlink" href="#user-s-guide" title="Permalink to this headline">¶</a></h2>
+<p>The user&#8217;s guide is available for additions via the <code class="docutils literal"><span class="pre">docs/usersguide</span></code> directory.
+This is a more free-form and high-level introduction to pyne topics than anywhere
+else. Simply write rst files and add them to the <code class="docutils literal"><span class="pre">index.rst</span></code>.</p>
+</div>
+<div class="section" id="gallery">
+<h2>Gallery<a class="headerlink" href="#gallery" title="Permalink to this headline">¶</a></h2>
+<p>The gallery is a collection of IPython notebooks which provide simple examples of
+how to perform tasks with pyne.</p>
+</div>
+<div class="section" id="theory-manual">
+<h2>Theory Manual<a class="headerlink" href="#theory-manual" title="Permalink to this headline">¶</a></h2>
+<p>The theory manual is a required document for our quality assurance. These
+documents have a well defined structure that you may see in the
+<code class="docutils literal"><span class="pre">docs/theorymanual/theory_template.rst.t</span></code> file.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">How to Document PyNE</a><ul>
+<li><a class="reference internal" href="#docstrings">Docstrings</a></li>
+<li><a class="reference internal" href="#auto-documentation-hooks">Auto-Documentation Hooks</a><ul>
+<li><a class="reference internal" href="#python-cython-hooks">Python &amp; Cython Hooks</a></li>
+<li><a class="reference internal" href="#c-et-al-hooks">C++ et al. Hooks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#user-s-guide">User&#8217;s Guide</a></li>
+<li><a class="reference internal" href="#gallery">Gallery</a></li>
+<li><a class="reference internal" href="#theory-manual">Theory Manual</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

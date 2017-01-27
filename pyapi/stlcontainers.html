@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>C++ Standard Library Converters – pyne.stlcontainers &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="c-standard-library-converters-pyne-stlcontainers">
+<span id="pyne-stlcontainers"></span><h1>C++ Standard Library Converters &#8211; <code class="xref py py-mod docutils literal"><span class="pre">pyne.stlcontainers</span></code><a class="headerlink" href="#c-standard-library-converters-pyne-stlcontainers" title="Permalink to this headline">¶</a></h1>
+<p>This module contains wrapper classes for commonly used constructs
+in the C++ standard library.  Because Cython does not yet do templating,
+these classes must be declared and defined for every type.</p>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">stlcontainers</span></code> module:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">stlcontainers</span>
+</pre></div>
+</div>
+<p>This module is largely used by PyNE under the convers, in Cython and elsewhere.
+However, these classes are of more general interest, so feel free to use them in
+your own code as well.</p>
+<div class="section" id="set-proxies">
+<h2>Set Proxies<a class="headerlink" href="#set-proxies" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.stlcontainers.SetInt">
+<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">SetInt</code><a class="headerlink" href="#pyne.stlcontainers.SetInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for C++ standard library sets of type &lt;integer&gt;.
+Provides set like interface on the Python level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_set</strong> : bool or set-like</p>
+<blockquote>
+<div><p>Boolean on whether to make a new set or not, or set-like object
+with values which are castable to the appropriate type.</p>
+</div></blockquote>
+<p><strong>free_set</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag for whether the pointer to the C++ set should be deallocated
+when the wrapper is dereferenced.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.stlcontainers.SetStr">
+<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">SetStr</code><a class="headerlink" href="#pyne.stlcontainers.SetStr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for C++ standard library sets of type &lt;string&gt;.
+Provides set like interface on the Python level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_set</strong> : bool or set-like</p>
+<blockquote>
+<div><p>Boolean on whether to make a new set or not, or set-like object
+with values which are castable to the appropriate type.</p>
+</div></blockquote>
+<p><strong>free_set</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag for whether the pointer to the C++ set should be deallocated
+when the wrapper is dereferenced.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="map-proxies">
+<h2>Map Proxies<a class="headerlink" href="#map-proxies" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.stlcontainers.MapStrInt">
+<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapStrInt</code><a class="headerlink" href="#pyne.stlcontainers.MapStrInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for C++ standard library maps of type &lt;string, integer&gt;.
+Provides dictionary like interface on the Python level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_map</strong> : bool or dict-like</p>
+<blockquote>
+<div><p>Boolean on whether to make a new map or not, or dict-like object
+with keys and values which are castable to the appropriate type.</p>
+</div></blockquote>
+<p><strong>free_map</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag for whether the pointer to the C++ map should be deallocated
+when the wrapper is dereferenced.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.stlcontainers.MapIntStr">
+<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapIntStr</code><a class="headerlink" href="#pyne.stlcontainers.MapIntStr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for C++ standard library maps of type &lt;integer, string&gt;.
+Provides dictionary like interface on the Python level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_map</strong> : bool or dict-like</p>
+<blockquote>
+<div><p>Boolean on whether to make a new map or not, or dict-like object
+with keys and values which are castable to the appropriate type.</p>
+</div></blockquote>
+<p><strong>free_map</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag for whether the pointer to the C++ map should be deallocated
+when the wrapper is dereferenced.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.stlcontainers.MapIntDouble">
+<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapIntDouble</code><a class="headerlink" href="#pyne.stlcontainers.MapIntDouble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for C++ standard library maps of type &lt;integer, double&gt;.
+Provides dictionary like interface on the Python level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_map</strong> : bool or dict-like</p>
+<blockquote>
+<div><p>Boolean on whether to make a new map or not, or dict-like object
+with keys and values which are castable to the appropriate type.</p>
+</div></blockquote>
+<p><strong>free_map</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag for whether the pointer to the C++ map should be deallocated
+when the wrapper is dereferenced.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.stlcontainers.MapIntComplex">
+<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapIntComplex</code><a class="headerlink" href="#pyne.stlcontainers.MapIntComplex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for C++ standard library maps of type &lt;integer, complex&gt;.
+Provides dictionary like interface on the Python level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_map</strong> : bool or dict-like</p>
+<blockquote>
+<div><p>Boolean on whether to make a new map or not, or dict-like object
+with keys and values which are castable to the appropriate type.</p>
+</div></blockquote>
+<p><strong>free_map</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag for whether the pointer to the C++ map should be deallocated
+when the wrapper is dereferenced.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">C++ Standard Library Converters &#8211; <code class="docutils literal"><span class="pre">pyne.stlcontainers</span></code></a><ul>
+<li><a class="reference internal" href="#set-proxies">Set Proxies</a></li>
+<li><a class="reference internal" href="#map-proxies">Map Proxies</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Spatial Solver Users Guide &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="spatial-solver-users-guide">
+<span id="usersguide-spatialsolver"></span><h1>Spatial Solver Users Guide<a class="headerlink" href="#spatial-solver-users-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="example-use-of-spatial-solver">
+<h2>Example Use of Spatial Solver<a class="headerlink" href="#example-use-of-spatial-solver" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">pyne</span>
+<span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">pyne.spatialsolver</span>
+<span class="gp">In [3]: </span><span class="n">input_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="s1">&#39;Jane&#39;</span><span class="p">,</span> <span class="s1">&#39;Age&#39;</span><span class="p">:</span> <span class="mi">27</span><span class="p">};</span>
+<span class="gp">In [4]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;AHOTN&quot;</span>
+<span class="gp">In [5]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;solver_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;LN&quot;</span>
+<span class="gp">In [6]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;spatial_order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">In [7]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;spatial_method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">In [8]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;angular_quadrature_order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">In [9]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;angular_quadrature_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">In [10]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;nodes_xyz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">In [11]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;num_groups&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">In [12]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;num_materials&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">In [13]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;x_cells_widths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="gp">In [14]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;y_cells_widths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="gp">In [15]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;z_cells_widths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="gp">In [16]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;x_boundry_conditions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">In [17]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;y_boundry_conditions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">In [18]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;z_boundry_conditions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">In [19]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;material_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="p">],</span>
+<span class="go">                             [ [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1] ],</span>
+<span class="go">                             [ [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1] ],</span>
+<span class="go">                             [ [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1] ] ]</span>
+<span class="gp">In [20]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;quadrature_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quad_file&#39;</span>
+<span class="gp">In [21]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;xs_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;xs_file&#39;</span>
+<span class="gp">In [22]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;source_input_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;src_4.dat&#39;</span>
+<span class="gp">In [23]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;bc_input_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bc_4.dat&#39;</span>
+<span class="gp">In [24]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;flux_output_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;phi_4.ahot&#39;</span>
+<span class="gp">In [25]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;convergence_criterion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.e-12</span>
+<span class="gp">In [26]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;max_iterations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">6000</span>
+<span class="gp">In [27]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;moments_converged&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">In [28]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;converge_tolerence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.e-10</span>
+<span class="gp">In [29]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;ichk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">In [30]: </span><span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;ichk_tolerence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.e-14</span>
+<span class="gp">In [31]: </span><span class="n">dict_results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">In [32]: </span><span class="n">dict_results</span> <span class="o">=</span> <span class="n">pyne</span><span class="o">.</span><span class="n">spatialsolver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">input_dict</span><span class="p">)</span>
+<span class="gp">In [33]: </span><span class="k">if</span><span class="p">(</span><span class="n">dict_results</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]):</span>
+<span class="gp">In [34]: </span>  <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Yay, job ran succesfully!&#39;</span><span class="p">)</span>
+<span class="gp">In [35]: </span><span class="k">print</span><span class="p">(</span><span class="n">dict_results</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">])</span>
+<span class="gp">In [36]: </span><span class="k">print</span><span class="p">(</span><span class="n">dict_results</span><span class="p">[</span><span class="s1">&#39;error_msg&#39;</span><span class="p">])</span>
+<span class="gp">In [37]: </span><span class="k">print</span><span class="p">(</span><span class="n">dict_results</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">])</span>
+<span class="gp">In [38]: </span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;Total solving time was: &#39;</span><span class="p">)</span>
+<span class="gp">In [39]: </span><span class="k">print</span><span class="p">(</span><span class="n">dict_results</span><span class="p">[</span><span class="s1">&#39;total_time&#39;</span><span class="p">])</span>
+<span class="gp">In [40]: </span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;Solver call started at: &#39;</span><span class="p">)</span>
+<span class="gp">In [41]: </span><span class="k">print</span><span class="p">(</span><span class="n">dict_results</span><span class="p">[</span><span class="s1">&#39;time_start&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>For meanings of the above keys, see the pyne.spatialsolver python api!</p>
+<p>For a more in depth example see the spatial solver section of the tutorials.
+<a class="reference internal" href="../pyapi/spatialsolver.html#pyne-spatialsolver"><span class="std std-ref">Spatialsolver Support &#8211; pyne.spatialsolver</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Spatial Solver Users Guide</a><ul>
+<li><a class="reference internal" href="#example-use-of-spatial-solver">Example Use of Spatial Solver</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

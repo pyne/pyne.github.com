@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>C++ API &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="c-api">
+<span id="cppapi"></span><h1><a class="reference external" href="html/index.html">C++ API</a><a class="headerlink" href="#c-api" title="Permalink to this headline">¶</a></h1>
+<p>The Doxygen generated C++ API reference can be found <a class="reference external" href="html/index.html">here</a></p>
+<p>The following files and libraries are part of the PyNE C++ interface:</p>
+<ul class="simple">
+<li>pyne</li>
+<li>nucname</li>
+<li>rxname</li>
+<li>particle</li>
+<li>data</li>
+<li>material</li>
+<li>enrichment</li>
+<li>extra_types</li>
+<li>h5wrap</li>
+</ul>
+<div class="section" id="using-the-c-api">
+<h2>Using the C++ API<a class="headerlink" href="#using-the-c-api" title="Permalink to this headline">¶</a></h2>
+<p>While PyNE is a Python package, much of its core functionality exists purely in C/C++.
+The python wrappers that expose these C-level utilities exist independently of the the
+C-code.  Therefore it is possible to use, compile, and link directly to PyNE core
+libraries from lower-level languages without having to touch Python at all.
+Additionally, this enables PyNE to be used from <em>within</em> other Python extension
+modules!</p>
+<p>The API for PyNE functions on the C++ level is very similar to that which is exposed
+to Python.  The differences lie largely in that C functions are strongly typed,
+whereas PyNE&#8217;s wrappers take heavy advantage of Python&#8217;s duck typing.  For most use
+cases, the <a class="reference internal" href="../usersguide/index.html#usersguide"><span class="std std-ref">User&#8217;s Guide</span></a>, the <a class="reference internal" href="../pyapi/index.html#pyapi"><span class="std std-ref">Python API</span></a>, and the header files should be
+sufficient to describe the C++ API.</p>
+<p>PyNE creates a single shared object called <code class="docutils literal"><span class="pre">libpyne.so</span></code> (or equivalent) and is
+installed into Python&#8217;s <code class="docutils literal"><span class="pre">&lt;prefix&gt;/lib</span></code> directory.  The
+headers for C/C++ are installed into the <code class="file docutils literal"><span class="pre">&lt;prefix&gt;/include/pyne</span></code> directory.
+Unfortunately, where <code class="file docutils literal"><span class="pre">&lt;prefix&gt;</span></code> is located changes based on the Python
+interpreter and arguments passed to <code class="docutils literal"><span class="pre">setup.py</span></code> at install time.
+These often change from one system to another. However, these locations may be
+found from either the <code class="docutils literal"><span class="pre">pyne</span></code> or the <code class="docutils literal"><span class="pre">pyne_config</span></code> module.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">lib</span><span class="p">,</span> <span class="n">includes</span>
+
+<span class="gp">In [2]: </span><span class="n">lib</span>
+<span class="gr">Out[2]: </span><span class="s1">&#39;/usr/lib64&#39;</span>
+
+<span class="gp">In [3]: </span><span class="n">includes</span>
+<span class="gr">Out[3]: </span><span class="s1">&#39;/usr/include&#39;</span>
+</pre></div>
+</div>
+<p>Therefore to link against pyne, add the following options to your linker:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>-lpyne -L<span class="k">$(</span>python -c <span class="s1">&#39;import pyne; print(pyne.lib)&#39;</span><span class="k">)</span>
+</pre></div>
+</div>
+<p>To include pyne from other C/C++ code, use the top-level pyne header:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;pyne/pyne.h&quot;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>And be sure that the include directory is on your <code class="docutils literal"><span class="pre">C_INLCUDE_PATH</span></code> and
+<code class="docutils literal"><span class="pre">CPLUS_INLCUDE_PATH</span></code>.  You can do so from your compiler with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>-I<span class="k">$(</span>python -c <span class="s1">&#39;import pyne; print(pyne.includes)&#39;</span><span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="amalgamating-pyne-into-a-single-source-file">
+<h2>Amalgamating PyNE into a Single Source File<a class="headerlink" href="#amalgamating-pyne-into-a-single-source-file" title="Permalink to this headline">¶</a></h2>
+<p>PyNE has a lot of great stuff in it! However, adding dependencies to C++ projects
+can be annoying, frustrating, and error prone. It often seems easier to just rip
+out the functionality that you need and include it in your own project.</p>
+<p><em>Good news!</em> PyNE offers a formal mechanism for combining some or all of its
+C++ API into a single, redistributable source file and an accompanying header file.
+This let&#8217;s you use pyne in your projects without adding pyne as an external dependency.
+This mechanism is known as <em>amalgamation</em>.</p>
+<p>In the top level pyne source code directory, there is an <code class="docutils literal"><span class="pre">amalgamate.py</span></code> script.
+Simply run this script to combine all C++ source information into <code class="docutils literal"><span class="pre">pyne.cpp</span></code> and
+<code class="docutils literal"><span class="pre">pyne.h</span></code> files.  Run with no options to combine all commonly used C++ files.
+Add options to modify the behavior.  Current options are:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>scopatz@ares ~/pyne $ ./amalgamate.py -h
+usage: amalgamate.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-s SOURCE_PATH<span class="o">]</span> <span class="o">[</span>-i HEADER_PATH<span class="o">]</span>
+                     <span class="o">[</span>-f FILES <span class="o">[</span>FILES ...<span class="o">]]</span>
+
+optional arguments:
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -s SOURCE_PATH        Output *.cpp <span class="nb">source</span> path.
+  -i HEADER_PATH        Output header path.
+  -f FILES <span class="o">[</span>FILES ...<span class="o">]</span>  Files to amalgamate.
+</pre></div>
+</div>
+<p>For example, to take only up through the rxname, amalgamate with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>scopatz@ares ~/pyne $ ./amalgamate.py -s pyne.cc -i pyne.h -f license.txt <span class="se">\</span>
+cpp/pyne.* cpp/extra_types.h cpp/h5wrap.h cpp/nucname.* cpp/rxname.*
+</pre></div>
+</div>
+<p><a class="reference external" href="http://fuelcycle.org">Cyclus</a> is an example of a project which uses an amalgamated
+version of pyne.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">C++ API</a><ul>
+<li><a class="reference internal" href="#using-the-c-api">Using the C++ API</a></li>
+<li><a class="reference internal" href="#amalgamating-pyne-into-a-single-source-file">Amalgamating PyNE into a Single Source File</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="#">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

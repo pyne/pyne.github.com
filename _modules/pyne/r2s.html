@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.r2s &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.r2s</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">isfile</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">pyne.mcnp</span> <span class="k">import</span> <span class="n">Meshtal</span>
+<span class="kn">from</span> <span class="nn">pyne.alara</span> <span class="k">import</span> <span class="n">mesh_to_fluxin</span><span class="p">,</span> <span class="n">record_to_geom</span><span class="p">,</span> <span class="n">photon_source_to_hdf5</span><span class="p">,</span> \
+                       <span class="n">photon_source_hdf5_to_mesh</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="irradiation_setup"><a class="viewcode-back" href="../../pyapi/r2s.html#pyne.r2s.irradiation_setup">[docs]</a><span class="k">def</span> <span class="nf">irradiation_setup</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">,</span> <span class="n">alara_params</span><span class="p">,</span> <span class="n">tally_num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                      <span class="n">geom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_rays</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flux_tag</span><span class="o">=</span><span class="s2">&quot;n_flux&quot;</span><span class="p">,</span>
+                      <span class="n">fluxin</span><span class="o">=</span><span class="s2">&quot;alara_fluxin&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">alara_inp</span><span class="o">=</span><span class="s2">&quot;alara_geom&quot;</span><span class="p">,</span> <span class="n">alara_matlib</span><span class="o">=</span><span class="s2">&quot;alara_matlib&quot;</span><span class="p">,</span>
+                      <span class="n">output_mesh</span><span class="o">=</span><span class="s2">&quot;r2s_step1.h5m&quot;</span><span class="p">,</span> <span class="n">output_material</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function is used to setup the irradiation inputs after the first</span>
+<span class="sd">    R2S transport step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flux_mesh : PyNE Meshtal object, Mesh object, or str</span>
+<span class="sd">        The source of the neutron flux information. This can be a PyNE Meshtal</span>
+<span class="sd">        object, a pyne Mesh object, or the filename an MCNP meshtal file, or</span>
+<span class="sd">        the filename of an unstructured mesh tagged with fluxes.</span>
+<span class="sd">    tally_num : int</span>
+<span class="sd">        The MCNP FMESH4 tally number of the neutron flux tally within the</span>
+<span class="sd">        meshtal file.</span>
+<span class="sd">    cell_mats : dict</span>
+<span class="sd">        Maps geometry cell numbers to PyNE Material objects.</span>
+<span class="sd">    alara_params : str</span>
+<span class="sd">        The ALARA input blocks specifying everything except the geometry</span>
+<span class="sd">        and materials. This can either be passed as string or as a file name.</span>
+<span class="sd">    geom : str, optional</span>
+<span class="sd">        The file name of a DAGMC-loadable faceted geometry. This is only</span>
+<span class="sd">        necessary if the geometry is not already loaded into memory.</span>
+<span class="sd">    num_rays : int, optional</span>
+<span class="sd">        The number of rays to fire down a mesh row for geometry discretization.</span>
+<span class="sd">        This number must be a perfect square if grid=True.</span>
+<span class="sd">    grid : bool, optional</span>
+<span class="sd">        The if False, geometry discretization will be done with randomly fired</span>
+<span class="sd">        rays. If true, a grid of sqrt(num_rays) x sqrt(num_rays) rays is used</span>
+<span class="sd">        for each mesh row.</span>
+<span class="sd">    flux_tag : str, optional</span>
+<span class="sd">        The iMesh tag for the neutron flux.</span>
+<span class="sd">    fluxin : str, optional</span>
+<span class="sd">        The name of the ALARA fluxin file to be created.</span>
+<span class="sd">    reverse : bool, optional</span>
+<span class="sd">        If True the fluxes in the fluxin file will be printed in the reverse</span>
+<span class="sd">        order of how they appear within the flux vector tag. Since MCNP and</span>
+<span class="sd">        the Meshtal class order fluxes from low energy to high energy, this</span>
+<span class="sd">        option should only be true if the transmutation data being used is</span>
+<span class="sd">        ordered from high energy to low energy.</span>
+<span class="sd">    alara_inp : str, optional</span>
+<span class="sd">        The name of the ALARA input file to be created.</span>
+<span class="sd">    alara_matlib : str, optional</span>
+<span class="sd">        The name of the alara_matlib file to be created.</span>
+<span class="sd">    output_mesh : str, optional</span>
+<span class="sd">        A mesh containing all the fluxes and materials used for irradiation</span>
+<span class="sd">        setup.</span>
+<span class="sd">    output_material : bool, optional</span>
+<span class="sd">        If true, output mesh will have materials as determined by</span>
+<span class="sd">        dagmc.discretize_geom()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pyne.dagmc</span> <span class="k">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">discretize_geom</span>
+    <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">isfile</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
+        <span class="n">load</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+    <span class="c1">#  flux_mesh is Mesh object</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">flux_mesh</span>
+    <span class="c1">#  flux_mesh is unstructured mesh file</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">isfile</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">)</span> \
+         <span class="ow">and</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.h5m&quot;</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">(</span><span class="n">structured</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">flux_mesh</span><span class="p">)</span>
+    <span class="c1">#  flux_mesh is Meshtal or meshtal file</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#  flux_mesh is meshtal file</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">isfile</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">):</span>
+            <span class="n">flux_mesh</span> <span class="o">=</span> <span class="n">Meshtal</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span>
+                                <span class="p">{</span><span class="n">tally_num</span><span class="p">:</span> <span class="p">(</span><span class="n">flux_tag</span><span class="p">,</span> <span class="n">flux_tag</span> <span class="o">+</span> <span class="s2">&quot;_err&quot;</span><span class="p">,</span>
+                                             <span class="n">flux_tag</span> <span class="o">+</span> <span class="s2">&quot;_total&quot;</span><span class="p">,</span>
+                                             <span class="n">flux_tag</span> <span class="o">+</span> <span class="s2">&quot;_err_total&quot;</span><span class="p">)},</span>
+                                <span class="n">meshes_have_mats</span><span class="o">=</span><span class="n">output_material</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span>
+        <span class="c1">#  flux_mesh is Meshtal object</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="n">Meshtal</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;meshtal argument not a Mesh object, Meshtal&quot;</span>
+                             <span class="s2">&quot; object, MCNP meshtal file or meshtal.h5m file.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">structured</span><span class="p">:</span>
+        <span class="n">cell_fracs</span> <span class="o">=</span> <span class="n">discretize_geom</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">num_rays</span><span class="o">=</span><span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cell_fracs</span> <span class="o">=</span> <span class="n">discretize_geom</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">output_material</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">cell_fracs_to_mats</span><span class="p">(</span><span class="n">cell_fracs</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">)</span>
+
+    <span class="n">mesh_to_fluxin</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">flux_tag</span><span class="p">,</span> <span class="n">fluxin</span><span class="p">,</span> <span class="n">reverse</span><span class="p">)</span>
+    <span class="n">record_to_geom</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">cell_fracs</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">,</span> <span class="n">alara_inp</span><span class="p">,</span> <span class="n">alara_matlib</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">alara_params</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">alara_params</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">alara_params</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">alara_inp</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">alara_params</span><span class="p">)</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">write_hdf5</span><span class="p">(</span><span class="n">output_mesh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="photon_sampling_setup"><a class="viewcode-back" href="../../pyapi/r2s.html#pyne.r2s.photon_sampling_setup">[docs]</a><span class="k">def</span> <span class="nf">photon_sampling_setup</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">phtn_src</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads in an ALARA photon source file and creates and tags</span>
+<span class="sd">    photon source densities onto a Mesh object for the second R2S transport</span>
+<span class="sd">    step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : PyNE Mesh</span>
+<span class="sd">       The object containing the iMesh instance to be tagged.</span>
+<span class="sd">    phtn_src : str</span>
+<span class="sd">        The path of the ALARA phtn_file.</span>
+<span class="sd">    tags: dict</span>
+<span class="sd">        A dictionary were the keys are tuples with two values. The first is a</span>
+<span class="sd">        string denoting an nuclide in any form that is understood by</span>
+<span class="sd">        pyne.nucname (e.g. &#39;1001&#39;, &#39;U-235&#39;, &#39;242Am&#39;) or &#39;TOTAL&#39; for all</span>
+<span class="sd">        nuclides. The second is a string denoting the decay time as it appears</span>
+<span class="sd">        in the phtn_src file (e.g. &#39;shutdown&#39;, &#39;1 h&#39; &#39;3 d&#39;). The values of the</span>
+<span class="sd">        dictionary are the requested tag names for the combination of nuclide</span>
+<span class="sd">        and decay time. These tag names should be the tag names that are read</span>
+<span class="sd">        by the sampling subroutine. For example:</span>
+
+<span class="sd">        tags = {(&#39;U-235&#39;, &#39;shutdown&#39;): &#39;tag1&#39;, (&#39;TOTAL&#39;, &#39;1 h&#39;): &#39;tag2&#39;}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">photon_source_to_hdf5</span><span class="p">(</span><span class="n">phtn_src</span><span class="p">)</span>
+    <span class="n">h5_file</span> <span class="o">=</span> <span class="n">phtn_src</span> <span class="o">+</span> <span class="s2">&quot;.h5&quot;</span>
+    <span class="n">photon_source_hdf5_to_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">h5_file</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="total_photon_source_intensity"><a class="viewcode-back" href="../../pyapi/r2s.html#pyne.r2s.total_photon_source_intensity">[docs]</a><span class="k">def</span> <span class="nf">total_photon_source_intensity</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads mesh tagged with photon source densities and returns</span>
+<span class="sd">    the total photon emission desinty.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    m : PyNE Mesh</span>
+<span class="sd">       The mesh-based photon emission density distribution in p/cm3/s.</span>
+<span class="sd">    tag_name : str</span>
+<span class="sd">       The name of the tag on the mesh with the photon emission density information.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    intensity : float</span>
+<span class="sd">        The total photon emission density across the entire mesh (p/s).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sd_tag</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">tag_name</span><span class="p">)</span>
+    <span class="n">intensity</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ve</span><span class="p">)</span>
+        <span class="n">ve_data</span> <span class="o">=</span> <span class="n">sd_tag</span><span class="p">[</span><span class="n">ve</span><span class="p">]</span>
+        <span class="n">intensity</span> <span class="o">+=</span> <span class="n">vol</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ve_data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">intensity</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Binning &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="binning">
+<span id="theorymanual-bins"></span><h1>Binning<a class="headerlink" href="#binning" title="Permalink to this headline">¶</a></h1>
+<p>This page explains the mathematics behind the binning functionality found in
+<code class="xref py py-mod docutils literal"><span class="pre">bins</span></code>. The binning functions are purely mathematical in nature though
+they do have application in other parts of pyne that deal more directly physics
+with physics.</p>
+<div class="section" id="pointwise-linear-collapse">
+<h2>Pointwise Linear Collapse<a class="headerlink" href="#pointwise-linear-collapse" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-func docutils literal"><span class="pre">pointwise_linear_collapse()</span></code> function takes an array of pointwise
+data <img class="math" src="../_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> that has the independent variable <img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> and collapses this into
+<img class="math" src="../_images/math/b92c09a649305a0aef3239729d93cdf941e0e5cf.png" alt="G"/> groups as defined by the bin boundaries <img class="math" src="../_images/math/8d7933f8f95cd8f8322be1d70d706d9959a65c01.png" alt="x_g"/> where <img class="math" src="../_images/math/67f4714f065d485540ad40829e0717bf75e9dd85.png" alt="g"/>
+indexes <img class="math" src="../_images/math/b92c09a649305a0aef3239729d93cdf941e0e5cf.png" alt="G"/>. Both <img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> and <img class="math" src="../_images/math/8d7933f8f95cd8f8322be1d70d706d9959a65c01.png" alt="x_g"/> must be monotonic and in the
+same direction.  Say that there are <img class="math" src="../_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> points in <img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> and <img class="math" src="../_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/>.
+Let <img class="math" src="../_images/math/413f8a8e40062a9090d9d50b88bc7b551b314c26.png" alt="n"/> index <img class="math" src="../_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/>. Then for all points internal to a group, the
+collapsed value <img class="math" src="../_images/math/14ebce7d0454f2c50a5d775af18c93958cc1a157.png" alt="y_g"/> is:</p>
+<div class="math">
+<p><img src="../_images/math/448084fb2e82fdf470ec04a6b962d93a01573568.png" alt="y_g = \frac{1}{x_{g+1} - x_g} \sum_{n|x_g \le x_n}^{x_n \le x_{g+1}}
+    \frac{y_{n+1} + y_n}{2} * (x_{n+1} - x_n)"/></p>
+</div><p>The term <img class="math" src="../_images/math/06e1c933af0d5fcfd95eae0867c3b55d77a9715b.png" alt="(y_{n+1} + y_n)/2"/> is the center (average) value of a linear
+interpolation between the two points.  Therefore, <img class="math" src="../_images/math/14ebce7d0454f2c50a5d775af18c93958cc1a157.png" alt="y_g"/> is the
+<img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/>-weighted average of <img class="math" src="../_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> over the entire group.</p>
+<p>In the event that the line between <img class="math" src="../_images/math/2623d55b1760a35694c4eaa7362c6cb118a18a38.png" alt="y_n"/> and <img class="math" src="../_images/math/fd814902b5662370ea31747b343d2b81c37e45ca.png" alt="y_{n+1}"/> crosses
+either the lower or upper bin boundary (or both) then their values are
+adjusted via a linear interpolation to the value at the bin boundary.</p>
+<p>For a lower boundary crossing, the following substitutions are made to the
+equation above:</p>
+<div class="math">
+<p><img src="../_images/math/cd8e8be56f6f811fdaf310b14c95ec82fc9807c2.png" alt="x_n \to x_g"/></p>
+</div><div class="math">
+<p><img src="../_images/math/dabe85fea7a2f637d286b26b338ba440dd477780.png" alt="y_n \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_g - x_n) + y_n"/></p>
+</div><p>For an upper boundary crossing:</p>
+<div class="math">
+<p><img src="../_images/math/8da4268c45a0e4f6a81c6ec484fbcd786b06cb18.png" alt="x_{n+1} \to x_{g+1}"/></p>
+</div><div class="math">
+<p><img src="../_images/math/f14c7b5bb385a7b8c667f1ef939b30ded4bfc2a9.png" alt="y_{n+1} \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_{g+1} - x_n) + y_n"/></p>
+</div></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Binning</a><ul>
+<li><a class="reference internal" href="#pointwise-linear-collapse">Pointwise Linear Collapse</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

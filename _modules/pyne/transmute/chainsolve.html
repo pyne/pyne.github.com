@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.transmute.chainsolve &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.transmute.chainsolve</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module implements an ALARA[1]-like chain-based transmutation solver.</span>
+
+<span class="sd">   [1] Wilson, P. P. H. &quot;ALARA: Analytic Laplacian Adaptive Radioactivity </span>
+<span class="sd">   Analysis,&quot; a Ph.D. Dissertation, University of Wisconsin, Madison, WI, 1999.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">linalg</span>
+<span class="c1">#from scipy import sparse  # &lt;-- SPARSE</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">data</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">rxname</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nuc_data</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">from_atom_frac</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.data_source</span> <span class="k">import</span> <span class="n">NullDataSource</span><span class="p">,</span> <span class="n">EAFDataSource</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.cache</span> <span class="k">import</span> <span class="n">XSCache</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.channels</span> <span class="k">import</span> <span class="n">sigma_a</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Transmuter"><a class="viewcode-back" href="../../../pyapi/transmute/chainsolve.html#pyne.transmute.chainsolve.Transmuter">[docs]</a><span class="k">class</span> <span class="nc">Transmuter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class for transmuting materials using an ALARA-like chain solver.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="n">rxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Transmutations time [sec].</span>
+<span class="sd">        phi : float or array of floats</span>
+<span class="sd">            Neutron flux vector [n/cm^2/sec].  Currently this must either be </span>
+<span class="sd">            a scalar or match the group structure of EAF.</span>
+<span class="sd">        temp : float, optional</span>
+<span class="sd">            Temperature [K] of material, defaults to 300.0.</span>
+<span class="sd">        tol : float</span>
+<span class="sd">            Tolerance level for chain truncation.</span>
+<span class="sd">        rxs : set of ints or strs</span>
+<span class="sd">            Reaction ids or names to use in transmutation that produce well-defined </span>
+<span class="sd">            children.  This set should thus not include fission.  If None, then the </span>
+<span class="sd">            reactions from EAF are used.</span>
+<span class="sd">        log : file-like or None</span>
+<span class="sd">            The log file object should be written. A None imples the log is </span>
+<span class="sd">            not desired.</span>
+<span class="sd">        args : tuple, optional</span>
+<span class="sd">            Other arguments ignored for compatibility with other Transmuters.</span>
+<span class="sd">        kwargs : dict, optional</span>
+<span class="sd">            Other keyword arguments ignored for compatibility with other Transmuters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eafds</span> <span class="o">=</span> <span class="n">EAFDataSource</span><span class="p">()</span>
+        <span class="n">eafds</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">eafds</span><span class="o">.</span><span class="n">src_group_struct</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eafds</span><span class="o">.</span><span class="n">src_group_struct</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">eafds</span><span class="o">.</span><span class="n">dst_group_struct</span> <span class="o">=</span> <span class="n">gs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xscache</span> <span class="o">=</span> <span class="n">XSCache</span><span class="p">(</span><span class="n">group_struct</span><span class="o">=</span><span class="n">gs</span><span class="p">,</span> <span class="n">data_sources</span><span class="o">=</span><span class="p">(</span><span class="n">eafds</span><span class="p">,</span> <span class="n">NullDataSource</span><span class="p">,))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+        <span class="k">if</span> <span class="n">rxs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rxs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma_1&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma_2&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;p_1&#39;</span><span class="p">,</span> <span class="s1">&#39;p_2&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;d_1&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;d_2&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;t_1&#39;</span><span class="p">,</span> <span class="s1">&#39;t_2&#39;</span><span class="p">,</span> <span class="s1">&#39;He3&#39;</span><span class="p">,</span> <span class="s1">&#39;He3_1&#39;</span><span class="p">,</span> <span class="s1">&#39;He3_2&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a_1&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;a_2&#39;</span><span class="p">,</span> <span class="s1">&#39;z_2a&#39;</span><span class="p">,</span> <span class="s1">&#39;z_2p&#39;</span><span class="p">,</span> <span class="s1">&#39;z_2p_1&#39;</span><span class="p">,</span> <span class="s1">&#39;z_2p_2&#39;</span><span class="p">,</span> <span class="s1">&#39;z_2n&#39;</span><span class="p">,</span> <span class="s1">&#39;z_2n_1&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;z_2n_2&#39;</span><span class="p">,</span> <span class="s1">&#39;z_3n&#39;</span><span class="p">,</span> <span class="s1">&#39;z_3n_1&#39;</span><span class="p">,</span> <span class="s1">&#39;z_3n_2&#39;</span><span class="p">,</span> <span class="s1">&#39;na&#39;</span><span class="p">,</span> <span class="s1">&#39;na_1&#39;</span><span class="p">,</span> <span class="s1">&#39;na_2&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;z_2na&#39;</span><span class="p">,</span> <span class="s1">&#39;np&#39;</span><span class="p">,</span> <span class="s1">&#39;np_1&#39;</span><span class="p">,</span> <span class="s1">&#39;np_2&#39;</span><span class="p">,</span> <span class="s1">&#39;n2a&#39;</span><span class="p">,</span> <span class="s1">&#39;nd&#39;</span><span class="p">,</span> <span class="s1">&#39;nd_1&#39;</span><span class="p">,</span> <span class="s1">&#39;nd_2&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;nt&#39;</span><span class="p">,</span> <span class="s1">&#39;nt_1&#39;</span><span class="p">,</span> <span class="s1">&#39;nt_2&#39;</span><span class="p">,</span> <span class="s1">&#39;nHe3&#39;</span><span class="p">,</span> <span class="s1">&#39;nHe3_1&#39;</span><span class="p">,</span> <span class="s1">&#39;nHe3_2&#39;</span><span class="p">,</span><span class="s1">&#39;z_4n&#39;</span><span class="p">,</span> 
+                   <span class="s1">&#39;z_4n_1&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;n_1&#39;</span><span class="p">,</span> <span class="s1">&#39;n_2&#39;</span><span class="p">,</span> <span class="s1">&#39;z_3np&#39;</span><span class="p">]</span>
+        <span class="n">rxs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span> <span class="k">for</span> <span class="n">rx</span> <span class="ow">in</span> <span class="n">rxs</span><span class="p">])</span>
+        <span class="n">rxs</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;fission&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rxs</span> <span class="o">=</span> <span class="n">rxs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span>
+
+    <span class="nd">@phi</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flux</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensures that the flux is correctly formatted.&quot;&quot;&quot;</span>
+        <span class="n">flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flux</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">flux</span> <span class="o">/</span> <span class="mf">175.0</span><span class="p">)</span>
+            <span class="n">flux</span> <span class="o">=</span> <span class="n">_</span>
+        <span class="k">elif</span> <span class="n">flux</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">flux</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">175</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Group structure must match EAF.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">flux</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The flux vector must be 0- or 1-dimensional.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">flux</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Flux entries must be non-negative.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xscache</span><span class="o">.</span><span class="n">data_sources</span><span class="p">:</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">src_phi_g</span> <span class="o">=</span> <span class="n">flux</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xscache</span><span class="p">[</span><span class="s1">&#39;phi_g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">flux</span><span class="o">.</span><span class="n">sum</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">flux</span>
+
+<div class="viewcode-block" id="Transmuter.transmute"><a class="viewcode-back" href="../../../pyapi/transmute/chainsolve.html#pyne.transmute.chainsolve.Transmuter.transmute">[docs]</a>    <span class="k">def</span> <span class="nf">transmute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transmutes a material into its daughters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : Material or similar</span>
+<span class="sd">            Input material for transmutation.</span>
+<span class="sd">        t : float</span>
+<span class="sd">            Transmutations time [sec].</span>
+<span class="sd">        phi : float or array of floats</span>
+<span class="sd">            Neutron flux vector [n/cm^2/sec].  Currently this must either be </span>
+<span class="sd">            a scalar or match the group structure of EAF.</span>
+<span class="sd">        tol : float</span>
+<span class="sd">            Tolerance level for chain truncation.</span>
+<span class="sd">        log : file-like or None</span>
+<span class="sd">            The log file object should be written. A None imples the log is </span>
+<span class="sd">            not desired.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : Material</span>
+<span class="sd">            The output material post-transmutation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Material</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="k">if</span> <span class="n">phi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span>
+        <span class="k">if</span> <span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="k">if</span> <span class="n">tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+
+        <span class="n">x_atoms</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_atom_frac</span><span class="p">()</span>
+        <span class="n">y_atoms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">adens</span> <span class="ow">in</span> <span class="n">x_atoms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Find output for root of unit density and scale all output by </span>
+            <span class="c1"># actual nuclide density and add to final output.</span>
+            <span class="n">partial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transmute_partial</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">part_nuc</span><span class="p">,</span> <span class="n">part_adens</span> <span class="ow">in</span> <span class="n">partial</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">y_atoms</span><span class="p">[</span><span class="n">part_nuc</span><span class="p">]</span> <span class="o">=</span> <span class="n">part_adens</span> <span class="o">*</span> <span class="n">adens</span> <span class="o">+</span> <span class="n">y_atoms</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part_nuc</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">mw_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">molecular_mass</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">from_atom_frac</span><span class="p">(</span><span class="n">y_atoms</span><span class="p">,</span> <span class="n">atoms_per_molecule</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">atoms_per_molecule</span><span class="p">)</span>
+        <span class="c1"># even though it doesn&#39;t look like it, the following line is actually</span>
+        <span class="c1">#   mass_y = MW_y * mass_x / MW_x</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">mass</span> <span class="o">*=</span> <span class="n">x</span><span class="o">.</span><span class="n">mass</span> <span class="o">/</span> <span class="n">mw_x</span> 
+        <span class="k">return</span> <span class="n">y</span></div>
+
+    <span class="k">def</span> <span class="nf">_transmute_partial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Core method to transmute a material into its daughters.</span>
+<span class="sd">        This method assumes that the initial nuclide has unit density.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nuc : int </span>
+<span class="sd">            Nuclide id to be transmuted.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        partial : dict</span>
+<span class="sd">            A dictionary containing number densities for each nuclide after</span>
+<span class="sd">            the transmutation is carried out for the input nuclide. Keys are </span>
+<span class="sd">            nuclide ids and values are float number densities for the coupled</span>
+<span class="sd">            # what is the coupled?.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_destruction</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="c1"># DENSE</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">dest</span>
+        <span class="c1">#A = sparse.csr_matrix([[-dest]])  # &lt;-- SPARSE</span>
+        <span class="n">rootval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dest</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">partial</span> <span class="o">=</span> <span class="p">{</span><span class="n">nuc</span><span class="p">:</span> <span class="n">rootval</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traversal</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partial</span>
+
+    <span class="k">def</span> <span class="nf">_get_destruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the destruction rate of the nuclide.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nuc : int</span>
+<span class="sd">            Name of the nuclide in question</span>
+<span class="sd">        decay : bool</span>
+<span class="sd">            True if the decay constant should be added to the returned value.</span>
+<span class="sd">            False if only destruction from neutron reactions should be considered.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        d : float</span>
+<span class="sd">            Destruction rate of the nuclide.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xscache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xscache</span>
+        <span class="n">sig_a</span> <span class="o">=</span> <span class="n">sigma_a</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="n">xscache</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">from_barns</span><span class="p">(</span><span class="n">sig_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;cm2&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">xscache</span><span class="p">[</span><span class="s1">&#39;phi_g&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">decay</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">decay_const</span><span class="p">(</span><span class="n">nuc</span><span class="p">)):</span>
+            <span class="n">d</span> <span class="o">+=</span> <span class="n">data</span><span class="o">.</span><span class="n">decay_const</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="k">def</span> <span class="nf">_grow_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Grows the given matrix by one row and one column, adding necessary</span>
+<span class="sd">        production and destruction rates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : NumPy 2-dimensional array</span>
+<span class="sd">            The original matrix that must be grown.</span>
+<span class="sd">        prod : float</span>
+<span class="sd">            The production rate of the next nuclide in the chain.</span>
+<span class="sd">        dest : float</span>
+<span class="sd">            The destruction rate of the next nuclide in the chain.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        B : NumPy 2-dimensional array</span>
+<span class="sd">            The grown matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># DENSE</span>
+        <span class="c1"># Add row and column to current matrix</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">B</span><span class="p">[:</span><span class="n">n</span><span class="p">,:</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">n</span><span class="p">,:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">B</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Update new matrix with provided data</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">prod</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">dest</span>
+        <span class="c1"># SPARSE</span>
+        <span class="c1">#B = sparse.bmat([[A, None], [None, [[-dest]]]]).tocsr()</span>
+        <span class="c1">#B[n,n-1] = prod        </span>
+        <span class="k">return</span> <span class="n">B</span>
+
+    <span class="k">def</span> <span class="nf">_traversal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Nuclide transmutation traversal method.</span>
+
+<span class="sd">        This method will traverse the reaction tree recursively, using a DFS</span>
+<span class="sd">        algorithm. On termination, the method will return all number densities</span>
+<span class="sd">        after a given time that are a result of the starting nuclide.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nuc : int</span>
+<span class="sd">            ID of the active nuclide for the traversal.</span>
+<span class="sd">        A : NumPy 2-dimensional array</span>
+<span class="sd">            Current state of the coupled equation matrix.</span>
+<span class="sd">        out : dict</span>
+<span class="sd">            A dictionary containing the final recorded number densities for each</span>
+<span class="sd">            nuclide. Keys are nuclide names in integer id form. Values are</span>
+<span class="sd">            number densities for the coupled nuclide in float format.  This is </span>
+<span class="sd">            modified in place.</span>
+<span class="sd">        depth : int</span>
+<span class="sd">            Current depth of traversal (root at 0). Should never be provided by user.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xscache</span><span class="p">[</span><span class="s1">&#39;phi_g&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span>
+        <span class="n">xscache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xscache</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_tree</span><span class="p">(</span><span class="n">depth</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">prod</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># decay info</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decay_const</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="n">decay_branches</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">lam</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decay_branches</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">decay_child</span><span class="p">,</span> <span class="n">branch_ratio</span> <span class="ow">in</span> <span class="n">decay_branches</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prod</span><span class="p">[</span><span class="n">decay_child</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">branch_ratio</span>
+        <span class="c1"># reaction daughters</span>
+        <span class="k">for</span> <span class="n">rx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">child</span> <span class="o">=</span> <span class="n">rxname</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">child_xs</span> <span class="o">=</span> <span class="n">xscache</span><span class="p">[</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rr</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">from_barns</span><span class="p">(</span><span class="n">child_xs</span><span class="p">,</span> <span class="s1">&#39;cm2&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi</span>  <span class="c1"># reaction rate</span>
+            <span class="n">prod</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">rr</span> <span class="o">+</span> <span class="n">prod</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="c1"># Cycle production dictionary</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">prod</span><span class="p">:</span>
+            <span class="c1"># Grow matrix</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_destruction</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grow_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">prod</span><span class="p">[</span><span class="n">child</span><span class="p">],</span> <span class="n">d</span><span class="p">)</span>
+            <span class="c1"># Create initial density vector</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">N0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">N0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="c1"># Compute matrix exponential and dot with density vector</span>
+            <span class="n">eB</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+            <span class="n">N_final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">eB</span><span class="p">,</span> <span class="n">N0</span><span class="p">)</span>  <span class="c1"># &lt;-- DENSE</span>
+            <span class="c1">#N_final = eB.dot(N0)  # &lt;-- SPARSE</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log_tree</span><span class="p">(</span><span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">N_final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="c1"># Check against tolerance and continue traversal</span>
+            <span class="k">if</span> <span class="n">N_final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_traversal</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># On recursion exit or truncation, write data from this nuclide</span>
+            <span class="n">outval</span> <span class="o">=</span> <span class="n">N_final</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">outval</span><span class="p">:</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">outval</span>
+
+    <span class="k">def</span> <span class="nf">_log_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">numdens</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Logging method to track path of _traversal.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        depth : integer</span>
+<span class="sd">            Current depth of traversal (root at 0).</span>
+<span class="sd">        nuc : nucname</span>
+<span class="sd">            Current nuclide in traversal.</span>
+<span class="sd">        numdens : float</span>
+<span class="sd">            Current number density of nuc.</span>
+<span class="sd">        tree : File</span>
+<span class="sd">            File to write tree log to.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Don&#39;t print a zero density.</span>
+        <span class="k">if</span> <span class="n">numdens</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="s1">&#39;   |&#39;</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{spacing}</span><span class="s2">--&gt; </span><span class="si">{name}</span><span class="s2"> </span><span class="si">{numdens}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spacing</span><span class="o">=</span><span class="n">depth</span><span class="o">*</span><span class="n">space</span><span class="p">,</span> 
+                                                         <span class="n">numdens</span><span class="o">=</span><span class="n">numdens</span><span class="p">,</span>
+                                                         <span class="n">name</span><span class="o">=</span><span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nuc</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_decay_branches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a dictionary that contains the decay children of nuc as keys</span>
+<span class="sd">        to the branch ratio of that child&#39;s decay process.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nuc : int</span>
+<span class="sd">            Name of parent nuclide to get decay children of.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        decay_branches : dictionary</span>
+<span class="sd">            Keys are decay children of nuc in zzaaam format.</span>
+<span class="sd">            Values are the branch ratio of the decay child.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">decay_branches</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decay_children</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="n">decay_branches</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">branch_ratio</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">decay_branches</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../../install/index.html">Install</a></li>
+    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../../pubs.html">Publications</a></li>
+    <li><a href="../../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

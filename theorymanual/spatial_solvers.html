@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Spatial Solvers &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="spatial-solvers">
+<span id="theorymanual-spatialsolver"></span><h1>Spatial Solvers<a class="headerlink" href="#spatial-solvers" title="Permalink to this headline">¶</a></h1>
+<p>This page presents a brief summary of the implemented spatial discretization  methods used in the
+<code class="xref py py-mod docutils literal"><span class="pre">spatialsolver</span></code> module. For full details, consult &#8220;Development of a
+Quantitative Decision Metric for Selecting the Most Suitable Discretization
+Method for SN Transport Problems&#8221;, a dissertation by Sebastian Schunert <a class="reference internal" href="#schunert" id="id1">[Schunert]</a>.
+Chapter 2 contains a detailed description of the methods implemented in PyNE. All
+code in this module is derived from Dr. Schunert&#8217;s PhD work.</p>
+<p>The first order multigroup SN transport equations are a set of hyperbolic partial
+differential equations that are derived from the neutron transport equation by discretization
+of energy (multigroup) and direction (SN method). A single SN equations  approximates the
+neutron angular flux along a specific angular direction omega, such that omega(n)=(mu,
+eta,xi)^T, with n = 1,..,N, for a specific energy group.
+The spatial solver module contains a suite of discretization methods for the spatial dependence of the
+SN transport equations.</p>
+<p>All of the methods discussed here belong to a broader class of methods referred to as
+nodal methods. Nodal methods are characterized by the following properties:</p>
+<ul class="simple">
+<li>All function spaces are defined local to a mesh cell.</li>
+<li>Coupling between cells occurs only through their faces.</li>
+<li>Coupling between cells is only imposed in an integral sense.</li>
+<li>Increasing the order of the methods is achieved by increasing the local order of expansion.</li>
+<li>As the test space typically contains a constant test function, nodal methods are conservative.</li>
+</ul>
+<p>Nodal methods are closely related to discontinuous Finite Element Methods (DFEM) - a class of
+methods that was successfully deployed for the discretization of hyperbolic PDEs.
+Further, they are related to certain classes of Finite Volume Methods <a class="reference internal" href="#hesthaven" id="id2">[Hesthaven]</a>.</p>
+<p>In contrast to Finite Difference Methods, the unknowns of DFEM methods are expansion coefficients
+of the flux shape within a mesh cell. Therefore, DFEM methods always solve for the approximation
+of the flux shape, not just for disconnected point values. In this regard, they are similar to
+continuous FEM methods (CFEMS). However, the flux values on the faces between two cells are not unique
+for DFEMs, while they are unique for CFEMs. The particular choice of functions for approximating the
+flux shape within a cell distinguishes the various methods from each other.</p>
+<p>These following methods are implemented and described below:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#ahotn"><span class="std std-ref">General AHOTN</span></a></li>
+<li><a class="reference internal" href="#ahotn-nefd"><span class="std std-ref">AHOTN-NEFD</span></a></li>
+<li><a class="reference internal" href="#ahotn-ll-ln"><span class="std std-ref">AHOTN-LL/-LN</span></a></li>
+<li><a class="reference internal" href="#dgfem"><span class="std std-ref">General DGFEM</span></a></li>
+<li><a class="reference internal" href="#dgfem-lagrange"><span class="std std-ref">DGFEM-Lagrange</span></a></li>
+<li><a class="reference internal" href="#dgfem-complete"><span class="std std-ref">DGFEM-complete</span></a></li>
+<li><a class="reference internal" href="#dgfem-ld"><span class="std std-ref">DGFEM-LD</span></a></li>
+<li><a class="reference internal" href="#sct-step"><span class="std std-ref">SCT-STEP</span></a></li>
+</ul>
+<div class="section" id="general-ahotn">
+<span id="ahotn"></span><h2>General AHOTN<a class="headerlink" href="#general-ahotn" title="Permalink to this headline">¶</a></h2>
+<p>The Arbitrarily High Order Transport Method of the Nodal type (AHOTN) is a class
+of methods that was developed based on physical intuition for providing accurate
+solutions to the SN transport equations on optically thick cells. As the AHOTN methods
+are based on taking transverse moments of the SN equations, they are also referred to
+as transverse moment based (TMB) method.</p>
+<p>TMB methods can derived for an arbitrary expansion order Λ denoting the expansion
+order of the volumetric source term into Legendre polynomials.
+The set of equations for each angular direction and spatial mesh cell consists of
+two types of equations:</p>
+<ul class="simple">
+<li>Volumetric moments of the SN equations with respect to Legendre polynomials (balance equations).
+These equations have volume as well as face unknowns with the total number being larger than the
+number of equations.</li>
+<li>Closure relations derived via the transverse moment formalism. The transverse moment formalism
+is applied for the x, y and z direction separately and yields a ODE in the corresponding variable,
+respectively (<a class="reference internal" href="#schunert" id="id3">[Schunert]</a>, p.33).</li>
+</ul>
+<p>TMB methods are particularly good at resulting in accurate solutions on coarse
+spatial meshes (<a class="reference internal" href="#schunert" id="id4">[Schunert]</a>, p.33).  This is required, because many traditional methods,
+such as diamond difference (DD) fail when applied to coarse spatial meshes,
+resulting in either extremely inaccurate or negative solutions.</p>
+<p>The AHOTN methods are unique compared to most other TMB methods because they are
+developed to have a very compact weighted diamond difference (WDD) representation
+of the per-cell set of equations.  A full derivation of the AHOTN solutions to
+the SN equations can be found on pages 34-40 of <a class="reference internal" href="#schunert" id="id5">[Schunert]</a>.</p>
+<p>There are three TMB solvers accessible in PyNE, discussed further below:</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#ahotn-nefd"><span class="std std-ref">NEFD</span></a></li>
+<li><a class="reference internal" href="#ahotn-ll-ln"><span class="std std-ref">Linear-Nodal (LN)</span></a></li>
+<li><a class="reference internal" href="#ahotn-ll-ln"><span class="std std-ref">Linear-Linear (LL)</span></a></li>
+</ol>
+<div class="section" id="ahotn-nefd">
+<span id="id6"></span><h3>AHOTN-NEFD<a class="headerlink" href="#ahotn-nefd" title="Permalink to this headline">¶</a></h3>
+<p>The AHOTN method can be conveniently cast into a WDD form with all the AHOTN
+specifics lumped into spatial weights - one for each angular direction, spatial dimension and spatial mesh cell.
+Thus, a standard weighted diamond difference solver (WWD) that is available in most first order SN transport codes can be used to solve the per-cell AHOTN system of equations.
+Typically, the WDD relations are solved for the outflow face moments and substituted into the nodal
+balance relations, which are then solved for the (Λ + 1)^3 unknown nodal flux
+moments (this is called the NEFD algorithm) (<a class="reference internal" href="#schunert" id="id7">[Schunert]</a>, p.37).</p>
+<p>It is worth noting that in the limit of infinitely small cells, the AHOTN method
+becomes identical to the higher order diamond difference (HODD) method
+(<a class="reference internal" href="#schunert" id="id8">[Schunert]</a>, p.37).</p>
+<p>The order of trial functions used in the AHOTN method is denoted by appending a
+&#8220;-#&#8221;. E.g., AHOTN-1 uses a first order expansion.</p>
+</div>
+<div class="section" id="ahotn-ll-ln">
+<span id="id9"></span><h3>AHOTN-LL/-LN<a class="headerlink" href="#ahotn-ll-ln" title="Permalink to this headline">¶</a></h3>
+<p>Both the AHOTN Linear Linear (LL) and Linear Nodal (LN) methods are linear TMB methods
+that increase the level of approximations in order to  streamline the execution of the
+methods. The linear nature of this approximation allows for
+achieving high accuracy in reasonably short execution time, thus resulting in
+improved computational efficiency&#8221; (<a class="reference internal" href="#schunert" id="id10">[Schunert]</a>, p.37).
+The major difference to the AHOTN-1 method is that only those volume moments are retained
+whose sum (over x,y, and z) is equal or less than one. Further, the leakage terms are appropriately
+truncated to not introduce more unknowns. This reduces the number of equations to four balance relations and twelve WDD equations
+in three-dimensional geometry (<a class="reference internal" href="#schunert" id="id11">[Schunert]</a>, p.38).</p>
+<p>The difference between the LN and LL method is that the LL method retains the
+bilinear leakage component while the LN neglects it. From an algorithmic (i.e.
+solution of the local equations within the mesh sweep) point of view, the LN
+provides the least coupling among the set of equations. Conversely, the LL has
+stronger coupling in the WDD relations than both LN and AHOTN-1, and AHOTN-1
+has stronger coupling than LL and LN in the nodal balance equations [<a class="reference internal" href="#schunert" id="id12">[Schunert]</a>, p.40].</p>
+</div>
+</div>
+<div class="section" id="general-dgfem">
+<span id="dgfem"></span><h2>General DGFEM<a class="headerlink" href="#general-dgfem" title="Permalink to this headline">¶</a></h2>
+<p>The classical DFEM method is based on approximating the flux shape with polynomials within
+each cell. To derive a set of equations for the unknown expansion coefficients, the weak form
+of the SN transport equations is used. The weak form is an integral statement that is obtained
+by multiplying the SN transport equations with a test function and integrating it over the extend
+of a single mesh cell; finally using Green&#8217;s theorem yields the weak form.
+The weak form is used by selecting identical polynomial test and trial functions sets and substituting
+them into the weak form. As there are as many test functions as there are expansion coefficients, a closed
+set of equations is obtained (<a class="reference internal" href="#schunert" id="id13">[Schunert]</a>, p.25).</p>
+<p>Two families of DGFEM function spaces are most commonly used in discretizing the
+spatial variable in the SN approximation of the transport equation (<a class="reference internal" href="#schunert" id="id14">[Schunert]</a>, p.27):</p>
+<ol class="arabic simple">
+<li>the <em>complete</em> family and</li>
+<li>the <em>Lagrange</em> family</li>
+</ol>
+<p>The <em>complete</em> expansion of order Λ uses all Legendre polynomials whose orders sum at most Λ (Note that it does not
+matter which type of polynomials are used, instead of Legendre polynomials the set of monomials spanning the same space
+could be used). In contrast the <em>Lagrange</em> uses all Legendre polynomials whose maximum moment in x, y, or z dimension
+is less or equal than Λ. Thus, the <em>Lagrange</em> family of the same order comprises more members than the <em>complete</em>
+family.</p>
+<p>There are three DGFEM-type solvers accessible in PyNE, discussed further below:</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#dgfem-lagrange"><span class="std std-ref">Lagrange</span></a></li>
+<li><a class="reference internal" href="#dgfem-complete"><span class="std std-ref">Linear-Discontinuous (LD)</span></a></li>
+<li><a class="reference internal" href="#dgfem-ld"><span class="std std-ref">Linear-Linear (LL)</span></a></li>
+</ol>
+<p>When comparing the three included DGFEM solvers with a fixed expansion order, the <em>Lagrange</em> family
+is more accurate, but the <em>complete</em> family executes more quickly.</p>
+<div class="section" id="dgfem-lagrange">
+<span id="id15"></span><h3>DGFEM-Lagrange<a class="headerlink" href="#dgfem-lagrange" title="Permalink to this headline">¶</a></h3>
+<p>The DGFEM-Lagrange family solver is implemented using Legendre polynomial as
+basis functions (remember that Lagrange in this context does not refer to using
+Lagrange polynomials but rather to the members of the function space, or more accurately
+their span). The DGFEM-Lagrange solver can handle arbitrary expansion orders.
+The number of unknowns per cell and angular direction is (Λ+1)^3.</p>
+</div>
+<div class="section" id="dgfem-complete">
+<span id="id16"></span><h3>DGFEM-complete<a class="headerlink" href="#dgfem-complete" title="Permalink to this headline">¶</a></h3>
+<p>The same comments as for the DGFEM-Lagrange apply but the number of unknowns is
+(Λ+3)*(Λ+2)*(Λ+1)/6. For Λ=1 a special version, the DGFEM-LD solver, was implemented.</p>
+</div>
+<div class="section" id="dgfem-ld">
+<span id="id17"></span><h3>DGFEM-LD<a class="headerlink" href="#dgfem-ld" title="Permalink to this headline">¶</a></h3>
+<p>The linear discontinuous DGFEM method is the special case of the complete DGFEM
+method of order Λ = 1. It is special in that the local matrix implementing the
+equations is of size 4 × 4 and, therefore, its inverse can be precomputed &#8211;
+saving execution time (<a class="reference internal" href="#schunert" id="id18">[Schunert]</a>, p.92).</p>
+</div>
+</div>
+<div class="section" id="sct-step">
+<span id="id19"></span><h2>SCT-STEP<a class="headerlink" href="#sct-step" title="Permalink to this headline">¶</a></h2>
+<p>One of the problems  most spatial solvers encounter when solving the SN equations is the
+limited smoothness of the exact solution. Depending on the boundary conditions, realistic SN problems
+either have discontinuous angular fluxes or discontinuous first derivatives. The lack of smoothness
+stems from the non-smoothness of the boundary conditions at the corners of the domain (edges in three-dimensional geometry).
+This leads to a line (planes in 3D) of discontinuity within the domain which is referred to as Singular Characteristic (SC)
+(Singular Planes (SPs) in 3D).</p>
+<p>In particular for problems featuring a discontinuous angular flux, standard spatial discretization methods
+deliver inaccurate results that, depending on the chosen error norm, either do not converge to the exact solution (cell wise
+error norm) or converge at an extremely small convergence rate.</p>
+<p>A new method called Singular Characteristic Tracking Step solver (SCT-STEP) was developed by Schunert
+and Azmy to try to rectify this, by using a &#8220;step approximation in all cells
+that are intersected by lines and planes of non-smoothness&#8221; (<a class="reference internal" href="#schunert" id="id20">[Schunert]</a>, p.4).
+The SCT-STEP method is an extension of Duo’s SCT Step algorithm to three-
+dimensional cartesian geometry.</p>
+<p>The basic idea for the SCT-STEP is borrowed from Duo&#8217;s method: In
+two-dimensional geometry Duo suggested tracking the singular characteristic line
+through the mesh and applying a sub-cell approach in intersected cells to keep
+segments in these cells isolated from each other. For the solution of the subcell
+equations, Duo used the Step Characteristic method applied to each of the
+segments separately (<a class="reference internal" href="#schunert" id="id21">[Schunert]</a>, p.105).</p>
+<p>The extension to three-dimensional geometry requires tracking the SC and SPs through the domain
+and applying the step approximation in cells that are intersected either by the SC or a SP.</p>
+</div>
+<div class="section" id="advantages-disadvantages-discussion">
+<span id="advantages"></span><h2>Advantages &amp; Disadvantages Discussion<a class="headerlink" href="#advantages-disadvantages-discussion" title="Permalink to this headline">¶</a></h2>
+<p>The fastest executing methods are, as expected, the zeroth order Diamond Difference and
+the Linear Discontinuous method. These methods are followed by the Linear-Linear and the
+Linear Nodal methods, which are about five and nine times slower, respectively. The five fastest
+methods are either constant or linear approximation (with reduced number of cross moments),
+and neither of these need to call an external linear solver subroutine, either because the linear
+system is pre-solved or because no linear system needs to be solved.
+With increasing the expansion order, the computation time increases dramatically. This is mainly
+driven by the linear solve time, which makes up the fastest growing part of the computation time: the
+LU decomposition’s execution time scales cubically with the number of degrees of freedom of the
+linear system of equations, i.e. Λ^6 . It is therefore not surprising that among the arbitrary order
+methods, the DGFEM with complete function space requires the least execution time, and HODD is
+only marginally cheaper than AHOTN. DGFEM with Lagrange function space and Λ &gt; 1, however,
+surprisingly takes the longest execution time. The reason why DGLA-Λ with Λ &gt; 1 features
+much longer execution times than AHOTN or HODD of the same order is the significantly more
+expensive solution of the linear system of equations. Schunert conjectures that the structure of the
+DGLA matrices causes the Lapack routine dgesv to execute slower&#8221; (<a class="reference internal" href="#schunert" id="id22">[Schunert]</a>, p.103).</p>
+<p>The ultimate performance indicator is the computational efficiency which is the ability to
+obtain accurate results in as short a computational execution time as possible. While a detailed
+discussion of the various methods&#8217; computational efficiency is comprised in <a class="reference internal" href="#schunert" id="id23">[Schunert]</a>, the following
+summarizes these findings:</p>
+<ul class="simple">
+<li>If the problem features a discontinuous angular flux and the error is measured in the cell-wise infinity norm or 2-norm, the <a class="reference internal" href="#sct-step"><span class="std std-ref">SCT-STEP</span></a>  method is the most
+efficient method.</li>
+<li>If the error is measured in an integral error norm, i.e. computing region averaged fluxes or reaction rates, the <a class="reference internal" href="#ahotn-ll-ln"><span class="std std-ref">AHOTN-LL/-LN</span></a> are the most efficient methods.</li>
+<li>If the flux is continuous and the error is measured in a infinity norm or 2-norm, higher order methods perform better than lower order methods. For optically thick
+problems with cell aspect ratios close to one, the <a class="reference internal" href="#ahotn-nefd"><span class="std std-ref">AHOTN-NEFD</span></a> method is most efficient. If more skewed aspect ratios are considered, the
+<a class="reference internal" href="#dgfem-complete"><span class="std std-ref">DGFEM-complete</span></a> method is the most efficient.</li>
+</ul>
+</div>
+<div class="section" id="solver-assumptions">
+<span id="assumptions"></span><h2>Solver Assumptions<a class="headerlink" href="#solver-assumptions" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>All systems are steady state (no time dependence).</li>
+<li>All mediums are non-multiplying (sigmaf = 0). This is a limitation of the iteration structure around the
+spatial solvers. The spatial solvers are not limited to non-multiplying media.</li>
+<li>Isotropic scattering present.</li>
+</ol>
+</div>
+<div class="section" id="references">
+<span id="refs"></span><h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="schunert" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Schunert]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>, <a class="fn-backref" href="#id4">3</a>, <a class="fn-backref" href="#id5">4</a>, <a class="fn-backref" href="#id7">5</a>, <a class="fn-backref" href="#id8">6</a>, <a class="fn-backref" href="#id10">7</a>, <a class="fn-backref" href="#id11">8</a>, <a class="fn-backref" href="#id12">9</a>, <a class="fn-backref" href="#id13">10</a>, <a class="fn-backref" href="#id14">11</a>, <a class="fn-backref" href="#id18">12</a>, <a class="fn-backref" href="#id20">13</a>, <a class="fn-backref" href="#id21">14</a>, <a class="fn-backref" href="#id22">15</a>, <a class="fn-backref" href="#id23">16</a>)</em> SCHUNERT, SEBASTIAN. Development of a Quantitative Decision Metric for Selecting the Most Suitable Discretization Method for S N Transport Problems. (Under the direction of Yousry Y. Azmy.) <a class="reference external" href="http://repository.lib.ncsu.edu/ir/bitstream/1840.16/9048/1/etd.pdf">http://repository.lib.ncsu.edu/ir/bitstream/1840.16/9048/1/etd.pdf</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="hesthaven" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Hesthaven]</a></td><td>HESTHAVEN, J.S. and WARBURTON, T. Nodal Discontinuous Galerkin Methods. <a class="reference external" href="http://www.springer.com/us/book/9780387720654">http://www.springer.com/us/book/9780387720654</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Spatial Solvers</a><ul>
+<li><a class="reference internal" href="#general-ahotn">General AHOTN</a><ul>
+<li><a class="reference internal" href="#ahotn-nefd">AHOTN-NEFD</a></li>
+<li><a class="reference internal" href="#ahotn-ll-ln">AHOTN-LL/-LN</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#general-dgfem">General DGFEM</a><ul>
+<li><a class="reference internal" href="#dgfem-lagrange">DGFEM-Lagrange</a></li>
+<li><a class="reference internal" href="#dgfem-complete">DGFEM-complete</a></li>
+<li><a class="reference internal" href="#dgfem-ld">DGFEM-LD</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sct-step">SCT-STEP</a></li>
+<li><a class="reference internal" href="#advantages-disadvantages-discussion">Advantages &amp; Disadvantages Discussion</a></li>
+<li><a class="reference internal" href="#solver-assumptions">Solver Assumptions</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

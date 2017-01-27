@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Materials &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="materials">
+<span id="usersguide-material"></span><h1>Materials<a class="headerlink" href="#materials" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the Material class, which is used to represent nuclear
+materials throughout PyNE.</p>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">material</span></code> package:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span>
+</pre></div>
+</div>
+<p>Materials are the primary container for radionuclides. They map nuclides to <strong>mass weights</strong>,
+though they contain methods for converting to/from atom fractions as well.
+In many ways they take inspiration from numpy arrays and python dictionaries.  Materials
+have two main attributes which define them.</p>
+<ol class="arabic simple">
+<li><strong>comp</strong>: a normalized composition mapping from nuclides (zzaaam-ints) to mass-weights (floats).</li>
+<li><strong>mass</strong>: the mass of the material.</li>
+</ol>
+<p>By keeping the mass and the composition separate, operations that only affect one attribute
+may be performed independent of the other.  Additionally, most of the functionality is
+implemented in a C++ class by the same name, so this interface is very fast and light-weight.
+Materials may be initialized in a number of different ways.  For example, initializing from
+dictionaries of compositions are shown below.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span>
+
+<span class="gp">In [2]: </span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">,</span> <span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">},</span> <span class="mi">42</span><span class="p">)</span>
+
+<span class="gp">In [3]: </span><span class="n">leu</span>
+<span class="gr">Out[3]: </span><span class="n">pyne</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">({</span><span class="mi">922350</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{})</span>
+
+<span class="gp">In [4]: </span><span class="n">nucvec</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span>  <span class="mf">1.0</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span>  <span class="mf">1.0</span><span class="p">,</span> <span class="mi">691690</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">922350</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="gp">   ...:</span>           <span class="mi">922380</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">942390</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">942410</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">952420</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="gp">   ...:</span>           <span class="mi">962440</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+
+<span class="gp">In [5]: </span><span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">nucvec</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="k">print</span> <span class="n">mat</span>
+<span class="go">Material:</span>
+<span class="go">mass = 9.0</span>
+<span class="go">atoms per molecule = -1.0</span>
+<span class="go">-------------------------</span>
+<span class="go">H1     0.111111111111</span>
+<span class="go">O16    0.111111111111</span>
+<span class="go">TM169  0.111111111111</span>
+<span class="go">U235   0.111111111111</span>
+<span class="go">U238   0.111111111111</span>
+<span class="go">PU239  0.111111111111</span>
+<span class="go">PU241  0.111111111111</span>
+<span class="go">AM242  0.111111111111</span>
+<span class="go">CM244  0.111111111111</span>
+</pre></div>
+</div>
+<p>Materials may also be initialized from plain text or HDF5 files (see <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.from_text" title="pyne.material.Material.from_text"><code class="xref py py-meth docutils literal"><span class="pre">Material.from_text()</span></code></a> and
+<a class="reference internal" href="../pyapi/material.html#pyne.material.Material.from_hdf5" title="pyne.material.Material.from_hdf5"><code class="xref py py-meth docutils literal"><span class="pre">Material.from_hdf5()</span></code></a>).  Once you have a Material instance, you can always obtain the unnormalized
+mass vector through <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.mult_by_mass" title="pyne.material.Material.mult_by_mass"><code class="xref py py-meth docutils literal"><span class="pre">Material.mult_by_mass()</span></code></a>.  Normalization routines to normalize the mass
+<a class="reference internal" href="../pyapi/material.html#pyne.material.Material.normalize" title="pyne.material.Material.normalize"><code class="xref py py-meth docutils literal"><span class="pre">Material.normalize()</span></code></a> or the composition <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.norm_comp" title="pyne.material.Material.norm_comp"><code class="xref py py-meth docutils literal"><span class="pre">Material.norm_comp()</span></code></a> are also available.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">leu</span><span class="o">.</span><span class="n">mult_by_mass</span><span class="p">()</span>
+<span class="gr">Out[7]: </span><span class="p">{</span><span class="mi">922350</span><span class="p">:</span> <span class="mf">1.68</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">40.32</span><span class="p">}</span>
+
+<span class="gp">In [8]: </span><span class="n">mat</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+
+<span class="gp">In [9]: </span><span class="n">mat</span><span class="o">.</span><span class="n">mult_by_mass</span><span class="p">()</span>
+<span class="gr">Out[9]: </span><span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">691690</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span>
+<span class="gp">   ...:</span>  <span class="mi">922350</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">942390</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span>
+<span class="gp">   ...:</span>  <span class="mi">942410</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">952420</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">962440</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">}</span>
+
+<span class="gp">In [10]: </span><span class="n">mat</span><span class="o">.</span><span class="n">mass</span>
+<span class="gr">Out[10]: </span><span class="mf">1.0</span>
+</pre></div>
+</div>
+<div class="section" id="material-arithmetic">
+<h2>Material Arithmetic<a class="headerlink" href="#material-arithmetic" title="Permalink to this headline">¶</a></h2>
+<p>Furthermore, various arithmetic operations between Materials and numeric types are also defined.
+Adding two Materials together will return a new Material whose values are the weighted union
+of the two original. Multiplying a Material by 2, however, will simply double the mass.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">other_mat</span> <span class="o">=</span> <span class="n">mat</span> <span class="o">*</span> <span class="mi">2</span>
+
+<span class="gp">In [12]: </span><span class="n">other_mat</span>
+<span class="gr">Out[12]: </span><span class="n">pyne</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">({</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">691690</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span>
+<span class="gp">   ...:</span>                          <span class="mi">922350</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">942390</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span>
+<span class="gp">   ...:</span>                          <span class="mi">942410</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">952420</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">,</span> <span class="mi">962440</span><span class="p">:</span> <span class="mf">0.111111111111</span><span class="p">},</span>
+<span class="gp">   ...:</span>                          <span class="mf">2.0</span><span class="p">,</span> <span class="p">{})</span>
+
+<span class="gp">In [13]: </span><span class="n">other_mat</span><span class="o">.</span><span class="n">mass</span>
+<span class="gr">Out[13]: </span><span class="mf">2.0</span>
+
+<span class="gp">In [14]: </span><span class="n">weird_mat</span> <span class="o">=</span> <span class="n">leu</span> <span class="o">+</span> <span class="n">mat</span> <span class="o">*</span> <span class="mi">18</span>
+
+<span class="gp">In [15]: </span><span class="k">print</span> <span class="n">weird_mat</span>
+<span class="go">Material:</span>
+<span class="go">mass = 60.0</span>
+<span class="go">atoms per molecule = -1.0</span>
+<span class="go">-------------------------</span>
+<span class="go">H1     0.0333333333333</span>
+<span class="go">O16    0.0333333333333</span>
+<span class="go">TM169  0.0333333333333</span>
+<span class="go">U235   0.0613333333333</span>
+<span class="go">U238   0.705333333333</span>
+<span class="go">PU239  0.0333333333333</span>
+<span class="go">PU241  0.0333333333333</span>
+<span class="go">AM242  0.0333333333333</span>
+<span class="go">CM244  0.0333333333333</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-member-access">
+<h2>Raw Member Access<a class="headerlink" href="#raw-member-access" title="Permalink to this headline">¶</a></h2>
+<p>You may also change the attributes of a material directly without generating a new
+material instance.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="n">other_mat</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="gp">In [18]: </span><span class="n">other_mat</span><span class="o">.</span><span class="n">comp</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">922350</span><span class="p">:</span> <span class="mf">15.0</span><span class="p">}</span>
+
+<span class="gp">In [19]: </span><span class="k">print</span> <span class="n">other_mat</span>
+<span class="go">Material:</span>
+<span class="go">mass = 10.0</span>
+<span class="go">atoms per molecule = -1.0</span>
+<span class="go">-------------------------</span>
+<span class="go">H2     3.0</span>
+<span class="go">U235   15.0</span>
+</pre></div>
+</div>
+<p>Of course when you do this you have to be careful because the composition and mass may now be out
+of sync.  This may always be fixed with normalization.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="n">other_mat</span><span class="o">.</span><span class="n">norm_comp</span><span class="p">()</span>
+
+<span class="gp">In [21]: </span><span class="k">print</span> <span class="n">other_mat</span>
+<span class="go">Material:</span>
+<span class="go">mass = 10.0</span>
+<span class="go">atoms per molecule = -1.0</span>
+<span class="go">-------------------------</span>
+<span class="go">H2     0.166666666667</span>
+<span class="go">U235   0.833333333333</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="indexing-slicing">
+<h2>Indexing &amp; Slicing<a class="headerlink" href="#indexing-slicing" title="Permalink to this headline">¶</a></h2>
+<p>Additionally (and very powerfully!), you may index into either the material or the composition
+to get, set, or remove sub-materials.  Generally speaking, the composition you may only index
+into by integer-key and only to retrieve the normalized value.  Indexing into the material allows the
+full range of operations and returns the unnormalized mass weight.  Moreover, indexing into
+the material may be performed with integer-keys, string-keys, slices, or sequences of nuclides.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [22]: </span><span class="n">leu</span><span class="o">.</span><span class="n">comp</span><span class="p">[</span><span class="mi">922350</span><span class="p">]</span>
+<span class="gr">Out[22]: </span><span class="mf">0.04</span>
+
+<span class="gp">In [23]: </span><span class="n">leu</span><span class="p">[</span><span class="s1">&#39;U235&#39;</span><span class="p">]</span>
+<span class="gr">Out[23]: </span><span class="mf">1.68</span>
+
+<span class="gp">In [24]: </span><span class="n">weird_mat</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">:</span><span class="s1">&#39;Am&#39;</span><span class="p">]</span>
+<span class="gr">Out[24]: </span><span class="n">pyne</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">({</span><span class="mi">922350</span><span class="p">:</span> <span class="mf">0.0736</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.8464</span><span class="p">,</span> <span class="mi">942390</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="mi">942410</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">},</span> <span class="mf">50.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{})</span>
+
+<span class="gp">In [25]: </span><span class="n">other_mat</span><span class="p">[:</span><span class="mi">920000</span><span class="p">]</span> <span class="o">=</span> <span class="mf">42.0</span>
+
+<span class="gp">In [26]: </span><span class="k">print</span> <span class="n">other_mat</span>
+<span class="go">Material:</span>
+<span class="go">mass = 50.3333333333</span>
+<span class="go">atoms per molecule = -1.0</span>
+<span class="go">-------------------------</span>
+<span class="go">H2     0.834437086093</span>
+<span class="go">U235   0.165562913907</span>
+
+<span class="gp">In [27]: </span><span class="k">del</span> <span class="n">mat</span><span class="p">[</span><span class="mi">962440</span><span class="p">,</span> <span class="s1">&#39;TM169&#39;</span><span class="p">,</span> <span class="s1">&#39;Zr90&#39;</span><span class="p">,</span> <span class="mi">80160</span><span class="p">]</span>
+
+<span class="gp">In [28]: </span><span class="n">mat</span><span class="p">[:]</span>
+<span class="gr">Out[28]: </span><span class="n">pyne</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">({</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">0.166666666667</span><span class="p">,</span> <span class="mi">922350</span><span class="p">:</span> <span class="mf">0.166666666667</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.166666666667</span><span class="p">,</span>
+<span class="gp">   ...:</span>                          <span class="mi">942390</span><span class="p">:</span> <span class="mf">0.166666666667</span><span class="p">,</span> <span class="mi">942410</span><span class="p">:</span> <span class="mf">0.166666666667</span><span class="p">,</span> <span class="mi">952420</span><span class="p">:</span> <span class="mf">0.166666666667</span><span class="p">},</span>
+<span class="gp">   ...:</span>                          <span class="mf">0.666666666667</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{})</span>
+</pre></div>
+</div>
+<p>Other methods also exist for obtaining commonly used sub-materials, such as gathering the Uranium or
+Plutonium vector.</p>
+</div>
+<div class="section" id="molecular-mass-atom-fractions">
+<h2>Molecular Mass &amp; Atom Fractions<a class="headerlink" href="#molecular-mass-atom-fractions" title="Permalink to this headline">¶</a></h2>
+<p>You may also calculate the molecular mass of a material via the <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.molecular_mass" title="pyne.material.Material.molecular_mass"><code class="xref py py-meth docutils literal"><span class="pre">Material.molecular_mass()</span></code></a> method.
+This uses the <a class="reference internal" href="../pyapi/data.html#pyne.data.atomic_mass" title="pyne.data.atomic_mass"><code class="xref py py-func docutils literal"><span class="pre">pyne.data.atomic_mass()</span></code></a> function to look up the atomic mass values of
+the constituent nuclides.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [29]: </span><span class="n">leu</span><span class="o">.</span><span class="n">molecular_mass</span><span class="p">()</span>
+<span class="gr">Out[29]: </span><span class="mf">237.9290388038301</span>
+</pre></div>
+</div>
+<p>Note that by default, materials are assumed to have one atom per molecule.  This is a poor
+assumption for more complex materials.  For example, take water.  Without specifying the
+number of atoms per molecule, the molecular mass calculation will be off by a factor of 3.
+This can be remedied by passing the correct number to the method.  If there is no other valid
+number of molecules stored on the material, this will set the appropriate attribute on the
+class.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [30]: </span><span class="n">h2o</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">0.11191487328808077</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span> <span class="mf">0.8880851267119192</span><span class="p">})</span>
+
+<span class="gp">In [31]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">molecular_mass</span><span class="p">()</span>
+<span class="gr">Out[31]: </span><span class="mf">6.003521561343334</span>
+
+<span class="gp">In [32]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">molecular_mass</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="gr">Out[32]: </span><span class="mf">18.01056468403</span>
+
+<span class="gp">In [33]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">atoms_per_molecule</span>
+<span class="gr">Out[33]: </span><span class="mf">3.0</span>
+</pre></div>
+</div>
+<p>It is often also useful to be able to convert the current mass-weighted material to
+an atom fraction mapping.  This can be easily done via the <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.to_atom_frac" title="pyne.material.Material.to_atom_frac"><code class="xref py py-meth docutils literal"><span class="pre">Material.to_atom_frac()</span></code></a>
+method.  Continuing with the water example, if the number of atoms per molecule is
+properly set then the atom fraction return is normalized to this amount.  Alternatively,
+if the atoms per molecule are set to its default state on the class, then a truly
+fractional number of atoms is returned.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [34]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">to_atom_frac</span><span class="p">()</span>
+<span class="gr">Out[34]: </span><span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+
+<span class="gp">In [35]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">atoms_per_molecule</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+
+<span class="gp">In [36]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">to_atom_frac</span><span class="p">()</span>
+<span class="gr">Out[36]: </span><span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">0.666666666667</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span> <span class="mf">0.333333333333</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Additionally, you may wish to convert the an existing set of atom fractions to a
+new material stream.  This can be done with the <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.from_atom_frac" title="pyne.material.Material.from_atom_frac"><code class="xref py py-meth docutils literal"><span class="pre">Material.from_atom_frac()</span></code></a> method,
+which will clear out the current contents of the material&#8217;s composition and replace
+it with the mass-weighted values.  Note that
+when you initialize a material from atom fractions, the sum of all of the atom fractions
+will be stored as the atoms per molecule on this class.  Additionally, if a mass is not
+already set on the material, the molecular mass will be used.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [37]: </span><span class="n">h2o_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+
+<span class="gp">In [38]: </span><span class="n">h2o</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+
+<span class="gp">In [39]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">from_atom_frac</span><span class="p">(</span><span class="n">h2o_atoms</span><span class="p">)</span>
+
+<span class="gp">In [40]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">comp</span>
+<span class="gr">Out[40]: </span><span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">0.111914873288</span><span class="p">,</span> <span class="mi">80160</span><span class="p">:</span> <span class="mf">0.888085126712</span><span class="p">}</span>
+
+<span class="gp">In [41]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">atoms_per_molecule</span>
+<span class="gr">Out[41]: </span><span class="mf">3.0</span>
+
+<span class="gp">In [42]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">mass</span>
+<span class="gr">Out[42]: </span><span class="mf">18.01056468403</span>
+
+<span class="gp">In [43]: </span><span class="n">h2o</span><span class="o">.</span><span class="n">molecular_mass</span><span class="p">()</span>
+<span class="gr">Out[43]: </span><span class="mf">18.01056468403</span>
+</pre></div>
+</div>
+<p>Similarly, you may also be interested in knowing the atom density of a material. This
+can be done by using the <a class="reference internal" href="../pyapi/material.html#pyne.material.Material.to_atom_dens" title="pyne.material.Material.to_atom_dens"><code class="xref py py-meth docutils literal"><span class="pre">Material.to_atom_dens()</span></code></a> method which returns the atom
+densities in units [atoms/cc]. Below is an example using water.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [44]: </span><span class="n">h2o</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010000</span><span class="p">:</span> <span class="mf">0.11191487328808077</span><span class="p">,</span> <span class="mi">80160000</span><span class="p">:</span> <span class="mf">0.8880851267119192</span><span class="p">}</span>
+
+<span class="gp">In [45]: </span><span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="gp">In [46]: </span><span class="n">mat</span><span class="o">.</span><span class="n">to_atom_dens</span><span class="p">()</span>
+<span class="gr">Out[46]: </span><span class="p">{</span><span class="mi">10010000</span><span class="p">:</span> <span class="mf">6.687343351693846e+22</span><span class="p">,</span> <span class="mi">80160000</span><span class="p">:</span> <span class="mf">3.343671675846923e+22</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Moreover, other materials may also be used to specify a new material from atom fractions.
+This is a typical case for reactors where the fuel vector is convolved inside of another
+chemical form.  Below is an example of obtaining the Uranium-Oxide material from Oxygen
+and low-enriched uranium.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [47]: </span><span class="n">uox</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+
+<span class="gp">In [48]: </span><span class="n">uox</span><span class="o">.</span><span class="n">from_atom_frac</span><span class="p">({</span><span class="n">leu</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">})</span>
+
+<span class="gp">In [49]: </span><span class="k">print</span> <span class="n">uox</span>
+<span class="go">Material:</span>
+<span class="go">mass = 269.918868043</span>
+<span class="go">atoms per molecule = 3.0</span>
+<span class="go">------------------------</span>
+<span class="go">O16    0.118516461895</span>
+<span class="go">U235   0.0352593415242</span>
+<span class="go">U238   0.846224196581</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Materials may be used as keys in a dictionary because they are hashable.</p>
+</div>
+</div>
+<div class="section" id="user-defined-metadata">
+<h2>User-defined Metadata<a class="headerlink" href="#user-defined-metadata" title="Permalink to this headline">¶</a></h2>
+<p>Materials also have an <code class="docutils literal"><span class="pre">metadata</span></code> attribute which allows users to store arbitrary
+custom information about the material.  This can include things like units, comments,
+provenance information, or anything else the user desires.  This is implemented as an
+in-memory JSON object attached to the C++ class.  Therefore, what may be stored in
+the <code class="docutils literal"><span class="pre">metadata</span></code> is subject to the same restrictions as JSON itself.  The top-level
+of the metadata <em>should</em> be a dictionary, though this is not explicitly enforced.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [50]: </span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="mi">922350</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">},</span> <span class="mi">15</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;kg&#39;</span><span class="p">})</span>
+
+<span class="gp">In [51]: </span><span class="k">print</span> <span class="n">leu</span>
+<span class="go">Material:</span>
+<span class="go">mass = 15.0</span>
+<span class="go">atoms per molecule = -1.0</span>
+<span class="go">units = kg</span>
+<span class="go">-------------------------</span>
+<span class="go">U235   0.05</span>
+<span class="go">U238   0.95</span>
+
+<span class="gp">In [52]: </span><span class="n">leu</span>
+<span class="gr">Out[52]: </span><span class="n">pyne</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">({</span><span class="mi">922350</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">922380</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">},</span> <span class="mf">15.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span> <span class="p">{</span><span class="s2">&quot;units&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">})</span>
+
+<span class="gp">In [53]: </span><span class="n">leu</span><span class="o">.</span><span class="n">metadata</span>
+<span class="gr">Out[53]: </span><span class="p">{</span><span class="s2">&quot;units&quot;</span><span class="p">:</span><span class="s2">&quot;kg&quot;</span><span class="p">}</span>
+
+<span class="gp">In [54]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">leu</span><span class="o">.</span><span class="n">metadata</span>
+
+<span class="gp">In [55]: </span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;comments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Anthony made this material.&#39;</span><span class="p">]</span>
+
+<span class="gp">In [56]: </span><span class="n">leu</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;comments&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;And then Katy made it better!&#39;</span><span class="p">)</span>
+
+<span class="gp">In [57]: </span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="gp">In [58]: </span><span class="n">leu</span><span class="o">.</span><span class="n">metadata</span>
+<span class="gr">Out[58]: </span><span class="p">{</span><span class="s2">&quot;comments&quot;</span><span class="p">:[</span><span class="s2">&quot;Anthony made this material.&quot;</span><span class="p">,</span><span class="s2">&quot;And then Katy made it better!&quot;</span><span class="p">],</span>\
+<span class="go">          &quot;id&quot;:42,&quot;units&quot;:&quot;kg&quot;}</span>
+
+<span class="gp">In [59]: </span><span class="n">leu</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;solar mass&#39;</span><span class="p">}</span>
+
+<span class="gp">In [60]: </span><span class="n">leu</span><span class="o">.</span><span class="n">attr</span>
+<span class="gr">Out[60]: </span><span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;solar mass&#39;</span><span class="p">}</span>
+
+<span class="gp">In [61]: </span><span class="n">a</span>
+<span class="gr">Out[61]: </span><span class="p">{</span><span class="s2">&quot;comments&quot;</span><span class="p">:[</span><span class="s2">&quot;Anthony made this material.&quot;</span><span class="p">,</span><span class="s2">&quot;And then Katy made it better!&quot;</span><span class="p">],</span>\
+<span class="go">          &quot;id&quot;:42,&quot;units&quot;:&quot;kg&quot;}</span>
+
+<span class="gp">In [62]: </span><span class="n">leu</span><span class="o">.</span><span class="n">attr</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;not solar masses&#39;</span>
+
+<span class="gp">In [63]: </span><span class="n">leu</span><span class="o">.</span><span class="n">attr</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+<span class="gr">Out[63]: </span><span class="s1">&#39;not solar masses&#39;</span>
+</pre></div>
+</div>
+<p>As you can see from the above, the metadata interface provides a view into the underlying
+JSON object.  This can be manipulated directly or by renaming it to another variable.
+Additionally, <code class="docutils literal"><span class="pre">metadata</span></code> can be replaced with a new object of the appropriate type.
+Doing so invalidates any previous views into this container.</p>
+<hr class="docutils" />
+<p>Further information on the Material class may be seen in the library reference
+<a class="reference internal" href="../pyapi/material.html#pyne-material"><span class="std std-ref">Materials &#8211; pyne.material</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Materials</a><ul>
+<li><a class="reference internal" href="#material-arithmetic">Material Arithmetic</a></li>
+<li><a class="reference internal" href="#raw-member-access">Raw Member Access</a></li>
+<li><a class="reference internal" href="#indexing-slicing">Indexing &amp; Slicing</a></li>
+<li><a class="reference internal" href="#molecular-mass-atom-fractions">Molecular Mass &amp; Atom Fractions</a></li>
+<li><a class="reference internal" href="#user-defined-metadata">User-defined Metadata</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.utils &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="k">import</span> <span class="n">remove_tree</span>
+
+<span class="kn">from</span> <span class="nn">pyne._utils</span> <span class="k">import</span> <span class="n">fromstring_split</span><span class="p">,</span> <span class="n">fromstring_token</span><span class="p">,</span> <span class="n">endftod</span><span class="p">,</span>\
+                        <span class="n">use_fast_endftod</span><span class="p">,</span> <span class="n">fromendf_tok</span><span class="p">,</span> <span class="n">toggle_warnings</span><span class="p">,</span>\
+                        <span class="n">use_warnings</span><span class="p">,</span> <span class="n">fromendl_tok</span>
+
+
+<span class="k">class</span> <span class="nc">QAWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">time_conv_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;as&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span>
+                  <span class="s1">&#39;attosec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span>
+                  <span class="s1">&#39;attosecond&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span>
+                  <span class="s1">&#39;attoseconds&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span>
+                  <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span>
+                  <span class="s1">&#39;femtosec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span>
+                  <span class="s1">&#39;femtosecond&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span>
+                  <span class="s1">&#39;femtoseconds&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span>
+                  <span class="s1">&#39;ps&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span>
+                  <span class="s1">&#39;picosec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span>
+                  <span class="s1">&#39;picosecond&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span>
+                  <span class="s1">&#39;picoseconds&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span>
+                  <span class="s1">&#39;ns&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span>
+                  <span class="s1">&#39;nanosec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span>
+                  <span class="s1">&#39;nanosecond&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span>
+                  <span class="s1">&#39;nanoseconds&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span>
+                  <span class="s1">&#39;us&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+                  <span class="s1">&#39;microsec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+                  <span class="s1">&#39;microsecond&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+                  <span class="s1">&#39;microseconds&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+                  <span class="s1">&#39;ms&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+                  <span class="s1">&#39;millisec&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+                  <span class="s1">&#39;millisecond&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+                  <span class="s1">&#39;milliseconds&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+                  <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                  <span class="s1">&#39;sec&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                  <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                  <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                  <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+                  <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+                  <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+                  <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span>
+                  <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mf">3600.0</span><span class="p">,</span>
+                  <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="mf">3600.0</span><span class="p">,</span>
+                  <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="mf">3600.0</span><span class="p">,</span>
+                  <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+                  <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+                  <span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+                  <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+                  <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+                  <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+                  <span class="s1">&#39;ev&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">9</span> <span class="o">*</span> <span class="mf">7.6e-8</span> <span class="o">/</span> <span class="mf">6.03</span><span class="p">,</span>
+                  <span class="s1">&#39;kev&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">12</span> <span class="o">*</span> <span class="mf">7.6e-8</span> <span class="o">/</span> <span class="mf">6.03</span><span class="p">,</span>
+                  <span class="s1">&#39;mev&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">15</span> <span class="o">*</span> <span class="mf">7.6e-8</span> <span class="o">/</span> <span class="mf">6.03</span><span class="p">,</span>
+                  <span class="p">}</span>
+
+
+<div class="viewcode-block" id="to_sec"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.to_sec">[docs]</a><span class="k">def</span> <span class="nf">to_sec</span><span class="p">(</span><span class="n">input_time</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a time with units to seconds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_time : number</span>
+<span class="sd">        Time value in [units].</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Units flag, eg &#39;min&#39;, &#39;ms&#39;, &#39;days&#39;, or even &#39;MeV&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sec_time : float</span>
+<span class="sd">        Time value in [sec].</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sec_time</span> <span class="o">=</span> <span class="n">input_time</span> <span class="o">*</span> <span class="n">time_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">sec_time</span></div>
+
+
+<span class="n">barn_conv_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;mb&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="s1">&#39;ub&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+    <span class="s1">&#39;microbarn&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s1">&#39;barn&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s1">&#39;barns&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s1">&#39;kb&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span>
+    <span class="s1">&#39;kilobarn&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span>
+    <span class="s1">&#39;cm2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">+</span><span class="mi">24</span><span class="p">,</span>
+    <span class="s1">&#39;cm^2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="n">E</span><span class="o">+</span><span class="mi">24</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="to_barns"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.to_barns">[docs]</a><span class="k">def</span> <span class="nf">to_barns</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a cross section with units to barns.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs :</span>
+<span class="sd">        Cross section value in [units].</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Units flag, eg &#39;b&#39;, &#39;microbarn&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    barn_xs :</span>
+<span class="sd">        Cross section value in [barns].</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">xs</span> <span class="o">*</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="from_barns"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.from_barns">[docs]</a><span class="k">def</span> <span class="nf">from_barns</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a cross section from barns to units.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs :</span>
+<span class="sd">        Cross section value in [barns].</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Units flag, eg &#39;b&#39;, &#39;microbarn&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    unit_xs :</span>
+<span class="sd">        Cross section value in [units].</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">xs</span> <span class="o">/</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span></div>
+
+
+<span class="c1">#########################</span>
+<span class="c1">### message functions ###</span>
+<span class="c1">#########################</span>
+
+<span class="n">USE_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;posix&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="message"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.message">[docs]</a><span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Formats a message for printing.  If on a posix system the message will</span>
+<span class="sd">    be in color.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;32m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;*** MESSAGE ***: &quot;</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
+
+
+<div class="viewcode-block" id="failure"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.failure">[docs]</a><span class="k">def</span> <span class="nf">failure</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Formats a fail message for printing.  If on a posix system the message</span>
+<span class="sd">    will be in color.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;31m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;*** FAILURE ***: &quot;</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
+
+
+<div class="viewcode-block" id="warning"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.warning">[docs]</a><span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Formats a warning message for printing. If on a posix system the message</span>
+<span class="sd">    will be in color.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;33m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;*** WARNING ***: &quot;</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
+
+<span class="c1">##################################</span>
+<span class="c1">### Path manipulation routines ###</span>
+<span class="c1">##################################</span>
+
+
+<div class="viewcode-block" id="remove"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.remove">[docs]</a><span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes a path, or recursively a directory, or does nothing</span>
+<span class="sd">    if path is neither a file nor a directory.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">remove_tree</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

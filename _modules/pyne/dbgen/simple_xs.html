@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.simple_xs &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.dbgen.simple_xs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides a way to grab and store simple cross sections from KAERI.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib.request</span> <span class="k">as</span> <span class="nn">urllib</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="k">import</span> <span class="n">ZipFile</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">to_barns</span>
+<span class="kn">from</span> <span class="nn">.api</span> <span class="k">import</span> <span class="n">BASIC_FILTERS</span>
+<span class="kn">from</span> <span class="nn">.kaeri</span> <span class="k">import</span> <span class="n">grab_kaeri_nuclide</span><span class="p">,</span> <span class="n">parse_for_all_isotopes</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="grab_kaeri_simple_xs"><a class="viewcode-back" href="../../../pyapi/dbgen/simple_xs.html#pyne.dbgen.simple_xs.grab_kaeri_simple_xs">[docs]</a><span class="k">def</span> <span class="nf">grab_kaeri_simple_xs</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the KAERI files needed for the simple cross sections table, </span>
+<span class="sd">    if not already present.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Major directory to place html files in. &#39;KAERI/&#39; will be appended.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">zip_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;kaeri.zip&#39;</span><span class="p">)</span>
+    <span class="n">zip_url</span> <span class="o">=</span> <span class="s1">&#39;http://data.pyne.io/kaeri.zip&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">zip_path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  grabbing </span><span class="si">{0}</span><span class="s2"> and placing it in </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zip_url</span><span class="p">,</span> <span class="n">zip_path</span><span class="p">))</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">zip_url</span><span class="p">,</span> <span class="n">zip_path</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">zf</span> <span class="o">=</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_path</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    extracting </span><span class="si">{0}</span><span class="s2"> from </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">zip_path</span><span class="p">))</span>
+                    <span class="n">zf</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">zf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Add kaeri to build_dir</span>
+    <span class="n">build_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;KAERI&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">already_grabbed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">build_dir</span><span class="p">))</span>
+
+    <span class="c1"># Grab and parse elemental summary files.</span>
+    <span class="n">all_nuclides</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.html&#39;</span>
+        <span class="k">if</span> <span class="n">htmlfile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_grabbed</span><span class="p">:</span>
+            <span class="n">grab_kaeri_nuclide</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">build_dir</span><span class="p">)</span>
+        <span class="n">all_nuclides</span> <span class="o">=</span> <span class="n">all_nuclides</span> <span class="o">|</span> <span class="n">parse_for_all_isotopes</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> 
+                                                                          <span class="n">htmlfile</span><span class="p">))</span>
+
+    <span class="c1"># Grab nuclide XS summary files</span>
+    <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_nuclides</span><span class="p">):</span>
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;_2.html&#39;</span>
+        <span class="k">if</span> <span class="n">htmlfile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_grabbed</span><span class="p">:</span>
+            <span class="n">grab_kaeri_nuclide</span><span class="p">(</span><span class="n">nuc</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">build_dir</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+
+
+<span class="n">simple_xs_channels</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sigma_t&quot;</span><span class="p">:</span>      <span class="s2">&quot;Total Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_e&quot;</span><span class="p">:</span>      <span class="s2">&quot;Elastic Scattering Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_i&quot;</span><span class="p">:</span>      <span class="s2">&quot;Total Inelastic Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_2n&quot;</span><span class="p">:</span>     <span class="s2">&quot;(n,2n) Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_3n&quot;</span><span class="p">:</span>     <span class="s2">&quot;(n,3n) Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_4n&quot;</span><span class="p">:</span>     <span class="s2">&quot;(n,4n) Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_f&quot;</span><span class="p">:</span>      <span class="s2">&quot;Total Fission Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_gamma&quot;</span><span class="p">:</span>  <span class="s2">&quot;Radiative Capture Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_alpha&quot;</span><span class="p">:</span>  <span class="s2">&quot;(n,alpha) Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_proton&quot;</span><span class="p">:</span> <span class="s2">&quot;(n,p) Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_deut&quot;</span><span class="p">:</span>   <span class="s2">&quot;(n,d) Cross Section&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigma_trit&quot;</span><span class="p">:</span>   <span class="s2">&quot;(n,t) Cross Section&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">simple_xs_energy</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;thermal&quot;</span><span class="p">:</span>              <span class="s2">&quot;at 0.0253 eV&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;thermal_maxwell_ave&quot;</span><span class="p">:</span>  <span class="s2">&quot;Maxwell avg. at 0.0253 eV&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;resonance_integral&quot;</span><span class="p">:</span>   <span class="s2">&quot;Resonance integral&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fourteen_MeV&quot;</span><span class="p">:</span>         <span class="s2">&quot;at 14 MeV&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fission_spectrum_ave&quot;</span><span class="p">:</span> <span class="s2">&quot;Fission spectrum avg.&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">simple_xs_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;nuc&#39;</span><span class="p">,</span>     <span class="nb">int</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_t&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_s&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_e&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_i&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_a&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_gamma&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_f&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_alpha&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_proton&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_deut&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_trit&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_2n&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_3n&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;sigma_4n&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+    <span class="p">])</span>
+
+
+
+<div class="viewcode-block" id="get_xs_from_file"><a class="viewcode-back" href="../../../pyapi/dbgen/simple_xs.html#pyne.dbgen.simple_xs.get_xs_from_file">[docs]</a><span class="k">def</span> <span class="nf">get_xs_from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">eng</span><span class="p">,</span> <span class="n">chan</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses out a cross section from a KAERI file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Local path to a KAERI neutron cross section summary html file.</span>
+<span class="sd">    eng : str</span>
+<span class="sd">        Energy flag to find this cross section for.  (Must be key </span>
+<span class="sd">        of simple_xs_energy dictionary).</span>
+<span class="sd">    chan : str</span>
+<span class="sd">        Cross section (interaction channel) to find.  (Must be key </span>
+<span class="sd">        of simple_xs_channels dict).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : float</span>
+<span class="sd">        Microscopic cross section in [barns].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">in_channel</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">simple_xs_channels</span><span class="p">[</span><span class="n">chan</span><span class="p">]</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">in_channel</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">in_channel</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;&lt;li&gt;&quot;</span><span class="o">+</span><span class="n">simple_xs_energy</span><span class="p">[</span><span class="n">eng</span><span class="p">]</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                <span class="n">du</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">du</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">du</span><span class="p">:</span>
+                    <span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span> <span class="o">+</span> <span class="n">u</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">to_barns</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">data</span>
+
+            <span class="k">elif</span> <span class="n">in_channel</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;&lt;/ul&gt;&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                <span class="c1"># XS not defined for this energy, returning zero</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="c1"># If the specific XS was not found in this file, return zero</span>
+    <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+
+
+<div class="viewcode-block" id="parse_simple_xs"><a class="viewcode-back" href="../../../pyapi/dbgen/simple_xs.html#pyne.dbgen.simple_xs.parse_simple_xs">[docs]</a><span class="k">def</span> <span class="nf">parse_simple_xs</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builds and returns a dictionary from cross-section types to nuclides.&quot;&quot;&quot;</span>
+    <span class="n">build_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;KAERI&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Grab and parse elemental summary files.</span>
+    <span class="n">all_nuclides</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">htmlfile</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.html&#39;</span>
+        <span class="n">all_nuclides</span> <span class="o">=</span> <span class="n">all_nuclides</span> <span class="o">|</span> <span class="n">parse_for_all_isotopes</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> 
+                                                                          <span class="n">htmlfile</span><span class="p">))</span>
+    <span class="n">all_nuclides</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span> <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">all_nuclides</span><span class="p">])</span>
+    <span class="n">energy_tables</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">eng</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_nuclides</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">simple_xs_dtype</span><span class="p">))</span> \
+                          <span class="k">for</span> <span class="n">eng</span> <span class="ow">in</span> <span class="n">simple_xs_energy</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+
+    <span class="c1"># Loop through species</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_nuclides</span><span class="p">):</span>
+        <span class="n">nuc_name</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">nuc_name</span> <span class="o">+</span> <span class="s1">&#39;_2.html&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all energy types</span>
+        <span class="k">for</span> <span class="n">eng</span> <span class="ow">in</span> <span class="n">simple_xs_energy</span><span class="p">:</span>
+            <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;nuc&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nuc</span>
+
+            <span class="c1"># Loop trhough reactions</span>
+            <span class="k">for</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">simple_xs_channels</span><span class="p">:</span>
+                <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="n">chan</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_xs_from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">eng</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">eng</span> <span class="ow">in</span> <span class="n">simple_xs_energy</span><span class="p">:</span>
+        <span class="c1"># Store only non-trivial entries</span>
+        <span class="n">channels_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">simple_xs_channels</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="n">channels_list</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">simple_xs_dtype</span><span class="p">)[</span><span class="n">channels_list</span><span class="p">])</span>
+        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">]</span> <span class="o">=</span> <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="c1"># Calculate some xs</span>
+        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_e&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_i&#39;</span><span class="p">]</span>
+
+        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_gamma&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_f&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_alpha&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_proton&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_deut&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_trit&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_2n&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_3n&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                        <span class="n">energy_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">][</span><span class="s1">&#39;sigma_4n&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">energy_tables</span></div>
+
+
+
+
+
+
+<div class="viewcode-block" id="make_simple_xs_tables"><a class="viewcode-back" href="../../../pyapi/dbgen/simple_xs.html#pyne.dbgen.simple_xs.make_simple_xs_tables">[docs]</a><span class="k">def</span> <span class="nf">make_simple_xs_tables</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make the simple cross section tables.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Directory to place html files in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Grab raw data</span>
+    <span class="n">simple_xs_tables</span> <span class="o">=</span> <span class="n">parse_simple_xs</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Open the HDF5 File</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Create neutron group</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">):</span>
+        <span class="n">neutron_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">,</span> <span class="s1">&#39;Neutron Interaction Data&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create simple_xs Group</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;simple_xs&#39;</span><span class="p">):</span>
+        <span class="n">simple_xs_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;/neutron&quot;</span><span class="p">,</span> <span class="s2">&quot;simple_xs&quot;</span><span class="p">,</span> <span class="s2">&quot;Simple Neutron Cross Section Data&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create tables for every energy </span>
+    <span class="k">for</span> <span class="n">eng</span><span class="p">,</span> <span class="n">eng_flag</span> <span class="ow">in</span> <span class="n">simple_xs_energy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">simple_xs_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">simple_xs_group</span><span class="p">,</span> <span class="n">eng</span><span class="p">,</span> 
+                                         <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">simple_xs_dtype</span><span class="p">),</span> 
+                                         <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> [barns]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eng_flag</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()),</span> 
+                                         <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">simple_xs_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">]))</span>
+        <span class="n">simple_xs_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simple_xs_tables</span><span class="p">[</span><span class="n">eng</span><span class="p">])</span>
+        <span class="n">simple_xs_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+
+<div class="viewcode-block" id="make_simple_xs"><a class="viewcode-back" href="../../../pyapi/dbgen/simple_xs.html#pyne.dbgen.simple_xs.make_simple_xs">[docs]</a><span class="k">def</span> <span class="nf">make_simple_xs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Controller function for adding basic cross section data.&quot;&quot;&quot;</span>
+    <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span>
+
+    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;simple_xs&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;skipping simple XS data table creation; already exists.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> 
+
+    <span class="c1"># First grab the atomic abundance data</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing neutron summary files from KAERI&quot;</span><span class="p">)</span>
+    <span class="n">grab_kaeri_simple_xs</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="c1"># Make simple table once we have the array</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making simple cross section data tables&quot;</span><span class="p">)</span>
+    <span class="n">make_simple_xs_tables</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../../install/index.html">Install</a></li>
+    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../../pubs.html">Publications</a></li>
+    <li><a href="../../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

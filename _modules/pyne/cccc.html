@@ -1,0 +1,921 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.cccc &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.cccc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The CCCC module contains a number of classes for reading various cross section,</span>
+<span class="sd">flux, geometry, and data files with specifications given by the Committee for</span>
+<span class="sd">Computer Code Coordination. The following types of files can be read using</span>
+<span class="sd">classes from this module: ISOTXS, DLAYXS, BRKOXS, RTFLUX, ATFLUX, RZFLUX, MATXS,</span>
+<span class="sd">and SPECTR.</span>
+
+<span class="sd">The ISOTXS reader was originally derived from Professor James Holloway&#39;s</span>
+<span class="sd">open-source C++ classes from the University of Michigan and later expanded by</span>
+<span class="sd">Nick Touran for work on his PhD thesis. DLAYXS was later added by Paul Romano.</span>
+<span class="sd">RTFLUX was done by Elliott Biondo.</span>
+
+<span class="sd">A description of several CCCC formats are available online for ISOTXS_, MATXS_,</span>
+<span class="sd">RTFLUX_, and RZFLUX_. Other format specifications can be found in Los Alamos</span>
+<span class="sd">Report LA-5324-MS_.</span>
+<span class="sd">    </span>
+<span class="sd">.. _ISOTXS: http://t2.lanl.gov/codes/transx-hyper/isotxs.html</span>
+
+<span class="sd">.. _MATXS: http://t2.lanl.gov/codes/transx-hyper/matxs.html</span>
+
+<span class="sd">.. _RTFLUX: http://t2.lanl.gov/codes/transx-hyper/rtflux.html</span>
+
+<span class="sd">.. _RZFLUX: http://t2.lanl.gov/codes/transx-hyper/rzflux.html</span>
+
+<span class="sd">.. _LA-5324-MS: http://www.osti.gov/bridge/servlets/purl/5369298-uIcX6p/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="kn">from</span> <span class="nn">pyne.binaryreader</span> <span class="k">import</span> <span class="n">_BinaryReader</span><span class="p">,</span> <span class="n">_FortranRecord</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Isotxs"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Isotxs">[docs]</a><span class="k">class</span> <span class="nc">Isotxs</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An Isotxs object represents a binary ISOTXS file written according to the</span>
+<span class="sd">    CCCC specifications.</span>
+
+<span class="sd">    :Attributes:</span>
+<span class="sd">      **chi** : list of floats</span>
+<span class="sd">        Fission yields by group.</span>
+
+<span class="sd">      **emax** : list of floats</span>
+<span class="sd">        Maximum energy bound for each group</span>
+
+<span class="sd">      **emin** : float</span>
+<span class="sd">        Minimum energy bound of set</span>
+
+<span class="sd">      **fc** : dict</span>
+<span class="sd">        Dictionary with file-control information</span>
+
+<span class="sd">      **fileVersion** : int</span>
+<span class="sd">        Version of the ISOTXS file.</span>
+
+<span class="sd">      **label** : str</span>
+<span class="sd">        File identification string</span>
+
+<span class="sd">      **nuclides** : list of _Nuclides</span>
+<span class="sd">        List of individual nuclides in the ISOTXS file.</span>
+
+<span class="sd">      **vel** : float</span>
+<span class="sd">        Mean neutron velocity in each group.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Path of the ISOTXS file to load.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Isotxs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Initialize attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="p">{}</span>       <span class="c1"># file control info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuclides</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#: List of nuclides in ISOTXS file.</span>
+
+<div class="viewcode-block" id="Isotxs.read"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Isotxs.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read through and parse the ISOTXS file.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_file_ID</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_file_control</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_file_data</span><span class="p">()</span>
+
+        <span class="c1"># Read file-wide chi-distribution matrix if present. Note that if</span>
+        <span class="c1"># file-wide chi is given as a vector, it will be read during</span>
+        <span class="c1"># the read_file_data method.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ichidst&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_chi_data</span><span class="p">()</span>
+
+        <span class="c1"># Read nuclide data</span>
+        <span class="k">for</span> <span class="n">nucName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucNames</span><span class="p">:</span>
+            <span class="c1"># Create nuclide object</span>
+            <span class="n">nuc</span> <span class="o">=</span> <span class="n">_Nuclide</span><span class="p">(</span><span class="n">nucName</span><span class="p">)</span>
+            
+            <span class="c1"># Read nuclide name and global data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_nuclide_data</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+
+            <span class="c1"># Read nuclide cross sections</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_nuclide_xs</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>   
+
+            <span class="c1"># Read nuclide chi data if present</span>
+            <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;chiFlag&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_nuclide_chi</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+                
+            <span class="c1"># Read nuclide scattering matrix</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nscmax&#39;</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">subBlock</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nsblok&#39;</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ords&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_read_nuclide_scatter</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">subBlock</span><span class="p">)</span>
+
+            <span class="c1"># Add nuclide to dictionary</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuclides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span></div>
+        
+    <span class="k">def</span> <span class="nf">_read_file_ID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the file identification block. This block is always present in</span>
+<span class="sd">        the ISOTXS format and contains a label and file version number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get first record from file</span>
+        <span class="n">fileID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+
+        <span class="c1"># Read data from file identification record</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">fileID</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">24</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileVersion</span> <span class="o">=</span> <span class="n">fileID</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="nf">_read_file_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the file control block. This block is always present and gives</span>
+<span class="sd">        many parameters for the file including number of energy groups, number</span>
+<span class="sd">        of isotopes, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Get file control record</span>
+        <span class="n">fc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+
+        <span class="c1"># Read data from file control record</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Number of energy groups in file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;niso&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Number of isotopes in file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;maxup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Maximum number of upscatter groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;maxdown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Maximum number of downscatter groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;maxord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Maximum scattering order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ichidst&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># File-wide fission spectrum flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nscmax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Max blocks of scatter data (seems to be actual number)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nsblok&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Number of subblocks</span>
+        
+    <span class="k">def</span> <span class="nf">_read_file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the file data block. This block is always present and contains</span>
+<span class="sd">        isotope names, global chi distribution, energy group structure, and</span>
+<span class="sd">        locations of each nuclide record.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get file data record</span>
+        <span class="n">fileData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+
+        <span class="c1"># Skip identification label of file</span>
+        <span class="n">fileData</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span>
+        
+        <span class="c1"># Read nuclide label for each nuclide</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucNames</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;niso&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nucNames</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucNames</span><span class="p">]</span>
+            
+        <span class="c1"># Read file-wide chi distribution vector</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ichidst&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chi</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">])</span>
+        
+        <span class="c1">#: Mean neutron velocity in each group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vel</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Read maximum energy bound of each group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emax</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">])</span>
+        
+        <span class="c1"># Read minimum energy bound of set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emin</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Read number of records to be skipped to read data for a given nuclide</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">locs</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;niso&#39;</span><span class="p">])</span>
+            
+    <span class="k">def</span> <span class="nf">_read_chi_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads file-wide chi-distribution matrix. In most cases, chi will be</span>
+<span class="sd">        given as a vector, not a matrix, and thus in such cases this routine is</span>
+<span class="sd">        not needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">_read_nuclide_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the following individual nuclide XS record. Load data into nuc.</span>
+<span class="sd">        This record contains non-mg data like atomic mass, temperature, and some</span>
+<span class="sd">        flags.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get nuclide data record</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+
+        <span class="c1"># Read nuclide data</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;nuclide&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c1"># absolute nuclide label</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;libName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># library name (ENDFV, etc. )</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;isoIdent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;amass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># gram atomic mass</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;efiss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># thermal energy yield/fission</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ecapt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># thermal energy yield/capture</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;temp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># nuclide temperature (K)</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;sigPot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># potential scattering (b/atom)</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;adens&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># density of nuclide (atom/b-cm)</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;classif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># nuclide classification</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;chiFlag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># fission spectrum flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;fisFlag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># (n,f) cross section flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;nalph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># (n,alpha) cross section flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;np&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># (n,p) cross section flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;n2n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># (n,2n) cross section flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;nd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># (n,d) cross section flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;nt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># (n,t) cross section flag</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ltot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># number of moments of total xs</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ltrn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># number of moments of transport xs</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;strpd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># number of coord directions for transport xs</span>
+        
+        <span class="c1"># Read scattering matrix type identifications for each scatter</span>
+        <span class="c1"># block. Could be total, inelastic, elastic, n2n</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;scatFlag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nscmax&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Read number of scattering orders in each scatter block.</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nscmax&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Read number of groups that scatter into group j, including</span>
+        <span class="c1"># self-scatter, in scatter block n.</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jband&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nscmax&#39;</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jband&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                
+        <span class="c1"># Read position of in-group scattering cross section for group j,</span>
+        <span class="c1"># scattering block n, counted from first word of group j data</span>
+        <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nscmax&#39;</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jj&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="nf">_read_nuclide_xs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads principal microscopic multigroup cross-section data for a</span>
+<span class="sd">        single nuclide.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get cross section record</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        
+        <span class="c1"># PL-weighted transport cross section in group g for Legendre order l</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ltrn&#39;</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;transport&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># PL-weighted total cross section in group g for Legendre order l</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ltot&#39;</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;total&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Microscopic (n,gamma) cross section in group g</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+            <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;n,g&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    
+        <span class="c1"># Read fission data if present</span>
+        <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;fisFlag&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            
+            <span class="c1"># Microscopic (n,fission) cross section in group g</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;fis&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+            <span class="c1"># Total number of neutrons/fission in group g</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;nu&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Read fission spectrum vector if present</span>
+        <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;chiFlag&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Nuclide chi in group g</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;chi&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">]</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;fisFlag&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Make sure file-wide chi exists</span>
+                <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ichidst&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Fissile nuclide </span><span class="si">%s</span><span class="s2"> in library but no individual or global chi!&quot;</span> <span class="o">%</span> <span class="n">nuc</span>
+                
+                <span class="c1"># Set the chi to the file-wide chi distribution if this nuclide</span>
+                <span class="c1"># has a fission cross section</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                    <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;chi&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chi</span><span class="p">[</span><span class="n">g</span><span class="p">]</span>
+        
+        <span class="c1"># Read some other important cross sections, if they exist</span>
+        <span class="k">for</span> <span class="n">xstype</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nalph&#39;</span><span class="p">,</span><span class="s1">&#39;np&#39;</span><span class="p">,</span><span class="s1">&#39;n2n&#39;</span><span class="p">,</span><span class="s1">&#39;nd&#39;</span><span class="p">,</span><span class="s1">&#39;nt&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="n">xstype</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                    <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="n">xstype</span><span class="p">,</span><span class="n">g</span><span class="p">]</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Read coordinate direction transport cross section (for various</span>
+        <span class="c1"># coordinate directions)</span>
+        <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;strpd&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;strpd&#39;</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]):</span>
+                    <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;strpd&#39;</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="nf">_read_nuclide_chi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads nuclide-level fission spectrum matrix. In most cases, chi will</span>
+<span class="sd">        be given as a vector, not a matrix, and thus in such cases this routine</span>
+<span class="sd">        is not needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">_read_nuclide_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">subBlock</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read nuclide scattering matrix.</span>
+
+<span class="sd">        In some versions of the specification, the written description of the</span>
+<span class="sd">        scattering matrix is wrong! The person who was typing that version had</span>
+<span class="sd">        shifted their right hand one key to the right on the keyboard resulting</span>
+<span class="sd">        in gibberish. The CCCC-IV pdf has the correct specification.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get record</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+
+        <span class="c1"># Copy values for number of groups and number of subblocks</span>
+        <span class="n">ng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]</span>
+        <span class="n">nsblok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;nsblok&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Make sure blocks and subblocks are indexed starting from 1</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">subBlock</span> <span class="o">+</span> <span class="mi">1</span> 
+        <span class="n">n</span> <span class="o">=</span> <span class="n">block</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Determine number of scattering orders in this block</span>
+        <span class="n">lordn</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;ords&#39;</span><span class="p">][</span><span class="n">block</span><span class="p">]</span>
+
+        <span class="c1"># This is basically how many scattering cross sections there are for</span>
+        <span class="c1"># this scatter type for this nuclide</span>
+        <span class="n">jl</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">ng</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">nsblok</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">jup</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="p">((</span><span class="n">ng</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">nsblok</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ju</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ng</span><span class="p">,</span> <span class="n">jup</span><span class="p">)</span>
+
+        <span class="c1"># Figure out kmax for this sub-block. </span>
+        <span class="n">kmax</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">jl</span><span class="p">,</span> <span class="n">ju</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># convert to groups starting at 0</span>
+            <span class="n">kmax</span> <span class="o">+=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jband&#39;</span><span class="p">][</span><span class="n">g</span><span class="p">,</span><span class="n">block</span><span class="p">]</span> 
+            <span class="c1"># scattering from group j</span>
+        
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lordn</span><span class="p">):</span>
+            <span class="c1">#for k in range(kmax):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">jl</span><span class="p">,</span> <span class="n">ju</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># There are JBAND values for scattering into group j listed in</span>
+                <span class="c1"># order of the &quot;from&quot; group as from j+jup to j, from j+jup-1 to</span>
+                <span class="c1"># j, ...,from j to j, from j-1 to j, j-2 to j, ... , j-down to j</span>
+                <span class="c1"># anything listed to the left of j represents</span>
+                <span class="c1"># upscatter. anything to the right is downscatter. n,2n on</span>
+                <span class="c1"># MC**2-2 ISOTXS scatter matrix are reaction based and need to</span>
+                <span class="c1"># be multiplied by 2 to get the correct neutron balance.</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span> 
+                <span class="k">assert</span> <span class="n">g</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;loading negative group in ISOTXS.&quot;</span>
+                <span class="n">jup</span>   <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jj&#39;</span><span class="p">][</span><span class="n">g</span><span class="p">,</span> <span class="n">block</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">jdown</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jband&#39;</span><span class="p">][</span><span class="n">g</span><span class="p">,</span> <span class="n">block</span><span class="p">]</span> <span class="o">-</span> <span class="n">nuc</span><span class="o">.</span><span class="n">libParams</span><span class="p">[</span><span class="s1">&#39;jj&#39;</span><span class="p">][</span><span class="n">g</span><span class="p">,</span> <span class="n">block</span><span class="p">]</span>
+                <span class="n">fromgroups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">jdown</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="n">jup</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">fromgroups</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fromgroups</span><span class="p">:</span>
+                    <span class="n">fromg</span> <span class="o">=</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span>
+                    <span class="n">nuc</span><span class="o">.</span><span class="n">micros</span><span class="p">[</span><span class="s1">&#39;scat&#39;</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">fromg</span><span class="p">,</span> <span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Isotxs.find_nuclide"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Isotxs.find_nuclide">[docs]</a>    <span class="k">def</span> <span class="nf">find_nuclide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a nuclide with a given name.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Path of the ISOTXS file to load.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nuc : Nuclide</span>
+<span class="sd">            Object containing microscopic cross sections and other data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nuc</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">nuc</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclides</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">nuc</span>
+            
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;ISOTXS File: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+                
+<div class="viewcode-block" id="Dlayxs"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Dlayxs">[docs]</a><span class="k">class</span> <span class="nc">Dlayxs</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Dlayxs object represents the data stored in a CCCC-format DLAYXS</span>
+<span class="sd">    file. This file contains delayed neutron precursor yields, emission spectra,</span>
+<span class="sd">    and decay constants reduced to multigroup form. Typically, the data in a</span>
+<span class="sd">    DLAYXS file would be related to cross-section files in ISOTXS and GRUPXS.</span>
+
+<span class="sd">    :Attributes:</span>
+<span class="sd">      **isotopes** : list of strs</span>
+<span class="sd">        Names of the isotopes in the DLAYXS file.</span>
+
+<span class="sd">      **isotopeFamily** : dict</span>
+<span class="sd">        Dictionary whose keys are the isotope names and whose values are </span>
+
+<span class="sd">      **decay** : dict</span>
+<span class="sd">        Dictionary whose keys are names of nuclides and whose values are decay</span>
+<span class="sd">        constants for each delayed neutron family.</span>
+
+<span class="sd">      **spectrum** : dict</span>
+
+<span class="sd">      **nGroups** : int</span>
+<span class="sd">        Number of energy groups</span>
+
+<span class="sd">      **nIsotopes** : int</span>
+<span class="sd">        Number of isotopes</span>
+
+<span class="sd">      **nFamilies** : int</span>
+<span class="sd">        Number of delayed neutron families</span>
+
+<span class="sd">      **nu** : dict</span>
+<span class="sd">      </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Path of the DLAYXS file to load.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Dlayxs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotopeFamily</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="p">{}</span>
+    
+<div class="viewcode-block" id="Dlayxs.read"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Dlayxs.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read through and parse data in the DLAYXS file.&quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_file_ID</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_file_control</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">decay</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_spectra</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_yield</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">isotope</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decay</span><span class="p">[</span><span class="n">isotope</span><span class="p">]</span>    <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="n">isotope</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">gDelay</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]:</span>
+                <span class="n">family</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopeFamily</span><span class="p">[</span><span class="n">isotope</span><span class="p">][</span><span class="n">gDelay</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">decay</span><span class="p">[</span><span class="n">isotope</span><span class="p">][</span><span class="n">gDelay</span><span class="p">]</span>    <span class="o">=</span> <span class="n">decay</span><span class="p">[</span><span class="n">family</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="p">[</span><span class="n">isotope</span><span class="p">][</span><span class="n">gDelay</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">family</span><span class="p">]</span></div>
+        
+    <span class="k">def</span> <span class="nf">_read_file_ID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read file ID block&quot;&quot;&quot;</span>
+        
+        <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">24</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fileID</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="nf">_read_file_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read file control block.&quot;&quot;&quot;</span>
+        
+        <span class="n">fileControl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nGroups</span> <span class="o">=</span> <span class="n">fileControl</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nIsotopes</span> <span class="o">=</span> <span class="n">fileControl</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nFamilies</span> <span class="o">=</span> <span class="n">fileControl</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="nf">_read_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the decay constants and delayed neutron spectra&quot;&quot;&quot;</span>
+        
+        <span class="n">fileData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotopes</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nIsotopes</span><span class="p">)</span>
+        
+        <span class="c1"># Read decay constants for each family. We will follow the convention</span>
+        <span class="c1"># of the CCCC files that the families are indexed starting from 1.</span>
+        <span class="n">decay</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">family</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nFamilies</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">decay</span><span class="p">[</span><span class="n">family</span><span class="p">]</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+           
+        <span class="c1"># Read the delayed neutron spectra for each family</span>
+        <span class="n">spectra</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">family</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nFamilies</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">spectra</span><span class="p">[</span><span class="n">family</span><span class="p">]</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nGroups</span><span class="p">)</span>
+            
+        <span class="c1"># This reads the maximum E for each energy group in eV as well as the</span>
+        <span class="c1"># minimum energy bound of the set in eV. </span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">energySpectra</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nGroups</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minEnergy</span> <span class="o">=</span> <span class="n">fileData</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Determine the number of families to which fission each isotope</span>
+        <span class="c1"># contributes to delayed neutron precursors and the number of records</span>
+        <span class="c1"># to be skipped to read data for each isotope</span>
+        
+        <span class="c1">## nFamilies = fileData.get_int(self.nIsotopes)</span>
+        <span class="c1">## nSkip     = fileData.get_int(self.nIsotopes)</span>
+        
+        <span class="k">return</span> <span class="n">decay</span><span class="p">,</span> <span class="n">spectra</span>
+    
+    <span class="k">def</span> <span class="nf">_read_yield</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the delayed neutron precursor yields&quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">isotope</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopes</span><span class="p">:</span>
+            <span class="n">yieldData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">[</span><span class="n">isotope</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">gDelay</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">[</span><span class="n">isotope</span><span class="p">][</span><span class="n">gDelay</span><span class="p">]</span> <span class="o">=</span> <span class="n">yieldData</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nGroups</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isotopeFamily</span><span class="p">[</span><span class="n">isotope</span><span class="p">]</span> <span class="o">=</span> <span class="n">yieldData</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Brkoxs"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Brkoxs">[docs]</a><span class="k">class</span> <span class="nc">Brkoxs</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Brkoxs object represents data stored in a BRKOXS file from the CCCC</span>
+<span class="sd">    format specification. This file is given in conjunction with an ISOTXS (or</span>
+<span class="sd">    GRUPXS) file when the Bondarenko self-shielding method is to be used.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Path of the BRKOXS file to read.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Brkoxs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rtflux"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Rtflux">[docs]</a><span class="k">class</span> <span class="nc">Rtflux</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An Rtflux object represents data stored in a RTFLUX file from the CCCC</span>
+<span class="sd">    format specification. This file contains regular (i.e. not adjoint) total</span>
+<span class="sd">    fluxes. Attribute names mirror those described in the CCCC specification,</span>
+<span class="sd">    found here:</span>
+
+<span class="sd">    http://t2.lanl.gov/nis/codes/transx-hyper/rtflux.html</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    hname: str</span>
+<span class="sd">        Name of file (&quot;rtflux&quot; or &quot;atflux&quot;)</span>
+<span class="sd">    huse: str</span>
+<span class="sd">        User identification string</span>
+<span class="sd">    ivers: int</span>
+<span class="sd">        File version</span>
+<span class="sd">    ndim: int</span>
+<span class="sd">        Number of dimenstions</span>
+<span class="sd">    ngroup: int</span>
+<span class="sd">        Number of energy groups</span>
+<span class="sd">    ninti: int</span>
+<span class="sd">        Number of fine mesh intervals in the first dimension</span>
+<span class="sd">    nintj: int</span>
+<span class="sd">        Number of fine mesh intervals in the second dimension</span>
+<span class="sd">    nintk: int</span>
+<span class="sd">        Number of fine mesh intervals in the third dimension</span>
+<span class="sd">    iter: int</span>
+<span class="sd">        Outer interation number</span>
+<span class="sd">    effk: float</span>
+<span class="sd">        Effective multiplication (k)</span>
+<span class="sd">    nblok: int</span>
+<span class="sd">        Number of Fortran data blocks</span>
+<span class="sd">    flux: ndarray</span>
+<span class="sd">        Fluxes in the form flux(i, j) where i is interval and j is energy group</span>
+<span class="sd">    adjoint: bool</span>
+<span class="sd">        Specify if fluxes are adjoint (e.g. for an atflux file)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            Path to the RTFLUX file to be read.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">_BinaryReader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+
+        <span class="c1"># read file identification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hname</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">huse</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ivers</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="mi">8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">mult</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hname</span> <span class="o">==</span> <span class="s2">&quot;rtflux&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adjoint</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">hname</span> <span class="o">==</span> <span class="s2">&quot;atflux&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adjoint</span> <span class="o">=</span> <span class="kc">True</span>
+ 
+        <span class="c1"># read specifcations</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngroup</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ninti</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nintj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nintk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">niter</span> \
+            <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">effk</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">power</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fr</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nblok</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># read fluxes</span>
+        <span class="n">flux</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># This is the 1D binary spec, specified by CCCC.</span>
+        <span class="c1"># It does not work the the PyNE binary reader, but using the 3D format</span>
+        <span class="c1"># does work, as tested.</span>
+        <span class="c1">#</span>
+        <span class="c1">#if self.ndim == 1:</span>
+        <span class="c1">#    for m in range(1, self.nblok + 1):</span>
+        <span class="c1">#        fr = b.get_fortran_record()</span>
+        <span class="c1">#        print fr.num_bytes</span>
+        <span class="c1">#        jl = (m - 1)*((self.ngroup - 1)/self.nblok + 1) + 1</span>
+        <span class="c1">#        jup = m*((self.ngroup -1)/self.nblok + 1)</span>
+        <span class="c1">#        ju = min(self.ngroup, jup)</span>
+        <span class="c1">#        flux += fr.get_double(int(self.ninti*(ju-jl+1)))</span>
+
+        <span class="c1"># 3D binary spec</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngroup</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nintk</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nblok</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">fr</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+                    <span class="n">jl</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nintj</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">nblok</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">jup</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nintj</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">nblok</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">ju</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nintj</span><span class="p">,</span> <span class="n">jup</span><span class="p">)</span>
+                    <span class="n">flux</span> <span class="o">+=</span> <span class="n">fr</span><span class="o">.</span><span class="n">get_double</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ninti</span><span class="o">*</span><span class="p">(</span><span class="n">ju</span><span class="o">-</span><span class="n">jl</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="n">flux2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num_intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ninti</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nintj</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nintk</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngroup</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint</span><span class="p">:</span>
+                <span class="n">flux2</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">flux</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">num_intervals</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">num_intervals</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flux2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">num_intervals</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">num_intervals</span><span class="p">])</span>
+
+        <span class="n">flux2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flux2</span><span class="p">)</span>
+        <span class="n">flux2</span> <span class="o">=</span> <span class="n">flux2</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flux</span> <span class="o">=</span> <span class="n">flux2</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Rtflux.to_mesh"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Rtflux.to_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">to_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This member function tags supplied PyNE Mesh object with the fluxes</span>
+<span class="sd">        contained in the rtflux file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        m: PyNE Mesh</span>
+<span class="sd">            A PyNE Mesh object with same x, y, z intervals used to generate</span>
+<span class="sd">            the rtflux file.</span>
+<span class="sd">        tag_name: str</span>
+<span class="sd">             The tag name to use to tag the fluxes onto the mesh.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span>
+            <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
+                          <span class="s2">&quot;All aspects of the partisn module are not imported.&quot;</span><span class="p">,</span>
+                          <span class="n">QAWarning</span><span class="p">)</span>
+            <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="k">if</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">IMeshTag</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">structured</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only structured mesh is supported.&quot;</span><span class="p">)</span>
+
+        <span class="n">mesh_dims</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">structured_coords</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mesh_dims</span> <span class="o">!=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ninti</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nintj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nintk</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Supplied mesh does not comform to rtflux bounds&quot;</span><span class="p">)</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">structured_ordering</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">structured_ordering</span> <span class="o">=</span> <span class="s1">&#39;zyx&#39;</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngroup</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">structured_ordering</span> <span class="o">=</span> <span class="n">temp</span></div></div>
+
+<div class="viewcode-block" id="Atflux"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Atflux">[docs]</a><span class="k">class</span> <span class="nc">Atflux</span><span class="p">(</span><span class="n">Rtflux</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An Atflux object represents data stored in a ATFLUX file from the CCCC</span>
+<span class="sd">    format specification. This file contains adjoint total fluxes. Note that</span>
+<span class="sd">    this is the same format as RTFLUX. See Rtflux class for a complete list of</span>
+<span class="sd">    atrributes. The RTFLUX/ATFLUX binary specification is found here:</span>
+
+<span class="sd">    http://t2.lanl.gov/nis/codes/transx-hyper/rtflux.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">        Path to the ATFLUX file to be read.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Atflux</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Rzflux"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Rzflux">[docs]</a><span class="k">class</span> <span class="nc">Rzflux</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Rzflux object represents data stored in a RZFLUX file from the CCCC</span>
+<span class="sd">    format specification. This file contains volumetric averages of fluxes by</span>
+<span class="sd">    broad energy groups for different geometric zones.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Path to the RZFLUX file to be read.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Rzflux</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Matxs"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Matxs">[docs]</a><span class="k">class</span> <span class="nc">Matxs</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Matxs object represents data stored in a MATXS file. This file contains</span>
+<span class="sd">    generalized cross-sections.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Path to the MATXS file to be read.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Matxs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Spectr"><a class="viewcode-back" href="../../pyapi/cccc.html#pyne.cccc.Spectr">[docs]</a><span class="k">class</span> <span class="nc">Spectr</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads ultra-fine group spectrum file from MC**2&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SPECTR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read1D</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read2D</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">read1D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;eig&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;buck&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;emax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;deltau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngrp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;mgcsd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ncsd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="nf">read2D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
+        <span class="n">flux</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;ngrp&#39;</span><span class="p">]):</span>
+            <span class="n">flux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t2</span><span class="o">.</span><span class="n">get_float</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">flux</span></div>
+
+
+<span class="k">class</span> <span class="nc">_Nuclide</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Contains data about a single nuclide in an ISOTXS file. Originally,</span>
+<span class="sd">    Touran had his own Nuclide class so this one is provided to supply the basic</span>
+<span class="sd">    capabilities needed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">libParams</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">micros</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Nuclide: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">lib</span> <span class="o">=</span> <span class="n">Isotxs</span><span class="p">(</span><span class="s1">&#39;ISOTXS&#39;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

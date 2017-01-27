@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.endl &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.endl</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module for parsing and manipulating data from ENDL evaluations.</span>
+
+<span class="sd">For the moment, classes and functions in this module only implement the</span>
+<span class="sd">specifications relevant to the EEDL (Evaluated Electron Data Library) and the</span>
+<span class="sd">EPDL (Evaluated Photon Data Library). The formats are described by the</span>
+<span class="sd">following documents:</span>
+
+<span class="sd">&quot;ENDL type formats for the Livermore Evaluated Photon Data Library, EPDL&quot;</span>
+<span class="sd">https://www.oecd-nea.org/dbdata/data/manual-endf/nds_eval_epdl.pdf</span>
+
+<span class="sd">&quot;ENDL type formats for the Livermore Evaluated Electron Data Library, EEDL&quot;</span>
+<span class="sd">https://www.oecd-nea.org/dbdata/data/manual-endf/nds_eval_eedl.pdf</span>
+
+<span class="sd">For more information, contact Davide Mancusi &lt;davide.mancusi@cea.fr&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">rxdata</span>
+<span class="kn">import</span> <span class="nn">pyne.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s1">&#39; is not yet QA compliant.&#39;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
+<span class="n">END_OF_TABLE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{71}</span><span class="s1">1&#39;</span><span class="p">)</span>
+
+<span class="n">DataTuple</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;DataTuple&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;yo&#39;</span><span class="p">,</span> <span class="s1">&#39;limits&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">])</span>
+
+<span class="n">NFIELDS_RPROP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">11</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">21</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">22</span><span class="p">:</span> <span class="mi">3</span>
+        <span class="p">}</span>
+
+
+<div class="viewcode-block" id="Library"><a class="viewcode-back" href="../../pyapi/endl.html#pyne.endl.Library">[docs]</a><span class="k">class</span> <span class="nc">Library</span><span class="p">(</span><span class="n">rxdata</span><span class="o">.</span><span class="n">RxLib</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class for a file which contains multiple ENDL tables.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_structure_dict_entry</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Static method to generate entries for the structure dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;pin&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
+                <span class="s1">&#39;rdesc&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
+                <span class="s1">&#39;rprop&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
+                <span class="s1">&#39;pin_rdesc_rprop&#39;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data_tuples&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+                    <span class="p">)</span>
+                <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Library</span><span class="o">.</span><span class="n">_structure_dict_entry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intdict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="mi">0</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linlin</span><span class="p">,</span>
+                <span class="mi">2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linlin</span><span class="p">,</span>
+                <span class="mi">3</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loglin</span><span class="p">,</span>
+                <span class="mi">4</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linlog</span><span class="p">,</span>
+                <span class="mi">5</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loglog</span><span class="p">,</span>
+                <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="n">fh</span>
+        <span class="c1"># read headers for all tables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_headers</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_read_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read all the table headers from an ENDL file.&quot;&quot;&quot;</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">,</span> <span class="s1">&#39;rU&#39;</span><span class="p">)</span>
+            <span class="n">opened_here</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># get header lines</span>
+            <span class="n">line1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">line2</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+            <span class="c1"># EOF?</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># store the start of the table</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+            <span class="c1"># parse the first header line</span>
+            <span class="n">nuc_zzzaaa</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="n">yi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line1</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">yo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line1</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">aw_str</span> <span class="o">=</span> <span class="n">line1</span><span class="p">[</span><span class="mi">13</span><span class="p">:</span><span class="mi">24</span><span class="p">]</span>
+            <span class="n">aw</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">endftod</span><span class="p">(</span><span class="n">aw_str</span><span class="p">)</span> <span class="k">if</span> <span class="n">aw_str</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">line1</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">31</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">iflag</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line1</span><span class="p">[</span><span class="mi">31</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># parse the second header line</span>
+            <span class="n">rdesc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">rprop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line2</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">rmod</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line2</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">x1_str</span> <span class="o">=</span> <span class="n">line2</span><span class="p">[</span><span class="mi">21</span><span class="p">:</span><span class="mi">32</span><span class="p">]</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">endftod</span><span class="p">(</span><span class="n">x1_str</span> <span class="ow">or</span> <span class="o">-</span><span class="mf">1.</span><span class="p">))</span>
+
+            <span class="c1"># convert to Pyne native formats</span>
+            <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzzaaa_to_id</span><span class="p">(</span><span class="n">nuc_zzzaaa</span><span class="p">)</span>
+
+            <span class="c1"># skip to the end of the table</span>
+            <span class="n">read_eot</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">read_eot</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">read_eot</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">END_OF_TABLE_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+
+            <span class="c1"># insert the table in the self.structure dictionary</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">nuc</span><span class="p">][</span><span class="s1">&#39;pin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">yi</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">nuc</span><span class="p">][</span><span class="s1">&#39;rdesc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rdesc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">nuc</span><span class="p">][</span><span class="s1">&#39;rprop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rprop</span><span class="p">)</span>
+
+            <span class="n">pdp_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">nuc</span><span class="p">][</span><span class="s1">&#39;pin_rdesc_rprop&#39;</span><span class="p">]</span>
+            <span class="n">table_dict</span> <span class="o">=</span> <span class="n">pdp_dict</span><span class="p">[</span><span class="n">yi</span><span class="p">,</span> <span class="n">rdesc</span><span class="p">,</span> <span class="n">rprop</span><span class="p">]</span>
+            <span class="n">table_dict</span><span class="p">[</span><span class="s1">&#39;rmod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rmod</span>
+
+            <span class="n">x1_in_tuple</span> <span class="o">=</span> <span class="n">x1</span> <span class="k">if</span> <span class="n">rmod</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">data_tuple</span> <span class="o">=</span> <span class="n">DataTuple</span><span class="p">(</span>
+                    <span class="n">x1</span><span class="o">=</span><span class="n">x1_in_tuple</span><span class="p">,</span>
+                    <span class="n">yo</span><span class="o">=</span><span class="n">yo</span><span class="p">,</span>
+                    <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="n">table_dict</span><span class="p">[</span><span class="s1">&#39;data_tuples&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_tuple</span><span class="p">)</span>
+
+        <span class="c1"># close the file if it was opened here</span>
+        <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_linlin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">low</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">low_xs</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">low</span><span class="p">)</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">high</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">high_xs</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high</span><span class="p">)</span>
+        <span class="n">de_int</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">((</span><span class="n">e_int</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">-</span><span class="n">e_int</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">xs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mf">2.</span><span class="o">/</span><span class="n">de_int</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_linlog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">e_int</span><span class="p">),</span> <span class="n">xs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">low</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">low_xs</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">low</span><span class="p">))</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">high</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">high_xs</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">high</span><span class="p">))</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high</span><span class="p">)</span>
+
+        <span class="n">de_int</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span><span class="o">-</span><span class="n">y2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x1</span><span class="o">/</span><span class="n">x2</span><span class="p">))</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">y1</span><span class="o">-</span><span class="n">A</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">A</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span> <span class="o">-</span>
+                            <span class="n">x1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">-</span><span class="n">x2</span><span class="o">+</span><span class="n">x1</span><span class="p">)</span> <span class="o">+</span> <span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">))</span><span class="o">/</span><span class="n">de_int</span>
+
+    <span class="k">def</span> <span class="nf">_loglin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">e_int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">low</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">low_xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">**</span> <span class="n">interp</span><span class="p">(</span><span class="n">low</span><span class="p">)</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">high</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">high_xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">**</span> <span class="n">interp</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high</span><span class="p">)</span>
+
+        <span class="n">de_int</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span> <span class="o">-</span> <span class="n">A</span><span class="o">*</span><span class="n">x1</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">((</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">/</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="n">de_int</span>
+
+    <span class="k">def</span> <span class="nf">_loglog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">e_int</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">low</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">low_xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">**</span> <span class="n">interp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">low</span><span class="p">))</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">high</span> <span class="ow">in</span> <span class="n">e_int</span><span class="p">:</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">high_xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">**</span> <span class="n">interp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">high</span><span class="p">))</span>
+                <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high_xs</span><span class="p">)</span>
+                <span class="n">e_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="n">e_int</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">],</span> <span class="n">high</span><span class="p">)</span>
+
+        <span class="n">de_int</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">e_int</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">e_int</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">e_int</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y2</span><span class="o">/</span><span class="n">y1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x1</span><span class="o">/</span><span class="n">x2</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x1</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x1</span><span class="o">/</span><span class="n">x2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="o">**</span><span class="n">B</span> <span class="o">/</span> <span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x2</span><span class="o">**</span><span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">x1</span><span class="o">**</span><span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">de_int</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Library.get_rx"><a class="viewcode-back" href="../../pyapi/endl.html#pyne.endl.Library.get_rx">[docs]</a>    <span class="k">def</span> <span class="nf">get_rx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">rdesc</span><span class="p">,</span> <span class="n">rprop</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">p_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get_rx(nuc, p_in, rdesc, rprop, x1=None, p_out=None)</span>
+<span class="sd">        Grab the data for one reaction type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nuc : int</span>
+<span class="sd">            id form of nucleus to read from.</span>
+<span class="sd">        p_in : int</span>
+<span class="sd">            ENDL incident particle designator</span>
+<span class="sd">        rdesc : int</span>
+<span class="sd">            ENDL reaction descriptor</span>
+<span class="sd">        rprop : int</span>
+<span class="sd">            ENDL reaction property</span>
+<span class="sd">        x1 : int or None</span>
+<span class="sd">            ENDL atomic subshell indicator (if applicable)</span>
+<span class="sd">        yo : int or None</span>
+<span class="sd">            ENDL outgoing particle designator (if applicable)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        data : NumPy array</span>
+<span class="sd">            Contains the reaction data in a n-by-m-dimensional array. The</span>
+<span class="sd">            values of n and m depend on the reaction property rprop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_nuc_pin_rdesc_rprop</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span>
+                                                  <span class="n">rdesc</span><span class="p">,</span> <span class="n">rprop</span><span class="p">,</span>
+                                                  <span class="n">x1</span><span class="p">,</span> <span class="n">p_out</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Nucleus </span><span class="si">{}</span><span class="s1"> does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nuc</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_read_nuc_pin_rdesc_rprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">p_in</span><span class="p">,</span> <span class="n">rdesc</span><span class="p">,</span> <span class="n">rprop</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">yo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load in the data from one reaction into self.structure.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nuc : int</span>
+<span class="sd">            id of nuclide.</span>
+<span class="sd">        p_in : int</span>
+<span class="sd">            ENDL incident particle designator</span>
+<span class="sd">        rdesc : int</span>
+<span class="sd">            ENDL reaction descriptor</span>
+<span class="sd">        rprop : int</span>
+<span class="sd">            ENDL reaction property</span>
+<span class="sd">        x1 : int or None</span>
+<span class="sd">            ENDL atomic subshell indicator (if applicable)</span>
+<span class="sd">        yo : int or None</span>
+<span class="sd">            ENDL outgoing particle designator (if applicable)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array, float64</span>
+<span class="sd">            float64 NumPy array containing the reaction data. The shape of the</span>
+<span class="sd">            array depends on the ENDL reaction property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">opened_here</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pdp_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">nuc</span><span class="p">][</span><span class="s1">&#39;pin_rdesc_rprop&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Particle </span><span class="si">{0}</span><span class="s1">/reaction descriptor </span><span class="si">{1}</span><span class="s1">/reaction property </span><span class="si">{2}</span><span class="s1">&#39;</span>\
+                    <span class="s1">&#39; not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p_in</span><span class="p">,</span> <span class="n">rdesc</span><span class="p">,</span> <span class="n">rprop</span><span class="p">)</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">msg</span><span class="p">,)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="n">data_tuples</span> <span class="o">=</span> <span class="n">pdp_dict</span><span class="p">[</span><span class="n">p_in</span><span class="p">,</span> <span class="n">rdesc</span><span class="p">,</span> <span class="n">rprop</span><span class="p">][</span><span class="s1">&#39;data_tuples&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Select the first data_tuple matching x1 and yo, if they are provided</span>
+        <span class="c1"># (i.e. not None)</span>
+        <span class="k">def</span> <span class="nf">match_x1_yo_to_data_tuple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">d</span><span class="o">.</span><span class="n">x1</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">d</span><span class="o">.</span><span class="n">yo</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">data_tuple</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_tuples</span><span class="p">)</span>
+                                     <span class="k">if</span> <span class="n">match_x1_yo_to_data_tuple</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">yo</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Outgoing particle </span><span class="si">{0}</span><span class="s1">/subshell indicator </span><span class="si">{1}</span><span class="s1">&#39;</span>\
+                    <span class="s1">&#39; not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">yo</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">msg</span><span class="p">,)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">data_tuple</span><span class="o">.</span><span class="n">limits</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">opened_here</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">stop</span><span class="o">-</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">parsed_data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">fromendl_tok</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">NFIELDS_RPROP</span><span class="p">[</span><span class="n">rprop</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">opened_here</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">parsed_data</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

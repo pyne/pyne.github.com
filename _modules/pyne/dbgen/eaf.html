@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.eaf &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.dbgen.eaf</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module handles parsing EAF formatted cross section files and adding</span>
+<span class="sd">the data to PyNE&#39;s HDF5 storage.  The data here is autonatically grabbed from</span>
+<span class="sd">the IAEA. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib.request</span> <span class="k">as</span> <span class="nn">urllib</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">gzip</span> <span class="k">import</span> <span class="n">GzipFile</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">.api</span> <span class="k">import</span> <span class="n">BASIC_FILTERS</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="grab_eaf_data"><a class="viewcode-back" href="../../../pyapi/dbgen/eaf.html#pyne.dbgen.eaf.grab_eaf_data">[docs]</a><span class="k">def</span> <span class="nf">grab_eaf_data</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grabs the EAF activation data files</span>
+<span class="sd">    if not already present.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    build_dir : str</span>
+<span class="sd">        Major directory to place EAF data file(s) in. &#39;EAF/&#39; will be appended.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Add EAF to build_dir</span>
+    <span class="n">build_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;EAF&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> created&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">build_dir</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Grab ENSDF files and unzip them.</span>
+    <span class="c1"># This link was taken from &#39;http://www-nds.iaea.org/fendl/fen-activation.htm&#39;</span>
+    <span class="n">iaea_url</span> <span class="o">=</span> <span class="s1">&#39;http://www-nds.iaea.org/fendl2/activation/processed/vitj_e/libout/fendlg-2.0_175-gz&#39;</span>
+    <span class="n">cf_base_url</span> <span class="o">=</span> <span class="s1">&#39;http://data.pyne.io/&#39;</span>
+    <span class="n">eaf_gzip</span> <span class="o">=</span> <span class="s1">&#39;fendlg-2.0_175-gz&#39;</span>
+
+    <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">eaf_gzip</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">eaf_gzip</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">build_dir</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  grabbing </span><span class="si">{0}</span><span class="s2"> and placing it in </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eaf_gzip</span><span class="p">,</span> <span class="n">fpath</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">iaea_url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># touch the file</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3215713</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  could not get </span><span class="si">{0}</span><span class="s2"> from IAEA; trying S3 mirror&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eaf_gzip</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">cf_base_url</span> <span class="o">+</span> <span class="n">eaf_gzip</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+                <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># touch the file</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3215713</span><span class="p">:</span> 
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  could not get </span><span class="si">{0}</span><span class="s2"> from S3 mirror&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eaf_gzip</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Write contents of single-file gzip archive to a new file</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gf</span> <span class="o">=</span> <span class="n">GzipFile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+        <span class="n">ofile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;fendlg-2.0_175&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fw</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">gf</span><span class="p">:</span>
+                <span class="n">fw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;us-ascii&quot;</span><span class="p">))</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">gf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="c1"># numpy array row storage information for EAF data</span>
+<span class="n">eaf_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;nuc_zz&#39;</span><span class="p">,</span>        <span class="nb">int</span>          <span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;rxnum&#39;</span><span class="p">,</span>         <span class="s1">&#39;S7&#39;</span>         <span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;rxstr&#39;</span><span class="p">,</span>         <span class="s1">&#39;S7&#39;</span>         <span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;daughter&#39;</span><span class="p">,</span>      <span class="s1">&#39;S7&#39;</span>         <span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span>            <span class="nb">float</span><span class="p">,</span> <span class="p">(</span><span class="mi">175</span><span class="p">,))</span>
+    <span class="p">])</span>
+
+<span class="c1"># Regular expression for parsing an individual set of EAF data.</span>
+<span class="c1"># Includes some groupnames that are currently unused.</span>
+<span class="n">eaf_info_pattern</span> <span class="o">=</span> \
+    <span class="s2">&quot;(?P&lt;iso&gt;\d{5,7})\s*&quot;</span> <span class="o">+</span> \
+    <span class="s2">&quot;(?P&lt;rxnum&gt;\d{2,4})\s*&quot;</span> <span class="o">+</span> \
+    <span class="s2">&quot;(?P&lt;ngrps&gt;\d{1,3})\s*&quot;</span> <span class="o">+</span> \
+    <span class="s2">&quot;(?P&lt;parent&gt;[a-zA-Z]{1,2}\s{0,3}\d{1,3}[M ][12 ])&quot;</span> <span class="o">+</span> \
+    <span class="s2">&quot;(?P&lt;rxstr&gt;\(N,[\w\s]</span><span class="si">{3}</span><span class="s2">\))&quot;</span> <span class="o">+</span> \
+    <span class="s2">&quot;(?P&lt;daugh&gt;[a-zA-Z.]{1,2}\s{0,3}\d{1,3}[MG]{0,1}\d{0,1})&quot;</span> <span class="o">+</span> \
+    <span class="s2">&quot;(.*?)&quot;</span>
+<span class="n">eaf_bin_pattern</span> <span class="o">=</span> <span class="s2">&quot;(?P&lt;xs&gt;(\d\.\d</span><span class="si">{5}</span><span class="s2">E[-+]\d</span><span class="si">{2}</span><span class="s2">\s*){1,175})&quot;</span>
+
+<div class="viewcode-block" id="parse_eaf_xs"><a class="viewcode-back" href="../../../pyapi/dbgen/eaf.html#pyne.dbgen.eaf.parse_eaf_xs">[docs]</a><span class="k">def</span> <span class="nf">parse_eaf_xs</span><span class="p">(</span><span class="n">build_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create numpy array by parsing EAF data</span>
+<span class="sd">    using regular expressions</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    build_file : str</span>
+<span class="sd">        Path where EAF data is stored.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eaf_array : numpy array</span>
+<span class="sd">        Numpy array with a row for each isotope+reaction combination</span>
+<span class="sd">        found in the EAF data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">build_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">eaf_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">eaf_pattern</span> <span class="o">=</span> <span class="n">eaf_info_pattern</span> <span class="o">+</span> <span class="n">eaf_bin_pattern</span> 
+
+    <span class="c1"># Iterate over all iso/rx combinations in file</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">eaf_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
+
+        <span class="n">xs_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="n">xs_list</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">175</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">xs_list</span><span class="p">))</span><span class="o">*</span><span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+
+        <span class="c1"># Store information in new row of array.</span>
+        <span class="n">eafrow</span> <span class="o">=</span> <span class="p">(</span>
+                  <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;iso&#39;</span><span class="p">]),</span>
+                  <span class="n">md</span><span class="p">[</span><span class="s1">&#39;rxnum&#39;</span><span class="p">],</span>
+                  <span class="n">md</span><span class="p">[</span><span class="s1">&#39;rxstr&#39;</span><span class="p">],</span>
+                  <span class="n">md</span><span class="p">[</span><span class="s1">&#39;daugh&#39;</span><span class="p">],</span>
+                  <span class="n">xs_list</span>
+                  <span class="p">)</span>
+        
+        <span class="n">eaf_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eafrow</span><span class="p">)</span>
+
+    <span class="n">eaf_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">eaf_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">eaf_dtype</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Read in </span><span class="si">{0}</span><span class="s2"> sets of EAF data.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">eaf_array</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">eaf_array</span></div>
+
+
+<div class="viewcode-block" id="make_eaf_table"><a class="viewcode-back" href="../../../pyapi/dbgen/eaf.html#pyne.dbgen.eaf.make_eaf_table">[docs]</a><span class="k">def</span> <span class="nf">make_eaf_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function for adding EAF group and table to HDF5 storage.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nuc_data : str</span>
+<span class="sd">        Path to nuclide data file.</span>
+<span class="sd">    build_path : str</span>
+<span class="sd">        Directory where EAF data is located.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing the EAF activation data.&quot;</span><span class="p">)</span>
+    <span class="n">eaf_array</span> <span class="o">=</span> <span class="n">parse_eaf_xs</span><span class="p">(</span><span class="n">build_path</span><span class="p">)</span>
+
+    <span class="c1"># Open the HDF5 file</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span>
+
+    <span class="c1"># Ensure that the appropriate file structure is present</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">):</span>
+        <span class="n">neutron_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">,</span> \
+                <span class="s1">&#39;Neutron Interaction Data&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create eaf_xs group</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;eaf_xs&#39;</span><span class="p">):</span>
+        <span class="n">eaf_group</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;/neutron&quot;</span><span class="p">,</span> <span class="s2">&quot;eaf_xs&quot;</span><span class="p">,</span> \
+            <span class="s2">&quot;EAF 175-Group Neutron Activation Cross Section Data&quot;</span><span class="p">)</span>
+
+    <span class="n">eaf_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s2">&quot;/neutron/eaf_xs&quot;</span><span class="p">,</span> <span class="s2">&quot;eaf_xs&quot;</span><span class="p">,</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">eaf_dtype</span><span class="p">),</span> \
+            <span class="s2">&quot;EAF Activation Cross Section Data [barns]&quot;</span><span class="p">,</span> \
+            <span class="n">expectedrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">eaf_array</span><span class="p">))</span>
+
+    <span class="c1"># Put eaf_array in the table</span>
+    <span class="n">eaf_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eaf_array</span><span class="p">)</span>
+
+    <span class="c1"># Write the table</span>
+    <span class="n">eaf_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Add group structure by calling placeholder function to get boundaries</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/neutron/eaf_xs&#39;</span><span class="p">,</span> <span class="s1">&#39;E_g&#39;</span><span class="p">,</span> <span class="n">_get_eaf_groups</span><span class="p">(),</span> \
+            <span class="s1">&#39;Neutron energy group bounds [MeV]&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Close the HDF5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_eaf_groups</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Function for retrieving EAF group structure.</span>
+
+<span class="sd">    Note, energies are entered high to low in the HDF5 storage.</span>
+
+<span class="sd">    This is used as a placeholder for a future PyNE implementation of a database</span>
+<span class="sd">    storing group structures.  This hypothetical database would return the</span>
+<span class="sd">    group structure like this method does.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eaf_E_g_array : 1D list</span>
+<span class="sd">        List of energy group boundaries from high to low.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">eaf_E_g_array</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="mf">1.0000E-07</span><span class="p">,</span> <span class="mf">4.1399E-07</span><span class="p">,</span> <span class="mf">5.3158E-07</span><span class="p">,</span> <span class="mf">6.8256E-07</span><span class="p">,</span> <span class="mf">8.7643E-07</span><span class="p">,</span>
+            <span class="mf">1.1254E-06</span><span class="p">,</span> <span class="mf">1.4450E-06</span><span class="p">,</span> <span class="mf">1.8554E-06</span><span class="p">,</span> <span class="mf">2.3824E-06</span><span class="p">,</span> <span class="mf">3.0590E-06</span><span class="p">,</span>
+            <span class="mf">3.9279E-06</span><span class="p">,</span> <span class="mf">5.0435E-06</span><span class="p">,</span> <span class="mf">6.4760E-06</span><span class="p">,</span> <span class="mf">8.3153E-06</span><span class="p">,</span> <span class="mf">1.0677E-05</span><span class="p">,</span>
+            <span class="mf">1.3710E-05</span><span class="p">,</span> <span class="mf">1.7604E-05</span><span class="p">,</span> <span class="mf">2.2603E-05</span><span class="p">,</span> <span class="mf">2.9023E-05</span><span class="p">,</span> <span class="mf">3.7267E-05</span><span class="p">,</span>
+            <span class="mf">4.7851E-05</span><span class="p">,</span> <span class="mf">6.1442E-05</span><span class="p">,</span> <span class="mf">7.8893E-05</span><span class="p">,</span> <span class="mf">1.0130E-04</span><span class="p">,</span> <span class="mf">1.3007E-04</span><span class="p">,</span>
+            <span class="mf">1.6702E-04</span><span class="p">,</span> <span class="mf">2.1445E-04</span><span class="p">,</span> <span class="mf">2.7536E-04</span><span class="p">,</span> <span class="mf">3.5358E-04</span><span class="p">,</span> <span class="mf">4.5400E-04</span><span class="p">,</span>
+            <span class="mf">5.8295E-04</span><span class="p">,</span> <span class="mf">7.4852E-04</span><span class="p">,</span> <span class="mf">9.6112E-04</span><span class="p">,</span> <span class="mf">1.2341E-03</span><span class="p">,</span> <span class="mf">1.5846E-03</span><span class="p">,</span>
+            <span class="mf">2.0347E-03</span><span class="p">,</span> <span class="mf">2.2487E-03</span><span class="p">,</span> <span class="mf">2.4852E-03</span><span class="p">,</span> <span class="mf">2.6126E-03</span><span class="p">,</span> <span class="mf">2.7465E-03</span><span class="p">,</span>
+            <span class="mf">3.0354E-03</span><span class="p">,</span> <span class="mf">3.3546E-03</span><span class="p">,</span> <span class="mf">3.7074E-03</span><span class="p">,</span> <span class="mf">4.3074E-03</span><span class="p">,</span> <span class="mf">5.5308E-03</span><span class="p">,</span>
+            <span class="mf">7.1017E-03</span><span class="p">,</span> <span class="mf">9.1188E-03</span><span class="p">,</span> <span class="mf">1.0595E-02</span><span class="p">,</span> <span class="mf">1.1709E-02</span><span class="p">,</span> <span class="mf">1.5034E-02</span><span class="p">,</span>
+            <span class="mf">1.9305E-02</span><span class="p">,</span> <span class="mf">2.1875E-02</span><span class="p">,</span> <span class="mf">2.3579E-02</span><span class="p">,</span> <span class="mf">2.4176E-02</span><span class="p">,</span> <span class="mf">2.4788E-02</span><span class="p">,</span>
+            <span class="mf">2.6058E-02</span><span class="p">,</span> <span class="mf">2.7000E-02</span><span class="p">,</span> <span class="mf">2.8501E-02</span><span class="p">,</span> <span class="mf">3.1828E-02</span><span class="p">,</span> <span class="mf">3.4307E-02</span><span class="p">,</span>
+            <span class="mf">4.0868E-02</span><span class="p">,</span> <span class="mf">4.6309E-02</span><span class="p">,</span> <span class="mf">5.2475E-02</span><span class="p">,</span> <span class="mf">5.6562E-02</span><span class="p">,</span> <span class="mf">6.7380E-02</span><span class="p">,</span>
+            <span class="mf">7.2025E-02</span><span class="p">,</span> <span class="mf">7.9499E-02</span><span class="p">,</span> <span class="mf">8.2503E-02</span><span class="p">,</span> <span class="mf">8.6517E-02</span><span class="p">,</span> <span class="mf">9.8037E-02</span><span class="p">,</span>
+            <span class="mf">1.1109E-01</span><span class="p">,</span> <span class="mf">1.1679E-01</span><span class="p">,</span> <span class="mf">1.2277E-01</span><span class="p">,</span> <span class="mf">1.2907E-01</span><span class="p">,</span> <span class="mf">1.3569E-01</span><span class="p">,</span>
+            <span class="mf">1.4264E-01</span><span class="p">,</span> <span class="mf">1.4996E-01</span><span class="p">,</span> <span class="mf">1.5764E-01</span><span class="p">,</span> <span class="mf">1.6573E-01</span><span class="p">,</span> <span class="mf">1.7422E-01</span><span class="p">,</span>
+            <span class="mf">1.8316E-01</span><span class="p">,</span> <span class="mf">1.9255E-01</span><span class="p">,</span> <span class="mf">2.0242E-01</span><span class="p">,</span> <span class="mf">2.1280E-01</span><span class="p">,</span> <span class="mf">2.2371E-01</span><span class="p">,</span>
+            <span class="mf">2.3518E-01</span><span class="p">,</span> <span class="mf">2.4724E-01</span><span class="p">,</span> <span class="mf">2.7324E-01</span><span class="p">,</span> <span class="mf">2.8725E-01</span><span class="p">,</span> <span class="mf">2.9452E-01</span><span class="p">,</span>
+            <span class="mf">2.9721E-01</span><span class="p">,</span> <span class="mf">2.9849E-01</span><span class="p">,</span> <span class="mf">3.0197E-01</span><span class="p">,</span> <span class="mf">3.3373E-01</span><span class="p">,</span> <span class="mf">3.6883E-01</span><span class="p">,</span>
+            <span class="mf">3.8774E-01</span><span class="p">,</span> <span class="mf">4.0762E-01</span><span class="p">,</span> <span class="mf">4.5049E-01</span><span class="p">,</span> <span class="mf">4.9787E-01</span><span class="p">,</span> <span class="mf">5.2340E-01</span><span class="p">,</span>
+            <span class="mf">5.5023E-01</span><span class="p">,</span> <span class="mf">5.7844E-01</span><span class="p">,</span> <span class="mf">6.0810E-01</span><span class="p">,</span> <span class="mf">6.3928E-01</span><span class="p">,</span> <span class="mf">6.7206E-01</span><span class="p">,</span>
+            <span class="mf">7.0651E-01</span><span class="p">,</span> <span class="mf">7.4274E-01</span><span class="p">,</span> <span class="mf">7.8082E-01</span><span class="p">,</span> <span class="mf">8.2085E-01</span><span class="p">,</span> <span class="mf">8.6294E-01</span><span class="p">,</span>
+            <span class="mf">9.0718E-01</span><span class="p">,</span> <span class="mf">9.6167E-01</span><span class="p">,</span> <span class="mf">1.0026E+00</span><span class="p">,</span> <span class="mf">1.1080E+00</span><span class="p">,</span> <span class="mf">1.1648E+00</span><span class="p">,</span>
+            <span class="mf">1.2246E+00</span><span class="p">,</span> <span class="mf">1.2874E+00</span><span class="p">,</span> <span class="mf">1.3534E+00</span><span class="p">,</span> <span class="mf">1.4227E+00</span><span class="p">,</span> <span class="mf">1.4957E+00</span><span class="p">,</span>
+            <span class="mf">1.5724E+00</span><span class="p">,</span> <span class="mf">1.6530E+00</span><span class="p">,</span> <span class="mf">1.7377E+00</span><span class="p">,</span> <span class="mf">1.8268E+00</span><span class="p">,</span> <span class="mf">1.9205E+00</span><span class="p">,</span>
+            <span class="mf">2.0190E+00</span><span class="p">,</span> <span class="mf">2.1225E+00</span><span class="p">,</span> <span class="mf">2.2313E+00</span><span class="p">,</span> <span class="mf">2.3069E+00</span><span class="p">,</span> <span class="mf">2.3457E+00</span><span class="p">,</span>
+            <span class="mf">2.3653E+00</span><span class="p">,</span> <span class="mf">2.3851E+00</span><span class="p">,</span> <span class="mf">2.4660E+00</span><span class="p">,</span> <span class="mf">2.5924E+00</span><span class="p">,</span> <span class="mf">2.7253E+00</span><span class="p">,</span>
+            <span class="mf">2.8651E+00</span><span class="p">,</span> <span class="mf">3.0119E+00</span><span class="p">,</span> <span class="mf">3.1664E+00</span><span class="p">,</span> <span class="mf">3.3287E+00</span><span class="p">,</span> <span class="mf">3.6788E+00</span><span class="p">,</span>
+            <span class="mf">4.0657E+00</span><span class="p">,</span> <span class="mf">4.4933E+00</span><span class="p">,</span> <span class="mf">4.7237E+00</span><span class="p">,</span> <span class="mf">4.9659E+00</span><span class="p">,</span> <span class="mf">5.2205E+00</span><span class="p">,</span>
+            <span class="mf">5.4881E+00</span><span class="p">,</span> <span class="mf">5.7695E+00</span><span class="p">,</span> <span class="mf">6.0653E+00</span><span class="p">,</span> <span class="mf">6.3763E+00</span><span class="p">,</span> <span class="mf">6.5924E+00</span><span class="p">,</span>
+            <span class="mf">6.7032E+00</span><span class="p">,</span> <span class="mf">7.0469E+00</span><span class="p">,</span> <span class="mf">7.4082E+00</span><span class="p">,</span> <span class="mf">7.7880E+00</span><span class="p">,</span> <span class="mf">8.1873E+00</span><span class="p">,</span>
+            <span class="mf">8.6071E+00</span><span class="p">,</span> <span class="mf">9.0484E+00</span><span class="p">,</span> <span class="mf">9.5123E+00</span><span class="p">,</span> <span class="mf">1.0000E+01</span><span class="p">,</span> <span class="mf">1.0513E+01</span><span class="p">,</span>
+            <span class="mf">1.1052E+01</span><span class="p">,</span> <span class="mf">1.1618E+01</span><span class="p">,</span> <span class="mf">1.2214E+01</span><span class="p">,</span> <span class="mf">1.2523E+01</span><span class="p">,</span> <span class="mf">1.2840E+01</span><span class="p">,</span>
+            <span class="mf">1.3499E+01</span><span class="p">,</span> <span class="mf">1.3840E+01</span><span class="p">,</span> <span class="mf">1.4191E+01</span><span class="p">,</span> <span class="mf">1.4550E+01</span><span class="p">,</span> <span class="mf">1.4918E+01</span><span class="p">,</span>
+            <span class="mf">1.5683E+01</span><span class="p">,</span> <span class="mf">1.6487E+01</span><span class="p">,</span> <span class="mf">1.6905E+01</span><span class="p">,</span> <span class="mf">1.7333E+01</span><span class="p">,</span> <span class="mf">1.9640E+01</span><span class="p">]</span>
+
+    <span class="n">eaf_E_g_array</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">eaf_E_g_array</span>
+
+
+<div class="viewcode-block" id="make_eaf"><a class="viewcode-back" href="../../../pyapi/dbgen/eaf.html#pyne.dbgen.eaf.make_eaf">[docs]</a><span class="k">def</span> <span class="nf">make_eaf</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Controller function for adding cross section data from EAF format file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">,</span> <span class="n">datapath</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">datapath</span>
+
+    <span class="c1"># Check if the table already exists</span>
+    <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">BASIC_FILTERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;neutron&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">neutron</span><span class="p">,</span> <span class="s1">&#39;eaf_xs&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;skipping EAF activation data table creation; already exists.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="c1"># grab the EAF data</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grabbing the EAF activation data from IAEA&quot;</span><span class="p">)</span>
+    <span class="n">grabbed</span> <span class="o">=</span> <span class="n">grab_eaf_data</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">grabbed</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">build_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;EAF/fendlg-2.0_175&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">build_filename</span><span class="p">):</span>
+        <span class="n">build_path</span> <span class="o">=</span> <span class="n">build_filename</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1">#</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making EAF activation data table.&quot;</span><span class="p">)</span>
+    <span class="n">make_eaf_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_path</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../../install/index.html">Install</a></li>
+    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../../pubs.html">Publications</a></li>
+    <li><a href="../../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

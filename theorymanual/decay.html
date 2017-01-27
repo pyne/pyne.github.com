@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Decay &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="decay">
+<span id="theorymanual-decay"></span><h1>Decay<a class="headerlink" href="#decay" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Anthony Scopatz</td>
+</tr>
+</tbody>
+</table>
+<p>The Bateman equations governing radioactive decay are an important subexpression
+of generalized transmutation equations. In many cases, it is desirable to compute
+decay on its own, outside of the presence of an neutron or photon field.  In this
+case radioactive decay is a function solely on intrinsic physical parameters,
+namely half-lives. This document recasts the Bateman equations into a form that
+is better suited for computation than the traditional expression.</p>
+<div class="section" id="canonical-bateman-equations-for-decay">
+<h2>Canonical Bateman Equations for Decay<a class="headerlink" href="#canonical-bateman-equations-for-decay" title="Permalink to this headline">¶</a></h2>
+<p>The canonical expression of the Bateman equations for a decay chain
+proceeding from a nuclide <img class="math" src="../_images/math/0acafa529182e79b4f56165ec677554fba7fcf98.png" alt="A"/> to a nuclide <img class="math" src="../_images/math/c4563e7ecec2336a3934447a6c10ef8519b0b452.png" alt="Z"/> at time
+<img class="math" src="../_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/> following a specific path is as follows <a class="footnote-reference" href="#id3" id="id1">[1]</a>:</p>
+<div class="math">
+<p><img src="../_images/math/436435ef347c617652f9dc974365b6bcd7cc6b32.png" alt="N_C(t) = \frac{N_1(0)}{\lambda_C} \cdot \gamma \cdot \sum_{i=1}^C \lambda_i c_{i} e^{-\lambda_i t}"/></p>
+</div><p>The symbols in this expression have the following meaning:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><img class="math" src="../_images/math/2bcc65482aa8e15cd4c9e9f2542451fb4e971a91.png" alt="C"/></td>
+<td>length of the decay chain</td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="../_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/></td>
+<td>index for ith species, on range [1, C]</td>
+</tr>
+<tr class="row-even"><td><img class="math" src="../_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/></td>
+<td>index for jth species, on range [1, C]</td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="../_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/></td>
+<td>time [seconds]</td>
+</tr>
+<tr class="row-even"><td><img class="math" src="../_images/math/b7899e45c94b312c8bdea3a90aec0cfa400e74ec.png" alt="N_i(t)"/></td>
+<td>number density of the ith species at time t</td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="../_images/math/43c76a77dea026eec022b581e5a82007936cdc2d.png" alt="t_{1/2,i}"/></td>
+<td>half-life of the ith species</td>
+</tr>
+<tr class="row-even"><td><img class="math" src="../_images/math/3b765ea6939f1eba2541e91f870cb3c078aa29be.png" alt="\lambda_i"/></td>
+<td>decay constant of ith species, <img class="math" src="../_images/math/06087aec794484d3bfd55826bb6f580454cfd0f7.png" alt="ln(2)/t_{1/2,i}"/></td>
+</tr>
+<tr class="row-odd"><td><img class="math" src="../_images/math/0ebb67342b546ca42a1c634b1ef03c893c4cdedb.png" alt="\gamma"/></td>
+<td>The total branch ratio for this chain</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, <img class="math" src="../_images/math/f2b30171a3b0d3395cb190d1bec47494cba58eef.png" alt="c_{i}"/> is defined as:</p>
+<div class="math">
+<p><img src="../_images/math/558448a66c5587e716e2fbb0eb07e546ec7c4661.png" alt="c_i = \prod_{j=1,i\ne j}^C \frac{\lambda_j}{\lambda_j - \lambda_i}"/></p>
+</div><p>Furthermore, the total chain branch ratio is defined as the product of the
+branch ratio between any two species <a class="footnote-reference" href="#id4" id="id2">[2]</a>:</p>
+<div class="math">
+<p><img src="../_images/math/8728ee4f6dc0e015a78e80cd4c122e2d3cf560d5.png" alt="\gamma = \prod_{i=i}^{C-1} \gamma_{i \to i+1}"/></p>
+</div><p>Minor modifications are needed for terminal species: the first nuclide of a
+decay chain and the ending stable species. By setting <img class="math" src="../_images/math/969207f036f3832051b025c8615ce01ddf1e93e7.png" alt="C=1"/>, the Bateman
+equations can be reduced to simply:</p>
+<div class="math">
+<p><img src="../_images/math/554378124337a01a796bde98ba4b1c71f3c6552a.png" alt="N_C(t) = N_1(0) e^{-\lambda_1 t}"/></p>
+</div><p>For stable species, the appropriate equation is derived by taking the limit
+of when the decay constant of the stable nuclide (<img class="math" src="../_images/math/83d8e20db57c0c97fce0f32d82df97c008ad98ee.png" alt="\lambda_C"/>) goes to
+zero.  Also notice that every <img class="math" src="../_images/math/496867ca68c428fa123f26f0f73997632e61e116.png" alt="c_i"/> contains exactly one <img class="math" src="../_images/math/83d8e20db57c0c97fce0f32d82df97c008ad98ee.png" alt="\lambda_C"/>
+in the numerator which cancels with the <img class="math" src="../_images/math/83d8e20db57c0c97fce0f32d82df97c008ad98ee.png" alt="\lambda_C"/> in the denominator
+in front of the summation:</p>
+<div class="math">
+<p><img src="../_images/math/e89d8b67cc10603ec59c692d2387d039ca552b20.png" alt="\lim_{\lambda_C \to 0} N_C(t) = N_1(0)  \gamma \left[e^{-0t} + \sum_{i=1}^{C-1} \lambda_i \left(\frac{1}{0 - \lambda_i} \prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i} \right) e^{-\lambda_i t} \right]
+
+N_C(t) = N_1(0)  \gamma \left[1.0 - \sum_{i=1}^{C-1} \left(\prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i} \right) e^{-\lambda_i t} \right]"/></p>
+</div></div>
+<div class="section" id="binary-reformulation-of-bateman-equations">
+<h2>Binary Reformulation of Bateman Equations<a class="headerlink" href="#binary-reformulation-of-bateman-equations" title="Permalink to this headline">¶</a></h2>
+<p>There are two main strategies can be used to construct a version of these equations that
+is better suited to computation, if not clarity.</p>
+<p>First, lets aim for minimizing the number of
+operations that must be performed to achieve the same result. This can be done
+by grouping constants together and pre-calculating them. This saves the computer from
+having to perform the same operations at run time.  It is possible to express the
+Bateman equations as a simple sum of exponentials</p>
+<div class="math">
+<p><img src="../_images/math/6c7a917d16d814facbc67882c24eb1e07f2781f4.png" alt="N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{-\lambda_i t}"/></p>
+</div><p>where the coefficients <img class="math" src="../_images/math/812f92da6db61fb4e16c0060582e4cab04c5cb60.png" alt="k_i"/> are defined as:</p>
+<div class="math">
+<p><img src="../_images/math/6b44e99e1875c1de632f247c68ab2b88cefa5f33.png" alt="k_i = \frac{\gamma}{\lambda_C} \lambda_i c_i"/></p>
+</div><p>If <img class="math" src="../_images/math/812f92da6db61fb4e16c0060582e4cab04c5cb60.png" alt="k_i"/> are computed at run time then the this expression results in much more
+computational effort that than the original Bateman equations since <img class="math" src="../_images/math/57be377296c4dbf4d003ca7dacb5f0a034ea127b.png" alt="\gamma/\lambda_C"/>
+are brought into the summation. However, when <img class="math" src="../_images/math/812f92da6db61fb4e16c0060582e4cab04c5cb60.png" alt="k_i"/> are pre-caluclated,
+many floating point operations are saved by avoiding explicitly computing <img class="math" src="../_images/math/496867ca68c428fa123f26f0f73997632e61e116.png" alt="c_i"/>.</p>
+<p>The second strategy is to note that computers are much better at dealing with powers of
+2 then then any other base, even <img class="math" src="../_images/math/630e3a780577ea7921e81ee2ac5237dd1802ec8d.png" alt="e"/>. Thus the <code class="docutils literal"><span class="pre">exp2(x)</span></code> function, or <img class="math" src="../_images/math/b19da9de2a542b86cc7d7a118feebf3be13a80a2.png" alt="2^x"/>,
+is faster than the natural exponential function <code class="docutils literal"><span class="pre">exp(x)</span></code>, <img class="math" src="../_images/math/cd4321c696b6b066437c8c595b3e947d8e6677fd.png" alt="e^x"/>.  As proof of this
+the following are some simple timing results:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>In [1]: import numpy as np
+
+In [2]: r = np.random.random(1000) / np.random.random(1000)
+
+In [3]: %timeit np.exp(r)
+10000 loops, best of 3: 26.6 µs per loop
+
+In [4]: %timeit np.exp2(r)
+10000 loops, best of 3: 20.1 µs per loop
+</pre></div>
+</div>
+<p>This is a savings of about 25%.  Since the core of the Bateman equations are exponentials,
+it is worthwhile to squeeze this algorithm as much as possible.  Luckily, the decay constant
+provides an intrinsic mechanism to convert to base-2:</p>
+<div class="math">
+<p><img src="../_images/math/cd4ddd73ef1034644bee05fa8e8da95ef0b44c0f.png" alt="N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{-\lambda_i t}
+
+N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{\frac{-\ln(2)\cdot t}{t_{1/2,i}}}
+
+N_C(t) = N_1(0) \sum_{i=1}^C k_{i} 2^{\frac{-t}{t_{1/2,i}}}"/></p>
+</div><p>This expression can be further collapsed by defining <img class="math" src="../_images/math/7dd2a5ea01fbd72ad2a58dd1f3d6ecbfde6208a1.png" alt="a"/> to be the precomputed
+exponent values:</p>
+<div class="math">
+<p><img src="../_images/math/a1ece8b9f5e7169ff5d584dff758d1d6d9e05b19.png" alt="a_i = \frac{-1}{t_{1/2,i}}"/></p>
+</div><p>Thus, the final form of the binary representation of the Bateman equations are
+as follows:</p>
+<p><strong>General Formulation:</strong></p>
+<div class="math">
+<p><img src="../_images/math/b075d780384e471b19aeb22ad0396924451ea933.png" alt="N_C(t) = N_1(0) \sum_{i=1}^C k_{i} 2^{a_i t}"/></p>
+</div><p><strong>First Nuclide in Chain:</strong></p>
+<div class="math">
+<p><img src="../_images/math/427ce0d8400db7fb708f746d15496174638d8d9e.png" alt="N_C(t) = N_1(0) \cdot 2^{a_1 t}"/></p>
+</div><p><strong>Stable Nuclide:</strong></p>
+<div class="math">
+<p><img src="../_images/math/4835d98e3dc88b84780b7e556f7751d10dc1ab74.png" alt="N_C(t) = N_1(0) \left[1.0 + \sum_{i=1}^{C-1} \lim_{\lambda_C\to 0}(k_{i}) \cdot 2^{a_i t} \right]"/></p>
+</div><p>With completely precomputed <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/>, <img class="math" src="../_images/math/7dd2a5ea01fbd72ad2a58dd1f3d6ecbfde6208a1.png" alt="a"/>, and the <code class="docutils literal"><span class="pre">exp2()</span></code> function, this
+formulation minimizes the number of floating point operations while completely
+preserving physics. No assumptions were made aside from the Bateman equations
+themselves in this proof.</p>
+<p>Note that it is not possible to reduce the number of operations further.  This
+is because  <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/> and <img class="math" src="../_images/math/7dd2a5ea01fbd72ad2a58dd1f3d6ecbfde6208a1.png" alt="a"/> cannot be combined without adding further
+operations.</p>
+</div>
+<div class="section" id="implementation-specific-approximations">
+<h2>Implementation Specific Approximations<a class="headerlink" href="#implementation-specific-approximations" title="Permalink to this headline">¶</a></h2>
+<p>The above formulation holds generally for any decay chain.  However, certain
+approximations are used in practice to reduce the number of chains and terms
+that are calculated.</p>
+<ol class="arabic simple">
+<li>Decay chains coming from spontaneous fission are not tallied as they
+lead to an explosion of the total number of chains while contributing to
+extraordinarily rare branches.</li>
+<li>Decay alphas are not treated as He-4 production.</li>
+<li>For chains longer than length 2, any
+term whose half-life is less than <img class="math" src="../_images/math/21657abf2dea8e36fed8ad9de97c6a7d36bb6953.png" alt="10^{-8}"/> of the sum of all
+half-lives in the chain is dropped. This filtering prevents excessive
+calculation from species which do not significantly contribute to
+end atom fraction. The threshold <img class="math" src="../_images/math/21657abf2dea8e36fed8ad9de97c6a7d36bb6953.png" alt="10^{-8}"/> was chosen as
+because it is a reasonable naive estimate of floating point error after
+many operations. If the filtering causes there to be less than
+two terms in the summation, then the filtering is turned off and all
+terms are computed.</li>
+<li>To prevent other sources of floating point error, a nuclide is determined
+to be stable when <img class="math" src="../_images/math/cbe9c684691c599b381b66ecc129c9661d272d3e.png" alt="\lambda_i &lt; 10^{-16}"/>, rather than when
+<img class="math" src="../_images/math/af6ea7209dedcf6a7f3bb83ae13ae3176e0b7c67.png" alt="\lambda_i = 0.0"/>.</li>
+<li>If a chain has any <code class="docutils literal"><span class="pre">NaN</span></code> decay constants, the chain in rejected.</li>
+<li>If a chain has any infinite <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/>, the chain in rejected.</li>
+</ol>
+<p>In principle, each of these statements is reasonable. However, they
+may preclude desired behavior by users. In such a situation, these
+assumptions should be revisited.</p>
+</div>
+<div class="section" id="additional-information">
+<h2>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
+<p>For further discussion, please see:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://groups.google.com/d/topic/pyne-dev/CXmRfBSThDE/discussion">the mailing list post</a>,</li>
+<li><a class="reference external" href="https://github.com/pyne/pyne/pull/614">the pull request, #614</a>, and</li>
+<li><a class="reference external" href="http://nbviewer.ipython.org/github/pyne/sandbox/blob/master/origen-cmp.ipynb">the benchmark study</a>.</li>
+</ul>
+<p>Note that the benchmark study shows quite high agreement between this method
+and ORIGEN v2.2.</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Jerzy Cetnar, General solution of Bateman equations for nuclear transmutations,
+Annals of Nuclear Energy, Volume 33, Issue 7, May 2006, Pages 640-645,
+<a class="reference external" href="http://dx.doi.org/10.1016/j.anucene.2006.02.004">http://dx.doi.org/10.1016/j.anucene.2006.02.004</a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Logan J. Harr. Precise Calculation of Complex Radioactive Decay Chains. M.Sc thesis
+Air Force Institute of Technology. 2007. <a class="reference external" href="http://www.dtic.mil/dtic/tr/fulltext/u2/a469273.pdf">http://www.dtic.mil/dtic/tr/fulltext/u2/a469273.pdf</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Decay</a><ul>
+<li><a class="reference internal" href="#canonical-bateman-equations-for-decay">Canonical Bateman Equations for Decay</a></li>
+<li><a class="reference internal" href="#binary-reformulation-of-bateman-equations">Binary Reformulation of Bateman Equations</a></li>
+<li><a class="reference internal" href="#implementation-specific-approximations">Implementation Specific Approximations</a></li>
+<li><a class="reference internal" href="#additional-information">Additional Information</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

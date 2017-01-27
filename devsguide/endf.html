@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ENDF Tokenization &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="endf-tokenization">
+<h1>ENDF Tokenization<a class="headerlink" href="#endf-tokenization" title="Permalink to this headline">¶</a></h1>
+<p>Here is the implementation of the ENDF tokenizer. The bulk of the work is done
+by endftod() called in the third-to-last-line: it gets hit once for every data
+point in an ENDF file. So we want to make sure it runs quickly.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fromendf_tok_conv</span><span class="p">(</span><span class="n">char</span> <span class="o">*</span> <span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A replacement for numpy.fromstring().</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : str</span>
+<span class="sd">        String of data, consisting of complete lines of ENDF data.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : ndarray, 1d, float64</span>
+<span class="sd">        Will always return a 1d float64 array.  You must reshape to the</span>
+<span class="sd">        appropriate shape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cdef</span> <span class="nb">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">num_entries</span>
+    <span class="n">cdef</span> <span class="n">char</span> <span class="n">entry</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+    <span class="n">cdef</span> <span class="n">long</span> <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cdef</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64_t</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">]</span> <span class="n">cdata</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">num_entries</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">/</span><span class="mi">81</span> <span class="o">*</span> <span class="mi">6</span>
+    <span class="n">cdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_entries</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_entries</span><span class="p">:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="mi">11</span> <span class="o">+</span> <span class="n">i</span><span class="o">/</span><span class="mi">6</span> <span class="o">*</span> <span class="mi">15</span>
+        <span class="n">strncpy</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">s</span><span class="o">+</span><span class="n">pos</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+        <span class="n">cdata</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">endftod</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">cdata</span>
+</pre></div>
+</div>
+<p>One might wonder why we are using endftod() to convert from ENDF to float
+instead of the more conventional atof(). The reason is that atof() contains a
+lot of general-purpose code that we do not need, which slows down the code
+considerably. In addition, the ENDF format is not atof()-friendly, so it needs a
+little doctoring up before getting passed to atof(). This adds even more
+overhead.</p>
+<p>Compare the following two implementations of endftod(), one using
+atof() and the other using our custom endftod().</p>
+<p>This is the implementation in Cython utilizing atof():</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">endftod</span><span class="p">(</span><span class="n">char</span> <span class="o">*</span> <span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function converts a number listed on an ENDF tape into a float or int</span>
+<span class="sd">    depending on whether an exponent is present.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cdef</span> <span class="n">char</span> <span class="n">char2</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">cdef</span> <span class="n">char</span> <span class="n">char8</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+    <span class="n">cdef</span> <span class="n">char</span> <span class="n">char9</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+    <span class="n">cdef</span> <span class="n">char</span> <span class="n">news</span> <span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+    <span class="n">cdef</span> <span class="n">double</span> <span class="n">v</span>
+    <span class="n">cdef</span> <span class="nb">int</span> <span class="n">i</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">):</span>
+        <span class="n">news</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+    <span class="k">if</span> <span class="n">char2</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">char9</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span> <span class="ow">or</span> <span class="n">char9</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">):</span>
+        <span class="n">strncpy</span><span class="p">(</span><span class="n">news</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;e&#39;</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">atof</span><span class="p">(</span><span class="n">news</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">char2</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">char8</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span> <span class="ow">or</span> <span class="n">char8</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">):</span>
+        <span class="n">strncpy</span><span class="p">(</span><span class="n">news</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;e&#39;</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+        <span class="n">news</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">atof</span><span class="p">(</span><span class="n">news</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">atof</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v</span>
+</pre></div>
+</div>
+<p>This is the custom C version, endftod():</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>double pyne::endftod (char * s)
+{
+  // Converts string from ENDF to float64.
+  int pos, mant, exp;
+  double v, dbl_exp;
+
+  mant = exp = 0;
+  if (s[2] == &#39;.&#39;)
+  // Convert an ENDF float
+    {
+      if (s[9] == &#39;+&#39; or s[9] == &#39;-&#39;)
+        {
+          // All these factors of ten are from place values.
+          mant = s[8] + 10 * s[7] + 100 * s[6] + 1000 * s[5] + 10000 * s[4] + \
+            100000 * s[3] + 1000000 * s[1] - 1111111 * &#39;0&#39;;
+          exp = s[10] - &#39;0&#39;;
+          // Make the right power of 10.
+          dbl_exp = (exp &amp; 01? 10.: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 100.: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e4: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e8: 1);
+          // Adjust for powers of ten from treating mantissa as an integer.
+          dbl_exp = (s[9] == &#39;-&#39;? 1/dbl_exp: dbl_exp) * 1.0e-6;
+          // Get mantissa sign, apply exponent.
+          v = mant * (s[0] == &#39;-&#39;? -1: 1) * dbl_exp;
+        }
+      else
+        {
+          mant = s[7] + 10 * s[6] + 100 * s[5] + 1000 * s[4] + 10000 * s[3] + \
+            100000 * s[1] - 111111 * &#39;0&#39;;
+          exp = s[10] + 10 * s[9] - 11 * &#39;0&#39;;
+          dbl_exp = (exp &amp; 01? 10.: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 100.: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e4: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e8: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e16: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e32: 1) * \
+                    ((exp &gt;&gt;= 1) &amp; 01? 1.0e64: 1);
+          dbl_exp = (s[8] == &#39;-&#39;? 1/dbl_exp: dbl_exp) * 1.0e-5;
+          v = mant * (s[0] == &#39;-&#39;? -1: 1) * dbl_exp;
+        }
+    }
+
+  // Convert an ENDF int to float; we start from the last char in the field and
+  // move forward until we hit a non-digit.
+  else
+    {
+      v = 0;
+      mant = 1; // Here we use mant for the place value about to be read in.
+      pos = 10;
+      while (s[pos] != &#39;-&#39; and s[pos] != &#39;+&#39; and s[pos] != &#39; &#39; and pos &gt; 0)
+        {
+          v += mant * (s[pos] - &#39;0&#39;);
+          mant *= 10;
+          pos--;
+        }
+     v *= (s[pos] == &#39;-&#39;? -1: 1);
+    }
+  return v;
+}
+</pre></div>
+</div>
+<p>The result is an approximate 40% decrease in time spent; timeit shows the atof()
+implementation to take 230ns/loop, and the custom C implementation to take
+115ns/loop for floats and 130ns/loop for ints on my laptop. These ratios scale
+up to fromendf_tok().</p>
+<p>These speedups are possible because we know the structure of the ENDF format,
+allowing us to eliminate much of the atof() code. This is particularly helpful
+in the float case, since each field is fixed-width once the size of the exponent
+has been determined. This allows us to eliminate loops completely. Since we also
+know the position of the decimal point, we are able to easily distinguish
+between float and int values as well as know which place values correspond to
+which characters in the string.</p>
+<p>Unfortunately, we cannot avoid loops in the integer conversion because it is not
+fixed-width. Here we have opted to count up in place value because ENDF numbers
+are right-justified. Instead of iterating through a bunch of whitespace we can
+usually hit the end of the number in a few tries.</p>
+</div>
+<div class="section" id="integration-of-energy-groups">
+<h1>Integration of Energy Groups<a class="headerlink" href="#integration-of-energy-groups" title="Permalink to this headline">¶</a></h1>
+<p>The data for each energy group consists of an array of (energy, cross-section)
+pairs. The data between the points can be interpolated using the schemes given
+in the data. Each group only uses one interpolation scheme, which is given by an
+integer flag in the data.</p>
+<p>The available interpolation schemes include histogram, linear, y linear in
+ln(x), x linear in ln(y), ln(y) linear in ln(x), and a special interpolation law
+described in the ENDF Manual, pp. 23-24.</p>
+<p>Histogram and linear are trivial to implement. However, the various log cases
+are slightly more complicated.</p>
+<p>In the case where y is a linear function of ln(x), we integrate over the region
+like this:</p>
+<div class="math">
+<p><img src="../_images/math/111d9757d6fb66f085e15875d226ac21f3bff4dd.png" alt="y=A\ln{x}+B \\
+y_1=A\ln{x_1}+B \\
+y_2=A\ln{x_2}+B"/></p>
+</div><p>With some algebra, we get:</p>
+<div class="math">
+<p><img src="../_images/math/307831dde409b912c75681efe0d91f3e52cd33fe.png" alt="A(\ln{x_1}-\ln{x_2})=y_1-y_2 \\
+A=\frac{y_1-y_2}{\ln{(x_1/x_2)}} \\
+B=y_1-A\ln{x_1}=y_1-\frac{y_1-y_2}{\ln{(x_1/x_2)}}\ln{x_1}"/></p>
+</div><p>Then we can take the integral and plug in A and B:</p>
+<div class="math">
+<p><img src="../_images/math/a6f2e4dbfa7b4d49e600dd40514532970b5d1021.png" alt="\int_{x_1}^{x_2}A\ln{x}+B\mathrm{d}x = A(x\ln{x}-x)|_{x_1}^{x_2}+Bx|_{x_1}^{x_2} = A(x_2\ln{x_2}-x_1\ln{x_1}-x_2+x_1)+B(x_2-x_1)\\
+\int_{x_1}^{x_2}y(x)\mathrm{d}x = \frac{y_1-y_2}{\ln{(x_1/x_2)}}(x_2\ln{x_2}-x_1\ln{x_1}-x_2+x_1) + (y_1-\frac{y_1-y_2}{\ln{(x_1/x_2)}} \ln{x_1})(x_2-x_1) \\"/></p>
+</div><p>When x is linear in ln(y), we have:</p>
+<div class="math">
+<p><img src="../_images/math/a6579a6db5116f81d4dd80e78c38e8af17179742.png" alt="x=A\ln{y}+B"/></p>
+</div><p>Since A and B are arbitrary constants, we can express this relation as:</p>
+<div class="math">
+<p><img src="../_images/math/1a921404af68df9fc1c3bcd740279c5a76603af0.png" alt="\ln{y}=Ax+B\\
+y = e^{Ax+B}\\
+y_1 = e^{Ax_1+B}\\
+y_2 = e^{Ax_2+B}"/></p>
+</div><p>So now we can solve for A:</p>
+<div class="math">
+<p><img src="../_images/math/6835daa51116b0a8cd16d9f0946c74fcab846046.png" alt="\frac{y_1}{y_2} = e^{Ax_1+B-Ax_2-B} = e^{A(x_1-x_2)}\\
+ln{\frac{y_1}{y_2}} = A(x_1-x_2)\\
+A = \frac{\ln{(y_1/y_2)}}{x_1-x_2}"/></p>
+</div><p>Plug this in to the original relation to solve for B:</p>
+<div class="math">
+<p><img src="../_images/math/ca5f38ac0938b0fe10d2270072cccc4d72c9ece5.png" alt="\ln{y_1} = Ax_1+B\\
+B = \ln{y_1}-Ax_1\\
+B = \ln{y_1}-\frac{\ln{(y_1/y_2)}}{x_1-x_2}x_1"/></p>
+</div><p>Now we integrate <img class="math" src="../_images/math/0a93664afe9a571efe03d2f32ba4593e94492813.png" alt="e^{Ax+B}"/>. We all know this one!</p>
+<div class="math">
+<p><img src="../_images/math/859588bedc710b54a658d41a0798ef039bc0b453.png" alt="\int_{x_1}^{x_2} e^{Ax+B} \mathrm{d}x = \frac{1}{A}e^{Ax+B}|_{x_1}^{x_2} = \frac{e^B}{A}(e^{Ax_2}-e^{Ax_1})"/></p>
+</div><p>Factor stuff out and you get:</p>
+<div class="math">
+<p><img src="../_images/math/66200e63a8ad1c1a68bcea600eaea83c49a81367.png" alt="\int_{x_1}^{x_2} e^{Ax+B} \mathrm{d}x = \frac{1}{A}(y_2-y_1)"/></p>
+</div><p>When ln(y) is linear in ln(x) we have:</p>
+<div class="math">
+<p><img src="../_images/math/aacfe6ab4a010802c2d2bd77d77739b8dce3c501.png" alt="\ln{y} = A\ln{x}+B"/></p>
+</div><p>Taking e to the power of both sides gives us:</p>
+<div class="math">
+<p><img src="../_images/math/2fe6d04895027b099930348e8e7654f313ff0e14.png" alt="y = e^Bx^A \\
+y_1 = e^Bx_1^A \\
+y_2 = e^Bx_2^A"/></p>
+</div><p>With some algebra we get:</p>
+<div class="math">
+<p><img src="../_images/math/cdbc74cf3949999438b733112eed4b5f96e882f0.png" alt="A = - \frac{\ln{y_2}-\ln{y_1}}{\ln{x_1}-\ln{x_2}} \\
+B = - \frac{\ln{y_1}\ln{x_2} - \ln{y_2}\ln{x_1}}{\ln{x_1}-\ln{x_2}}"/></p>
+</div><p>And finally we can plug A and B into the integral:</p>
+<div class="math">
+<p><img src="../_images/math/f0b551aff0ab52968c9273d9ff7e782a6857c11e.png" alt="\int_{x_1}^{x_2}e^Bx^A\mathrm{d}x = e^B (\frac{x^{A+1}}{A+1})|_{x_1}^{x_2}"/></p>
+</div><p>The ENDF Manual also mentions a sixth one-dimensional interpolation
+law, described in detail on pp. 23-24. From this, I quote:</p>
+<div class="math">
+<p><img src="../_images/math/267e8f2b1e9e5df9e3f1e27a10f59e51222d24e0.png" alt="\sigma = \frac{A}{E} e^{-\frac{B}{\sqrt{E-T}}}"/></p>
+</div><p>Where T = 0 for exothermic reactions with Q greater than 0 and equal
+to kinematic threshold energy for endothermic reactions with Q less
+than or equal to 0.</p>
+<p>The ENDF Manual also states that this is &#8220;for charged-particle cross
+sections and is based on the limiting forms of the Coulomb
+penetrabilities for exothermic reactions.&#8221; Because of this, and the
+difficulty of analytically solving this integral, we have opted to
+not implement this (yet).</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ENDF Tokenization</a></li>
+<li><a class="reference internal" href="#integration-of-energy-groups">Integration of Energy Groups</a></li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/cloud.js"></script>
+    <link rel="shortcut icon" href="_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <ol class="arabic simple">
+<li><strong>id (zas)</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass number, and ends with four state digits (0 = ground,
+1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
+be expressed as &#8216;922350000&#8217;.  This is th canonical form for nuclides.</li>
+<li><strong>name</strong>: This is the more common, human readable notation.  The chemical symbol
+(one or two characters long) is first, followed by the atomic weight.  Lastly if
+the nuclide is metastable, the letter <em>M</em> is concatenated to the end.  For
+example, &#8216;H-1&#8217; and &#8216;Am242M&#8217; are both valid.  Note that nucname will always
+return name form with the dash removed and all letters uppercase.</li>
+<li><strong>zzaaam</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass number, and ends with a metastable flag (0 = ground,
+1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
+be expressed as &#8216;922350&#8217;.</li>
+<li><strong>zzzaaa</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass.  It contains no information about the excited state.</li>
+<li><strong>zzllaaam</strong>: The ZZLLAAAM naming convention is similar to name form.  However, it
+is preceded by the nuclides two AA numbers, followed by the two LL characters.
+Of the two LL characters, only the first letter in the chemical symbol is uppercase,
+the dash is always present, and the the meta-stable flag is lowercase.  For
+instance, &#8216;95-Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+<li><strong>SZA</strong>: This type places three state digits out front, the charge of the nucleus in
+the middle, and then has three digits for the atomic mass number. Uranium-235M here
+would be expressed as &#8216;1092235&#8217;.</li>
+<li><strong>MCNP</strong>: The MCNP format for entering nuclides is unfortunately
+non-standard.  In most ways it is similar to zzaaam form, except that it
+lacks the metastable flag.  For information on how metastable isotopes are
+named, please consult the MCNPX documentation for more information.</li>
+<li><strong>Serpent</strong>: The serpent naming convention is similar to name form.
+However, only the first letter in the chemical symbol is uppercase, the
+dash is always present, and the the meta-stable flag is lowercase.  For
+instance, &#8216;Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+<li><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.
+However, this convention contains no metastable information.  Moreover, the
+A-number comes before the element symbol.  For example, &#8216;242Am&#8217; is the
+valid NIST notation.</li>
+<li><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the
+placement of the Z- and A-numbers are swapped. Therefore, this format is
+effectively aaazzzm.  For example, &#8216;2420951&#8217; is the valid cinder notation
+for &#8216;AM242M&#8217;.</li>
+<li><strong>ALARA</strong>: In ALARA format, elements are denoted by the lower case atomic symbol.
+Nuclides are specified by appending a semicolon and A-number. For example, &#8220;fe&#8221;
+and &#8220;fe:56&#8221; represent elemental iron and iron-56 respectively. No metastable
+flag exists.</li>
+<li><strong>Groundstate</strong>:  In Groundstate format, the nuclide is stored in a form similar
+to the standard id form, but the last four digits are zero to eliminate the
+information about the nuclide&#8217;s state.</li>
+<li><strong>state_id</strong>: The state id naming convention uses the form zzzaaassss. It is
+different from the canonical zzzaaassss form in that ssss refers to a list
+of states by ordered by energy. This is derived from the levels listed in the
+ENSDF files for a given nuclide. Using this form is dangerous as it may change
+with new releases of ENSDF data.</li>
+</ol>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="index.html" title="index">
+          <img class="logo" src="_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="install/index.html">Install</a></li>
+    <li><a href="tutorial/index.html">Tutorial</a></li>
+    <li><a href="examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="usersguide/index.html">User's Guide</a></li>
+    <li><a href="pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="pubs.html">Publications</a></li>
+    <li><a href="previous/index.html">Release Notes</a></li>
+    <li><a href="gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

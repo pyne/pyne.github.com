@@ -1,0 +1,7 @@
+var searchData=
+[
+  ['b',['b',['../namespacepyne.html#a12664d38214170260d6a69c4f5dda8da',1,'pyne::b(int nuc)'],['../namespacepyne.html#a702614f522de6463e3cf4f2b188a75ef',1,'pyne::b(char *nuc)'],['../namespacepyne.html#a6b580c22fa1b5b26da1185723491fc3a',1,'pyne::b(std::string nuc)']]],
+  ['b_5fcoherent',['b_coherent',['../namespacepyne.html#a94620ef1a92c4562e8d4d54242428ab8',1,'pyne::b_coherent(int nuc)'],['../namespacepyne.html#a5ec92f6c1f9b71644af8290272e58aca',1,'pyne::b_coherent(char *nuc)'],['../namespacepyne.html#a2df8a4dfc9f5bd2c8b673dd370a482af',1,'pyne::b_coherent(std::string nuc)']]],
+  ['b_5fincoherent',['b_incoherent',['../namespacepyne.html#a2f07313175b4a12453fcd84aca062f06',1,'pyne::b_incoherent(int nuc)'],['../namespacepyne.html#a9088e0fc374d045d9e643b943b35d091',1,'pyne::b_incoherent(char *nuc)'],['../namespacepyne.html#ac1e839bc561307fd34ed6905a0ca7209',1,'pyne::b_incoherent(std::string nuc)']]],
+  ['branch_5fratio',['branch_ratio',['../namespacepyne.html#af619eaa83237b583dd7f3b5c6b41a618',1,'pyne::branch_ratio(std::pair&lt; int, int &gt; from_to)'],['../namespacepyne.html#af2ac244d00d6a8fab26e646eb53fd172',1,'pyne::branch_ratio(int from_nuc, int to_nuc)'],['../namespacepyne.html#abef13981249047d7678dc448db101ef4',1,'pyne::branch_ratio(char *from_nuc, char *to_nuc)'],['../namespacepyne.html#a5a77a005a47c8c2a421484f17acdec0d',1,'pyne::branch_ratio(std::string from_nuc, std::string to_nuc)']]]
+];

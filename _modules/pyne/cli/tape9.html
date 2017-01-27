@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.cli.tape9 &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.cli.tape9</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This is a command line interface for manipulating ORIGEN v2.2 TAPE9.INP files.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">data</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">ensdf</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">origen22</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.cache</span> <span class="k">import</span> <span class="n">XSCache</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.data_source</span> <span class="k">import</span> <span class="n">EAFDataSource</span><span class="p">,</span> <span class="n">SimpleDataSource</span><span class="p">,</span> <span class="n">NullDataSource</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.api</span> <span class="k">import</span> <span class="n">build_dir</span>
+<span class="kn">from</span> <span class="nn">pyne.dbgen.decay</span> <span class="k">import</span> <span class="n">grab_ensdf_decay</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="parse_ensdf"><a class="viewcode-back" href="../../../pyapi/cli/tape9.html#pyne.cli.tape9.parse_ensdf">[docs]</a><span class="k">def</span> <span class="nf">parse_ensdf</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses a list of ensdf files for origen.&quot;&quot;&quot;</span>
+    <span class="n">decays</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">branches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">decs</span><span class="p">,</span> <span class="n">brs</span> <span class="o">=</span> <span class="n">ensdf</span><span class="o">.</span><span class="n">origen_data</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">decays</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">decs</span><span class="p">)</span>
+        <span class="n">branches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">brs</span><span class="p">)</span>
+    <span class="n">decays</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">decays</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">branches</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">decays</span><span class="p">,</span> <span class="n">branches</span></div>
+
+<span class="k">def</span> <span class="nf">_is_metastable_beta_decay_0</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">metastable_cutoff</span><span class="p">)</span> <span class="ow">and</span> \
+           <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_is_metastable_beta_decay_x</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">metastable_cutoff</span><span class="p">)</span> <span class="ow">and</span> \
+           <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_plus_eq_lib</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="n">lib</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">val</span>
+
+<span class="k">def</span> <span class="nf">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">ACTIVATION_PRODUCT_NUCS</span><span class="p">:</span>
+        <span class="n">_plus_eq_lib</span><span class="p">(</span><span class="n">t9</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">ACTINIDE_AND_DAUGHTER_NUCS</span><span class="p">:</span>
+        <span class="n">_plus_eq_lib</span><span class="p">(</span><span class="n">t9</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">FISSION_PRODUCT_NUCS</span><span class="p">:</span>
+        <span class="n">_plus_eq_lib</span><span class="p">(</span><span class="n">t9</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">NUCS</span><span class="p">:</span>
+        <span class="c1"># guess its classification</span>
+        <span class="k">if</span> <span class="n">nucname</span><span class="o">.</span><span class="n">anum</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">act</span><span class="p">:</span>
+            <span class="c1"># nuc is actinide</span>
+            <span class="n">_plus_eq_lib</span><span class="p">(</span><span class="n">t9</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># default to activation product</span>
+            <span class="n">_plus_eq_lib</span><span class="p">(</span><span class="n">t9</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">ACTIVATION_PRODUCT_NUCS</span><span class="p">:</span>
+        <span class="n">t9</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">ACTINIDE_AND_DAUGHTER_NUCS</span><span class="p">:</span>
+        <span class="n">t9</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">FISSION_PRODUCT_NUCS</span><span class="p">:</span>
+        <span class="n">t9</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">if</span> <span class="n">nuc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">NUCS</span><span class="p">:</span>
+        <span class="c1"># guess its classification</span>
+        <span class="k">if</span> <span class="n">nucname</span><span class="o">.</span><span class="n">anum</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">act</span><span class="p">:</span>
+            <span class="c1"># nuc is actinide</span>
+            <span class="n">t9</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># default to activation product</span>
+            <span class="n">t9</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+<span class="k">def</span> <span class="nf">_set_branch_item</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;half_life&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;%SF&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%SF&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+        <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_spont_fiss&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+                     <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%SF&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;</span><span class="si">%E</span><span class="s2">C&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;</span><span class="si">%E</span><span class="s2">C&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span> 
+        <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_plus_or_electron_capture&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+                          <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;</span><span class="si">%E</span><span class="s2">C&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;%B+&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%B+&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+        <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_plus_or_electron_capture&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+                          <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%B+&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;</span><span class="si">%E</span><span class="s2">C+%B+&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;</span><span class="si">%E</span><span class="s2">C+%B+&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+        <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_plus_or_electron_capture&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+                          <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;</span><span class="si">%E</span><span class="s2">C+%B+&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;%B-N&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>  <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%B-N&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+        <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_n&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%B-N&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;%A&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>  <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%A&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+        <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_alpha&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%A&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;%IT&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>  <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%IT&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+        <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_isomeric_transition&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+                     <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;%IT&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="gendecay"><a class="viewcode-back" href="../../../pyapi/cli/tape9.html#pyne.cli.tape9.gendecay">[docs]</a><span class="k">def</span> <span class="nf">gendecay</span><span class="p">(</span><span class="n">decays</span><span class="p">,</span> <span class="n">branches</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This computes ORIGEN TAPE9 decay data based on ENSDF data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    decays : list</span>
+<span class="sd">        decay list from parse_ensdf()</span>
+<span class="sd">    branches : list</span>
+<span class="sd">        branches list from parse_ensdf()</span>
+<span class="sd">    metastable_cutoff : float, optional</span>
+<span class="sd">        minimum lifetime of metastable state (in seconds) to be included.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    t9 : dict</span>
+<span class="sd">        a TAPE9 dictionary for the decay library</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t9</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;_type&#39;</span><span class="p">:</span> <span class="s1">&#39;decay&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;PyNE Decay Data for Activation Products&#39;</span><span class="p">},</span> 
+          <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;_type&#39;</span><span class="p">:</span> <span class="s1">&#39;decay&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;PyNE Decay Data for Actinides &amp; Daughters&#39;</span><span class="p">},</span> 
+          <span class="mi">3</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;_type&#39;</span><span class="p">:</span> <span class="s1">&#39;decay&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;PyNE Decay Data for Fission Products&#39;</span><span class="p">},</span> 
+          <span class="p">}</span>
+    <span class="k">for</span> <span class="n">nlb</span><span class="p">,</span> <span class="n">lib</span> <span class="ow">in</span> <span class="n">t9</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">origen22</span><span class="o">.</span><span class="n">DECAY_FIELDS</span><span class="p">:</span>
+            <span class="n">lib</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">longest</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">longest2</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">decays</span><span class="p">:</span>
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_is_metastable_beta_decay_0</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;B-&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+                <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_minus_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;B+&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;EC&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+                <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_plus_or_electron_capture_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> 
+                                  <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_is_metastable_beta_decay_x</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">longest2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">longest2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">longest2</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;B-&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+                    <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_minus_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+                                      <span class="n">item</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+                                      <span class="c1">#item[6]*item[8]/100.0)</span>
+                <span class="k">if</span> <span class="s1">&#39;B+&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;EC&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+                    <span class="n">_plus_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_plus_or_electron_capture_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span>
+                                      <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+                                      <span class="c1">#key, item[6]*item[8]/100.0)</span>
+            <span class="k">elif</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">longest2</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="n">longest2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;B-&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+                    <span class="c1">#_eq_decay_t9(t9, &#39;frac_beta_minus_x&#39;, nuc, key, item[6]*item[8]/100.0)</span>
+                    <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_minus_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;B+&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;EC&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
+                    <span class="n">_eq_decay_t9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="s1">&#39;frac_beta_plus_or_electron_capture_x&#39;</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span>
+                                      <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span>
+                                      <span class="c1">#key, item[6]*item[8]/100.0)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">branches</span><span class="p">:</span>
+        <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
+            <span class="n">_set_branch_item</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">longest</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">longest</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">longest</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+                <span class="k">continue</span> 
+            <span class="n">_set_branch_item</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">nucs</span><span class="p">,</span> <span class="n">hl</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">origen22</span><span class="o">.</span><span class="n">ACTIVATION_PRODUCT_NUCS</span><span class="p">,</span> 
+                         <span class="n">origen22</span><span class="o">.</span><span class="n">ACTINIDE_AND_DAUGHTER_NUCS</span><span class="p">,</span> 
+                         <span class="n">origen22</span><span class="o">.</span><span class="n">FISSION_PRODUCT_NUCS</span><span class="p">],</span> 
+                        <span class="p">[</span><span class="n">t9</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;half_life&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]):</span>
+        <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">nucs</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hl</span><span class="p">:</span>
+                <span class="n">hl</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">half_life</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t9</span></div>
+
+
+<div class="viewcode-block" id="main_gen"><a class="viewcode-back" href="../../../pyapi/cli/tape9.html#pyne.cli.tape9.main_gen">[docs]</a><span class="k">def</span> <span class="nf">main_gen</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates an open TAPE9.INP file. by default this only uses completely open </span>
+<span class="sd">    data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;ENSDF&#39;</span><span class="p">,</span> <span class="s1">&#39;ensdf.*&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">grab_ensdf_decay</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">build_dir</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">build_dir</span><span class="p">,</span> <span class="s1">&#39;ENSDF&#39;</span><span class="p">,</span> <span class="s1">&#39;ensdf.*&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;parsing ENSDF decay data&quot;</span><span class="p">)</span>
+    <span class="n">decays</span><span class="p">,</span> <span class="n">branches</span> <span class="o">=</span> <span class="n">parse_ensdf</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;creating ORIGEN decay libraries&quot;</span><span class="p">)</span>
+    <span class="n">t9decay</span> <span class="o">=</span> <span class="n">gendecay</span><span class="p">(</span><span class="n">decays</span><span class="p">,</span> <span class="n">branches</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">metastable_cutoff</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;creating ORIGEN cross section libraries&quot;</span><span class="p">)</span>
+    <span class="n">xsc</span> <span class="o">=</span> <span class="n">XSCache</span><span class="p">(</span><span class="n">data_source_classes</span><span class="o">=</span><span class="p">[</span><span class="n">EAFDataSource</span><span class="p">,</span> <span class="n">SimpleDataSource</span><span class="p">,</span> 
+                                       <span class="n">NullDataSource</span><span class="p">])</span>
+    <span class="n">xsc</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="n">t9xsfpy</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">xslibs</span><span class="p">(</span><span class="n">xscache</span><span class="o">=</span><span class="n">xsc</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">t9</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">merge_tape9</span><span class="p">([</span><span class="n">t9decay</span><span class="p">,</span> <span class="n">t9xsfpy</span><span class="p">])</span>
+    <span class="n">origen22</span><span class="o">.</span><span class="n">write_tape9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
+
+<span class="n">_cmd_mains</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;gen&#39;</span><span class="p">:</span> <span class="n">main_gen</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Manipulates ORIGEN v2.2 &#39;</span>
+                                                 <span class="s1">&#39;TAPE9.INP files.&#39;</span><span class="p">)</span>
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;cmd&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;available sub-commands&#39;</span><span class="p">,</span> 
+                                       <span class="n">description</span><span class="o">=</span><span class="s1">&#39;the subcommands&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;cmd&#39;</span><span class="p">)</span>
+
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;gen&#39;</span><span class="p">,</span> 
+                                <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Creates a TAPE9 file based only on open data.&#39;</span><span class="p">)</span>
+    <span class="n">gen</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;TAPE9.INP&#39;</span><span class="p">,</span> 
+                      <span class="n">help</span><span class="o">=</span><span class="s1">&#39;output filename&#39;</span><span class="p">)</span>
+    <span class="n">gen</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;build_dir&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">build_dir</span><span class="p">,</span>
+                     <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to the build directory.&#39;</span><span class="p">)</span>
+    <span class="n">gen</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--metastable-cutoff&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;metastable_cutoff&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                     <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;minimum cutoff value to be considered &#39;</span>
+                                      <span class="s1">&#39;metastable state, in sec.&#39;</span><span class="p">)</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">cmd</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_cmd_mains</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s1">&#39;command </span><span class="si">{0!r}</span><span class="s1"> could not be found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">cmd</span><span class="p">))</span>
+    <span class="n">_cmd_mains</span><span class="p">[</span><span class="n">ns</span><span class="o">.</span><span class="n">cmd</span><span class="p">](</span><span class="n">ns</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../../install/index.html">Install</a></li>
+    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../../pubs.html">Publications</a></li>
+    <li><a href="../../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1557 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic Nuclear Data – pyne.data &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="basic-nuclear-data-pyne-data">
+<span id="pyne-data"></span><h1>Basic Nuclear Data &#8211; <a class="reference internal" href="../usersguide/data.html#module-pyne.data" title="pyne.data"><code class="xref py py-mod docutils literal"><span class="pre">pyne.data</span></code></a><a class="headerlink" href="#basic-nuclear-data-pyne-data" title="Permalink to this headline">¶</a></h1>
+<p>This module provides a top-level interface for a variety of basic nuclear data needs.
+This aims to provide quick access to very high fidelity data.  Usually values
+are taken from the <code class="file docutils literal"><span class="pre">nuc_data.h5</span></code> library.</p>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">data</span></code> module:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">data</span>
+</pre></div>
+</div>
+<div class="section" id="atomic-mass">
+<h2>Atomic Mass<a class="headerlink" href="#atomic-mass" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.atomic_mass">
+<code class="descclassname">pyne.data.</code><code class="descname">atomic_mass</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.atomic_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the atomic mass of a nuclide in [amu].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mass</strong> : float</p>
+<blockquote class="last">
+<div><p>Atomic mass of this nuclide [amu].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the A-number is returned as a float.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.atomic_mass_map">
+<code class="descclassname">pyne.data.</code><code class="descname">atomic_mass_map</code><a class="headerlink" href="#pyne.data.atomic_mass_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their mass weights.
+This is used by <a class="reference internal" href="#pyne.data.atomic_mass" title="pyne.data.atomic_mass"><code class="xref py py-func docutils literal"><span class="pre">atomic_mass()</span></code></a> under the hood.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="natural-abundance-ratios">
+<h2>Natural Abundance Ratios<a class="headerlink" href="#natural-abundance-ratios" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.natural_abund">
+<code class="descclassname">pyne.data.</code><code class="descname">natural_abund</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.natural_abund" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the natural abundance of a nuclide.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>abund</strong> : float</p>
+<blockquote class="last">
+<div><p>Natural abundance of this nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, abundance is 0.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.natural_abund_map">
+<code class="descclassname">pyne.data.</code><code class="descname">natural_abund_map</code><a class="headerlink" href="#pyne.data.natural_abund_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their mass weights.
+This is used by <a class="reference internal" href="#pyne.data.natural_abund" title="pyne.data.natural_abund"><code class="xref py py-func docutils literal"><span class="pre">natural_abund()</span></code></a> under the hood.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="atomic-data">
+<h2>Atomic Data<a class="headerlink" href="#atomic-data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.calculate_xray_data">
+<code class="descclassname">pyne.data.</code><code class="descname">calculate_xray_data</code><span class="sig-paren">(</span><em>nuc</em>, <em>k_conv</em>, <em>l_conv</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.calculate_xray_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates X-ray intensities for a given atom with
+k and l conversion intensities</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+<p><strong>k_conv</strong> : float</p>
+<blockquote>
+<div><p>k electron converion coefficient arbitrary units</p>
+</div></blockquote>
+<p><strong>l_conv</strong> : float</p>
+<blockquote>
+<div><p>l electron converion coefficient arbitrary units</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>arr</strong> : vector of pairs</p>
+<blockquote class="last">
+<div><p>Vector of pairs containing the four primary X-rays and their
+intensities: Ka1, Ka2, Kb, L</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="decay-data">
+<h2>Decay Data<a class="headerlink" href="#decay-data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.half_life">
+<code class="descclassname">pyne.data.</code><code class="descname">half_life</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.half_life" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the half-life of a nuclide in [seconds].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide, if metastable is false this uses state_id</p>
+</div></blockquote>
+<p><strong>use_metastable</strong> : bool</p>
+<blockquote>
+<div><p>Assume state of input nuc_id refers to metastable state. Defaults to
+True.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>hl</strong> : float</p>
+<blockquote class="last">
+<div><p>Half-life of this nuclide [seconds].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the nuclide is assumed to be stable.</p>
+<p>Half life reported for a level in ENSDF level data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_const">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_const</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_const" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the decay constant of a nuclide in [1/seconds].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide, if metastable is false this uses state_id</p>
+</div></blockquote>
+<p><strong>use_metastable</strong> : bool</p>
+<blockquote>
+<div><p>Assume state of input nuc_id refers to metastable state. Defaults to
+True.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dc</strong> : float</p>
+<blockquote class="last">
+<div><p>Decay constant of this nuclide [1/seconds].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the nuclide is assumed to be stable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.branch_ratio">
+<code class="descclassname">pyne.data.</code><code class="descname">branch_ratio</code><span class="sig-paren">(</span><em>from_nuc</em>, <em>to_nuc</em>, <em>use_metastable=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.branch_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a branch ratio for a from -&gt; to nuclide pair [fraction].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>from_nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Parent nuclide, if metastable is false this uses state id</p>
+</div></blockquote>
+<p><strong>to_nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Child nuclide, if metastable is false this uses state id</p>
+</div></blockquote>
+<p><strong>use_metastable</strong> : bool</p>
+<blockquote>
+<div><p>Assume state of input nuc_id refers to metastable state. Defaults to
+True.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>br</strong> : float</p>
+<blockquote class="last">
+<div><p>Branch ratio of this nuclide pair [fraction].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If this pair is not found, it is assumed to be impossible, and the branch ratio
+is set to zero.</p>
+<p>Branch ratio reported for a reaction in ENSDF level data. This is not
+necessarily equivalent to the value reported in a decay dataset by
+decay_branch_ratio but it should be.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.state_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">state_energy</code><span class="sig-paren">(</span><em>nuc</em>, <em>use_metastable=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.state_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the excitation energy [MeV] of a nuclide in a given state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide, if metastable is false this uses state id</p>
+</div></blockquote>
+<p><strong>use_metastable</strong> : bool</p>
+<blockquote>
+<div><p>Assume state of input nuc_id refers to metastable state. Defaults to
+True</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>se</strong> : float</p>
+<blockquote class="last">
+<div><p>Excitation energy of this nuclide [MeV].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found, the nuclide is assumed to be stable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_children">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_children</code><span class="sig-paren">(</span><em>nuc</em>, <em>use_metastable=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the decay children of a nuclide.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide, if metastable is false this uses state id</p>
+</div></blockquote>
+<p><strong>use_metastable</strong> : bool</p>
+<blockquote>
+<div><p>Assume state of input nuc_id refers to metastable state. Defaults to
+True</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dc</strong> : set of ints</p>
+<blockquote class="last">
+<div><p>Decay children in id form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the nuclide is not found or is stable, the empty set is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.id_from_level">
+<code class="descclassname">pyne.data.</code><code class="descname">id_from_level</code><span class="sig-paren">(</span><em>nuc</em>, <em>level</em>, <em>special=&quot;&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.id_from_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the state_id for input energy level</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int</p>
+<blockquote>
+<div><p>Input nuclide</p>
+</div></blockquote>
+<p><strong>level</strong> : double</p>
+<blockquote>
+<div><p>energy level of state</p>
+</div></blockquote>
+<p><strong>special</strong> : str</p>
+<blockquote>
+<div><p>special level denotation. This is a single A-Z character corresponding
+to a group of levels and associated gammas with no reference to the GS</p>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<p><strong>&#8212;&#8212;-</strong></p>
+<p><strong>nuc</strong> : int</p>
+<blockquote class="last">
+<div><p>state_id of state</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.metastable_id">
+<code class="descclassname">pyne.data.</code><code class="descname">metastable_id</code><span class="sig-paren">(</span><em>nuc</em>, <em>level=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.metastable_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the nuc_id of a metastable state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int</p>
+<blockquote>
+<div><p>Input nuclide</p>
+</div></blockquote>
+<p><strong>level</strong> : int</p>
+<blockquote>
+<div><p>integer metastable state</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int</p>
+<blockquote class="last">
+<div><p>state_id of metastable state</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_half_life">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_half_life</code><span class="sig-paren">(</span><em>from_nuc</em>, <em>to_nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_half_life" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the half life from ENSDF decay dataset parent data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>from_nuc</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+<p><strong>to_nuc</strong> : int</p>
+<blockquote>
+<div><p>child nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>half_life</strong> : double</p>
+<blockquote>
+<div><p>half life in seconds</p>
+</div></blockquote>
+<p><strong>error</strong> : double</p>
+<blockquote class="last">
+<div><p>Error in seconds</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_half_life_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_half_life_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_half_life_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list half lives from ENSDF decay dataset parent data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>half_lives</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of half lives and their errors for a given parent nuclide</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_branch_ratio">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_branch_ratio</code><span class="sig-paren">(</span><em>from_nuc</em>, <em>to_nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_branch_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the branch ratio from ENSDF decay dataset data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>from_nuc</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+<p><strong>to_nuc</strong> : int</p>
+<blockquote>
+<div><p>child nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratio</strong> : double</p>
+<blockquote class="last">
+<div><p>branching ratio</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_branch_ratio_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_branch_ratio_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_branch_ratio_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list branching ratios from ENSDF decay dataset data for a given
+parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of half lives and their errors for a given parent nuclide</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_photon_branch_ratio">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_photon_branch_ratio</code><span class="sig-paren">(</span><em>from_nuc</em>, <em>to_nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_photon_branch_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the photon branch ratio from ENSDF decay dataset data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>from_nuc</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+<p><strong>to_nuc</strong> : int</p>
+<blockquote>
+<div><p>child nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratio</strong> : double</p>
+<blockquote class="last">
+<div><p>photon branching ratio</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_photon_branch_ratio_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_photon_branch_ratio_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_photon_branch_ratio_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of photon branch ratios from ENSDF decay dataset parent data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>half_lives</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of photon branching ratios and their errors for a given parent
+nuclide</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_beta_branch_ratio">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_beta_branch_ratio</code><span class="sig-paren">(</span><em>from_nuc</em>, <em>to_nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_beta_branch_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the  branch ratio from ENSDF decay dataset data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>from_nuc</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+<p><strong>to_nuc</strong> : int</p>
+<blockquote>
+<div><p>child nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratio</strong> : double</p>
+<blockquote class="last">
+<div><p>branching ratio</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.decay_beta_branch_ratio_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">decay_beta_branch_ratio_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.decay_beta_branch_ratio_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta branch ratios from ENSDF decay dataset parent data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of beta branching ratios and their errors for a given parent
+nuclide</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_energy</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray energies from ENSDF decay dataset from a given
+parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of gamma ray energies and errors</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_photon_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_photon_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_photon_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray photon intensities from ENSDF decay dataset
+from a given parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of gamma ray photon intensities and errors</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This intensity is just the relative intensity for different photons in the
+same dataset. It needs to be multiplied by the output of
+<a class="reference internal" href="#pyne.data.decay_photon_branch_ratio" title="pyne.data.decay_photon_branch_ratio"><code class="xref py py-func docutils literal"><span class="pre">decay_photon_branch_ratio()</span></code></a> to give the percentage of parent decays.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_conversion_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_conversion_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_conversion_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray conversion intensities from ENSDF decay dataset
+from a given parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of gamma ray conversion intensities and errors</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_total_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_total_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_total_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray total intensities from ENSDF decay dataset from
+a given parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of gamma ray total intensities and errors</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_from_to_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_from_to_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_from_to_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray level pairs from ENSDF decay dataset from a
+given parent. This makes it possible to calculate coincidence rates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of gamma ray level pairs in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_from_to_byen">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_from_to_byen</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_from_to_byen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray level pairs from ENSDF decay dataset
+based on gamma-ray energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>gamma ray energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>gamma ray energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of gamma ray level pairs in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_parent">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_parent</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of gamma ray parents from ENSDF decay dataset
+based on gamma-ray energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>gamma ray energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>gamma ray energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of gamma ray parents in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.gamma_xrays">
+<code class="descclassname">pyne.data.</code><code class="descname">gamma_xrays</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.gamma_xrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of arrays of xrays associated with the gamma
+rays from an input parent nuclide</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of arrays</p>
+<blockquote class="last">
+<div><p>This returns an array of length 4 arrays containing pairs of energies
+and intensities of the following X-rays: Ka1, Ka2, Kb, L</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.alpha_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">alpha_energy</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.alpha_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of alpha energies from ENSDF decay dataset from a given
+parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of alpha energies</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.alpha_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">alpha_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.alpha_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of alpha intensities from ENSDF decay dataset from a given
+parent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of alpha intensities</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.alpha_parent">
+<code class="descclassname">pyne.data.</code><code class="descname">alpha_parent</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.alpha_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of alpha parents from ENSDF decay dataset
+based on alpha energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>alpha energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>alpha energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of alpha parents in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.alpha_child_byen">
+<code class="descclassname">pyne.data.</code><code class="descname">alpha_child_byen</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.alpha_child_byen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of alpha children from ENSDF decay dataset
+based on alpha energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>alpha energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>alpha energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of alpha children in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.alpha_child_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">alpha_child_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.alpha_child_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of alpha children from ENSDF decay dataset
+based on alpha parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of alpha children in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_endpoint_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_endpoint_energy</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_endpoint_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta endpoint energies from ENSDF decay dataset
+based on parent nuclide.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of beta endpoint energies</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_average_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_average_energy</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_average_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta average energies from ENSDF decay dataset
+based on parent nuclide.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of beta average energies</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta intensities from ENSDF decay dataset
+based on parent nuclide.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of beta intensities</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_parent">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_parent</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta minus parents from ENSDF decay dataset
+based on beta energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>beta- energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>beta- energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of beta minus parents in nuc_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_child_byen">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_child_byen</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_child_byen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta minus children from ENSDF decay dataset
+based on beta energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>beta- energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>beta- energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of beta minus children in nuc_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_child_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_child_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_child_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta minus children from ENSDF decay dataset
+based on parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of beta- children in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ecbp_endpoint_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">ecbp_endpoint_energy</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ecbp_endpoint_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta plus endpoint energies from ENSDF decay dataset from
+a given parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of beta plus endpoint energies</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ecbp_average_energy">
+<code class="descclassname">pyne.data.</code><code class="descname">ecbp_average_energy</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ecbp_average_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta plus average energies from ENSDF decay dataset from
+a given parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of beta plus average energies</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ec_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">ec_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ec_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of electron capture intensisities from ENSDF decay dataset
+from a given parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of pairs</p>
+<blockquote class="last">
+<div><p>An array of electron capture intensisities and errors</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.beta_plus_intensity">
+<code class="descclassname">pyne.data.</code><code class="descname">beta_plus_intensity</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.beta_plus_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta plus intensities from ENSDF decay dataset from
+a given parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of doubles</p>
+<blockquote class="last">
+<div><p>An array of beta plus intensities</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ecbp_parent">
+<code class="descclassname">pyne.data.</code><code class="descname">ecbp_parent</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ecbp_parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta plus/electron capture parents from ENSDF decay
+dataset based on beta energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>beta- energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>beta- energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of beta plus/electron capture children in nuc_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ecbp_child_byen">
+<code class="descclassname">pyne.data.</code><code class="descname">ecbp_child_byen</code><span class="sig-paren">(</span><em>en</em>, <em>enerror=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ecbp_child_byen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta plus/electron capture parents from ENSDF decay
+dataset based on beta energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>en</strong> : double</p>
+<blockquote>
+<div><p>beta- energy in keV</p>
+</div></blockquote>
+<p><strong>enerror</strong> : double</p>
+<blockquote>
+<div><p>beta- energy error (range which you want to search) this defaults
+to 1% of the energy if it is not provided</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of beta plus/electron capture children in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ecbp_child_byparent">
+<code class="descclassname">pyne.data.</code><code class="descname">ecbp_child_byparent</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ecbp_child_byparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of beta plus children from ENSDF decay dataset
+based on parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide in nuc_id form in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of ints</p>
+<blockquote class="last">
+<div><p>An array of beta+ children in state_id form</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.data.ecbp_xrays">
+<code class="descclassname">pyne.data.</code><code class="descname">ecbp_xrays</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.ecbp_xrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of arrays of xrays associated with the electron capture
+and beta plus decays from an input parent nuclide</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : int</p>
+<blockquote>
+<div><p>parent nuclide</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ratios</strong> : array of arrays</p>
+<blockquote class="last">
+<div><p>This returns an array of length 4 arrays containing pairs of energies
+and intensities of the following X-rays: Ka1, Ka2, Kb, L</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="neutron-scattering-lengths">
+<h2>Neutron Scattering Lengths<a class="headerlink" href="#neutron-scattering-lengths" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.data.b">
+<code class="descclassname">pyne.data.</code><code class="descname">b</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the bound scattering length of a nuclide in [cm].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>b</strong> : float</p>
+<blockquote class="last">
+<div><p>Bound scattering length of nuc [cm].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If nuc is not found, the value for a nuclide with the same A-number
+is used instead. If still no value is found, the an isotope of the
+same element as nuc is used.  If still no values are found, zero is
+returned.</p>
+<p>This value is computed from the coherent and incoherent scattering
+lengths as follows:</p>
+<div class="math">
+<p><img src="../_images/math/a7d1ed984bfb602089e94f9822ffca9983efac7d.png" alt="b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}"/></p>
+</div></dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.b_map">
+<code class="descclassname">pyne.data.</code><code class="descname">b_map</code><a class="headerlink" href="#pyne.data.b_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their bound neuton scattering lengths.
+This is used by <a class="reference internal" href="#pyne.data.b" title="pyne.data.b"><code class="xref py py-func docutils literal"><span class="pre">b()</span></code></a> under the hood.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.data.b_coherent">
+<code class="descclassname">pyne.data.</code><code class="descname">b_coherent</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.b_coherent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the coherent bound scattering length of a nuclide in [cm].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>bc</strong> : complex</p>
+<blockquote class="last">
+<div><p>Coherent bound scattering length of nuc [cm].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If nuc is not found, the value for a nuclide with the same A-number
+is used instead. If still no value is found, the an isotope of the
+same element as nuc is used.  If still no values are found, zero is
+returned.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.b_coherent_map">
+<code class="descclassname">pyne.data.</code><code class="descname">b_coherent_map</code><a class="headerlink" href="#pyne.data.b_coherent_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their bound coherent neuton scattering lengths.
+This is used by <a class="reference internal" href="#pyne.data.b_coherent" title="pyne.data.b_coherent"><code class="xref py py-func docutils literal"><span class="pre">b_coherent()</span></code></a> under the hood.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.data.b_incoherent">
+<code class="descclassname">pyne.data.</code><code class="descname">b_incoherent</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.data.b_incoherent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the incoherent bound scattering length of a nuclide in [cm].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>bi</strong> : complex</p>
+<blockquote class="last">
+<div><p>Incoherent bound scattering length of nuc [cm].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If nuc is not found, the value for a nuclide with the same A-number
+is used instead. If still no value is found, the an isotope of the
+same element as nuc is used.  If still no values are found, zero is
+returned.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyne.data.b_incoherent_map">
+<code class="descclassname">pyne.data.</code><code class="descname">b_incoherent_map</code><a class="headerlink" href="#pyne.data.b_incoherent_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from zzaaam-nuclides to their bound incoherent neuton scattering lengths.
+This is used by <a class="reference internal" href="#pyne.data.b_coherent" title="pyne.data.b_coherent"><code class="xref py py-func docutils literal"><span class="pre">b_coherent()</span></code></a> under the hood.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Basic Nuclear Data &#8211; <code class="docutils literal"><span class="pre">pyne.data</span></code></a><ul>
+<li><a class="reference internal" href="#atomic-mass">Atomic Mass</a></li>
+<li><a class="reference internal" href="#natural-abundance-ratios">Natural Abundance Ratios</a></li>
+<li><a class="reference internal" href="#atomic-data">Atomic Data</a></li>
+<li><a class="reference internal" href="#decay-data">Decay Data</a></li>
+<li><a class="reference internal" href="#neutron-scattering-lengths">Neutron Scattering Lengths</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

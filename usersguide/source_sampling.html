@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Mesh-Based Source Sampling &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mesh-based-source-sampling">
+<span id="usersguide-source-sampling"></span><h1>Mesh-Based Source Sampling<a class="headerlink" href="#mesh-based-source-sampling" title="Permalink to this headline">¶</a></h1>
+<p>The source sampling module implements mesh-based source sampling (both
+Cartesian and tetrahedral) which can be used as a component within Monte Carlo
+radiation transport codes. A MOAB mesh tagged with energy-wise source densities
+(and optional biased source densities) is supplied by the user. The user
+can then supply six pseudorandom numbers in order to generate a random sample
+of the particle birth parameters (position, energy, statistical weight).  The
+source sampling module is written in C++ and has fully-supported C++, Fortran,
+and Python interfaces, which facilitates its use within physics codes. The
+source sampling module allows for three sampling modes:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">analog:</th><td class="field-body">Particle birth parameters are sampled directly from a unmodified
+probability distribution function created from the source density mesh
+(i.e. positions/energies with high source density are sampled more often
+than those of low source density).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">uniform:</th><td class="field-body">All mesh volume elements are sampled with equal probability. Energy bins are
+sampled in analog from the distribution within a given mesh volume element.
+Statistical weights of particles are modified accordingly.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">user:</th><td class="field-body">In addition to source densities, the user supplies (on the same mesh) biased
+source densities. Particle birth parameters are then sampled on the basis of
+the biased source densities, and the statistical weight of particles is
+modified accordingly. The biased source density tag has the same length as the
+source density tag. Alternatively, the tag may have a length of 1, in which
+case the bias is only applied spatially and energy groups are sampled in
+analog.</td>
+</tr>
+</tbody>
+</table>
+<p>A complete description of the theory involved can be found in the
+source_sampling entry in the PyNE theory manual.</p>
+<div class="section" id="c-interface">
+<h2>C++ interface<a class="headerlink" href="#c-interface" title="Permalink to this headline">¶</a></h2>
+<p>An object of the Sampler class is first instantiated using 1 of 2 constructors:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">analog and uniform constructor:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><dl class="first docutils">
+<dt>Sampler(std::string filename,</dt>
+<dd><p class="first last">std::string src_tag_name,
+std::vector&lt;double&gt; e_bounds,
+bool uniform)</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">user constructor:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><dl class="first last docutils">
+<dt>Sampler(std::string filename,</dt>
+<dd><p class="first last">std::string src_tag_name,
+std::vector&lt;double&gt; e_bounds,
+std::string bias_tag_name)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The &#8220;filename&#8221; is a MOAB mesh file (.h5m). The &#8220;src_tag_name&#8221; is the name
+of the tag on the mesh that stores the source densities. The source density can
+be specified for an arbitrary number of energy groups, stored as a MOAB vector
+tag. The &#8220;e_bounds&#8221; parameter describes the upper and lower bounds of these
+energy groups. For example if the src_tag_name tag is a vector of length 175
+(for 175 energy groups), e_bounds should be of length 176. The final parameter
+differs for the two constructors. A bool can be supplied: false for analog
+sampling or true for uniform sampling. Alternatively, a string can be supplied
+to denote the name of a tag (on the same mesh) which supplies biased source
+densities.</p>
+<p>Once a Sampler object is created the Sampler.particle_birth() method is called.
+This method takes a single argument: a vector of 6 pseudorandom number between
+0 and 1. This method returns a vector of length 5 containing the sampled x position, y position,
+z position, energy, and weight respectively.
+eight
+An example C++ program is supplied below. This program requires a mesh file
+named &#8220;source.h5m&#8221; with a tag named &#8220;source_density&#8221; of length 1.</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;stdlib.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span>  <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pyne/source_sampling.h&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">filename</span><span class="p">(</span><span class="s">&quot;source.h5m&quot;</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">src_tag_name</span><span class="p">(</span><span class="s">&quot;source_density&quot;</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">e_bounds</span><span class="p">;</span>
+  <span class="n">e_bounds</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// 1 energy group, lower bound of 0 upper bound of 1</span>
+  <span class="n">e_bounds</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+  <span class="n">pyne</span><span class="o">::</span><span class="n">Sampler</span> <span class="n">s</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">src_tag_name</span><span class="p">,</span> <span class="n">e_bounds</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">rands</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">6</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">rands</span><span class="p">.</span><span class="n">push_back</span><span class="p">((</span><span class="kt">double</span><span class="p">)</span><span class="n">rand</span><span class="p">()</span><span class="o">/</span><span class="n">RAND_MAX</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">samp</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">particle_birth</span><span class="p">(</span><span class="n">rands</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;x: &quot;</span><span class="o">&lt;&lt;</span><span class="n">samp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;y: &quot;</span><span class="o">&lt;&lt;</span><span class="n">samp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;z: &quot;</span><span class="o">&lt;&lt;</span><span class="n">samp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;e: &quot;</span><span class="o">&lt;&lt;</span><span class="n">samp</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;w: &quot;</span><span class="o">&lt;&lt;</span><span class="n">samp</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+ <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This program can be complied with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>g++ test.cpp -o <span class="nb">test</span> -lMOAB -lpyne
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-interface">
+<h2>Python interface<a class="headerlink" href="#python-interface" title="Permalink to this headline">¶</a></h2>
+<p>The Python interface mainly exists for the purpose of testing the Sampler class
+with python.nose. It can be used in the same manner as the C++ class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">uniform</span>
+<span class="kn">from</span> <span class="nn">pyne.source_sampling</span> <span class="kn">import</span> <span class="n">Sampler</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="s2">&quot;source.h5m&quot;</span><span class="p">,</span> <span class="s2">&quot;source_density&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">samp</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">particle_birth</span><span class="p">([</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;x: {0}</span><span class="se">\n</span><span class="s2">y: {1}</span><span class="se">\n</span><span class="s2">z: {2}</span><span class="se">\n</span><span class="s2">e: {3}</span><span class="se">\n</span><span class="s2">w: {4}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="n">samp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">samp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">samp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">samp</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">samp</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fortran-interface">
+<h2>Fortran Interface<a class="headerlink" href="#fortran-interface" title="Permalink to this headline">¶</a></h2>
+<p>Because Fortran cannot store an instance of the Sampler class, to perform
+source sampling from Fortran, a free-standing function &#8220;sampling_setup&#8221; is
+called to create a global instance of the sampling class. This function takes
+a single argument: an integer representing the problem mode (0: analog, 1:
+uniform, 2: user). This function assumes the mesh file is &#8220;source.h5m&#8221; and
+that the tag names are &#8220;source_density&#8221; and &#8220;biased_source_density&#8221;. In
+addition, this function assumes that a file &#8220;e_bounds&#8221; is present which is
+a plain text file containing the energy boundaries.</p>
+<p>An example program using the Fortran interface is shown below:</p>
+<div class="highlight-fortran"><div class="highlight"><pre><span></span><span class="k">program </span><span class="n">test</span>
+  <span class="k">implicit none</span>
+<span class="k">  </span><span class="kt">double precision</span> <span class="kd">::</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
+  <span class="kt">double precision</span><span class="p">,</span> <span class="k">dimension</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="kd">::</span> <span class="n">rands</span>
+  <span class="kt">integer</span><span class="kd">::</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">mode</span>
+
+  <span class="n">mode</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">call </span><span class="n">sampling_setup</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+
+  <span class="k">do </span><span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span>
+    <span class="n">rands</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="nb">RAND</span><span class="p">()</span>
+  <span class="k">end do</span>
+
+<span class="k">  call </span><span class="n">particle_birth</span><span class="p">(</span><span class="n">rands</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+  <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="s2">&quot;x: &quot;</span><span class="p">,</span> <span class="n">x</span>
+  <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="s2">&quot;y: &quot;</span><span class="p">,</span> <span class="n">y</span>
+  <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="s2">&quot;x: &quot;</span><span class="p">,</span> <span class="n">z</span>
+  <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="s2">&quot;e: &quot;</span><span class="p">,</span> <span class="n">e</span>
+  <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="s2">&quot;w: &quot;</span><span class="p">,</span> <span class="n">w</span>
+
+<span class="k">end program </span><span class="n">test</span>
+</pre></div>
+</div>
+<p>This program can be compiled like:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>gfortran test.F90 -lpyne -lstdc++ -o <span class="nb">test</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="source-sampling-in-mcnp5">
+<h2>Source Sampling in MCNP5<a class="headerlink" href="#source-sampling-in-mcnp5" title="Permalink to this headline">¶</a></h2>
+<p>Standard MCNP5 ships with an empty source subroutine &#8220;source.F90&#8221; which can
+be completed by the user in order to implement any form of custom source
+sampling. A source.F90 file has been written to allow for the use of PyNE
+source sampling within MCNP5. This file is found in pyne/share/source.F90.
+The simplest way to compile MCNP5 with the source subroutine is as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Obtain a copy of the MCNP5 source code.</li>
+<li>Navigate to the folder MCNP5/Source/src.</li>
+<li>Soft-link the following files into this folder:<ol class="loweralpha">
+<li>pyne/src/source_sampling.cpp</li>
+<li>pyne/src/source_sampling.h</li>
+<li>pyne/src/measure.cpp</li>
+<li>pyne/src/measure.h</li>
+</ol>
+</li>
+<li>Remove the pre-existing empty source.F90 file.</li>
+<li>Soft-link pyne/src/source.F90.</li>
+<li>Open the file MCNP/Source/src/FILE.list.</li>
+<li>Edit line 78 to include the additional source files. It should look like &#8220;CXX_SRC := measure.cpp source_sampling.cpp&#8221;.</li>
+<li>Compile MCNP5 using the standard build method.</li>
+</ol>
+</div></blockquote>
+<p>Once MCNP5 is compiled, MCNP5 can be run normally. The file &#8220;source.h5m&#8221; must
+be present in the working directory that MCNP5 is run from. This file should
+contain source densities (on the &#8220;source_density&#8221; tag) and optionally biased
+source densities (the &#8220;biased_source_density&#8221; tag). An &#8220;idum&#8221; card must be used
+in the MCNP5 input file. This card should have three arguments. The first is the
+sampling mode (0: analog, 1: uniform, 2: user). The second is the resample
+limit for void rejection. For a given particle, if a source position is
+selected in void (MCNP materal 0) the source position is resampled within the
+selected mesh volume element until either a non-void position is found, or this
+user-specified limit is researched. The third argument should specify the
+particle type: 1 for neutrons, 2 for photons.</p>
+<p>For example, this &#8220;idum&#8221; card specifies uniform sampling with a resample limit
+of 100 with source particles specified as photons:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>idum <span class="m">1</span> <span class="m">100</span> 2
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mesh-Based Source Sampling</a><ul>
+<li><a class="reference internal" href="#c-interface">C++ interface</a></li>
+<li><a class="reference internal" href="#python-interface">Python interface</a></li>
+<li><a class="reference internal" href="#fortran-interface">Fortran Interface</a></li>
+<li><a class="reference internal" href="#source-sampling-in-mcnp5">Source Sampling in MCNP5</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

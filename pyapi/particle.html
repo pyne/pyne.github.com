@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Particle Names – pyne.particle &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyne.particle">
+<span id="particle-names-pyne-particle"></span><span id="pyne-particle"></span><h1>Particle Names &#8211; <a class="reference internal" href="#module-pyne.particle" title="pyne.particle"><code class="xref py py-mod docutils literal"><span class="pre">pyne.particle</span></code></a><a class="headerlink" href="#module-pyne.particle" title="Permalink to this headline">¶</a></h1>
+<p>Python wrapper for particle library.</p>
+<p>The particle module provides a string &amp; integer based canonical form for particle
+idenfification, and a more human readable form&#8221;</p>
+<blockquote>
+<div><blockquote>
+<div><p><strong>Particle Names:</strong> The names are chosen to be concatenated camel case form of
+regular particle names. For example, &#8220;Neutron&#8221; or &#8220;AntiProton&#8221;.</p>
+<p>Some common examples &amp; their alternative names</p>
+<p>Neutron      - 
+Proton    Hydrogen, Protium, H1 etc
+Photon    Gamma, X-Ray
+Electron  Beta-, Beta</p>
+<p>All alternaive particle names map back to the cannonical form, e.g. Hydrogen 
+maps  back to Proton</p>
+<p>A valid particle name is ANY particle from the names map, i.e. those that MAP</p>
+</div></blockquote>
+<p>to the Berkley Particle Data Centre numbering scheme <a class="reference internal" href="#pdc" id="id1">[PDC]</a>, and any valid 
+nucid/name, like H1 or 10010000, this is to support the high energy physics 
+codes that some users are starting to employ.</p>
+<blockquote>
+<div><p><strong>PDC Numbers:</strong> The PDC numbers map from those specified by the Berkley 
+Particle Data Centre and only have valid numbers for those in the name map, 
+some valid particle names, like H1, have a PDC number of 0.</p>
+<p><strong>Doc strings:</strong> The doc strings are human readable versions of the name, 
+with grammar and spaces, like what humans enjoy.</p>
+</div></blockquote>
+</div></blockquote>
+<p>The particle module has a variety of functions to convert between forms, for 
+example the name() function will take either the full name or the pdc number,
+or a valid nucid and return in its true name form. The same is true of the 
+id() function, returning the valid PDC number of the particle.</p>
+<div class="section" id="adding-more-particles">
+<h2>Adding more particles!<a class="headerlink" href="#adding-more-particles" title="Permalink to this headline">¶</a></h2>
+<p>Adding more particles will be nessesary in time, but it is very straight
+forward to add more.</p>
+<ol class="arabic simple">
+<li>add to the define NUM_PARTICLES variable, the number of particles you</li>
+</ol>
+<blockquote>
+<div>are going to add</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>add the name to the <code class="docutils literal"><span class="pre">_names</span></code> array, add the pdc number to the</li>
+</ol>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">_pdcids</span></code> array.</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>in the _fill_maps() function add the human readable form to the</li>
+</ol>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">_docs</span></code> array.</div></blockquote>
+<ol class="arabic simple" start="4">
+<li>in the _fill_maps() function add to the altnames map if there are other forms.</li>
+<li>in the _fill_maps() function add the mcnp and fluka forms to part2* arrays.</li>
+</ol>
+<hr class="docutils" />
+<table class="docutils citation" frame="void" id="pdc" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[PDC]</a></td><td><a class="reference external" href="http://pdg.lbl.gov/2014/mcdata/mass_width_2014.mcd">http://pdg.lbl.gov/2014/mcdata/mass_width_2014.mcd</a></td></tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.particle.describe">
+<code class="descclassname">pyne.particle.</code><code class="descname">describe</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.describe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique particle name description.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : str Unique particle description</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.fluka">
+<code class="descclassname">pyne.particle.</code><code class="descname">fluka</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.fluka" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique fluka name for particle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : str Unique particle name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.geant4">
+<code class="descclassname">pyne.particle.</code><code class="descname">geant4</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.geant4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique geant name for particle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : str Unique particle name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.id">
+<code class="descclassname">pyne.particle.</code><code class="descname">id</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique particle id number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : int Unique PDC number</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.is_heavy_ion">
+<code class="descclassname">pyne.particle.</code><code class="descname">is_heavy_ion</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.is_heavy_ion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the argument a valid particle id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : bool true/false</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.is_valid">
+<code class="descclassname">pyne.particle.</code><code class="descname">is_valid</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the argument a valid particle id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : bool true/false</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.mcnp">
+<code class="descclassname">pyne.particle.</code><code class="descname">mcnp</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.mcnp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique mcnp name for particle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : str Unique particle name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.mcnp6">
+<code class="descclassname">pyne.particle.</code><code class="descname">mcnp6</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.mcnp6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique mcnp6 name for particle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : str Unique particle name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.particle.name">
+<code class="descclassname">pyne.particle.</code><code class="descname">name</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.particle.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique particle name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> : str, int, or char*</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>n</strong> : str Unique particle name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="particle-listing">
+<h2>Particle Listing<a class="headerlink" href="#particle-listing" title="Permalink to this headline">¶</a></h2>
+<p><strong>Particles:</strong></p>
+<div>
+<table style="margin-left:auto;margin-right:auto;">
+<tr> <th>Particle</th> <th>PDC ID</th> <th>Description</th> </tr>
+<tr> <td>Electron</td> <td>11</td> <td>Electron</td> </tr>
+<tr> <td>Positron</td> <td>-11</td> <td>Anti Electron</td> </tr>
+<tr> <td>ElectronNeutrino</td> <td>12</td> <td>Electron Neutrino</td> </tr>
+<tr> <td>ElectronAntiNeutrino</td> <td>-12</td> <td>Electron Anti Neutrino
+</td> </tr>
+<tr> <td>Muon</td> <td>13</td> <td>Muon</td> </tr>
+<tr> <td>AntiMuon</td> <td>-13</td> <td>AntiMuon</td> </tr>
+<tr> <td>MuonNeutrino</td> <td>14</td> <td>MuonNeutrino</td> </tr>
+<tr> <td>MuonAntiNeutrino</td> <td>-14</td> <td>MuonAntiNeutrino</td> </tr>
+<tr> <td>Tauon</td> <td>15</td> <td>Tauon</td> </tr>
+<tr> <td>AntiTauon</td> <td>-15</td> <td>AntiTauon</td> </tr>
+<tr> <td>TauNeutrino</td> <td>16</td> <td>TauNeutrino</td> </tr>
+<tr> <td>TauAntiNeutrino</td> <td>-16</td> <td>TauAntiNeutrino</td> </tr>
+<tr> <td>Photon</td> <td>22</td> <td>Photon</td> </tr>
+<tr> <td>Pion</td> <td>211</td> <td>Pion</td> </tr>
+<tr> <td>AntiPion</td> <td>-211</td> <td>AntiPion</td> </tr>
+<tr> <td>Kaon</td> <td>321</td> <td>Kaon</td> </tr>
+<tr> <td>AntiKaon</td> <td>-321</td> <td>AntiKaon</td> </tr>
+<tr> <td>KaonZeroShort</td> <td>310</td> <td>KaonZeroShort</td> </tr>
+<tr> <td>KaonZero</td> <td>311</td> <td>KaonZero</td> </tr>
+<tr> <td>AntiKaonZero</td> <td>-311</td> <td>AntiKaonZero</td> </tr>
+<tr> <td>Neutron</td> <td>2112</td> <td>Neutron</td> </tr>
+<tr> <td>AntiNeutron</td> <td>-2112</td> <td>AntiNeutron</td> </tr>
+<tr> <td>Proton</td> <td>2212</td> <td>Proton</td> </tr>
+<tr> <td>AntiProton</td> <td>-2212</td> <td>AntiProton</td> </tr>
+<tr> <td>Lambda</td> <td>3122</td> <td>Lambda</td> </tr>
+<tr> <td>AntiLambda</td> <td>-3122</td> <td>AntiLambda</td> </tr>
+<tr> <td>Sigma-</td> <td>3112</td> <td>Sigma-</td> </tr>
+<tr> <td>AntiSigma-</td> <td>3112</td> <td>AntiSigma-</td> </tr>
+<tr> <td>Sigma+</td> <td>3222</td> <td>Sigma+</td> </tr>
+<tr> <td>AntiSigma+</td> <td>-3222</td> <td>AntiSigma+</td> </tr>
+<tr> <td>Sigma</td> <td>3212</td> <td>Sigma</td> </tr>
+<tr> <td>AntiSigmaZero</td> <td>-3212</td> <td>AntiSigmaZero</td> </tr>
+</table> </div><p><strong>Particle Aliases:</strong></p>
+<div>
+<table style="margin-left:auto;margin-right:auto;">
+<tr> <th>Alias</th> <th>Particle Name</th> </tr>
+<tr> <td>Hydrogen</td> <td>Proton</td> </tr>
+<tr> <td>Protium</td> <td>Proton</td> </tr>
+<tr> <td>Beta</td> <td>Electron</td> </tr>
+<tr> <td>Beta-</td> <td>Electron</td> </tr>
+<tr> <td>Beta+</td> <td>Positron</td> </tr>
+<tr> <td>Gamma</td> <td>Photon</td> </tr>
+<tr> <td>X-Ray</td> <td>Photon</td> </tr>
+</table> </div></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Particle Names &#8211; <code class="docutils literal"><span class="pre">pyne.particle</span></code></a><ul>
+<li><a class="reference internal" href="#adding-more-particles">Adding more particles!</a></li>
+<li><a class="reference internal" href="#particle-listing">Particle Listing</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

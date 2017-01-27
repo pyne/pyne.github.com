@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Style Guide &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="style-guide">
+<span id="devsguide-styleguide"></span><h1>Style Guide<a class="headerlink" href="#style-guide" title="Permalink to this headline">¶</a></h1>
+<p>PyNE is a polyglot project about a technical subject with many independent developers
+and users. To keep our heads on straight we have adopted the following styles and
+conventions.  We use these throughout the code base to ensure consistency.</p>
+<ul class="simple">
+<li><a class="reference external" href="style_guide.html#python-style-guide">Python Style Guide</a></li>
+<li><a class="reference external" href="style_guide.html#cython-style-guide">Cython Style Guide</a></li>
+<li><a class="reference external" href="style_guide.html#cc-style-guide">C++ Style Guide</a></li>
+</ul>
+<div class="section" id="rules-to-write-by">
+<h2>Rules to Write By<a class="headerlink" href="#rules-to-write-by" title="Permalink to this headline">¶</a></h2>
+<p>It is important to refer to things and concepts by their most specific name.
+When writing PyNE code or documentation please use technical terms appropriately.
+The following rules help provide needed clarity.</p>
+<div class="section" id="terminology">
+<h3>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The terms <em>element</em> or <em>elemental</em> refer specifically to chemical elements,
+oxygen, uranium, etc.  Use <em>element</em> only when the physics relies on manipulating
+elements and not their underlying isotopes (ie aqueous reprocessing).</li>
+<li>The term <em>isotope</em> refers only to a collection of nuclides containing the
+same Z-number.  <strong>Do not confuse this with *nuclide*!</strong></li>
+<li>The term <em>isotone</em> refers only to a collection of nuclides containing the
+same neutron number.</li>
+<li>The term <em>isobar</em> refers only to a collection of nuclides containing the
+same A-number.</li>
+<li>The term <em>isomer</em> refers only to a collection of nuclides containing the
+same A-number and the same Z-number but possessing differing internal energy
+states.</li>
+<li>The term <em>nuclide</em> may refer to any species with a nucleus. This is the most
+general term and encompasses isotopes, isotones, isobars, and isomers.</li>
+</ul>
+</div>
+<div class="section" id="interfaces">
+<h3>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Always provide units!</li>
+<li>Use square-brace notation to mark units in text, ie [sec].</li>
+<li>User-facing APIs should be as generic and robust as possible.</li>
+<li>Nuclear data belongs in nuc_data.h5.</li>
+<li>Views belong in the <code class="docutils literal"><span class="pre">gui</span></code> sub-package.</li>
+<li>Tests belong in the top-level <code class="docutils literal"><span class="pre">tests</span></code> directory.</li>
+<li>Documentation belongs in the top-level <code class="docutils literal"><span class="pre">docs</span></code> directory.</li>
+<li>The capitalized project name is &#8220;PyNE&#8221; while the lowercase project name is &#8220;pyne&#8221;.</li>
+<li>Write code in whatever language you want but make sure that it is exposed to Python.
+Python is the glue that holds the universe together. It is the <code class="docutils literal"><span class="pre">NULL</span></code> and the
+<code class="docutils literal"><span class="pre">INT_MAX</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="variable-name-conventions">
+<h3>Variable Name Conventions<a class="headerlink" href="#variable-name-conventions" title="Permalink to this headline">¶</a></h3>
+<p>Please use the following patterns when writing pyne code. These rules should
+only be ignored if they would cause name conflicts. These variable names are
+considered to have the same semantic meaning throughout the entire code base.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">xs</span></code> stands for &#8220;cross section&#8221;.</li>
+<li><code class="docutils literal"><span class="pre">rx</span></code> stands for &#8220;reaction&#8221;.</li>
+<li><code class="docutils literal"><span class="pre">ve</span></code> stands for &#8220;volume element&#8221;.</li>
+<li><code class="docutils literal"><span class="pre">nuc</span></code> stands for a &#8220;nuclide&#8221; in id form.</li>
+<li><code class="docutils literal"><span class="pre">nuc_name</span></code> stands for a &#8220;nuclide&#8221; in a string form.</li>
+<li><code class="docutils literal"><span class="pre">iso</span></code> stands for an &#8220;isotope&#8221; in id form.</li>
+<li><code class="docutils literal"><span class="pre">iso_name</span></code> stands for an &#8220;isotope&#8221; in string form.</li>
+<li><code class="docutils literal"><span class="pre">mat</span></code> stands for &#8220;material&#8221;.</li>
+<li><code class="docutils literal"><span class="pre">m</span></code> and <code class="docutils literal"><span class="pre">mesh</span></code> are used for Mesh instances.</li>
+<li><code class="docutils literal"><span class="pre">idx</span></code> stands for &#8220;indices&#8221;. When used with meshes it is the canonical integer
+identifier for an entity. This is not necessarily iteration order.</li>
+<li><code class="docutils literal"><span class="pre">i</span></code> is the iteration variable of mesh indices, ie <code class="docutils literal"><span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">idx</span></code>.</li>
+<li>Generator names should start with the prefix <code class="docutils literal"><span class="pre">iter</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="canonical-forms">
+<h3>Canonical Forms<a class="headerlink" href="#canonical-forms" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">We have canonical forms; use them! For example, if a function accepts a nuclide
+as an argument then you should use nucname to ensure that it accepts all possible
+nuclide name spellings. If a function accepts a reaction name then use the rxname
+module. Turn materials specifications into Material objects.  And so on...</p>
+</li>
+<li><p class="first">Mesh is the gentle giant of canonical forms. Use its strong, kind arms when dealing
+with geometries.</p>
+</li>
+<li><p class="first">If a canonical form doesn&#8217;t exist, follow these steps:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>invent one, and</li>
+<li>make it awesome.</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">Making a canonical form great may take time and many iterations. Do not give up.</p>
+</li>
+<li><p class="first">Interim working solutions are better than the best solution never.</p>
+</li>
+<li><p class="first">HDF5 is the preferred persistence format for structured data.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="expectations">
+<h3>Expectations<a class="headerlink" href="#expectations" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Code must have associated tests and adequate documentation.</li>
+<li>The <em>only</em> exceptions to not having tests and documentation are when merging in and
+slowly integrating legacy code or code not originally originally written for pyne.</li>
+<li>Without both tests and documentation, the code must be marked as experimental.
+It should issue a <code class="docutils literal"><span class="pre">pyne.utils.QAWarning</span></code>.</li>
+<li>Have <em>extreme</em> empathy for your users.</li>
+<li>Be selfish. Since you will be writing tests you will be your first user.</li>
+<li>Nothing says &#8220;I &lt;3 PyNE&#8221; quite like an ASCII art dragon.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="python-style-guide">
+<h2>Python Style Guide<a class="headerlink" href="#python-style-guide" title="Permalink to this headline">¶</a></h2>
+<p>PyNE uses <a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8</a> for all Python code.  The following rules apply where <a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8</a>
+is open to interpretation.</p>
+<ul class="simple">
+<li>Use absolute imports (<code class="docutils literal"><span class="pre">import</span> <span class="pre">pyne.material</span></code>) rather than explicit relative imports
+(<code class="docutils literal"><span class="pre">import</span> <span class="pre">.material</span></code>). Implicit relative imports (<code class="docutils literal"><span class="pre">import</span> <span class="pre">material</span></code>) are never
+allowed.</li>
+<li>Use &#8216;single quotes&#8217; for string literals, and &#8220;&#8221;&#8220;triple double quotes&#8221;&#8220;&#8221; for
+docstrings. Double quotes are allowed to prevent single quote escaping,
+e.g. &#8220;Y&#8217;all c&#8217;mon o&#8217;er here!&#8221;</li>
+<li>We use sphinx with the numpydoc extension to autogenerate API documentation. Follow
+the numpydoc standard for docstrings <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">described here</a>.</li>
+<li>Simple functions should have simple docstrings.</li>
+<li>Lines should be at most 80 characters long. The 72 and 79 character recommendations
+from PEP8 are not required here.</li>
+<li>All Python code should be compliant with Python 2.7 and Python 3.3+.  At some
+unforeseen date in the future, Python 2.7 support <em>may</em> be dropped.</li>
+<li>Tests should be written with nose using a procedural style. Do not use unittest
+directly or write tests in an object-oriented style.</li>
+<li>Test generators make more dots and the dots must flow!</li>
+</ul>
+</div>
+<div class="section" id="cython-style-guide">
+<h2>Cython Style Guide<a class="headerlink" href="#cython-style-guide" title="Permalink to this headline">¶</a></h2>
+<p>Cython as a super-set language of Python should follow <a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8</a> for all syntax
+that the two languages share.  Cython-specific syntax should follow these additional
+rules.</p>
+<div class="section" id="cdefs-cpdefs-ctypedefs">
+<h3>cdefs, cpdefs, &amp; ctypedefs<a class="headerlink" href="#cdefs-cpdefs-ctypedefs" title="Permalink to this headline">¶</a></h3>
+<p>Separate <code class="docutils literal"><span class="pre">cdef</span></code>, <code class="docutils literal"><span class="pre">cpdef</span></code>, and <code class="docutils literal"><span class="pre">ctypedef</span></code> statements from the following type by
+exactly one space. In turn, separate the type from the variable name by exactly
+one space. Only <code class="docutils literal"><span class="pre">ctypedef</span></code> one variable per line. You may <code class="docutils literal"><span class="pre">cdef</span></code> or <code class="docutils literal"><span class="pre">cpdef</span></code>
+multiple variables per line as long as these are simple declarations - multiple
+assignment, references, or pointers are not allowed. Grouping <code class="docutils literal"><span class="pre">cdef</span></code> statements
+is allowed.  For example,</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">n</span>
+<span class="k">cdef</span> <span class="kt">char</span>* <span class="nf">s</span>
+<span class="k">cpdef</span> <span class="kt">int</span> <span class="nf">i</span><span class="p">,</span> <span class="nf">j</span><span class="p">,</span> <span class="nf">k</span>
+<span class="k">cdef</span> <span class="kt">Material</span> <span class="nf">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">true_enough</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">1</span>
+
+<span class="c"># Bad</span>
+<span class="k">cdef</span>  <span class="kt">char</span> *<span class="nf">s</span>
+<span class="k">cdef</span> <span class="kt">char</span> * <span class="nf">s</span><span class="p">,</span> * <span class="nf">t</span><span class="p">,</span> * <span class="nf">u</span><span class="p">,</span> * <span class="nf">v</span>
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">x</span><span class="o">=</span><span class="mf">42</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="o">+</span><span class="mf">1</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">x</span><span class="o">*</span><span class="n">y</span>
+<span class="k">cdef</span> <span class="kt">Material</span>     <span class="nf">mat</span>   <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<span class="k">cdef</span>   <span class="kt">int</span>   <span class="nf">falsified</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0</span>
+</pre></div>
+</div>
+<p>Inside of a function, place all <code class="docutils literal"><span class="pre">cdef</span></code> statements at the top of the function body.</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">true_enough</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">rtn</span>
+    <span class="n">rtn</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mf">42</span>
+    <span class="k">return</span> <span class="n">rtn</span>
+
+<span class="c"># Bad</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">falsified</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="o">-</span><span class="mf">42</span>
+    <span class="n">j</span> <span class="o">+=</span> <span class="n">i</span>
+    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">rtn</span> <span class="o">=</span> <span class="n">j</span> <span class="o">/</span> <span class="n">j</span> <span class="o">-</span> <span class="mf">1</span>
+    <span class="k">return</span> <span class="n">rtn</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="cimport-include-statements">
+<h3>cimport &amp; include statements<a class="headerlink" href="#cimport-include-statements" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">cimports</span></code> should follow the same rules defined in <a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8</a> for
+<code class="docutils literal"><span class="pre">import</span></code> statements.  If a module is both imported and cimported, the
+cimport should come before the import.</p>
+<p>Do not use <code class="docutils literal"><span class="pre">include</span></code> statements.</p>
+</div>
+<div class="section" id="error-return-values">
+<h3>Error return values<a class="headerlink" href="#error-return-values" title="Permalink to this headline">¶</a></h3>
+<p>When declaring an error return value with the <code class="docutils literal"><span class="pre">except</span></code> keyword, use one
+space on both sides of the <code class="docutils literal"><span class="pre">except</span></code>. If in a function definition, there should
+be no spaces between the error return value and the colon <code class="docutils literal"><span class="pre">:</span></code>.  Avoid <code class="docutils literal"><span class="pre">except</span> <span class="pre">*</span></code>
+unless it is needed for functions returning <code class="docutils literal"><span class="pre">void</span></code>.</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="k">cdef</span> <span class="kt">void</span> <span class="nf">redwood</span><span class="p">()</span> <span class="k">except</span> <span class="o">*</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">sequoia</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">except</span> <span class="o">+</span><span class="p">:</span>
+    <span class="o">...</span>
+
+<span class="c"># Bad</span>
+<span class="k">cdef</span> <span class="kt">char</span> * <span class="nf">spruce</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">except</span> <span class="o">*</span><span class="p">:</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">fir</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>    <span class="k">except</span>   <span class="o">+</span>  <span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pointers-references">
+<h3>Pointers &amp; References<a class="headerlink" href="#pointers-references" title="Permalink to this headline">¶</a></h3>
+<p>Pointers and references may be either zero or one space away from the type name.
+If followed by a variable name, they must be one space away from the variable name.
+Do not put any spaces between the reference operator <code class="docutils literal"><span class="pre">&amp;</span></code> and the variable name.</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="k">cdef</span> <span class="kt">int</span>&amp; <span class="nf">i</span>
+<span class="k">cdef</span> <span class="kt">char</span> * <span class="nf">s</span>
+<span class="n">i</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">j</span>
+
+<span class="c"># Bad</span>
+<span class="k">cdef</span> <span class="kt">int</span> &amp;<span class="nf">i</span>
+<span class="k">cdef</span> <span class="kt">char</span> *<span class="nf">s</span>
+<span class="n">i</span> <span class="o">=</span> <span class="o">&amp;</span> <span class="n">j</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="casting">
+<h3>Casting<a class="headerlink" href="#casting" title="Permalink to this headline">¶</a></h3>
+<p>When casting a variable there must be no whitespace between the opening <code class="docutils literal"><span class="pre">&lt;</span></code> and
+the type.  There must one space between the closing <code class="docutils literal"><span class="pre">&gt;</span></code> and the variable.</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="p">&lt;</span><span class="kt">float</span><span class="p">&gt;</span> <span class="n">i</span>
+<span class="o">&lt;</span><span class="n">void</span> <span class="o">*&gt;</span> <span class="n">s</span>
+
+<span class="c"># Bad</span>
+<span class="o">&lt;</span> <span class="nb">float</span> <span class="o">&gt;</span><span class="n">i</span>
+<span class="o">&lt;</span><span class="n">void</span><span class="o">*&gt;</span>  <span class="n">s</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="loops">
+<h3>Loops<a class="headerlink" href="#loops" title="Permalink to this headline">¶</a></h3>
+<p>Use Python loop syntax - <code class="docutils literal"><span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">range(10):</span></code>.  Other for-loop constructs are
+deprecated and must be avoided.</p>
+</div>
+<div class="section" id="property-keyword">
+<h3>Property Keyword<a class="headerlink" href="#property-keyword" title="Permalink to this headline">¶</a></h3>
+<p>Properties are great! There should be exactly one space between the <code class="docutils literal"><span class="pre">property</span></code>
+keyword and the attribute name.  There may be no spaces between the attribute
+name and the colon <code class="docutils literal"><span class="pre">:</span></code>.  All properties should have docstrings. There should
+be no blank lines between the property declaration line and the following line.</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="k">property</span> <span class="nf">has_cone</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class has a cone.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<span class="c"># Bad</span>
+<span class="k">property</span>    <span class="nf">has_cone</span> <span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="type-declarations-extern-public-api-readonly">
+<h3>Type Declarations, Extern, Public, API, &amp; Readonly<a class="headerlink" href="#type-declarations-extern-public-api-readonly" title="Permalink to this headline">¶</a></h3>
+<p>Type declarations, the <code class="docutils literal"><span class="pre">extern</span></code> keyword, the <code class="docutils literal"><span class="pre">public</span></code> keyword, the <code class="docutils literal"><span class="pre">api</span></code>
+keyword, and the <code class="docutils literal"><span class="pre">readonly</span></code> keyword should always be followed by a single space.</p>
+<div class="highlight-cython"><div class="highlight"><pre><span></span><span class="c"># Good</span>
+<span class="k">cdef</span> <span class="kr">extern</span> <span class="kt">void</span> * <span class="nf">v</span>
+<span class="k">cdef</span> <span class="kr">public</span> <span class="kr">api</span> <span class="kt">int</span> <span class="nf">i</span>
+<span class="k">def</span> <span class="nf">sequoia</span><span class="p">(</span><span class="nb">int</span> <span class="n">x</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="c"># Bad</span>
+<span class="k">cdef</span> <span class="kr">extern</span>         <span class="kt">void</span> * <span class="nf">v</span>
+<span class="k">cdef</span> <span class="kr">public</span>  <span class="kr">api</span>    <span class="kt">int</span>    <span class="nf">i</span>
+<span class="k">def</span> <span class="nf">spruce</span><span class="p">(</span><span class="nb">int</span>   <span class="n">x</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<p>In addition to following the numpydoc convention, also include the function or method
+signature as the first line in the docstring.  This helps sphinx print out the
+signature.  Include type information in this signature if available and relevant.</p>
+</div>
+</div>
+<div class="section" id="c-c-style-guide">
+<h2>C/C++ Style Guide<a class="headerlink" href="#c-c-style-guide" title="Permalink to this headline">¶</a></h2>
+<p>As software that is meant to be exposed to Python, C/C++ code written for pyne
+has special needs.  Existing single-language style guides are non-idiomatic across
+the language barrier.  This style guide attempts to rectify this impedance
+mismatch by defining a hierarchy of style guides and special rules to follow that
+make C/C++ more PyNEthonic. Legacy codes not originally written for pyne in these
+languages need not be migrated to this style.  While a custom style may not be
+ideal in terms of leveraging linters and style checker tools, the benefits
+in readability and portability outweigh this cost.</p>
+<p>The aim is to have all languages be as similar and have as idiomatic of APIs for that
+language as possible.</p>
+<p>Except as noted below, C/C++ code should adhere to the rules laid out in the
+following style guides in order of preference:</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="http://www.python.org/dev/peps/pep-0008/">PEP8</a></li>
+<li><a class="reference external" href="http://www.maultech.com/chrislott/resources/cstyle/LinuxKernelCodingStyle.txt">The Linux Kernel Coding Style</a></li>
+<li><a class="reference external" href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml">The Google C++ Style Guide</a></li>
+</ol>
+<p>This section was forked from the <a class="reference external" href="http://wiki.ros.org/CppStyleGuide">ROS C++ Style Guide</a>.
+If you require clarification on a particular syntax or idiom, please ask!</p>
+<div class="section" id="files">
+<h3>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h3>
+<p>Files may have under_scores.</p>
+<p>C source files have the extension <code class="docutils literal"><span class="pre">.c</span></code>.</p>
+<p>C++ source files have the extension <code class="docutils literal"><span class="pre">.cpp</span></code>.</p>
+<p>Header files have the extension <code class="docutils literal"><span class="pre">.h</span></code>.</p>
+<p>If the file primarily implements a class, name the file after the class.</p>
+</div>
+<div class="section" id="classes-typedefs-structs">
+<h3>Classes, Typedefs, &amp; Structs<a class="headerlink" href="#classes-typedefs-structs" title="Permalink to this headline">¶</a></h3>
+<p>Class names are CapCased:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleClass</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Exception:</strong> if the class name contains a short acronym, the acronym itself
+should be all capitals:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HokuyoURGLaser</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Name the class after what it is. If you can&#8217;t think of what it is, perhaps you
+have not thought through the design well enough.</p>
+<p>Class names should be nouns.</p>
+<p>Typedef names should be lowercase_with_underscores, like primitive C/C++ and
+Python types.</p>
+<p>Struct names should be CapCased if they have non-trivial member functions
+and are more class-like.</p>
+<p>However, if a struct is meant to be used primarily as compound data type
+it should have a lowercase_with_underscores name, like typedefs.</p>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<p>Functions and their arguments are lowercase_with_underscores:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">example_func</span><span class="p">(</span><span class="kt">int</span> <span class="n">example_arg</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Functions usually performs an action, so the name should make clear what it does.
+Function names thus should be verbs.</p>
+</div>
+<div class="section" id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
+<p>Variable names are lowercase_with_underscores.</p>
+<p>Integral iterator variables can be very short, such as i, j, k. Be consistent in
+how you use iterators (e.g., i on the outer loop, j on the next inner loop).</p>
+<p>STL iterator variables should indicate what they are iterating over:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">pid_list</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">pid_it</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="constants">
+<h3>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h3>
+<p>Constants, wherever they are used, are ALL_CAPITALS.</p>
+</div>
+<div class="section" id="member-variables">
+<h3>Member Variables<a class="headerlink" href="#member-variables" title="Permalink to this headline">¶</a></h3>
+<p>Variables that are members of a class are lowercase_with_underscores.
+Variables with leading underscores should never be used as they are technically
+reserved for the compiler by the ISO C standard.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="c1">//good</span>
+<span class="kt">int</span> <span class="n">public_x</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">protected_y</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">private_z</span><span class="p">;</span>
+
+<span class="c1">//bad</span>
+<span class="kt">int</span> <span class="n">public_x</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">_protected_y</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">_private_z</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="global-variables">
+<h3>Global Variables<a class="headerlink" href="#global-variables" title="Permalink to this headline">¶</a></h3>
+<p>Global variables should never be used.</p>
+<p><strong>Exception:</strong> a file may contain a main() function.</p>
+</div>
+<div class="section" id="namespaces">
+<h3>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h3>
+<p>Namespace names, like Python module names, are lowercase <em>without</em> underscores.</p>
+<p>Everything should be in a namespace.  Anonymous namespaces are encouraged to help
+meet this requirement.</p>
+<p>The bodies of namespace declaration and definition are not indented. This is
+the same as the <a class="reference external" href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml">GCSG</a>.</p>
+<p>Never use a <code class="docutils literal"><span class="pre">using</span> <span class="pre">namespace</span></code> directive. Using-declarations inside of class
+or function scope, which only grab the names you intend to use, are allowed.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="c1">// Good</span>
+<span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="p">;</span>    <span class="c1">// I want to refer to std::list as list</span>
+<span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span>  <span class="c1">// I want to refer to std::vector as vector</span>
+
+<span class="c1">// Bad, because it imports all names from std::</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="access-control">
+<h3>Access Control<a class="headerlink" href="#access-control" title="Permalink to this headline">¶</a></h3>
+<p>Access control is a tool. Use it as needed but not dogmatically.</p>
+<ul class="simple">
+<li>Access control may not be used to hide prototypical/unstable/untested/bad interfaces!</li>
+<li>Private and protected members must be tested through the public interface.</li>
+<li>You must be prepared to defend your choice or criticism of public, private, or
+protected for any and all members</li>
+</ul>
+<p>These rules apply to authors and reviewers equally. In the event of an impasse consider the physics.</p>
+</div>
+<div class="section" id="accessors-mutator-pattern">
+<h3>Accessors/Mutator Pattern<a class="headerlink" href="#accessors-mutator-pattern" title="Permalink to this headline">¶</a></h3>
+<p>Avoid getter and setter member functions. This pattern increases code volume,
+inlining is not guaranteed, and slows down run times.</p>
+<p>Use this pattern only if implementing a Python/Cython-like property where
+getting or setting a member variable is non-trivial. In these cases, the
+storage variable should be named with a trailing underscore (even though it may be
+public) and the get/set names should have the same name as the variable but without
+the trailing underscore:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">WithAnX</span> <span class="p">{</span>
+ <span class="k">public</span><span class="o">:</span>
+  <span class="c1">// storage variable</span>
+  <span class="kt">int</span> <span class="n">x_</span><span class="p">;</span>
+
+  <span class="c1">// getter</span>
+  <span class="kt">int</span> <span class="nf">x</span><span class="p">();</span>
+
+  <span class="c1">// setter</span>
+  <span class="kt">void</span> <span class="nf">x</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="formatting">
+<h3>Formatting<a class="headerlink" href="#formatting" title="Permalink to this headline">¶</a></h3>
+<p>Indent each block by 2 spaces. Never insert literal tab characters.</p>
+<p>The contents of a namespace are not indented.</p>
+<p>We are all friends here! Braces should be <a class="reference external" href="http://gskinner.com/blog/archives/2008/11/curly_braces_to.html">cuddled</a>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Braces may be omitted if the enclosed block is a single-line statement:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Only single line comments should be used.  Multi-line comments are inconsistent
+and not allowed.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="c1">// This is OK</span>
+
+<span class="cm">/* This is not OK */</span>
+
+<span class="cm">/* What is even going on here?!</span>
+<span class="cm"> * All I can see are the stars...</span>
+<span class="cm"> */</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="line-length">
+<h3>Line Length<a class="headerlink" href="#line-length" title="Permalink to this headline">¶</a></h3>
+<p>Maximum line length is 80 characters.</p>
+</div>
+<div class="section" id="include-guards">
+<h3>Include Guards<a class="headerlink" href="#include-guards" title="Permalink to this headline">¶</a></h3>
+<p>All headers must be protected against multiple inclusion by #ifndef guards.
+These guards ought to be UUIDs:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#ifndef PYNE_W7WGLJVRGRDH7G47RDHRLLCP2A</span>
+<span class="cp">#define PYNE_W7WGLJVRGRDH7G47RDHRLLCP2A</span>
+<span class="p">...</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Use this command for generating UUIDs:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ python -c <span class="s2">&quot;import uuid; import base64; print(&#39;PYNE_&#39; + base64.b32encode(uuid.uuid4().bytes).decode().strip(&#39;=&#39;))&quot;</span>
+</pre></div>
+</div>
+<p>This guard should begin before any other code and should end at the end of the file.</p>
+</div>
+<div class="section" id="id1">
+<h3>Documentation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>All code must be documented. We use doxygen to auto-document our code.
+All functions, methods, classes, variables, enumerations, and constants
+should be documented.</p>
+</div>
+<div class="section" id="console-output">
+<h3>Console Output<a class="headerlink" href="#console-output" title="Permalink to this headline">¶</a></h3>
+<p>Avoid printf if in C++.  Use <code class="docutils literal"><span class="pre">std::cout</span></code> instead.</p>
+</div>
+<div class="section" id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="Permalink to this headline">¶</a></h3>
+<p>Avoid preprocessor macros whenever possible. Unlike in-line functions and const
+variables, macros are neither typed nor scoped.</p>
+</div>
+<div class="section" id="inheritance">
+<h3>Inheritance<a class="headerlink" href="#inheritance" title="Permalink to this headline">¶</a></h3>
+<p>When overriding a virtual method in a subclass always declare it to be virtual
+so that the reader knows what&#8217;s going on.</p>
+</div>
+<div class="section" id="exceptions">
+<h3>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h3>
+<p>Built-in exceptions are the preferred error-reporting mechanism,
+as opposed to returning integer error codes or custom exception mechanisms.</p>
+<p>Do not throw exceptions from destructors.</p>
+<p>Do not throw exceptions from callbacks that you don&#8217;t invoke directly.</p>
+</div>
+<div class="section" id="calling-exit">
+<h3>Calling exit()<a class="headerlink" href="#calling-exit" title="Permalink to this headline">¶</a></h3>
+<p>Only call <code class="docutils literal"><span class="pre">exit()</span></code> at a well-defined exit point for the application.</p>
+<p>Never call <code class="docutils literal"><span class="pre">exit()</span></code> in a library.</p>
+</div>
+<div class="section" id="portability">
+<h3>Portability<a class="headerlink" href="#portability" title="Permalink to this headline">¶</a></h3>
+<p>Portability counts.</p>
+<p>Do not use uint as a type. Instead use unsigned int.</p>
+<p>Call <code class="docutils literal"><span class="pre">isnan()</span></code> from within the std namespace, i.e.: <code class="docutils literal"><span class="pre">std::isnan()</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Style Guide</a><ul>
+<li><a class="reference internal" href="#rules-to-write-by">Rules to Write By</a><ul>
+<li><a class="reference internal" href="#terminology">Terminology</a></li>
+<li><a class="reference internal" href="#interfaces">Interfaces</a></li>
+<li><a class="reference internal" href="#variable-name-conventions">Variable Name Conventions</a></li>
+<li><a class="reference internal" href="#canonical-forms">Canonical Forms</a></li>
+<li><a class="reference internal" href="#expectations">Expectations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#python-style-guide">Python Style Guide</a></li>
+<li><a class="reference internal" href="#cython-style-guide">Cython Style Guide</a><ul>
+<li><a class="reference internal" href="#cdefs-cpdefs-ctypedefs">cdefs, cpdefs, &amp; ctypedefs</a></li>
+<li><a class="reference internal" href="#cimport-include-statements">cimport &amp; include statements</a></li>
+<li><a class="reference internal" href="#error-return-values">Error return values</a></li>
+<li><a class="reference internal" href="#pointers-references">Pointers &amp; References</a></li>
+<li><a class="reference internal" href="#casting">Casting</a></li>
+<li><a class="reference internal" href="#loops">Loops</a></li>
+<li><a class="reference internal" href="#property-keyword">Property Keyword</a></li>
+<li><a class="reference internal" href="#type-declarations-extern-public-api-readonly">Type Declarations, Extern, Public, API, &amp; Readonly</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c-c-style-guide">C/C++ Style Guide</a><ul>
+<li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#classes-typedefs-structs">Classes, Typedefs, &amp; Structs</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#variables">Variables</a></li>
+<li><a class="reference internal" href="#constants">Constants</a></li>
+<li><a class="reference internal" href="#member-variables">Member Variables</a></li>
+<li><a class="reference internal" href="#global-variables">Global Variables</a></li>
+<li><a class="reference internal" href="#namespaces">Namespaces</a></li>
+<li><a class="reference internal" href="#access-control">Access Control</a></li>
+<li><a class="reference internal" href="#accessors-mutator-pattern">Accessors/Mutator Pattern</a></li>
+<li><a class="reference internal" href="#formatting">Formatting</a></li>
+<li><a class="reference internal" href="#line-length">Line Length</a></li>
+<li><a class="reference internal" href="#include-guards">Include Guards</a></li>
+<li><a class="reference internal" href="#id1">Documentation</a></li>
+<li><a class="reference internal" href="#console-output">Console Output</a></li>
+<li><a class="reference internal" href="#macros">Macros</a></li>
+<li><a class="reference internal" href="#inheritance">Inheritance</a></li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#calling-exit">Calling exit()</a></li>
+<li><a class="reference internal" href="#portability">Portability</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

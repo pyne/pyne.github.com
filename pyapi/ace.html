@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ACE Cross Sections – pyne.ace &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyne.ace">
+<span id="ace-cross-sections-pyne-ace"></span><span id="pyne-ace"></span><h1>ACE Cross Sections &#8211; <a class="reference internal" href="../usersguide/ace.html#module-pyne.ace" title="pyne.ace"><code class="xref py py-mod docutils literal"><span class="pre">pyne.ace</span></code></a><a class="headerlink" href="#module-pyne.ace" title="Permalink to this headline">¶</a></h1>
+<p>This module is for reading ACE-format cross sections. ACE stands for &#8220;A
+Compact ENDF&#8221; format and originated from work on <a class="reference external" href="https://laws.lanl.gov/vhosts/mcnp.lanl.gov/">MCNP</a>. It is used in a number
+of other Monte Carlo particle transport codes.</p>
+<p>ACE-format cross sections are typically generated from <a class="reference external" href="http://www.nndc.bnl.gov/endf">ENDF</a> files through a
+cross section processing program like <a class="reference external" href="http://t2.lanl.gov/codes.shtml">NJOY</a>. The ENDF data consists of tabulated
+thermal data, ENDF/B resonance parameters, distribution parameters in the
+unresolved resonance region, and tabulated data in the fast region. After the
+ENDF data has been reconstructed and Doppler-broadened, the ACER module
+generates ACE-format cross sections.</p>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">ace</span></code> package:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">ace</span>
+</pre></div>
+</div>
+<p>The information below represents the complete specification of the classes in
+the ace module. For examples of usage, please refer to the User&#8217;s Guide entry
+for <a class="reference internal" href="../usersguide/ace.html#usersguide-ace"><span class="std std-ref">ACE Cross Sections</span></a>.</p>
+<div class="section" id="library-class">
+<h2>Library Class<a class="headerlink" href="#library-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyne.ace.Library">
+<em class="property">class </em><code class="descclassname">pyne.ace.</code><code class="descname">Library</code><a class="headerlink" href="#pyne.ace.Library" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Library objects represents an ACE-formatted file which may contain
+multiple tables with data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path of the ACE library file to load.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>binary</td>
+<td>(bool) Identifies Whether the library is in binary format or not</td>
+</tr>
+<tr class="row-even"><td>tables</td>
+<td>(dict) Dictionary whose keys are the names of the ACE tables and whose values are the instances of subclasses of AceTable (e.g. NeutronTable)</td>
+</tr>
+<tr class="row-odd"><td>verbose</td>
+<td>(bool) Determines whether output is printed to the stdout when reading a Library</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.ace.Library.find_table">
+<code class="descname">find_table</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.ace.Library.find_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a cross-section table with a given name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote class="last">
+<div><p>Name of the cross-section table, e.g. 92235.70c</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.ace.Library.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>table_names=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.ace.Library.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through and parse the ACE-format library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>table_names</strong> : None, str, or iterable, optional</p>
+<blockquote class="last">
+<div><p>Tables from the file to read in.  If None, reads in all of the
+tables. If str, reads in only the single table of a matching name.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.AceTable">
+<em class="property">class </em><code class="descclassname">pyne.ace.</code><code class="descname">AceTable</code><a class="headerlink" href="#pyne.ace.AceTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract superclass of all other classes for cross section tables.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.NeutronTable">
+<em class="property">class </em><code class="descclassname">pyne.ace.</code><code class="descname">NeutronTable</code><a class="headerlink" href="#pyne.ace.NeutronTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A NeutronTable object contains continuous-energy neutron interaction data
+read from an ACE-formatted Type I table. These objects are not normally
+instantiated by the user but rather created when reading data using a
+Library object and stored within the <code class="docutils literal"><span class="pre">tables</span></code> attribute of a Library
+object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>ZAID identifier of the table, e.g. &#8216;92235.70c&#8217;.</p>
+</div></blockquote>
+<p><strong>awr</strong> : float</p>
+<blockquote>
+<div><p>Atomic mass ratio of the target nuclide.</p>
+</div></blockquote>
+<p><strong>temp</strong> : float</p>
+<blockquote class="last">
+<div><p>Temperature of the target nuclide in eV.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>awr</td>
+<td>(float) Atomic mass ratio of the target nuclide.</td>
+</tr>
+<tr class="row-even"><td>energy</td>
+<td>(list of floats) The energy values (MeV) at which reaction cross-sections are tabulated.</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>(str) ZAID identifier of the table, e.g. 92235.70c.</td>
+</tr>
+<tr class="row-even"><td>nu_p_energy</td>
+<td>(list of floats) Energies in MeV at which the number of prompt neutrons emitted per fission is tabulated.</td>
+</tr>
+<tr class="row-odd"><td>nu_p_type</td>
+<td>(str) Indicates how number of prompt neutrons emitted per fission is stored. Can be either &#8220;polynomial&#8221; or &#8220;tabular&#8221;.</td>
+</tr>
+<tr class="row-even"><td>nu_p_value</td>
+<td>(list of floats) The number of prompt neutrons emitted per fission, if data is stored in &#8220;tabular&#8221; form, or the polynomial coefficients for the &#8220;polynomial&#8221; form.</td>
+</tr>
+<tr class="row-odd"><td>nu_t_energy</td>
+<td>(list of floats) Energies in MeV at which the total number of neutrons emitted per fission is tabulated.</td>
+</tr>
+<tr class="row-even"><td>nu_t_type</td>
+<td>(str) Indicates how total number of neutrons emitted per fission is stored. Can be either &#8220;polynomial&#8221; or &#8220;tabular&#8221;.</td>
+</tr>
+<tr class="row-odd"><td>nu_t_value</td>
+<td>(list of floats) The total number of neutrons emitted per fission, if data is stored in &#8220;tabular&#8221; form, or the polynomial coefficients for the &#8220;polynomial&#8221; form.</td>
+</tr>
+<tr class="row-even"><td>reactions</td>
+<td>(list of Reactions) A list of Reaction instances containing the cross sections, secondary angle and energy distributions, and other associated data for each reaction for this nuclide.</td>
+</tr>
+<tr class="row-odd"><td>sigma_a</td>
+<td>(list of floats) The microscopic absorption cross section for each value on the energy grid.</td>
+</tr>
+<tr class="row-even"><td>sigma_t</td>
+<td>(list of floats) The microscopic total cross section for each value on the energy grid.</td>
+</tr>
+<tr class="row-odd"><td>temp</td>
+<td>(float) Temperature of the target nuclide in eV.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.SabTable">
+<em class="property">class </em><code class="descclassname">pyne.ace.</code><code class="descname">SabTable</code><a class="headerlink" href="#pyne.ace.SabTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A SabTable object contains thermal scattering data as represented by
+an S(alpha, beta) table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
+<blockquote>
+<div><p>ZAID identifier of the table, e.g. lwtr.10t.</p>
+</div></blockquote>
+<p><strong>awr</strong> : float</p>
+<blockquote>
+<div><p>Atomic mass ratio of the target nuclide.</p>
+</div></blockquote>
+<p><strong>temp</strong> : float</p>
+<blockquote class="last">
+<div><p>Temperature of the target nuclide in eV.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>awr</td>
+<td>(float) Atomic mass ratio of the target nuclide.</td>
+</tr>
+<tr class="row-even"><td>elastic_e_in</td>
+<td>(list of floats) Incoming energies in MeV for which the elastic cross section is tabulated.</td>
+</tr>
+<tr class="row-odd"><td>elastic_P</td>
+<td>(list of floats) Elastic scattering cross section for data derived in the incoherent approximation, or Bragg edge parameters for data derived in the coherent approximation.</td>
+</tr>
+<tr class="row-even"><td>elastic_type</td>
+<td>(str) Describes the behavior of the elastic cross section, i.e. whether it was derived in the incoherent or coherent approximation.</td>
+</tr>
+<tr class="row-odd"><td>inelastic_e_in</td>
+<td>(list of floats) Incoming energies in MeV for which the inelastic cross section is tabulated.</td>
+</tr>
+<tr class="row-even"><td>inelastic_sigma</td>
+<td>(list of floats) Inelastic scattering cross section in barns at each energy.</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>(str) ZAID identifier of the table, e.g. 92235.70c.</td>
+</tr>
+<tr class="row-even"><td>temp</td>
+<td>(float) Temperature of the target nuclide in eV.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.ace.Reaction">
+<em class="property">class </em><code class="descclassname">pyne.ace.</code><code class="descname">Reaction</code><span class="sig-paren">(</span><em>MT</em>, <em>table=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.ace.Reaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Reaction object represents a single reaction channel for a nuclide with
+an associated cross section and, if present, a secondary angle and energy
+distribution. These objects are stored within the <code class="docutils literal"><span class="pre">reactions</span></code> attribute on
+subclasses of AceTable, e.g. NeutronTable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>MT</strong> : int</p>
+<blockquote>
+<div><p>The ENDF MT number for this reaction. On occasion, MCNP uses MT numbers
+that don&#8217;t correspond exactly to the ENDF specification.</p>
+</div></blockquote>
+<p><strong>table</strong> : AceTable</p>
+<blockquote class="last">
+<div><p>The ACE table which contains this reaction. This is useful if data on
+the parent nuclide is needed (for instance, the energy grid at which
+cross sections are tabulated)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>ang_energy_in</td>
+<td>(list of floats) Incoming energies in MeV at which angular distributions are tabulated.</td>
+</tr>
+<tr class="row-even"><td>ang_energy_cos</td>
+<td>(list of floats) Scattering cosines corresponding to each point of the angular distribution functions.</td>
+</tr>
+<tr class="row-odd"><td>ang_energy_pdf</td>
+<td>(list of floats) Probability distribution function for angular distribution.</td>
+</tr>
+<tr class="row-even"><td>ang_energy_cdf</td>
+<td>(list of floats) Cumulative distribution function for angular distribution.</td>
+</tr>
+<tr class="row-odd"><td>e_dist_energy</td>
+<td>(list of floats) Incoming energies in MeV at which energy distributions are tabulated.</td>
+</tr>
+<tr class="row-even"><td>e_dist_law</td>
+<td>(int) ACE law used for secondary energy distribution.</td>
+</tr>
+<tr class="row-odd"><td>IE</td>
+<td>(int) The index on the energy grid corresponding to the threshold of this reaction.</td>
+</tr>
+<tr class="row-even"><td>MT</td>
+<td>(int) The ENDF MT number for this reaction. On occasion, MCNP uses MT numbers that don&#8217;t correspond exactly to the ENDF specification.</td>
+</tr>
+<tr class="row-odd"><td>Q</td>
+<td>(float) The Q-value of this reaction in MeV.</td>
+</tr>
+<tr class="row-even"><td>sigma</td>
+<td>(list of floats) Microscopic cross section for this reaction at each point on the energy grid above the threshold value.</td>
+</tr>
+<tr class="row-odd"><td>TY</td>
+<td>(int) An integer whose absolute value is the number of neutrons emitted in this reaction. If negative, it indicates that scattering should be performed in the center-of-mass system. If positive, scattering should be preformed in the laboratory system.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.ace.Reaction.threshold">
+<code class="descname">threshold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.ace.Reaction.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return energy threshold for this reaction.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ACE Cross Sections &#8211; <code class="docutils literal"><span class="pre">pyne.ace</span></code></a><ul>
+<li><a class="reference internal" href="#library-class">Library Class</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

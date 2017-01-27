@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.fluka &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.fluka</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="sd">&quot;&quot;&quot;Module for parsing FLUKA output data. FLUKA is a fully integrated particle</span>
+<span class="sd">physics MonteCarlo simulation package. It has many applications in high</span>
+<span class="sd">energy experimental physics and engineering, shielding, detector and telescope</span>
+<span class="sd">design, cosmic ray studies, dosimetry, medical physics and radio-biology.</span>
+<span class="sd">Further information on FLUKA can be obtained from</span>
+<span class="sd">http://www.fluka.org/fluka.php</span>
+
+<span class="sd">Currently, only usrbin output files can be read.</span>
+
+<span class="sd">If PyTAPS is not installed, then Usrbin and UsrbinTally will not be</span>
+<span class="sd">available to use.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="c1"># Mesh specific imports</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span>
+    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
+                  <span class="s2">&quot;Some aspects of the mcnp module may be incomplete.&quot;</span><span class="p">,</span>
+                  <span class="n">QAWarning</span><span class="p">)</span>
+    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">IMeshTag</span>
+
+
+<div class="viewcode-block" id="Usrbin"><a class="viewcode-back" href="../../pyapi/fluka.html#pyne.fluka.Usrbin">[docs]</a><span class="k">class</span> <span class="nc">Usrbin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class is the wrapper class for UsrbinTally. This class stores</span>
+<span class="sd">    all information for a single file that contains one or more usrbin</span>
+<span class="sd">    tallies. The &quot;tally&quot; attribute provides key/value access to individual</span>
+<span class="sd">    UsrbinTally objects.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : string</span>
+<span class="sd">        Path to Fluka usrbin file</span>
+<span class="sd">    tally : dict</span>
+<span class="sd">        A dictionary with user-specified tally names as keys and UsrbinTally</span>
+<span class="sd">        objects as values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : string</span>
+<span class="sd">            FLUKA USRBIN file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+                               <span class="s2">&quot;unable to create Meshtal.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tally</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_tallies</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_read_tallies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read in all of the USRBIN tallies from the USRBIN file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="p">(</span><span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">):</span>
+            <span class="n">new_tally</span> <span class="o">=</span> <span class="n">UsrbinTally</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">new_tally</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_tally</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="UsrbinTally"><a class="viewcode-back" href="../../pyapi/fluka.html#pyne.fluka.UsrbinTally">[docs]</a><span class="k">class</span> <span class="nc">UsrbinTally</span><span class="p">(</span><span class="n">Mesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class reads a single FLUKA USRBIN tally from a USRBIN file.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coord_sys : string</span>
+<span class="sd">        The coordinate system used. Either &quot;Cartesian&quot;, &quot;R-Z&quot;, &quot;R-Phi-Z&quot;, or</span>
+<span class="sd">        user-defined. Only &quot;Cartesian&quot; is supported.</span>
+<span class="sd">    name : string</span>
+<span class="sd">        The user-defined name for the tally</span>
+<span class="sd">    particle : string</span>
+<span class="sd">        The number code corresponding to the particle tracked in tally.</span>
+<span class="sd">        For complete list visit http://www.fluka.org/fluka.php?id=man_onl&amp;sub=7</span>
+<span class="sd">    x_bounds : list of floats</span>
+<span class="sd">        The locations of mesh vertices in the x direction</span>
+<span class="sd">    y_bounds : list of floats</span>
+<span class="sd">        The locations of mesh vertices in the y direction</span>
+<span class="sd">    z_bounds : list of floats</span>
+<span class="sd">        The locations of mesh vertices in the z direction</span>
+<span class="sd">    part_data_tag : string</span>
+<span class="sd">        The name of the tag for the track-length tally data.</span>
+<span class="sd">        Follows form &quot;part_data_X&quot; where X is the number of the particle</span>
+<span class="sd">    error_data_tag : string</span>
+<span class="sd">        The name of the tag for the error data.</span>
+<span class="sd">        Follows form &quot;error_data_X&quot; where X is the number of the particle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a UsrbinTally object by reading through the file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fh : filehandle</span>
+<span class="sd">            An open usrbin file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+                               <span class="s2">&quot;unable to create Meshtal.&quot;</span><span class="p">)</span>
+
+        <span class="n">part_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">error_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># Read the header for the tally.</span>
+        <span class="c1"># Information obtained: coordinate system used, user-defined tally</span>
+        <span class="c1"># name, particle, and x, y, and z dimension information.</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">coord_sys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coord_sys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coord_sys</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coord_sys</span> <span class="o">!=</span> <span class="s1">&#39;Cartesian&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only cartesian coordinate system currently supported&quot;</span><span class="p">)</span>
+
+        <span class="p">[</span><span class="n">x_info</span><span class="p">,</span> <span class="n">y_info</span><span class="p">,</span> <span class="n">z_info</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_usrbin_head</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+
+        <span class="c1"># Advance to start of tally data skipping blank and/or text lines.</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;accurate deposition&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;track-length binning&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># Read the track-length binning data (part_data) and percentage error</span>
+        <span class="c1"># data (error_data).</span>
+        <span class="n">num_volume_element</span> <span class="o">=</span> <span class="n">x_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">y_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">z_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">part_data</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">part_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_volume_element</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">part_data</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">error_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_volume_element</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">error_data</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+
+        <span class="c1"># create mesh object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_bounds</span><span class="p">(</span><span class="n">x_info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_bounds</span><span class="p">(</span><span class="n">y_info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_bounds</span><span class="p">(</span><span class="n">z_info</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_mesh</span><span class="p">(</span><span class="n">part_data</span><span class="p">,</span> <span class="n">error_data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_read_usrbin_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the minimum bound, maximum bound, number of bins, and bin width</span>
+<span class="sd">        for each of the x, y, and z dimensions contained within the header.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="c1"># assume next line is x coord info</span>
+        <span class="n">x_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_dimensions</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="c1"># assume next line is y coord info</span>
+        <span class="n">y_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_dimensions</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="c1"># assume next line is z coord info</span>
+        <span class="n">z_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_dimensions</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># return lists of info for each dimension:</span>
+        <span class="c1"># [min, max, number of bins, width]</span>
+        <span class="k">return</span> <span class="n">x_info</span><span class="p">,</span> <span class="n">y_info</span><span class="p">,</span> <span class="n">z_info</span>
+
+    <span class="k">def</span> <span class="nf">_parse_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This retrieves the specific dimensions and binning information for</span>
+<span class="sd">        the x, y, and z dimensions. Information retrieved is the minimum and</span>
+<span class="sd">        maximum value for each dimension, the number of bins in each direction,</span>
+<span class="sd">        and the width of each evenly spaced bin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">7</span><span class="p">]),</span> \
+               <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_generate_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim_info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This takes in the dimension information (min, max, bins, and width)</span>
+<span class="sd">        and returns a list of bound values for that given dimension.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">[</span><span class="n">dim_min</span><span class="p">,</span> <span class="n">dim_max</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">width</span><span class="p">]</span> <span class="o">=</span> <span class="n">dim_info</span>
+        <span class="n">bound_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">bound_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim_min</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">width</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">bound_data</span>
+
+    <span class="k">def</span> <span class="nf">_create_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_data</span><span class="p">,</span> <span class="n">error_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This will create the mesh object with the name of the tally</span>
+<span class="sd">        specified by the user. One mesh object contains both the part_data and</span>
+<span class="sd">        the error_data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">UsrbinTally</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">structured_coords</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
+                                          <span class="n">structured</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">structured_ordering</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">,</span>
+                                          <span class="n">mats</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part_data_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;part_data_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_data_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;error_data_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part_data_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">part_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_data_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">error_data</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

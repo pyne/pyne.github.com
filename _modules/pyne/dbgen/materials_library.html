@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.dbgen.materials_library &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.dbgen.materials_library</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module handles the construction of a reference materials library in nuc_data.h5.</span>
+<span class="sd">This currently consists to natural element materials and those coming from PNNL&#39;s</span>
+<span class="sd">`Materials Compendium`_.</span>
+
+<span class="sd">.. _Materials Compendium: http://www.pnnl.gov/main/publications/external/technical_reports/PNNL-15870Rev1.pdf</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">takewhile</span><span class="p">,</span> <span class="n">groupby</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.data</span> <span class="k">import</span> <span class="n">natural_abund</span><span class="p">,</span> <span class="n">natural_abund_map</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">MaterialLibrary</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="make_elements"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_elements">[docs]</a><span class="k">def</span> <span class="nf">make_elements</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Make natural elemental materials based on isotopic abundances.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eltsdict : dict from str to pyne.material.Material</span>
+<span class="sd">        Natural elements as materials.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">natural_abund</span><span class="p">(</span><span class="s2">&quot;H1&quot;</span><span class="p">)</span>  <span class="c1"># initialize natural_abund_map</span>
+    <span class="c1"># get rid of elemental total abundances and empty isotopic abundances</span>
+    <span class="n">abunds_no_trivial</span> <span class="o">=</span> <span class="p">[</span><span class="n">abund</span> <span class="k">for</span> <span class="n">abund</span> <span class="ow">in</span> <span class="n">natural_abund_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span>
+                         <span class="n">nucname</span><span class="o">.</span><span class="n">anum</span><span class="p">(</span><span class="n">abund</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">abund</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">sorted_abunds</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">abunds_no_trivial</span><span class="p">)</span>
+    <span class="n">grouped_abunds</span> <span class="o">=</span> <span class="n">groupby</span><span class="p">(</span><span class="n">sorted_abunds</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">abund</span><span class="p">:</span> <span class="n">nucname</span><span class="o">.</span><span class="n">znum</span><span class="p">(</span><span class="n">abund</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="c1"># filter out 111, 113, 115, 117, 118 - the ones with no names</span>
+    <span class="n">elts</span> <span class="o">=</span> <span class="p">(</span><span class="n">Material</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">abunds</span><span class="p">),</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">zz</span><span class="p">)})</span>
+            <span class="k">for</span> <span class="n">zz</span><span class="p">,</span> <span class="n">abunds</span> <span class="ow">in</span> <span class="n">grouped_abunds</span> <span class="k">if</span> <span class="n">zz</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zz_name</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">eltsdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">elt</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">elt</span><span class="p">)</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">elts</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">eltsdict</span></div>
+
+
+<span class="c1"># Parses data from .csv</span>
+<div class="viewcode-block" id="grab_materials_compendium"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.grab_materials_compendium">[docs]</a><span class="k">def</span> <span class="nf">grab_materials_compendium</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s1">&#39;materials_compendium.csv&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses data from a materials compendium csv file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    location : str</span>
+<span class="sd">        The file to read in compendium from.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mats : list of pyne.material.Material</span>
+<span class="sd">        The materials in the compendium.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">natural_abund</span><span class="p">(</span><span class="s2">&quot;H1&quot;</span><span class="p">)</span>  <span class="c1"># initialize natural_abund_map</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">is_comp_matname_or_density</span><span class="p">,</span> <span class="n">reader</span><span class="p">))</span>
+    <span class="n">mats</span> <span class="o">=</span> <span class="n">parse_materials</span><span class="p">({},</span> <span class="n">lines</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">mats</span></div>
+
+
+<span class="n">comp_matname_or_density_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;\d+. +$|[A-Za-z]{1,2}-?(\d{1,3})?$&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="is_comp_matname_or_density"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.is_comp_matname_or_density">[docs]</a><span class="k">def</span> <span class="nf">is_comp_matname_or_density</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detect composition, material name, or density lines.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line : list of str</span>
+<span class="sd">        The input line.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : bool</span>
+<span class="sd">        True if the input line has composition, material name, or density data.</span>
+<span class="sd">        False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Density (g/cm3) =&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">comp_matname_or_density_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="n">first_line_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;^\d+. +&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="parse_materials"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.parse_materials">[docs]</a><span class="k">def</span> <span class="nf">parse_materials</span><span class="p">(</span><span class="n">mats</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Take first material from ``lines`` and append to ``mats``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mats : dict from str to pyne.material.Material</span>
+<span class="sd">        The growing dict of materials.</span>
+<span class="sd">    lines: list of list of str</span>
+<span class="sd">        The shrinking list of lines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mats</span>
+    <span class="n">material_lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">first_line_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
+    <span class="n">material_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">material_lines</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">Material</span><span class="p">({</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">])})</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">material_lines</span><span class="p">))</span>
+    <span class="n">mat</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">mat</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+    <span class="n">mat</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">expand_elements</span><span class="p">()</span>
+    <span class="n">mat</span><span class="o">.</span><span class="n">comp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">frac</span> <span class="k">for</span> <span class="n">frac</span> <span class="ow">in</span> <span class="n">mat</span><span class="o">.</span><span class="n">comp</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">frac</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">mats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">mat</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">parse_materials</span><span class="p">(</span><span class="n">mats</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="n">material_length</span><span class="p">:])</span></div>
+
+
+<span class="c1"># Writes to file</span>
+<div class="viewcode-block" id="make_materials_compendium"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_materials_compendium">[docs]</a><span class="k">def</span> <span class="nf">make_materials_compendium</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">matslib</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds materials compendium to nuc_data.h5.&quot;&quot;&quot;</span>
+    <span class="n">matslib</span><span class="o">.</span><span class="n">write_hdf5</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="s2">&quot;/material_library/materials&quot;</span><span class="p">,</span>
+                       <span class="n">nucpath</span><span class="o">=</span><span class="s2">&quot;/material_library/nucid&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_matslib"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_matslib">[docs]</a><span class="k">def</span> <span class="nf">make_matslib</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a pyne.material.MaterialLibrary. First makes elements, then</span>
+<span class="sd">    materials from compendium.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : str</span>
+<span class="sd">        Path to materials compendium.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matslib : pyne.material.MaterialLibrary</span>
+<span class="sd">        All the materials you could want, in a handy MaterialLibrary instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">matslib</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">make_elements</span><span class="p">())</span>
+    <span class="n">matsdict</span> <span class="o">=</span> <span class="n">grab_materials_compendium</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">matslib</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">matsdict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">matslib</span></div>
+
+
+<div class="viewcode-block" id="make_materials_library"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_materials_library">[docs]</a><span class="k">def</span> <span class="nf">make_materials_library</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Controller function for adding materials library.&quot;&quot;&quot;</span>
+    <span class="n">nuc_data</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nuc_data</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;/material_library&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;skipping materials library data table creation; already exists.&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making materials library...&quot;</span><span class="p">)</span>
+    <span class="n">matslib</span> <span class="o">=</span> <span class="n">make_matslib</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                        <span class="s1">&#39;materials_compendium.csv&#39;</span><span class="p">))</span>
+    <span class="n">make_materials_compendium</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">matslib</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../../install/index.html">Install</a></li>
+    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../../pubs.html">Publications</a></li>
+    <li><a href="../../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

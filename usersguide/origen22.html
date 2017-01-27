@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ORIGEN 2.2 I/O Support &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="origen-2-2-i-o-support">
+<span id="usersguide-origen22"></span><h1>ORIGEN 2.2 I/O Support<a class="headerlink" href="#origen-2-2-i-o-support" title="Permalink to this headline">¶</a></h1>
+<p>ORIGEN has many different file formats that it either takes as inputs or writes
+as outputs.  PyNE supports a functional interface to the most common of these.
+This allows easy manipulation and hooking of ORIGEN with other codes.  This is
+primarily useful with regards to benchmarking.</p>
+<p>Most of the functions in this module either take or return structured dictionaries
+of data.  Please refer to the reference API for more information on how these are
+structured.  If you would like to see other parts of ORIGEN supported, please
+contact the developers.  Current support includes:</p>
+<ul class="simple">
+<li>TAPE4 generation</li>
+<li>TAPE5 irradiations</li>
+<li>TAPE6 reading / parsing</li>
+<li>TAPE9 reading, merging, and writing</li>
+</ul>
+<div class="section" id="example-of-use">
+<h2>Example of Use<a class="headerlink" href="#example-of-use" title="Permalink to this headline">¶</a></h2>
+<p>This example irradiates 1 kg of water for 1000 days in ORIGEN 2.2, increasing the
+capture cross section of Hydrogen-1 by 10% each time.  The Hydrogen-2 concentration
+is then gathered and displayed. This example may be found in the source tree as
+<code class="file docutils literal"><span class="pre">examples/origen22_h1_xs.py</span></code>. Note that in this example, the <code class="docutils literal"><span class="pre">'BASE_TAPE9.INP'</span></code>
+file must be supplied by the user.  Additionally, the execution path for ORIGEN
+(here <code class="docutils literal"><span class="pre">o2_therm_linux.exe</span></code>) may differ by system and platform:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">check_call</span>
+
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">origen22</span>
+<span class="kn">from</span> <span class="nn">pyne.api</span> <span class="k">import</span> <span class="n">Material</span>
+
+
+<span class="c1"># 1 kg of water</span>
+<span class="n">water</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<span class="n">water</span><span class="o">.</span><span class="n">from_atom_frac</span><span class="p">({</span><span class="s1">&#39;H1&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">water</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E3</span>
+
+<span class="c1"># Make a tape4 file for water</span>
+<span class="n">origen22</span><span class="o">.</span><span class="n">write_tape4</span><span class="p">(</span><span class="n">water</span><span class="p">)</span>
+
+<span class="c1"># Make a tape 5 for this calculation</span>
+<span class="c1">#   * Just output the concentration tables</span>
+<span class="c1">#   * The cross-section library numbers must</span>
+<span class="c1">#     the library / deck numbers in tape9</span>
+<span class="n">origen22</span><span class="o">.</span><span class="n">write_tape5_irradiation</span><span class="p">(</span><span class="s2">&quot;IRF&quot;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="mi">4</span><span class="n">E14</span><span class="p">,</span>
+                                 <span class="n">xsfpy_nlb</span><span class="o">=</span><span class="p">(</span><span class="mi">381</span><span class="p">,</span> <span class="mi">382</span><span class="p">,</span> <span class="mi">383</span><span class="p">),</span>
+                                 <span class="n">out_table_num</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># Grab a base tape9 from which we will overlay new values</span>
+<span class="c1"># This must be supplied by the user</span>
+<span class="n">base_tape9</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">parse_tape9</span><span class="p">(</span><span class="s2">&quot;BASE_TAPE9.INP&quot;</span><span class="p">)</span>
+
+<span class="n">base_h1_xs</span> <span class="o">=</span> <span class="n">base_tape9</span><span class="p">[</span><span class="mi">381</span><span class="p">][</span><span class="s1">&#39;sigma_gamma&#39;</span><span class="p">][</span><span class="mi">10010</span><span class="p">]</span>
+
+<span class="c1"># Init a dumb overlay tape9</span>
+<span class="n">overlay_tape9</span> <span class="o">=</span> <span class="p">{</span><span class="mi">381</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;_type&#39;</span><span class="p">:</span> <span class="s1">&#39;xsfpy&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;_subtype&#39;</span><span class="p">:</span> <span class="s1">&#39;activation_products&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;sigma_gamma&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="n">base_h1_xs</span><span class="p">},</span>
+                       <span class="p">}</span>
+                <span class="p">}</span>
+
+
+<span class="c1"># Run origen, increasing the cross section each time.</span>
+<span class="n">h2_concentration</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">):</span>
+    <span class="n">overlay_tape9</span><span class="p">[</span><span class="mi">381</span><span class="p">][</span><span class="s1">&#39;sigma_gamma&#39;</span><span class="p">][</span><span class="mi">10010</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mf">0.1</span><span class="p">)</span> <span class="o">*</span> <span class="n">base_h1_xs</span>
+
+    <span class="c1"># Merge the base and overlay, and write out</span>
+    <span class="n">new_tape9</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">merge_tape9</span><span class="p">([</span><span class="n">overlay_tape9</span><span class="p">,</span> <span class="n">base_tape9</span><span class="p">])</span>
+    <span class="n">origen22</span><span class="o">.</span><span class="n">write_tape9</span><span class="p">(</span><span class="n">new_tape9</span><span class="p">,</span> <span class="s1">&#39;TAPE9.INP&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Run and parse origen output</span>
+    <span class="n">rtn</span> <span class="o">=</span> <span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;o2_therm_linux.exe&#39;</span><span class="p">])</span>
+    <span class="n">tape6</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">parse_tape6</span><span class="p">(</span><span class="s1">&#39;TAPE6.OUT&#39;</span><span class="p">)</span>
+    <span class="n">h2_concentration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tape6</span><span class="p">[</span><span class="s1">&#39;table_5&#39;</span><span class="p">][</span><span class="s1">&#39;summary&#39;</span><span class="p">][</span><span class="s1">&#39;activation_products&#39;</span><span class="p">][</span><span class="s1">&#39;H2&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span>
+<span class="nb">print</span> <span class="s2">&quot;H2 Concentration: &quot;</span><span class="p">,</span> <span class="n">h2_concentration</span>
+</pre></div>
+</div>
+<p>Further information on the ORIGEN module may be seen in the library reference
+<a class="reference internal" href="../pyapi/origen22.html#pyne-origen22"><span class="std std-ref">ORIGEN 2.2 Support &#8211; pyne.origen22</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ORIGEN 2.2 I/O Support</a><ul>
+<li><a class="reference internal" href="#example-of-use">Example of Use</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="index.html">User's Guide</a></li>
+    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

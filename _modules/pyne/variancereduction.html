@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyne.variancereduction &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyne.variancereduction</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains functions for mesh-based Monte Carlo variance reduction.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">izip</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span><span class="p">,</span> <span class="n">iBase</span><span class="p">,</span> <span class="n">iMeshExtensions</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
+         <span class="s2">&quot;Some aspects of the variance reduction module may be incomplete.&quot;</span><span class="p">,</span>
+         <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">mesh</span> <span class="k">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">mesh</span> <span class="k">import</span> <span class="n">MeshError</span>
+<span class="kn">from</span> <span class="nn">mesh</span> <span class="k">import</span> <span class="n">IMeshTag</span>
+<span class="kn">from</span> <span class="nn">mcnp</span> <span class="k">import</span> <span class="n">Wwinp</span>
+<span class="kn">from</span> <span class="nn">pyne.particle</span> <span class="k">import</span> <span class="n">mcnp</span>
+
+<div class="viewcode-block" id="cadis"><a class="viewcode-back" href="../../pyapi/variancereduction.html#pyne.variancereduction.cadis">[docs]</a><span class="k">def</span> <span class="nf">cadis</span><span class="p">(</span><span class="n">adj_flux_mesh</span><span class="p">,</span> <span class="n">adj_flux_tag</span><span class="p">,</span> <span class="n">q_mesh</span><span class="p">,</span> <span class="n">q_tag</span><span class="p">,</span>
+          <span class="n">ww_mesh</span><span class="p">,</span> <span class="n">ww_tag</span><span class="p">,</span> <span class="n">q_bias_mesh</span><span class="p">,</span> <span class="n">q_bias_tag</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads PyNE Mesh objects tagged with adjoint fluxes and</span>
+<span class="sd">    unbiased source densities and outputs PyNE Meshes of weight window lower</span>
+<span class="sd">    bounds and biased source densities as computed by the Consistant</span>
+<span class="sd">    Adjoint-Driven Importance Sampling (CADIS) method [1]. Note that values can</span>
+<span class="sd">    be stored on the same Mesh object, all different Mesh objects, or any</span>
+<span class="sd">    combination in between. Meshes can be structured or unstructured.</span>
+<span class="sd">    Note that this function is suitable for Forward Weighted (FW) CADIS as well,</span>
+<span class="sd">    the only difference being the adjoint source used for the estimation of the</span>
+<span class="sd">    adjoint flux.</span>
+
+<span class="sd">    [1] Haghighat, A. and Wagner, J. C., &quot;Monte Carlo Variance Reduction with</span>
+<span class="sd">        Deterministic Importance Functions,&quot; Progress in Nuclear Energy,</span>
+<span class="sd">        Vol. 42, No. 1, pp. 25-53, 2003.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj_flux_mesh : PyNE Mesh object</span>
+<span class="sd">        The mesh containing the adjoint fluxes.</span>
+<span class="sd">    adj_flux_tag : string</span>
+<span class="sd">        The name of the adjoint flux tag on adj_mesh.</span>
+<span class="sd">    q_mesh : PyNE Mesh object</span>
+<span class="sd">        The mesh containing the unbiased source density.</span>
+<span class="sd">    q_tag : string</span>
+<span class="sd">        The name of the source density tag on q_mesh.</span>
+<span class="sd">    ww_mesh : PyNE Mesh object</span>
+<span class="sd">        The mesh to store the output weight window mesh.</span>
+<span class="sd">    ww_tag : string</span>
+<span class="sd">        Name of the tag to store output weight window values on ww_mesh.</span>
+<span class="sd">    q_bias_mesh : PyNE Mesh object</span>
+<span class="sd">        The mesh to store the output biased source density mesh.</span>
+<span class="sd">    q_bias_tag : PyNE Mesh object</span>
+<span class="sd">        Name of the tag to store output weight window values on q_bias_mesh.</span>
+<span class="sd">    beta : float</span>
+<span class="sd">        The ratio of the weight window upper bound to the weight window lower</span>
+<span class="sd">        bound. The default value is 5: the value used in MCNP.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># find number of energy groups</span>
+    <span class="n">e_groups</span> <span class="o">=</span> <span class="n">adj_flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">adj_flux_tag</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span>
+                <span class="n">adj_flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+                                           <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">))[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">e_groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">e_groups</span><span class="p">)</span>
+    <span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">e_groups</span><span class="p">)</span>
+
+    <span class="c1"># verify source (q) mesh has the same number of energy groups</span>
+    <span class="n">q_e_groups</span> <span class="o">=</span> <span class="n">q_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">q_tag</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span>
+                  <span class="n">q_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+                                      <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">))[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">q_e_groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">q_e_groups</span><span class="p">)</span>
+    <span class="n">num_q_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">q_e_groups</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">num_q_e_groups</span> <span class="o">!=</span> <span class="n">num_e_groups</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> on </span><span class="si">{1}</span><span class="s2"> and </span><span class="si">{2}</span><span class="s2"> on </span><span class="si">{3}</span><span class="s2"> &quot;</span>
+                        <span class="s2">&quot;must be of the same dimension&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">adj_flux_mesh</span><span class="p">,</span>
+                                                               <span class="n">adj_flux_tag</span><span class="p">,</span>
+                                                               <span class="n">q_mesh</span><span class="p">,</span> <span class="n">q_tag</span><span class="p">))</span>
+
+    <span class="c1"># create volume element (ve) iterators</span>
+    <span class="n">adj_ves</span> <span class="o">=</span> <span class="n">adj_flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
+    <span class="n">q_ves</span> <span class="o">=</span> <span class="n">q_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
+
+    <span class="c1"># calculate total source strength</span>
+    <span class="n">q_tot</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">q_ve</span> <span class="ow">in</span> <span class="n">q_ves</span><span class="p">:</span>
+        <span class="n">q_tot</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">q_tag</span><span class="p">)[</span><span class="n">q_ve</span><span class="p">])</span> \
+                 <span class="o">*</span> <span class="n">q_mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">q_ve</span><span class="p">)</span>
+
+    <span class="n">q_ves</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="c1"># calculate the total response per source particle (R)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">adj_ve</span><span class="p">,</span> <span class="n">q_ve</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">adj_ves</span><span class="p">,</span> <span class="n">q_ves</span><span class="p">):</span>
+        <span class="n">adj_flux</span> <span class="o">=</span> <span class="n">adj_flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">adj_flux_tag</span><span class="p">)[</span><span class="n">adj_ve</span><span class="p">]</span>
+        <span class="n">adj_flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">adj_flux</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">q_tag</span><span class="p">)[</span><span class="n">q_ve</span><span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">adj_flux_mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">adj_ve</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_e_groups</span><span class="p">):</span>
+            <span class="n">R</span> <span class="o">+=</span> <span class="n">adj_flux</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">vol</span><span class="o">/</span><span class="n">q_tot</span>
+
+    <span class="c1"># generate weight windows and biased source densities using R</span>
+    <span class="n">tag_ww</span> <span class="o">=</span> <span class="n">ww_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span><span class="n">ww_tag</span><span class="p">,</span> <span class="n">num_e_groups</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">ww_ves</span> <span class="o">=</span> <span class="n">ww_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
+    <span class="n">tag_q_bias</span> <span class="o">=</span> <span class="n">q_bias_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span><span class="n">q_bias_tag</span><span class="p">,</span> <span class="n">num_e_groups</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">q_bias_ves</span> <span class="o">=</span> <span class="n">q_bias_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
+    <span class="c1"># reset previously created iterators</span>
+    <span class="n">q_ves</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="n">adj_ves</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">adj_ve</span><span class="p">,</span> <span class="n">q_ve</span><span class="p">,</span> <span class="n">ww_ve</span><span class="p">,</span> <span class="n">q_bias_ve</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">adj_ves</span><span class="p">,</span> <span class="n">q_ves</span><span class="p">,</span>
+                                               <span class="n">ww_ves</span><span class="p">,</span> <span class="n">q_bias_ves</span><span class="p">):</span>
+        <span class="n">adj_flux</span> <span class="o">=</span> <span class="n">adj_flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">adj_flux_tag</span><span class="p">)[</span><span class="n">adj_ve</span><span class="p">]</span>
+        <span class="n">adj_flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">adj_flux</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">q_tag</span><span class="p">)[</span><span class="n">q_ve</span><span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="n">tag_q_bias</span><span class="p">[</span><span class="n">q_bias_ve</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">adj_flux</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">q_tot</span><span class="o">/</span><span class="n">R</span>
+                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">)]</span>
+
+        <span class="n">tag_ww</span><span class="p">[</span><span class="n">ww_ve</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">R</span><span class="o">/</span><span class="p">(</span><span class="n">adj_flux</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">beta</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="n">adj_flux</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="magic"><a class="viewcode-back" href="../../pyapi/variancereduction.html#pyne.variancereduction.magic">[docs]</a><span class="k">def</span> <span class="nf">magic</span><span class="p">(</span><span class="n">meshtally</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">,</span> <span class="n">tag_name_error</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads a PyNE mcnp.MeshTally object and preforms the MAGIC </span>
+<span class="sd">    algorithm and returns the resulting weight window mesh.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    meshtally : a single PyNE mcnp.MeshTally obj</span>
+<span class="sd">    tag_name : string</span>
+<span class="sd">        The meshtally tag_name (example: n_result or n_total_result).</span>
+<span class="sd">    tag_name_error : string</span>
+<span class="sd">        The meshtally tag_name for the error associated with provided tag_name.</span>
+<span class="sd">        Example: n_rel_error</span>
+<span class="sd">    tolerance : float, optional</span>
+<span class="sd">        The maximum relative error allowable for the MAGIC algorithm to create </span>
+<span class="sd">        a weight window lower bound for for a given mesh volume element for the</span>
+<span class="sd">        intial weight window lower bound generation, or overwrite preexisting </span>
+<span class="sd">        weight window lower bounds for subsequent iterations. </span>
+<span class="sd">    null_value : float, optional</span>
+<span class="sd">        The weight window lower bound value that is assigned to mesh volume</span>
+<span class="sd">        elements where the relative error on flux exceeds the tolerance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">tolerance</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tolerance&#39;</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">null_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;null_value&#39;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+    
+    <span class="c1"># Convert particle name to the recognized abbreviation</span>
+    <span class="n">particle</span> <span class="o">=</span> <span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+    <span class="k">if</span>  <span class="n">particle</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;Neutron&quot;</span> <span class="ow">or</span> <span class="s2">&quot;Photon&quot;</span> <span class="ow">or</span> <span class="s2">&quot;Electron&quot;</span><span class="p">):</span>
+        <span class="n">meshtally</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="n">mcnp</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    
+    <span class="c1"># Create tags for values and errors</span>
+    <span class="n">meshtally</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">meshtally</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">)</span>
+    <span class="n">meshtally</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">meshtally</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_name_error</span><span class="p">)</span>
+    
+    <span class="c1"># Create weight window tags</span>
+    <span class="n">tag_size</span> <span class="o">=</span> <span class="n">meshtally</span><span class="o">.</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">meshtally</span><span class="o">.</span><span class="n">ww_x</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">tag_size</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> 
+                              <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ww_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
+    <span class="n">root_tag</span> <span class="o">=</span> <span class="n">meshtally</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_e_upper_bounds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span> 
+                        <span class="n">tag_size</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+                        
+    <span class="c1"># Determine if total energy or single energy bin or multiple energy bins</span>
+    <span class="k">if</span> <span class="n">tag_size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">tag_size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">tag_size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="c1"># Reassign arrays for total and not total case</span>
+    <span class="k">if</span> <span class="n">total</span><span class="p">:</span>
+        <span class="n">root_tag</span><span class="p">[</span><span class="n">meshtally</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">rootSet</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">[:])</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">vals</span><span class="p">[:])</span>
+        
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">flux</span><span class="p">,</span> <span class="n">error</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">vals</span><span class="p">[:],</span> <span class="n">meshtally</span><span class="o">.</span><span class="n">errors</span><span class="p">[:]):</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">flux</span><span class="p">))</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">root_tag</span><span class="p">[</span><span class="n">meshtally</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">rootSet</span><span class="p">]</span> <span class="o">=</span> <span class="n">meshtally</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">meshtally</span><span class="o">.</span><span class="n">vals</span><span class="p">[:]</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">meshtally</span><span class="o">.</span><span class="n">errors</span><span class="p">[:]</span>
+    
+    <span class="c1"># Determine the max values for each energy bin</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tag_size</span><span class="p">):</span>
+        <span class="n">vals_in_e</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ve</span><span class="p">,</span> <span class="n">flux</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vals</span><span class="p">[:]):</span>
+            <span class="n">vals_in_e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">ve</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">max_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">vals_in_e</span><span class="p">))</span>
+    
+    <span class="c1"># Apply normalization to create weight windows</span>
+    <span class="n">ww</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ve</span><span class="p">,</span> <span class="n">flux_list</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vals</span><span class="p">[:]):</span>
+        <span class="n">tally_list</span> <span class="o">=</span> <span class="n">errors</span><span class="p">[</span><span class="n">ve</span><span class="p">]</span>
+        <span class="n">flux</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flux_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tally_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">:</span>
+                <span class="n">flux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">null_value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>    
+                <span class="n">flux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">max_val</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">ww</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+    
+    <span class="c1"># Resassign weight windows to meshtally</span>
+    <span class="k">if</span> <span class="n">total</span><span class="p">:</span>
+        <span class="n">meshtally</span><span class="o">.</span><span class="n">ww_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ww</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ww</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">meshtally</span><span class="o">.</span><span class="n">ww_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">ww</span>
+    
+    <span class="c1"># Create wwinp mesh</span>
+    <span class="n">wwinp</span> <span class="o">=</span> <span class="n">Wwinp</span><span class="p">()</span>
+    <span class="n">wwinp</span><span class="o">.</span><span class="n">read_mesh</span><span class="p">(</span><span class="n">meshtally</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

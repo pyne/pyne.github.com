@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Cross Section Models – pyne.xs.models &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cross-section-models-pyne-xs-models">
+<span id="pyne-xs-models"></span><h1>Cross Section Models &#8211; <a class="reference internal" href="#module-pyne.xs.models" title="pyne.xs.models"><code class="xref py py-mod docutils literal"><span class="pre">pyne.xs.models</span></code></a><a class="headerlink" href="#cross-section-models-pyne-xs-models" title="Permalink to this headline">¶</a></h1>
+<p>This module provides functions to compute cross sections, and related quantities, from
+fundamental physical models.  From an empirical perspective, physical models are not as
+valuable as experimental data.  However, these functions exist to be called upon when
+experimental data is not available.</p>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">models</span></code> module:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne.xs</span> <span class="k">import</span> <span class="n">models</span>
+</pre></div>
+</div>
+<p>Many of these functions may be called with either scalar or vector arguments.</p>
+<p>The following terminology applies for this module:</p>
+<ul class="simple">
+<li><strong>G</strong>: The number of low-resolution energy groups, indexed by <strong>g</strong>.</li>
+<li><strong>N</strong>: The number of high-resolution energy groups, indexed by <strong>n</strong>.</li>
+<li><strong>E_g</strong>: The low-resolution group structure [MeV].  Must be monotonic.</li>
+<li><strong>E_n</strong>: The high-resolution group structure [MeV].  Must be monotonic
+in the same direction as <strong>E_g</strong>.</li>
+<li><strong>phi</strong>: Neutron flux [n/cm^2/s].</li>
+<li><strong>E</strong>: The incident neutron energy [MeV].</li>
+<li><strong>E&#8217;</strong>: The exiting neutron energy [MeV].</li>
+<li><strong>theta</strong>: The scattering angle [radians].</li>
+<li><strong>M_A</strong>: The atomic mass [amu] of the target material.</li>
+<li><strong>T</strong>: The temperature [kelvin] of the target material.</li>
+</ul>
+<div class="section" id="module-pyne.xs.models">
+<span id="models-api"></span><h2>Models API<a class="headerlink" href="#module-pyne.xs.models" title="Permalink to this headline">¶</a></h2>
+<p>This module provides physical cross-section models and helper functions.</p>
+<dl class="function">
+<dt id="pyne.xs.models.E_prime_min">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">E_prime_min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.E_prime_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum possible exiting enegy of a neuron after a scattering collision. 
+This is based on the incident energy and the mass of the target.
+For a proof, use the conservation of energy and momentum.</p>
+<div class="math">
+<p><img src="../../_images/math/5376e481e344117aa7f943a605c72e41abef1bbd.png" alt="\mbox{min}(E^\prime) = \left(\frac{M_A - m_n}{M_A + m_n}\right)^2 E"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : float (or array)</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>M_A</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Atomic mass of the target nucleus [amu].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>min_E_prime</strong> : float (or array)</p>
+<blockquote class="last">
+<div><p>Minimum exiting energy.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.alpha">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">alpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scattering kernel alpha value.</p>
+<div class="math">
+<p><img src="../../_images/math/aa647584edaea11b6f4f9e85e051f242f31ba74c.png" alt="\alpha = \frac{E^\prime + E - 2\sqrt{E^\prime E}\cos\theta}{\frac{M_A}{m_n}kT}"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
+<blockquote>
+<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>E</strong> : float (or array)</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>theta</strong> : float (or array)</p>
+<blockquote>
+<div><p>Scattering angle in [radians].</p>
+</div></blockquote>
+<p><strong>M_A</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Atomic mass of the target nucleus [amu].</p>
+</div></blockquote>
+<p><strong>T</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : float (or array)</p>
+<blockquote class="last">
+<div><p>alpha value</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.alpha_at_theta_0">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">alpha_at_theta_0</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.alpha_at_theta_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scattering kernel alpha value at the lower bound of the scattering angle.</p>
+<div class="math">
+<p><img src="../../_images/math/541d0e2e3e15f23aa720e7df10bff2f56b31b25f.png" alt="\alpha_{\theta=0} = \frac{E^\prime + E - 2\sqrt{E^\prime E}}{\frac{M_A}{m_n}kT}"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
+<blockquote>
+<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>E</strong> : float (or array)</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>M_A</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Atomic mass of the target nucleus [amu].</p>
+</div></blockquote>
+<p><strong>T</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : float (or array)</p>
+<blockquote class="last">
+<div><p>alpha value with theta = 0.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.alpha_at_theta_pi">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">alpha_at_theta_pi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.alpha_at_theta_pi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scattering kernel alpha value at the upper bound of the scattering angle.</p>
+<div class="math">
+<p><img src="../../_images/math/8394c33dc0e6ec209ca351ddf28373fd33d39976.png" alt="\alpha_{\theta=\pi} = \frac{E^\prime + E + 2\sqrt{E^\prime E}}{\frac{M_A}{m_n}kT}"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
+<blockquote>
+<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>E</strong> : float (or array)</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>M_A</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Atomic mass of the target nucleus [amu].</p>
+</div></blockquote>
+<p><strong>T</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : float (or array)</p>
+<blockquote class="last">
+<div><p>alpha value with theta = pi.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.beta">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">beta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scattering kernel beta value.</p>
+<div class="math">
+<p><img src="../../_images/math/f8450baaaa8e6337d276dcb60d0f44b4cb2c164f.png" alt="\beta = \frac{E^\prime - E}{kT}"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
+<blockquote>
+<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>E</strong> : float (or array)</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>T</strong> : float (or array), optional</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>b</strong> : float</p>
+<blockquote class="last">
+<div><p>beta value.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.chi">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">chi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.chi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the fission neutron spectrum (frequency) at energy E.
+E may be either a float or an array of floats. This is based off of 
+the values for U-235, which are representative for other isotopes.  
+See Lamarsh or &#8216;Comparison of prompt-fission neutron multiplicities 
+and energy spectra for intermediate energy proton-and neutron-induced 
+fission&#8217; &#8211;Oleg Batenkov, Georgy Boikov, Vilen Eismont, Mikhail Majorov, 
+Sergey Soloviev, Jan Blomgren, and Walter Loveland.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.group_collapse">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">group_collapse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.group_collapse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the group cross-sections for a nuclide for a new, lower resolution
+group structure using a higher fidelity flux.  Note that g indexes G, n indexes N, 
+and G &lt; N.</p>
+<p>This function has two optional ways of being called.  If the group boundaries
+E_g and E_n are provided, this will collapse the flux automatically.  However, 
+if a partial energy matrix and flux collapse has already been performed you can
+shortcut their recalculation by calling this function with the phi_g and 
+partial_energies keyword arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sigma_n</strong> : array-like of floats)</p>
+<blockquote>
+<div><p>A high-fidelity cross-section.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : array-like of floats</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section 
+over (length N).</p>
+</div></blockquote>
+<p><strong>phi_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>The low-fidelity flux [n/cm^2/s] to collapse the fission cross-section 
+down to (length G).  If present, partial_energies is needed as well.</p>
+</div></blockquote>
+<p><strong>partial_energies</strong> : 2D array-like of floats, optional</p>
+<blockquote>
+<div><p>A partial energy matrix as provided by a previous call to the function
+partial_energy_matrix().  If present, phi_g is needed as well.</p>
+</div></blockquote>
+<p><strong>E_g</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Lower resolution energy group structure [MeV] that is of length G+1.
+If present, E_n is needed as well.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1. 
+If present, E_g is needed as well.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sigma_g</strong> : ndarray</p>
+<blockquote class="last">
+<div><p>An array of the collapsed fission cross-section.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.one_over_gamma_squared">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">one_over_gamma_squared</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.one_over_gamma_squared" title="Permalink to this definition">¶</a></dt>
+<dd><p>The inverse of the Lorentz factor sqared. Sometimes used as 
+a realitivistic correction factor for the bound scattering length.</p>
+<div class="math">
+<p><img src="../../_images/math/23bb10fd314dc15cedfe75a27cd400d97456d382.png" alt="\frac{1}{\gamma^2} = \left( 1 - \frac{2E}{931.46 \cdot m_n} \right)"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : float (or array)</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>inv_g2</strong> : float (or array)</p>
+<blockquote class="last">
+<div><p>Inverse of gamma squared.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.partial_energy_matrix">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">partial_energy_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.partial_energy_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gerenates a matrix of fractional values that may be used to converts a high-resolution 
+flux array with group structure E_n to a low-resolution flux array with group-structure E_g.
+The group structures must have the same monotonicity. This is useful for performing group collapses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_g</strong> : sequence of floats</p>
+<blockquote>
+<div><p>Lower resolution energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : sequence of floats</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pem</strong> : 2d numpy float array of fractions</p>
+<blockquote class="last">
+<div><p>This is a GxN sized matrix that when dotted with a high-resolution 
+flux (or cross section) produces a low-resolution flux (or cross section).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.partial_energy_matrix_mono">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">partial_energy_matrix_mono</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.partial_energy_matrix_mono" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a matrix of fractional values that may be used to converts a high-resolution 
+flux array with group structure E_n to a low-resolution flux array with group-structure E_g.
+Here, both of the energy arrays must be monotonic. This is useful for performing group collapses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_g</strong> : 1d numpy float array</p>
+<blockquote>
+<div><p>Lower resolution energy group structure [MeV] that is of length G+1. 
+Ordered based on slope.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : 1d numpy float array</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1. 
+Ordered based on slope.</p>
+</div></blockquote>
+<p><strong>slope</strong> : int, optional</p>
+<blockquote>
+<div><p>Gives the monotonicity of E_g and E_n.  If positive, then they are 
+monotonicly increasing (lowest-to-highest).  If negative, they are
+monotonicly decreasing (highest-to-lowest).</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pem</strong> : 2d numpy float array of fractions</p>
+<blockquote class="last">
+<div><p>This is a GxN sized matrix that when dotted with a high-resolution 
+flux (or cross section) produces a low-resolution flux (or cross section).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.phi_g">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">phi_g</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.phi_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a lower resolution flux, phi_g, from a lower resolution group stucture E_g, 
+a higher resolution groups E_n, and a higher resolution flux phi_n.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_g</strong> : sequence of floats</p>
+<blockquote>
+<div><p>Lower resolution energy group structure [MeV] that is of length G+1.</p>
+</div></blockquote>
+<p><strong>E_n</strong> : sequence of floats</p>
+<blockquote>
+<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</div></blockquote>
+<p><strong>phi_n</strong> : sequence of floats</p>
+<blockquote>
+<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over (length N).</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>phi_g</strong> : numpy array of floats</p>
+<blockquote class="last">
+<div><p>The flux collapsed to G energy groups.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.sigma_s">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">sigma_s</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.sigma_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the scattering cross section from an analytic model.  The model
+accounts for both one-over-v dependence and relativistic effects and the 
+bound scattering length provided.  This model does not include resonances.
+This function works on both float and array values for the energy.</p>
+<div class="math">
+<p><img src="../../_images/math/1f9ae7e35eec8578c5030e32437a1e94807c1b5a.png" alt="\sigma_s(E) = 4 \pi b^2 \cdot \left( 1 - \frac{2E}{931.46 \cdot m_n} \right) \cdot
+              \left( 1 + \frac{m_n}{M_A} \frac{kT}{E} \cdot e^{-\frac{M_A}{m_n}\frac{E}{kT}} \right) 
+              \cdot \left( 1 - \mbox{Exp}\left[-\sqrt{\frac{0.1}{E}}\right] \right)"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : float or array-like</p>
+<blockquote>
+<div><p>The incident energy of the neutron prior to the scattering event [MeV].</p>
+</div></blockquote>
+<p><strong>b</strong> : float, optional</p>
+<blockquote>
+<div><p>The bound scattering length of the target nucleus [cm].</p>
+</div></blockquote>
+<p><strong>M_A</strong> : float, optional</p>
+<blockquote>
+<div><p>Atomic mass of the target nucleus [amu].</p>
+</div></blockquote>
+<p><strong>T</strong> : float, optional</p>
+<blockquote>
+<div><p>Tempurature of the target material [kelvin].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sig_s</strong> : float or ndarray</p>
+<blockquote class="last">
+<div><p>The scattering cross section evaluated at the given energy.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../data.html#pyne.data.b" title="pyne.data.b"><code class="xref py py-obj docutils literal"><span class="pre">pyne.data.b</span></code></a></dt>
+<dd>scattering length data.</dd>
+<dt><a class="reference internal" href="../data.html#pyne.data.atomic_mass" title="pyne.data.atomic_mass"><code class="xref py py-obj docutils literal"><span class="pre">pyne.data.atomic_mass</span></code></a></dt>
+<dd>Atomic mass data.</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.xs.models.sigma_s_const">
+<code class="descclassname">pyne.xs.models.</code><code class="descname">sigma_s_const</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.sigma_s_const" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the constant scattering cross-section based on the 
+scattering length.</p>
+<div class="math">
+<p><img src="../../_images/math/2e228c74dfa8a29768a2957c51cffd974d0b7b1e.png" alt="\sigma_s = 4 \pi b^2"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>b</strong> : float (or array)</p>
+<blockquote>
+<div><p>The bound scattering length [cm] of the target nucleus.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sig_s</strong> : float (or array)</p>
+<blockquote class="last">
+<div><p>The micorscopic scattering cross-section [barns].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="../data.html#pyne.data.b" title="pyne.data.b"><code class="xref py py-obj docutils literal"><span class="pre">pyne.data.b</span></code></a></dt>
+<dd>scattering length data.</dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Cross Section Models &#8211; <code class="docutils literal"><span class="pre">pyne.xs.models</span></code></a><ul>
+<li><a class="reference internal" href="#module-pyne.xs.models">Models API</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../../install/index.html">Install</a></li>
+    <li><a href="../../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../../usersguide/index.html">User's Guide</a></li>
+    <li><a href="../index.html">Python API Documentation</a></li>
+    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../../pubs.html">Publications</a></li>
+    <li><a href="../../previous/index.html">Release Notes</a></li>
+    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

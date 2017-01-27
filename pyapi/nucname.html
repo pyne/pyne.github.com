@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nuclide Naming Module – pyne.nucname &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nuclide-naming-module-pyne-nucname">
+<span id="pyne-nucname"></span><h1>Nuclide Naming Module &#8211; <code class="xref py py-mod docutils literal"><span class="pre">pyne.nucname</span></code><a class="headerlink" href="#nuclide-naming-module-pyne-nucname" title="Permalink to this headline">¶</a></h1>
+<p>This package is used to convert between various nuclide naming schemes.
+Currently the following naming conventions are supported:</p>
+<ol class="arabic simple" id="name-forms">
+<li><strong>id (zas)</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass number, and ends with four state digits (0 = ground,
+1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
+be expressed as &#8216;922350000&#8217;.  This is th canonical form for nuclides.</li>
+<li><strong>name</strong>: This is the more common, human readable notation.  The chemical symbol
+(one or two characters long) is first, followed by the atomic weight.  Lastly if
+the nuclide is metastable, the letter <em>M</em> is concatenated to the end.  For
+example, &#8216;H-1&#8217; and &#8216;Am242M&#8217; are both valid.  Note that nucname will always
+return name form with the dash removed and all letters uppercase.</li>
+<li><strong>zzaaam</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass number, and ends with a metastable flag (0 = ground,
+1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
+be expressed as &#8216;922350&#8217;.</li>
+<li><strong>zzzaaa</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass.  It contains no information about the excited state.</li>
+<li><strong>zzllaaam</strong>: The ZZLLAAAM naming convention is similar to name form.  However, it
+is preceded by the nuclides two AA numbers, followed by the two LL characters.
+Of the two LL characters, only the first letter in the chemical symbol is uppercase,
+the dash is always present, and the the meta-stable flag is lowercase.  For
+instance, &#8216;95-Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+<li><strong>SZA</strong>: This type places three state digits out front, the charge of the nucleus in
+the middle, and then has three digits for the atomic mass number. Uranium-235M here
+would be expressed as &#8216;1092235&#8217;.</li>
+<li><strong>MCNP</strong>: The MCNP format for entering nuclides is unfortunately
+non-standard.  In most ways it is similar to zzaaam form, except that it
+lacks the metastable flag.  For information on how metastable isotopes are
+named, please consult the MCNPX documentation for more information.</li>
+<li><strong>Serpent</strong>: The serpent naming convention is similar to name form.
+However, only the first letter in the chemical symbol is uppercase, the
+dash is always present, and the the meta-stable flag is lowercase.  For
+instance, &#8216;Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+<li><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.
+However, this convention contains no metastable information.  Moreover, the
+A-number comes before the element symbol.  For example, &#8216;242Am&#8217; is the
+valid NIST notation.</li>
+<li><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the
+placement of the Z- and A-numbers are swapped. Therefore, this format is
+effectively aaazzzm.  For example, &#8216;2420951&#8217; is the valid cinder notation
+for &#8216;AM242M&#8217;.</li>
+<li><strong>ALARA</strong>: In ALARA format, elements are denoted by the lower case atomic symbol.
+Nuclides are specified by appending a semicolon and A-number. For example, &#8220;fe&#8221;
+and &#8220;fe:56&#8221; represent elemental iron and iron-56 respectively. No metastable
+flag exists.</li>
+<li><strong>Groundstate</strong>:  In Groundstate format, the nuclide is stored in a form similar
+to the standard id form, but the last four digits are zero to eliminate the
+information about the nuclide&#8217;s state.</li>
+<li><strong>state_id</strong>: The state id naming convention uses the form zzzaaassss. It is
+different from the canonical zzzaaassss form in that ssss refers to a list
+of states by ordered by energy. This is derived from the levels listed in the
+ENSDF files for a given nuclide. Using this form is dangerous as it may change
+with new releases of ENSDF data.</li>
+</ol>
+<p>All functionality may be found in the <code class="docutils literal"><span class="pre">nucname</span></code> package:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+</pre></div>
+</div>
+<p>This contains several zzaaam, zzzaaa, zzllaaam, name, MCNP, Groundstate and Serpent
+converter function as well as other helpful module attributes.</p>
+<div class="section" id="naming-convention-casting-functions">
+<span id="name-cast"></span><h2>Naming Convention Casting Functions<a class="headerlink" href="#naming-convention-casting-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.nucname.id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its identifier form (952420000).</p>
+<p>If the input nuclide is in id form already, then this is function does no
+work. For all other formats, the id() function provides a best-guess based
+on a heirarchy of other formats that is used to resolve ambiguities between
+naming conventions. For integer input the form resolution order is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>id</li>
+<li>zz (elemental z-num only given)</li>
+<li>zzaaam</li>
+<li>cinder (aaazzzm)</li>
+<li>mcnp</li>
+<li>zzaaa</li>
+</ul>
+</div></blockquote>
+<p>For string (or char <a href="#id1"><span class="problematic" id="id2">*</span></a>) input the form resolution order is as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li>ZZ-LL-AAAM</li>
+<li>Integer form in a string representation, uses interger resolution</li>
+<li>NIST</li>
+<li>name form</li>
+<li>Serpent</li>
+<li>LL (element symbol)</li>
+</ul>
+</div></blockquote>
+<p>For well-defined situations where you know ahead of time what format the
+nuclide is in, you should use the various form_to_id() functions, rather 
+than the id() function which is meant to resolve possibly ambiquous cases.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide id.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.name">
+<code class="descclassname">pyne.nucname.</code><code class="descname">name</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its name form (&#8216;Am242M&#8217;). The name() function 
+first converts functions to id form using the id() function. Thus the 
+form order resolution for id() also applies to here.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : str</p>
+<blockquote class="last">
+<div><p>Output nuclide in name form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.zzaaam">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zzaaam</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.zzaaam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its zzaaam form (952420).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in zzaaam form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.zzzaaa">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zzzaaa</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.zzzaaa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its zzzaaa form (95242).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in zzzaaa form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.zzllaaam">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zzllaaam</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.zzllaaam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its zzllaaam form (95-Am-241m).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : str</p>
+<blockquote class="last">
+<div><p>Output nuclide in zzllaaam form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.mcnp">
+<code class="descclassname">pyne.nucname.</code><code class="descname">mcnp</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.mcnp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its MCNP form (92636).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in MCNP form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Most metastables in this form add 300 + 100*m where 
+m is the isomeric state (U-236m = 92636).  However,
+MCNP special cases Am-242 and Am-242m by switching 
+the meaning. Thus Am-242m = 95242 and Am-242 = 95642.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.serpent">
+<code class="descclassname">pyne.nucname.</code><code class="descname">serpent</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.serpent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its Serepnt form (&#8216;Am-242m&#8217;).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : str</p>
+<blockquote class="last">
+<div><p>Output nuclide in serpent form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.nist">
+<code class="descclassname">pyne.nucname.</code><code class="descname">nist</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.nist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to NIST form (&#8216;242Am&#8217;).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : str</p>
+<blockquote class="last">
+<div><p>Output nuclide in nist form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.cinder">
+<code class="descclassname">pyne.nucname.</code><code class="descname">cinder</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.cinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its CINDER (aaazzzm) form (2420951).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in CINDER (aaazzzm) form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.alara">
+<code class="descclassname">pyne.nucname.</code><code class="descname">alara</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.alara" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its ALARA form (&#8216;am:242&#8217;).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : str</p>
+<blockquote class="last">
+<div><p>Output nuclide in name form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.groundstate">
+<code class="descclassname">pyne.nucname.</code><code class="descname">groundstate</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.groundstate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide to its Groundstate form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in Groundstate form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="id-conversion-functions">
+<h2>Id Conversion Functions<a class="headerlink" href="#id-conversion-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.nucname.zzaaam_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zzaaam_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.zzaaam_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from ZZAAAM form (952420) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in ZZAAAM form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.zzzaaa_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zzzaaa_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.zzzaaa_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from ZZZAAA form (95242) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in ZZZAAA form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>&#8212;</p>
+<dl class="function">
+<dt id="pyne.nucname.zzllaaam_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zzllaaam_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.zzllaaam_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from ZZLLAAAM form (95-Am-241m) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in ZZLLAAAM form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>&#8212;</p>
+<dl class="function">
+<dt id="pyne.nucname.mcnp_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">mcnp_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.mcnp_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from MCNP form (92636) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in MCNP form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.serpent_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">serpent_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.serpent_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from Serpent form (&#8216;Am-242m&#8217;) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in Serpent form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.nist_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">nist_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.nist_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from NIST form (&#8216;242Am&#8217;) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in NIST form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.cinder_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">cinder_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.cinder_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from Cinder form (2420951) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in Cinder form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.alara_to_id">
+<code class="descclassname">pyne.nucname.</code><code class="descname">alara_to_id</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.alara_to_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a nuclide directly from ALARA form (&#8216;am:242&#8217;) to
+the canonical identifier form.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide in ALARA form.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newnuc</strong> : int</p>
+<blockquote class="last">
+<div><p>Output nuclide in identifier form.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="number-functions">
+<h2>Number Functions<a class="headerlink" href="#number-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyne.nucname.znum">
+<code class="descclassname">pyne.nucname.</code><code class="descname">znum</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.znum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a nuclide&#8217;s charge number (95).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>z</strong> : int</p>
+<blockquote class="last">
+<div><p>The number of protons in the nucleus.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.anum">
+<code class="descclassname">pyne.nucname.</code><code class="descname">anum</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.anum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a nuclide&#8217;s nucleon number (95).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : int</p>
+<blockquote class="last">
+<div><p>The number of protons and neutrons in the nucleus.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="function">
+<dt id="pyne.nucname.snum">
+<code class="descclassname">pyne.nucname.</code><code class="descname">snum</code><span class="sig-paren">(</span><em>nuc</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.nucname.snum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a nuclide&#8217;s excitation number (95).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int or str</p>
+<blockquote>
+<div><p>Input nuclide.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>s</strong> : int</p>
+<blockquote class="last">
+<div><p>The excitation level the nucleus.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="conversion-dictionaries">
+<h2>Conversion Dictionaries<a class="headerlink" href="#conversion-dictionaries" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="pyne.nucname.name_zz">
+<code class="descclassname">pyne.nucname.</code><code class="descname">name_zz</code><a class="headerlink" href="#pyne.nucname.name_zz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary that is used to convert an elemental symbol (str) to its charge Z-number (int).
+For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="p">[</span><span class="s2">&quot;HE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="p">[</span><span class="s2">&quot;U&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">92</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.zz_name">
+<code class="descclassname">pyne.nucname.</code><code class="descname">zz_name</code><a class="headerlink" href="#pyne.nucname.zz_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary that is used to convert a charge Z-number (int) to its elemental symbol (str).
+For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+<span class="n">nucname</span><span class="o">.</span><span class="n">name_zz</span><span class="p">[</span><span class="mi">94</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PU&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="element-groups-name">
+<h2>Element Groups (name)<a class="headerlink" href="#element-groups-name" title="Permalink to this headline">¶</a></h2>
+<p>Element groups for the Lanthanides, Actinides, Transuranics, Minor Actinides,
+and Fission Products.</p>
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.LAN">
+<code class="descclassname">nucname.</code><code class="descname">LAN</code><a class="headerlink" href="#pyne.nucname.nucname.LAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.ACT">
+<code class="descclassname">nucname.</code><code class="descname">ACT</code><a class="headerlink" href="#pyne.nucname.nucname.ACT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.TRU">
+<code class="descclassname">nucname.</code><code class="descname">TRU</code><a class="headerlink" href="#pyne.nucname.nucname.TRU" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.MA">
+<code class="descclassname">nucname.</code><code class="descname">MA</code><a class="headerlink" href="#pyne.nucname.nucname.MA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.FP">
+<code class="descclassname">nucname.</code><code class="descname">FP</code><a class="headerlink" href="#pyne.nucname.nucname.FP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The groups are defined as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nucname</span><span class="o">.</span><span class="n">LAN</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;CE&#39;</span><span class="p">,</span> <span class="s1">&#39;DY&#39;</span><span class="p">,</span> <span class="s1">&#39;ER&#39;</span><span class="p">,</span> <span class="s1">&#39;EU&#39;</span><span class="p">,</span> <span class="s1">&#39;GD&#39;</span><span class="p">,</span> <span class="s1">&#39;HO&#39;</span><span class="p">,</span> <span class="s1">&#39;LA&#39;</span><span class="p">,</span> <span class="s1">&#39;LU&#39;</span><span class="p">,</span> <span class="s1">&#39;ND&#39;</span><span class="p">,</span> <span class="s1">&#39;PM&#39;</span><span class="p">,</span> <span class="s1">&#39;PR&#39;</span><span class="p">,</span> <span class="s1">&#39;SM&#39;</span><span class="p">,</span> <span class="s1">&#39;TB&#39;</span><span class="p">,</span> <span class="s1">&#39;TM&#39;</span><span class="p">,</span> <span class="s1">&#39;YB&#39;</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">ACT</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;AC&#39;</span><span class="p">,</span> <span class="s1">&#39;AM&#39;</span><span class="p">,</span> <span class="s1">&#39;BK&#39;</span><span class="p">,</span> <span class="s1">&#39;CF&#39;</span><span class="p">,</span> <span class="s1">&#39;CM&#39;</span><span class="p">,</span> <span class="s1">&#39;ES&#39;</span><span class="p">,</span> <span class="s1">&#39;FM&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;MD&#39;</span><span class="p">,</span> <span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;NP&#39;</span><span class="p">,</span> <span class="s1">&#39;PA&#39;</span><span class="p">,</span> <span class="s1">&#39;PU&#39;</span><span class="p">,</span> <span class="s1">&#39;TH&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">TRU</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;AM&#39;</span><span class="p">,</span> <span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;BK&#39;</span><span class="p">,</span> <span class="s1">&#39;CF&#39;</span><span class="p">,</span> <span class="s1">&#39;CM&#39;</span><span class="p">,</span> <span class="s1">&#39;CN&#39;</span><span class="p">,</span> <span class="s1">&#39;DB&#39;</span><span class="p">,</span> <span class="s1">&#39;DS&#39;</span><span class="p">,</span> <span class="s1">&#39;ES&#39;</span><span class="p">,</span> <span class="s1">&#39;FL&#39;</span><span class="p">,</span> <span class="s1">&#39;FM&#39;</span><span class="p">,</span> <span class="s1">&#39;HS&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;LV&#39;</span><span class="p">,</span> <span class="s1">&#39;MD&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;MT&#39;</span><span class="p">,</span> <span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;NP&#39;</span><span class="p">,</span> <span class="s1">&#39;PU&#39;</span><span class="p">,</span> <span class="s1">&#39;RF&#39;</span><span class="p">,</span> <span class="s1">&#39;RG&#39;</span><span class="p">,</span> <span class="s1">&#39;SG&#39;</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">MA</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;AM&#39;</span><span class="p">,</span> <span class="s1">&#39;BK&#39;</span><span class="p">,</span> <span class="s1">&#39;CF&#39;</span><span class="p">,</span> <span class="s1">&#39;CM&#39;</span><span class="p">,</span> <span class="s1">&#39;ES&#39;</span><span class="p">,</span> <span class="s1">&#39;FM&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;MD&#39;</span><span class="p">,</span> <span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;NP&#39;</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">FP</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;AG&#39;</span><span class="p">,</span> <span class="s1">&#39;AL&#39;</span><span class="p">,</span> <span class="s1">&#39;AR&#39;</span><span class="p">,</span> <span class="s1">&#39;AS&#39;</span><span class="p">,</span> <span class="s1">&#39;AT&#39;</span><span class="p">,</span> <span class="s1">&#39;AU&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>  <span class="s1">&#39;BA&#39;</span><span class="p">,</span> <span class="s1">&#39;BE&#39;</span><span class="p">,</span> <span class="s1">&#39;BI&#39;</span><span class="p">,</span> <span class="s1">&#39;BR&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>  <span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="s1">&#39;CD&#39;</span><span class="p">,</span> <span class="s1">&#39;CE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;CL&#39;</span><span class="p">,</span> <span class="s1">&#39;CO&#39;</span><span class="p">,</span> <span class="s1">&#39;CR&#39;</span><span class="p">,</span> <span class="s1">&#39;CS&#39;</span><span class="p">,</span> <span class="s1">&#39;CU&#39;</span><span class="p">,</span> <span class="s1">&#39;DY&#39;</span><span class="p">,</span> <span class="s1">&#39;ER&#39;</span><span class="p">,</span> <span class="s1">&#39;EU&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span>  <span class="s1">&#39;FE&#39;</span><span class="p">,</span> <span class="s1">&#39;FR&#39;</span><span class="p">,</span> <span class="s1">&#39;GA&#39;</span><span class="p">,</span> <span class="s1">&#39;GD&#39;</span><span class="p">,</span> <span class="s1">&#39;GE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;H&#39;</span><span class="p">,</span>  <span class="s1">&#39;HE&#39;</span><span class="p">,</span> <span class="s1">&#39;HF&#39;</span><span class="p">,</span> <span class="s1">&#39;HG&#39;</span><span class="p">,</span> <span class="s1">&#39;HO&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span>  <span class="s1">&#39;IN&#39;</span><span class="p">,</span> <span class="s1">&#39;IR&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span>  <span class="s1">&#39;KR&#39;</span><span class="p">,</span> <span class="s1">&#39;LA&#39;</span><span class="p">,</span> <span class="s1">&#39;LI&#39;</span><span class="p">,</span> <span class="s1">&#39;LU&#39;</span><span class="p">,</span> <span class="s1">&#39;MG&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;MN&#39;</span><span class="p">,</span> <span class="s1">&#39;MO&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span>  <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="s1">&#39;NB&#39;</span><span class="p">,</span> <span class="s1">&#39;ND&#39;</span><span class="p">,</span> <span class="s1">&#39;NE&#39;</span><span class="p">,</span> <span class="s1">&#39;NI&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>  <span class="s1">&#39;OS&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span>  <span class="s1">&#39;PB&#39;</span><span class="p">,</span> <span class="s1">&#39;PD&#39;</span><span class="p">,</span> <span class="s1">&#39;PM&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;PO&#39;</span><span class="p">,</span> <span class="s1">&#39;PR&#39;</span><span class="p">,</span> <span class="s1">&#39;PT&#39;</span><span class="p">,</span> <span class="s1">&#39;RA&#39;</span><span class="p">,</span> <span class="s1">&#39;RB&#39;</span><span class="p">,</span> <span class="s1">&#39;RE&#39;</span><span class="p">,</span> <span class="s1">&#39;RH&#39;</span><span class="p">,</span> <span class="s1">&#39;RN&#39;</span><span class="p">,</span> <span class="s1">&#39;RU&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span>  <span class="s1">&#39;SB&#39;</span><span class="p">,</span> <span class="s1">&#39;SC&#39;</span><span class="p">,</span> <span class="s1">&#39;SE&#39;</span><span class="p">,</span> <span class="s1">&#39;SI&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;SM&#39;</span><span class="p">,</span> <span class="s1">&#39;SN&#39;</span><span class="p">,</span> <span class="s1">&#39;SR&#39;</span><span class="p">,</span> <span class="s1">&#39;TA&#39;</span><span class="p">,</span> <span class="s1">&#39;TB&#39;</span><span class="p">,</span> <span class="s1">&#39;TC&#39;</span><span class="p">,</span> <span class="s1">&#39;TE&#39;</span><span class="p">,</span> <span class="s1">&#39;TI&#39;</span><span class="p">,</span> <span class="s1">&#39;TL&#39;</span><span class="p">,</span> <span class="s1">&#39;TM&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span>  <span class="s1">&#39;W&#39;</span><span class="p">,</span>  <span class="s1">&#39;XE&#39;</span><span class="p">,</span>  <span class="s1">&#39;Y&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;YB&#39;</span><span class="p">,</span> <span class="s1">&#39;ZN&#39;</span><span class="p">,</span> <span class="s1">&#39;ZR&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="element-groups-zz">
+<h2>Element Groups (zz)<a class="headerlink" href="#element-groups-zz" title="Permalink to this headline">¶</a></h2>
+<p>Element groups for the Lanthanides, Actinides, Transuranics, Minor Actinides,
+and Fission Products.</p>
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.lan">
+<code class="descclassname">nucname.</code><code class="descname">lan</code><a class="headerlink" href="#pyne.nucname.nucname.lan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.act">
+<code class="descclassname">nucname.</code><code class="descname">act</code><a class="headerlink" href="#pyne.nucname.nucname.act" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.tru">
+<code class="descclassname">nucname.</code><code class="descname">tru</code><a class="headerlink" href="#pyne.nucname.nucname.tru" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.ma">
+<code class="descclassname">nucname.</code><code class="descname">ma</code><a class="headerlink" href="#pyne.nucname.nucname.ma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyne.nucname.nucname.fp">
+<code class="descclassname">nucname.</code><code class="descname">fp</code><a class="headerlink" href="#pyne.nucname.nucname.fp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The groups are defined as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nucname</span><span class="o">.</span><span class="n">lan</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">57</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">71</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">act</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">89</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">tru</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">93</span><span class="p">,</span>  <span class="mi">94</span><span class="p">,</span>  <span class="mi">95</span><span class="p">,</span>  <span class="mi">96</span><span class="p">,</span>  <span class="mi">97</span><span class="p">,</span>  <span class="mi">98</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span>
+                   <span class="mi">106</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">116</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">ma</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">93</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">])</span>
+
+<span class="n">nucname</span><span class="o">.</span><span class="n">fp</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span>
+                  <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span>
+                  <span class="mi">54</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">71</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span>
+                  <span class="mi">79</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">81</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">86</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">88</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Nuclide Naming Module &#8211; <code class="docutils literal"><span class="pre">pyne.nucname</span></code></a><ul>
+<li><a class="reference internal" href="#naming-convention-casting-functions">Naming Convention Casting Functions</a></li>
+<li><a class="reference internal" href="#id-conversion-functions">Id Conversion Functions</a></li>
+<li><a class="reference internal" href="#number-functions">Number Functions</a></li>
+<li><a class="reference internal" href="#conversion-dictionaries">Conversion Dictionaries</a></li>
+<li><a class="reference internal" href="#element-groups-name">Element Groups (name)</a></li>
+<li><a class="reference internal" href="#element-groups-zz">Element Groups (zz)</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

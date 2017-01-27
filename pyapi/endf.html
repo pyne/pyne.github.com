@@ -1,0 +1,1538 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ENDF File Support – pyne.endf &#8212; PyNE 0.5.0-rc1</title>
+    
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0-rc1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body role="document">
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="endf-file-support-pyne-endf">
+<span id="pyne-endf"></span><h1>ENDF File Support &#8211; <a class="reference internal" href="#module-pyne.endf" title="pyne.endf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.endf</span></code></a><a class="headerlink" href="#endf-file-support-pyne-endf" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-pyne.endf"></span><p>Module for parsing and manipulating data from ENDF evaluations. Currently, it
+only can read several MTs from File 1, but with time it will be expanded to
+include the entire ENDF format.</p>
+<p>All the classes and functions in this module are based on document
+ENDF-102 titled &#8220;Data Formats and Procedures for the Evaluated Nuclear
+Data File ENDF-6&#8221;. The latest version from June 2009 can be found at
+<a class="reference external" href="http://www-nds.iaea.org/ndspub/documents/endf/endf102/endf102.pdf">http://www-nds.iaea.org/ndspub/documents/endf/endf102/endf102.pdf</a></p>
+<p>For more information on the Evaluation class, contact Paul Romano
+&lt;<a class="reference external" href="mailto:paul&#46;k&#46;romano&#37;&#52;&#48;gmail&#46;com">paul<span>&#46;</span>k<span>&#46;</span>romano<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;. For more information on the Library class, contact
+John Xia &lt;<a class="reference external" href="mailto:john&#46;danger&#46;xia&#37;&#52;&#48;gmail&#46;com">john<span>&#46;</span>danger<span>&#46;</span>xia<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;.</p>
+<dl class="class">
+<dt id="pyne.endf.AdlerAdler">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">AdlerAdler</code><a class="headerlink" href="#pyne.endf.AdlerAdler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adler-Adler resolved resonance formalism data. This is identified by LRF=4 in
+the ENDF-6 format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>spin</td>
+<td>(float) Spin of the target nucleus</td>
+</tr>
+<tr class="row-even"><td>scattering_radius_ind</td>
+<td>(float) Scattering radius in units of 10^-12 cm</td>
+</tr>
+<tr class="row-odd"><td>LI</td>
+<td>(float) Flag indicating the kind of parameters</td>
+</tr>
+<tr class="row-even"><td>AT, BT</td>
+<td>(ndarray) Background constants for the total cross section</td>
+</tr>
+<tr class="row-odd"><td>AC, BC</td>
+<td>(ndarray) Background constants for the radiative cross section</td>
+</tr>
+<tr class="row-even"><td>AF, BF</td>
+<td>(ndarray) Background constants for the fission cross section</td>
+</tr>
+<tr class="row-odd"><td>resonances</td>
+<td>(list of AdlerResonance) List of resonances defined by Adler-Adler parameters</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.endf.AdlerAdler.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.AdlerAdler.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read Adler-Adler resonance data from an ENDF evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
+<blockquote class="last">
+<div><p>ENDF evaluation positioned at the start of a resonance range
+subsection</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.ArbitraryTabulated">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">ArbitraryTabulated</code><a class="headerlink" href="#pyne.endf.ArbitraryTabulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arbitrary tabulated function given in ENDF MF=5, LF=1 represented as</p>
+<div class="math">
+<p><img src="../_images/math/86ea92631f93273c2714a4814df963c44c4426a4.png" alt="f(E \rightarrow E') = g(E \rightarrow E')"/></p>
+</div><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>energy</td>
+<td>(ndarray) Array of incident neutron energies</td>
+</tr>
+<tr class="row-even"><td>pdf</td>
+<td>(list of Tab1) Tabulated outgoing energy distribution probability density functions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.EnergyDistribution">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">EnergyDistribution</code><a class="headerlink" href="#pyne.endf.EnergyDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Energy distribution from ENDF MF=5.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>lf</td>
+<td>(int) Flag specifying energy distribution.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Evaluation">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Evaluation</code><a class="headerlink" href="#pyne.endf.Evaluation" title="Permalink to this definition">¶</a></dt>
+<dd><p>ENDF material evaluation with multiple files/sections</p>
+<p>The Evaluation class provides a means to parse data from an ENDF-6 format
+file and access it as stored internal Python objects. A summary of the
+parsing capabilities is as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="5%" />
+<col width="78%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">MF</th>
+<th class="head">MT</th>
+<th class="head">Description</th>
+<th class="head">Complete</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>451</td>
+<td>Descriptive data and directory</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>452</td>
+<td>Number of neutrons per fission</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>455</td>
+<td>Delayed neutron data</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>456</td>
+<td>Number of prompt neutrons per fission</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>458</td>
+<td>Components of fission energy release</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>460</td>
+<td>Delayed photon data</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>151</td>
+<td>Resonance parameters</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Reaction cross sections</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Angular distributions</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Energy distributions</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>6</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Product energy-angle distributions</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+<td>2</td>
+<td>Thermal elastic scattering</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>4</td>
+<td>Thermal inelastic scattering</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>454</td>
+<td>Independent fission yields</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>8</td>
+<td>457</td>
+<td>Radioactive decay data</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>459</td>
+<td>Cumulative fission yields</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>8</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Radioactive nuclide production</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>9</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Multiplicities of radioactive products</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>10</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Production cross sections for radionuclides</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Photon production yield data</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Photon production cross sections</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Photon angular distributions</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Continuous photon energy spectra</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>23</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Photon and electron cross sections</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>26</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Secondary distributions for electro-atomic data</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>27</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Atomic form factors</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>28</td>
+<td>533</td>
+<td>Atomic relaxation data</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>30</td>
+<td>1</td>
+<td>Directory and correspondance table</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>30</td>
+<td>2</td>
+<td>Covariance matrix</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>30</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Sensitivities</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>31</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Covariances of fission</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>32</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Covariances of resonance parameters</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>33</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Covariances of neutron cross sections</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>34</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Covariances for angular distributions</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>35</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Covariances for energy distributions</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>40</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Covariances for radionuclide production</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>atomic_relaxation</td>
+<td>(dict) Dictionary containing atomic relaxation data from MF=28, MT=533. If the evaluation is not an atomic relaxation sublibrary, the dictionary is empty.</td>
+</tr>
+<tr class="row-even"><td>decay</td>
+<td>(dict) Dictionary containing decay data from MF=8. If the evaluation is not from a decay sublibrary, the dictionary is empty.</td>
+</tr>
+<tr class="row-odd"><td>fission</td>
+<td>(dict) Dictionary containing fission-related data, such as neutrons release from fission (MF=1, MT=452,455,456), components of energy release (MF=1, MT=458), delayed photons from fission (MF=1, MT=460), and cumulative/independent fission yields (MF=8, MT=454,459).</td>
+</tr>
+<tr class="row-even"><td>info</td>
+<td>(dict) Miscallaneous information about the evaluation.</td>
+</tr>
+<tr class="row-odd"><td>target</td>
+<td>(dict) Information about the target material, such as its mass, isomeric state, whether it&#8217;s stable, and whether it&#8217;s fissionable.</td>
+</tr>
+<tr class="row-even"><td>projectile</td>
+<td>(dict) Information about the projectile such as its mass.</td>
+</tr>
+<tr class="row-odd"><td>reaction_list</td>
+<td>(list of 4-tuples) List of sections in the evaluation. The entries of the tuples are the file (MF), section (MT), number of records (NC), and modification indicator (MOD).</td>
+</tr>
+<tr class="row-even"><td>reactions</td>
+<td>(collections.OrderedDict) Dictionary whose keys are MT numbers and values are Reaction instances.</td>
+</tr>
+<tr class="row-odd"><td>resonances</td>
+<td>(dict) Resolved resonance data from MF=2, MT=151.</td>
+</tr>
+<tr class="row-even"><td>thermal_elastic</td>
+<td>(dict) Coherent and/or incoherent thermal elastic data from MF=7, MT=2.</td>
+</tr>
+<tr class="row-odd"><td>thermal_inelastic</td>
+<td>(dict) Incoherent thermal inelastic data from MF=7, MT=4.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.endf.Evaluation.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Evaluation.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads reactions from the ENDF file of the Evaluation object. If no
+arguments are provided, this method will read all the reactions in the
+file. A single reaction can be read if provided.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>reactions</strong> : tuple or list of tuple, optional</p>
+<blockquote>
+<div><p>A single reaction in the following format: (MF, MT)</p>
+</div></blockquote>
+<p><strong>skip_mf</strong> : list of int, optional</p>
+<blockquote>
+<div><p>Files (MF) which should not be read</p>
+</div></blockquote>
+<p><strong>skip_mt</strong> : list of int, optional</p>
+<blockquote class="last">
+<div><p>Reactions (MT) which should not be read</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Evaporation">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Evaporation</code><a class="headerlink" href="#pyne.endf.Evaporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaporation spectrum given in ENDF MF=5, LF=9 represented as</p>
+<div class="math">
+<p><img src="../_images/math/9506c19b33884b64e200a503490dc7905ed1f3c7.png" alt="f(E \rightarrow E') = \frac{E'}{I} e^{-E'/\theta(E)}"/></p>
+</div><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>theta</td>
+<td>(Tab1) Tabulated function of incident neutron energy</td>
+</tr>
+<tr class="row-even"><td>u</td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.GeneralEvaporation">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">GeneralEvaporation</code><a class="headerlink" href="#pyne.endf.GeneralEvaporation" title="Permalink to this definition">¶</a></dt>
+<dd><p>General evaporation spectrum given in ENDF MF=5, LF=5 represented as</p>
+<div class="math">
+<p><img src="../_images/math/a32000a44fab329c7ae4c69e61c9f3aab85beb1a.png" alt="f(E \rightarrow E') = g(E'/\theta(E))"/></p>
+</div><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>theta</td>
+<td>(Tab1) Tabulated function of incident neutron energy <img class="math" src="../_images/math/cfd13a0f26eb7ef0093319a7669da7dd3771dbac.png" alt="E"/></td>
+</tr>
+<tr class="row-even"><td>g</td>
+<td>(Tab1) Tabulated function of <img class="math" src="../_images/math/2f4ebc352523c3a053905bef702e0b2db1413c97.png" alt="x = E'/\theta(E)"/></td>
+</tr>
+<tr class="row-odd"><td>u</td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Library">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Library</code><a class="headerlink" href="#pyne.endf.Library" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for a file which contains multiple ENDF evaluations.</p>
+<dl class="method">
+<dt id="pyne.endf.Library.get_rx">
+<code class="descname">get_rx</code><span class="sig-paren">(</span><em>nuc</em>, <em>mf</em>, <em>mt</em>, <em>lines=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Library.get_rx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the data from one reaction type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int</p>
+<blockquote>
+<div><p>id form of material to read from.</p>
+</div></blockquote>
+<p><strong>mf</strong> : int</p>
+<blockquote>
+<div><p>ENDF file number (MF).</p>
+</div></blockquote>
+<p><strong>mt</strong> : int</p>
+<blockquote>
+<div><p>ENDF reaction number (MT).</p>
+</div></blockquote>
+<p><strong>lines</strong> : int</p>
+<blockquote>
+<div><p>Number of lines to read from this reaction, starting from the top.
+Default value is 0, which reads in the entire reaction.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : NumPy array</p>
+<blockquote class="last">
+<div><p>Contains the reaction data in an Nx6 array.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.endf.Library.get_xs">
+<code class="descname">get_xs</code><span class="sig-paren">(</span><em>nuc</em>, <em>mt</em>, <em>nuc_i=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Library.get_xs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab cross-section data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc: int</strong></p>
+<blockquote>
+<div><p>id of nuclide to read.</p>
+</div></blockquote>
+<p><strong>mt: int</strong></p>
+<blockquote>
+<div><p>ENDF reaction number to read.</p>
+</div></blockquote>
+<p><strong>nuc_i: int</strong></p>
+<blockquote>
+<div><p>id of isotope to read. Defaults to nuc.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">tuple</p>
+<blockquote class="last">
+<div><p>Returns a tuple with xs data in tuple[0] and flags in tuple[1].</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.endf.Library.integrate_tab_range">
+<code class="descname">integrate_tab_range</code><span class="sig-paren">(</span><em>intscheme</em>, <em>e_int</em>, <em>xs</em>, <em>low=None</em>, <em>high=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Library.integrate_tab_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrates across one tabulation range.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>intscheme</strong> : int or float</p>
+<blockquote>
+<div><p>The interpolation scheme used in this range.</p>
+</div></blockquote>
+<p><strong>e_int</strong> : array</p>
+<blockquote>
+<div><p>The energies at which we have xs data.</p>
+</div></blockquote>
+<p><strong>xs</strong> : array</p>
+<blockquote>
+<div><p>The xs data corresponding to e_int.</p>
+</div></blockquote>
+<p><strong>low, high</strong> : float</p>
+<blockquote>
+<div><p>Lower and upper bounds within the tabulation range to start/stop at.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sigma_g</strong> : float</p>
+<blockquote class="last">
+<div><p>The group xs.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.endf.Library.load">
+<code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Library.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the ENDF file into a NumPy array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : np.array, 1d, float64</p>
+<blockquote class="last">
+<div><p>Returns a 1d float64 NumPy array.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.MadlandNix">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">MadlandNix</code><a class="headerlink" href="#pyne.endf.MadlandNix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Energy-dependent fission neutron spectrum (Madland and Nix) given in
+ENDF MF=5, LF=12 represented as</p>
+<div class="math">
+<p><img src="../_images/math/3325f4ad142eba40ad4ce998527fb22c0fe1b157.png" alt="f(E \rightarrow E') = \frac{1}{2} [ g(E', E_F(L)) + g(E', E_F(H))]"/></p>
+</div><p>where</p>
+<div class="math">
+<p><img src="../_images/math/a8736a947f7f6079f89f5aadc4791d627b17650e.png" alt="g(E',E_F) = \frac{1}{3\sqrt{E_F T_M}} \left [ u_2^{3/2} E_1 (u_2) -
+u_1^{3/2} E_1 (u_1) + \gamma \left ( \frac{3}{2}, u_2 \right ) - \gamma
+\left ( \frac{3}{2}, u_1 \right ) \right ] \\ u_1 = \left ( \sqrt{E'} -
+\sqrt{E_F} \right )^2 / T_M \\ u_2 = \left ( \sqrt{E'} + \sqrt{E_F}
+\right )^2 / T_M."/></p>
+</div><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>efl, efh</td>
+<td>(float) Constants which represent the average kinetic energy per nucleon of the fission fragment (efl = light, efh = heavy)</td>
+</tr>
+<tr class="row-even"><td>tm</td>
+<td>(Tab1) Parameter tabulated as a function of incident neutron energy</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Maxwellian">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Maxwellian</code><a class="headerlink" href="#pyne.endf.Maxwellian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple Maxwellian fission spectrum given in ENDF MF=5, LF=7 represented
+as</p>
+<div class="math">
+<p><img src="../_images/math/3dedded53669c9ca5267fa9c7e1fded4862dff62.png" alt="f(E \rightarrow E') = \frac{\sqrt{E'}}{I} e^{-E'/\theta(E)}"/></p>
+</div><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>theta</td>
+<td>(Tab1) Tabulated function of incident neutron energy</td>
+</tr>
+<tr class="row-even"><td>u</td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.MultiLevelBreitWigner">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">MultiLevelBreitWigner</code><a class="headerlink" href="#pyne.endf.MultiLevelBreitWigner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-level Breit-Wigner resolved resonance formalism data. This is
+identified by LRF=2 in the ENDF-6 format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>spin</td>
+<td>(float) Spin of the target nucleus</td>
+</tr>
+<tr class="row-even"><td>scattering_radius_ind</td>
+<td>(float) Scattering radius in units of 10^-12 cm</td>
+</tr>
+<tr class="row-odd"><td>resonances</td>
+<td>(list of Resonance) List of resolved resonances</td>
+</tr>
+<tr class="row-even"><td>l_values</td>
+<td>(ndarray of int) Neutron orbital angular momentum values</td>
+</tr>
+<tr class="row-odd"><td>q</td>
+<td>(ndarray of float) Q-value to be added to incident particle&#8217;s center-of-mass energy to determine the channel energy for use in the penetrability factor. Given as a function of the l-value.</td>
+</tr>
+<tr class="row-even"><td>competitive</td>
+<td>(ndarray of bool) Whether a competitive width is given for each l-value.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.endf.MultiLevelBreitWigner.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.MultiLevelBreitWigner.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read multi-level Breit-Wigner resonance data from an ENDF evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
+<blockquote class="last">
+<div><p>ENDF evaluation positioned at the start of a resonance range
+subsection</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.RMatrixLimited">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">RMatrixLimited</code><a class="headerlink" href="#pyne.endf.RMatrixLimited" title="Permalink to this definition">¶</a></dt>
+<dd><p>R-Matrix Limited resolved resonance formalism data. This is identified by
+LRF=7 in the ENDF-6 format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>IFG</td>
+<td>(int) Flag indicating whether channel widths in eV or reduced-width amplitudes in eV^1/2 are given</td>
+</tr>
+<tr class="row-even"><td>KRM</td>
+<td>(int) Flag to specify which formulae for the R-matrix are to be used</td>
+</tr>
+<tr class="row-odd"><td>particle_pairs</td>
+<td>(list of dict) List of particle pairs. Each particle pair is represented by a dictionary that contains the mass, atomic number, spin, and parity of each particle as well as other characteristics.</td>
+</tr>
+<tr class="row-even"><td>spin_groups</td>
+<td>(list of dict) List of spin groups. Each spin group is characterized by channels, resonance energies, and resonance widths.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.endf.RMatrixLimited.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.RMatrixLimited.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read R-Matrix limited resonance data from an ENDF evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
+<blockquote class="last">
+<div><p>ENDF evaluation positioned at the start of a resonance range
+subsection</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Reaction">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Reaction</code><a class="headerlink" href="#pyne.endf.Reaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data for a single reaction including its cross section and secondary
+angle/energy distribution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mt</strong> : int</p>
+<blockquote class="last">
+<div><p>The MT number from the ENDF file.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>angular_distribution</td>
+<td>(AngularDistribution) Angular distribution represented as a tabulated function or as moments of a Legendre polynomial expansion from MF=4.</td>
+</tr>
+<tr class="row-even"><td>complex_breakup_flag</td>
+<td>(int) Complex breakup flag.</td>
+</tr>
+<tr class="row-odd"><td>xs</td>
+<td>(Tab1) Tabulated cross section as a function of incident energy from MF=3.</td>
+</tr>
+<tr class="row-even"><td>energy_distribution</td>
+<td>(list of EnergyDistribution) List of partial energy distributions for the reaction from MF=5.</td>
+</tr>
+<tr class="row-odd"><td>files</td>
+<td>(list of int) List of files (MF) that have been read for this reaction</td>
+</tr>
+<tr class="row-even"><td>MT</td>
+<td>(int) The MT number from the ENDF file.</td>
+</tr>
+<tr class="row-odd"><td>multiplicities</td>
+<td>(dict) Multiplicities for production of radioactive nuclides as given in MF=9.</td>
+</tr>
+<tr class="row-even"><td>product_distribution</td>
+<td>(list of dict) Secondary energy or correlated energy-angle distribution from MF=6.</td>
+</tr>
+<tr class="row-odd"><td>production</td>
+<td>(dict) Cross sections for production of radioactive nuclides as given in MF=10.</td>
+</tr>
+<tr class="row-even"><td>Q_mass_difference</td>
+<td>(float) Mass difference Q value in eV</td>
+</tr>
+<tr class="row-odd"><td>Q_reaction</td>
+<td>(float) Reaction Q value in eV</td>
+</tr>
+<tr class="row-even"><td>radionuclide_production</td>
+<td>(list of dict) List of radioactive nuclides produced as given in MF=8.</td>
+</tr>
+<tr class="row-odd"><td>reference_frame</td>
+<td>({&#8216;laboratory&#8217;, &#8216;center-of-mass&#8217;, &#8216;light-heavy&#8217;}) Indicates what reference frame is used for outgoing energies and angles. Only relevant for product energy-angle distributions read in MF=6.</td>
+</tr>
+<tr class="row-even"><td>subshell_binding_energy</td>
+<td>(float) Subshell binding energy in eV as given in MF=23. Only relevant for photoelectric subshell ionization reactions in a photo-atomic sublibrary.</td>
+</tr>
+<tr class="row-odd"><td>fluorescence_yield</td>
+<td>(float) Fluorescence yield (eV/photoionization) as given in MF=23. Only relevant for photoelectric subshell ionization reactions in a photo-atomic sublibrary.</td>
+</tr>
+<tr class="row-even"><td>products</td>
+<td>(list of dict) Secondary photon and electron distributions for electro-atomic reactions as given in MF=26.</td>
+</tr>
+<tr class="row-odd"><td>scattering_factor</td>
+<td>(Tab1) Coherent or incoherent form factor as given in MF=27.</td>
+</tr>
+<tr class="row-even"><td>anomalous_scattering_imaginary</td>
+<td>(Tab1) Imaginary component of the anomalous scattering factor as given in MF=27.</td>
+</tr>
+<tr class="row-odd"><td>anomalous_scattering_real</td>
+<td>(Tab1) Real component of the anomalous scattering factor as given in MF=27.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.ReichMoore">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">ReichMoore</code><a class="headerlink" href="#pyne.endf.ReichMoore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reich-Moore resolved resonance formalism data. This is identified by LRF=3 in
+the ENDF-6 format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>resonances</td>
+<td>(dict) Dictionary whose keys are (l, J) pairs and values are instances are lists of Resonance instances.</td>
+</tr>
+<tr class="row-even"><td>spin</td>
+<td>(float) Spin of the target nucleus</td>
+</tr>
+<tr class="row-odd"><td>scattering_radius_ind</td>
+<td>(float) Energy-independent scattering radius in units of 10^-12 cm</td>
+</tr>
+<tr class="row-even"><td>scattering_radius</td>
+<td>(Tab1) Scattering radius in units of 10^-12 cm as a function of energy</td>
+</tr>
+<tr class="row-odd"><td>LAD</td>
+<td>(int) Indicate whether parameters can be used to compute angular distributions</td>
+</tr>
+<tr class="row-even"><td>NLSC</td>
+<td>(int) Number of l-values which must be used to converge the calculation</td>
+</tr>
+<tr class="row-odd"><td>apl</td>
+<td>(ndarray of float) l-dependent scattering radius</td>
+</tr>
+<tr class="row-even"><td>l_values</td>
+<td>(ndarray of int) Neutron orbital angular momentum values</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.endf.ReichMoore.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.ReichMoore.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read Reich-Moore resonance data from an ENDF evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
+<blockquote class="last">
+<div><p>ENDF evaluation positioned at the start of a resonance range
+subsection</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.ResonanceRange">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">ResonanceRange</code><a class="headerlink" href="#pyne.endf.ResonanceRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolved resonance formalism data as given in MF=2, MT=151.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>energy_min</td>
+<td>(float) Minimum energy of the resolved resonance range in eV</td>
+</tr>
+<tr class="row-even"><td>energy_max</td>
+<td>(float) Maximum energy of the resolved resonance range in eV</td>
+</tr>
+<tr class="row-odd"><td>nro</td>
+<td>(int) Flag designating energy-dependence of scattering radius (NRO). A value of 0 indicates it is energy-independent, a value of 1 indicates it is energy-dependent.</td>
+</tr>
+<tr class="row-even"><td>naps</td>
+<td>(int) Flag controlling use of the channel and scattering radius (NAPS)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.ScatteringRadius">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">ScatteringRadius</code><a class="headerlink" href="#pyne.endf.ScatteringRadius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Energy range with no resonances and only a scattering radius.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.SingleLevelBreitWigner">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">SingleLevelBreitWigner</code><a class="headerlink" href="#pyne.endf.SingleLevelBreitWigner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single-level Breit-Wigner resolved resonance formalism data. This is
+identified by LRF=1 in the ENDF-6 format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the resolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Tab1">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Tab1</code><a class="headerlink" href="#pyne.endf.Tab1" title="Permalink to this definition">¶</a></dt>
+<dd><p>A one-dimensional tabulated function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : array_like</p>
+<blockquote>
+<div><p>Independent variable</p>
+</div></blockquote>
+<p><strong>y</strong> : array_like</p>
+<blockquote>
+<div><p>Dependent variable</p>
+</div></blockquote>
+<p><strong>nbt</strong> : array_like of int</p>
+<blockquote>
+<div><p>Breakpoints for interpolation regions</p>
+</div></blockquote>
+<p><strong>interp</strong> : array_like of int</p>
+<blockquote class="last">
+<div><p>Interpolation scheme identification number, e.g., 3 means y is linear in
+ln(x).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt id="pyne.endf.Tab1.from_file">
+<em class="property">classmethod </em><code class="descname">from_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Tab1.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Tab1 object using open file handle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fh</strong> : file</p>
+<blockquote class="last">
+<div><p>File open and positioned to the start of a TAB1 record.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.endf.Tab1.integral">
+<code class="descname">integral</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Tab1.integral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integral of the tabulated function over its tabulated range.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">ndarray</p>
+<blockquote class="last">
+<div><p>Array of same length as the tabulated data that represents partial
+integrals from the bottom of the range to each tabulated point.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Unresolved">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Unresolved</code><a class="headerlink" href="#pyne.endf.Unresolved" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unresolved resonance parameters as identified by LRU=2 in MF=2.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
+<blockquote>
+<div><p>Minimum energy of the unresolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>emax</strong> : float</p>
+<blockquote>
+<div><p>Maximum energy of the unresolved resonance range in eV</p>
+</div></blockquote>
+<p><strong>nro</strong> : int</p>
+<blockquote>
+<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</div></blockquote>
+<p><strong>naps</strong> : int</p>
+<blockquote class="last">
+<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>scattering_radius</td>
+<td>(float) Scattering radius in units of 10^-12 cm</td>
+</tr>
+<tr class="row-even"><td>LSSF</td>
+<td>(int) Flag governing interpretation of file 3 cross sections</td>
+</tr>
+<tr class="row-odd"><td>spin</td>
+<td>(float) Spin of the target nucleus</td>
+</tr>
+<tr class="row-even"><td>l_values</td>
+<td>(ndarray of int) Neutron orbital angular momentum values</td>
+</tr>
+<tr class="row-odd"><td>parameters</td>
+<td>(dict of dict) Dictionary whose keys are l-values and whose values are dictionaries containing unresolved resonance parameters</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.endf.Unresolved.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Unresolved.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read unresolved resonance data from an ENDF evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
+<blockquote class="last">
+<div><p>ENDF evaluation positioned at the start of a resonance range
+subsection</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyne.endf.Watt">
+<em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Watt</code><a class="headerlink" href="#pyne.endf.Watt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Energy-dependent Watt spectrum given in ENDF MF=5, LF=11 represented as</p>
+<div class="math">
+<p><img src="../_images/math/7b1137e90198e4da2cb05e275b54f9729a3072a5.png" alt="f(E \rightarrow E') = \frac{e^{-E'/a}}{I} \sinh \left ( \sqrt{bE'}
+\right )"/></p>
+</div><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="97%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>a, b</td>
+<td>(Tab1) Energy-dependent parameters tabulated as function of incident neutron energy</td>
+</tr>
+<tr class="row-even"><td>u</td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.endf.at_end_of_tape">
+<code class="descclassname">pyne.endf.</code><code class="descname">at_end_of_tape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.at_end_of_tape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicate whether file is positioned at the end of an ENDF tape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
+<blockquote>
+<div><p>File to check</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">bool</p>
+<blockquote class="last">
+<div><p>Whether the file is at the end of the ENDF tape</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.endf.seek_file_end">
+<code class="descclassname">pyne.endf.</code><code class="descname">seek_file_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.seek_file_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position the file at the end of the ENDF file (MF) currently being read.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
+<blockquote class="last">
+<div><p>File to position</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.endf.seek_material_end">
+<code class="descclassname">pyne.endf.</code><code class="descname">seek_material_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.seek_material_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position the file at the end of the ENDF material (MAT) currently being read.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
+<blockquote class="last">
+<div><p>File to position</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.endf.seek_section_end">
+<code class="descclassname">pyne.endf.</code><code class="descname">seek_section_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.seek_section_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position the file at the end of the ENDF section (MT) currently being read.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
+<blockquote class="last">
+<div><p>File to position</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3>Getting Started</h3>
+  <ul>
+    <li><a href="../install/index.html">Install</a></li>
+    <li><a href="../tutorial/index.html">Tutorial</a></li>
+    <li><a href="../examples/index.html">Examples</a></li>
+  </ul>
+  <h3>Using PyNE</h3>
+  <ul>
+    <li><a href="../usersguide/index.html">User's Guide</a></li>
+    <li><a href="index.html">Python API Documentation</a></li>
+    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
+    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
+  </ul>
+  <h3>Contribute</h3>
+  <ul>
+    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
+    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
+    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
+        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
+    <li><a href="../dev_team.html">The PyNE Team</a></li>
+  </ul>
+  <h3>Learn More</h3>
+  <ul>
+    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
+    <li><a href="../pubs.html">Publications</a></li>
+    <li><a href="../previous/index.html">Release Notes</a></li>
+    <li><a href="../gsoc/index.html">Project Ideas</a></li>
+  </ul>
+  </div>
+  
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2015, The PyNE Development Team.
+      Last updated on Jan 24, 2017.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>
