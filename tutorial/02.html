@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -11715,8 +11731,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11727,9 +11745,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style scoped="scoped" type="text/css">
@@ -11783,9 +11803,7 @@ body {
 div#notebook {
   overflow: visible;
   border-top: none;
-}
-
-@media print {
+}@media print {
   div.cell {
     display: block;
     page-break-inside: avoid;
@@ -11806,7 +11824,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -11830,12 +11848,11 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Materials">Materials<a class="anchor-link" href="#Materials">&#182;</a></h1><p>PyNE <code>Material</code> objects provide a way of representing, manipulating, and storing materials. A <code>Material</code> object is a collection of nuclides with various mass fractions (though methods for converting to/from atom fractions are present as well). Optionally, a <code>Material</code> object may have an associated mass. By keeping the mass and the composition separate, operations that only affect one attribute may be performed independent of the other. Most of the functionality of the <code>Material</code> class is
+<h1 id="Materials">Materials<a class="anchor-link" href="#Materials">&#194;&#182;</a></h1><p>PyNE <code>Material</code> objects provide a way of representing, manipulating, and storing materials. A <code>Material</code> object is a collection of nuclides with various mass fractions (though methods for converting to/from atom fractions are present as well). Optionally, a <code>Material</code> object may have an associated mass. By keeping the mass and the composition separate, operations that only affect one attribute may be performed independent of the other. Most of the functionality of the <code>Material</code> class is
 implemented in a C++, so this interface is very fast and light-weight.</p>
 <p><code>Material</code>s may be initialized in a number of different ways.  For example, initializing from
 dictionaries of compositions are shown below. First import the <code>Material</code> class:</p>
@@ -11856,8 +11873,7 @@ dictionaries of compositions are shown below. First import the <code>Material</c
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11884,7 +11900,9 @@ dictionaries of compositions are shown below. First import the <code>Material</c
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[7]:</div>
+
 
 
 
@@ -11898,8 +11916,7 @@ dictionaries of compositions are shown below. First import the <code>Material</c
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11929,7 +11946,9 @@ dictionaries of compositions are shown below. First import the <code>Material</c
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -11954,8 +11973,7 @@ Cm244  0.111111111111
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11965,13 +11983,12 @@ Cm244  0.111111111111
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Normalization">Normalization<a class="anchor-link" href="#Normalization">&#182;</a></h2><p>Upon instantiation, the mass fraction that define a <code>Material</code> are normalized. However, you can always obtain the unnormalized mass vector through <code>Material.mult_by_mass()</code>.  Normalization routines to normalize the mass <code>Material.normalize()</code> or the composition <code>Material.norm_comp()</code> are also available. Here we see that our 42 units of LEU consists of 1.68 units of U-235 and 40.32 units of U-238:</p>
+<h2 id="Normalization">Normalization<a class="anchor-link" href="#Normalization">&#194;&#182;</a></h2><p>Upon instantiation, the mass fraction that define a <code>Material</code> are normalized. However, you can always obtain the unnormalized mass vector through <code>Material.mult_by_mass()</code>.  Normalization routines to normalize the mass <code>Material.normalize()</code> or the composition <code>Material.norm_comp()</code> are also available. Here we see that our 42 units of LEU consists of 1.68 units of U-235 and 40.32 units of U-238:</p>
 
 </div>
 </div>
@@ -11993,7 +12010,9 @@ Cm244  0.111111111111
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[4]:</div>
+
 
 
 
@@ -12007,8 +12026,7 @@ Cm244  0.111111111111
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12035,7 +12053,9 @@ Cm244  0.111111111111
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[12]:</div>
+
 
 
 
@@ -12066,7 +12086,9 @@ Cm244  0.111111111111
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[6]:</div>
+
 
 
 
@@ -12080,13 +12102,12 @@ Cm244  0.111111111111
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Material-Arithmetic">Material Arithmetic<a class="anchor-link" href="#Material-Arithmetic">&#182;</a></h2><p>Various arithmetic operations between Materials and numeric types are also defined.
+<h2 id="Material-Arithmetic">Material Arithmetic<a class="anchor-link" href="#Material-Arithmetic">&#194;&#182;</a></h2><p>Various arithmetic operations between Materials and numeric types are also defined.
 Adding two Materials together will return a new Material whose values are the weighted union
 of the two original. Multiplying a Material by 2, however, will simply double the mass of the original Material.</p>
 
@@ -12111,7 +12132,9 @@ of the two original. Multiplying a Material by 2, however, will simply double th
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[7]:</div>
+
 
 
 
@@ -12142,7 +12165,9 @@ of the two original. Multiplying a Material by 2, however, will simply double th
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[8]:</div>
+
 
 
 
@@ -12174,7 +12199,9 @@ of the two original. Multiplying a Material by 2, however, will simply double th
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -12199,8 +12226,7 @@ Cm244  0.0333333333333
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12209,13 +12235,12 @@ Cm244  0.0333333333333
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Raw-Member-Access">Raw Member Access<a class="anchor-link" href="#Raw-Member-Access">&#182;</a></h2><p>You may also change the attributes of a material directly without generating a new 
+<h2 id="Raw-Member-Access">Raw Member Access<a class="anchor-link" href="#Raw-Member-Access">&#194;&#182;</a></h2><p>You may also change the attributes of a material directly without generating a new 
 material instance.</p>
 
 </div>
@@ -12240,7 +12265,9 @@ material instance.</p>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -12258,8 +12285,7 @@ U235   15.0
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12287,7 +12313,9 @@ of sync.  This may always be fixed with normalization.</p>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -12305,13 +12333,12 @@ U235   0.833333333333
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Indexing-&amp;-Slicing">Indexing &amp; Slicing<a class="anchor-link" href="#Indexing-&amp;-Slicing">&#182;</a></h2><p>Additionally (and very powerfully!), you may index into either the material or the composition 
+<h2 id="Indexing-&amp;-Slicing">Indexing &amp; Slicing<a class="anchor-link" href="#Indexing-&amp;-Slicing">&#194;&#182;</a></h2><p>Additionally (and very powerfully!), you may index into either the material or the composition 
 to get, set, or remove sub-materials.  Generally speaking, you may only index into the 
 composition by integer-key and only to retrieve the normalized value.  Indexing into the material allows the 
 full range of operations and returns the unnormalized mass weight.  Moreover, indexing into
@@ -12337,7 +12364,9 @@ the material may be performed with integer-keys, string-keys, slices, or sequenc
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[12]:</div>
+
 
 
 
@@ -12368,7 +12397,9 @@ the material may be performed with integer-keys, string-keys, slices, or sequenc
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[13]:</div>
+
 
 
 
@@ -12399,7 +12430,9 @@ the material may be performed with integer-keys, string-keys, slices, or sequenc
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[14]:</div>
+
 
 
 
@@ -12431,7 +12464,9 @@ the material may be performed with integer-keys, string-keys, slices, or sequenc
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -12467,7 +12502,9 @@ U235   0.165562913907
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[16]:</div>
+
 
 
 
@@ -12481,8 +12518,7 @@ U235   0.165562913907
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12492,12 +12528,11 @@ Plutonium vector.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Molecular-Weights-&amp;-Atom-Fractions">Molecular Weights &amp; Atom Fractions<a class="anchor-link" href="#Molecular-Weights-&amp;-Atom-Fractions">&#182;</a></h3><p>You may also calculate the molecular weight of a material via the <code>Material.molecular_weight</code> method.
+<h3 id="Molecular-Weights-&amp;-Atom-Fractions">Molecular Weights &amp; Atom Fractions<a class="anchor-link" href="#Molecular-Weights-&amp;-Atom-Fractions">&#194;&#182;</a></h3><p>You may also calculate the molecular weight of a material via the <code>Material.molecular_weight</code> method.
 This uses the <code>pyne.data.atomic_mass</code> function to look up the atomic mass values of
 the constituent nuclides.</p>
 
@@ -12521,7 +12556,9 @@ the constituent nuclides.</p>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[17]:</div>
+
 
 
 
@@ -12535,8 +12572,7 @@ the constituent nuclides.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12568,7 +12604,9 @@ class.</p>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[18]:</div>
+
 
 
 
@@ -12600,7 +12638,9 @@ class.</p>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[19]:</div>
+
 
 
 
@@ -12614,8 +12654,7 @@ class.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12646,7 +12685,9 @@ fractional number of atoms is returned.</p>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[20]:</div>
+
 
 
 
@@ -12678,7 +12719,9 @@ fractional number of atoms is returned.</p>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[21]:</div>
+
 
 
 
@@ -12692,8 +12735,7 @@ fractional number of atoms is returned.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12732,7 +12774,9 @@ weight will be used.</p>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>{10010000: 0.11191487328808077, 80160000: 0.8880851267119192}
@@ -12747,8 +12791,7 @@ weight will be used.</p>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12779,7 +12822,9 @@ and low-enriched uranium.</p>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -12798,8 +12843,7 @@ U238   0.846224196138
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12808,12 +12852,11 @@ U238   0.846224196138
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="User-defined-Metadata">User-defined Metadata<a class="anchor-link" href="#User-defined-Metadata">&#182;</a></h3><p>Materials also have an <code>metadata</code> attribute which allows users to store arbitrary 
+<h3 id="User-defined-Metadata">User-defined Metadata<a class="anchor-link" href="#User-defined-Metadata">&#194;&#182;</a></h3><p>Materials also have an <code>metadata</code> attribute which allows users to store arbitrary 
 custom information about the material.  This can include things like units, comments, 
 provenance information, or anything else the user desires.  This is implemented as an
 in-memory JSON object attached to the C++ class.  Therefore, what may be stored in
@@ -12841,7 +12884,9 @@ of the <code>metadata</code> <em>should</em> be a dictionary, though this is not
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[24]:</div>
+
 
 
 
@@ -12872,7 +12917,9 @@ of the <code>metadata</code> <em>should</em> be a dictionary, though this is not
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Material:
@@ -12908,7 +12955,9 @@ U238   0.95
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[26]:</div>
+
 
 
 
@@ -12943,7 +12992,9 @@ U238   0.95
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[27]:</div>
+
 
 
 
@@ -12975,7 +13026,9 @@ U238   0.95
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[28]:</div>
+
 
 
 
@@ -13006,7 +13059,9 @@ U238   0.95
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[29]:</div>
+
 
 
 
@@ -13038,7 +13093,9 @@ U238   0.95
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[30]:</div>
+
 
 
 
@@ -13052,8 +13109,7 @@ U238   0.95
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13137,6 +13193,23 @@ Doing so invalidates any previous views into this container.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -13161,8 +13234,17 @@ Doing so invalidates any previous views into this container.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

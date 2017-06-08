@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,21 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -93,7 +108,7 @@
 <span class="kn">from</span> <span class="nn">pyne.data</span> <span class="k">import</span> <span class="n">MeV_per_K</span>
 <span class="kn">from</span> <span class="nn">pyne.xs.models</span> <span class="k">import</span> <span class="n">partial_energy_matrix</span><span class="p">,</span> <span class="n">group_collapse</span><span class="p">,</span> <span class="n">same_arr_or_none</span>
 
-<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
 
 <span class="n">IO_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">)</span>
 
@@ -314,7 +329,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NullDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NullDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads a meaningless bounds array.&quot;&quot;&quot;</span>
@@ -376,7 +391,7 @@
                  <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_4n&#39;</span><span class="p">):</span> <span class="s1">&#39;4n&#39;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SimpleDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SimpleDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -530,7 +545,7 @@
     <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CinderDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CinderDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads the cinder energy bounds array, E_g, from nuc_data.&quot;&quot;&quot;</span>
@@ -600,58 +615,58 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># MT#s included in the EAF data</span>
-    <span class="n">_rx_avail</span> <span class="o">=</span> <span class="p">{</span><span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1020&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1021&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1022&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1030&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;p_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1031&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;p_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1032&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1040&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;d_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1041&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;d_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1042&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1050&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;t_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1051&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;t_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1052&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;He3&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1060&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;He3_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1061&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;He3_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1062&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1070&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;a_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1071&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;a_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1072&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2a&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1080&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2p&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1110&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2p_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1111&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2p_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;1112&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2n&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;160&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2n_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;161&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2n_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;162&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;170&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;171&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;172&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;fission&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;180&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;na&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;220&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;na_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;221&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;na_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;222&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2na&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;240&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;np&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;280&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;np_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;281&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;np_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;282&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n2a&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;290&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nd&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;320&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nd_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;321&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nd_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;322&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nt&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;330&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nt_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;331&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nt_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;332&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nHe3&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;340&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nHe3_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;341&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nHe3_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;342&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_4n&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;370&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_4n_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;371&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;40&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n_1&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;41&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n_2&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;42&#39;</span><span class="p">,</span>
-                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3np&#39;</span><span class="p">):</span> <span class="n">b</span><span class="s1">&#39;420&#39;</span><span class="p">,</span>
+    <span class="n">_rx_avail</span> <span class="o">=</span> <span class="p">{</span><span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1020&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1021&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1022&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1030&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;p_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1031&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;p_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1032&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1040&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;d_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1041&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;d_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1042&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1050&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;t_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1051&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;t_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1052&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;He3&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1060&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;He3_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1061&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;He3_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1062&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1070&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;a_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1071&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;a_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1072&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2a&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1080&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2p&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1110&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2p_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1111&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2p_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;1112&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2n&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;160&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2n_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;161&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2n_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;162&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;170&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;171&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;172&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;fission&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;180&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;na&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;220&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;na_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;221&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;na_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;222&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_2na&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;240&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;np&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;280&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;np_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;281&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;np_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;282&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n2a&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;290&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nd&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;320&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nd_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;321&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nd_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;322&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nt&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;330&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nt_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;331&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nt_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;332&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nHe3&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;340&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nHe3_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;341&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;nHe3_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;342&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_4n&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;370&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_4n_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;371&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;40&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n_1&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;41&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;n_2&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;42&#39;</span><span class="p">,</span>
+                 <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3np&#39;</span><span class="p">):</span> <span class="sa">b</span><span class="s1">&#39;420&#39;</span><span class="p">,</span>
                  <span class="p">}</span>
 
     <span class="n">_avail_rx</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">_</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">_rx_avail</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
@@ -659,7 +674,7 @@
     <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">EAFDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EAFDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads the EAF energy bounds array, E_g, from nuc_data.&quot;&quot;&quot;</span>
@@ -968,7 +983,7 @@
             <span class="n">cross_sections</span> <span class="o">=</span> <span class="n">openmc</span><span class="o">.</span><span class="n">CrossSections</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">cross_sections</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cross_sections</span> <span class="o">=</span> <span class="n">cross_sections</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_src_group_struct</span> <span class="o">=</span> <span class="n">src_group_struct</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">OpenMCDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OpenMCDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">libs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># cross section libraries, index by openmc.AceTables</span>
 
     <span class="nd">@property</span>
@@ -1185,7 +1200,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">state_point</span><span class="o">.</span><span class="n">n_particles</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_reactions</span><span class="p">(</span><span class="n">num_den</span><span class="p">,</span> <span class="n">phi_tot</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">StatePointDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StatePointDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1297,6 +1312,23 @@
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -1322,8 +1354,17 @@
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

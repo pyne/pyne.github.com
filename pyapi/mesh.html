@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="module-pyne.mesh">
-<span id="pyne-mesh-pyne-mesh"></span><span id="pyne-dbgen-mesh"></span><h1>PyNE Mesh &#8211; <a class="reference internal" href="#module-pyne.mesh" title="pyne.mesh"><code class="xref py py-mod docutils literal"><span class="pre">pyne.mesh</span></code></a><a class="headerlink" href="#module-pyne.mesh" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-mesh-pyne-mesh"></span><span id="pyne-dbgen-mesh"></span><h1>PyNE Mesh – <a class="reference internal" href="#module-pyne.mesh" title="pyne.mesh"><code class="xref py py-mod docutils literal"><span class="pre">pyne.mesh</span></code></a><a class="headerlink" href="#module-pyne.mesh" title="Permalink to this headline">¶</a></h1>
 <dl class="exception">
 <dt id="pyne.mesh.MeshError">
 <em class="property">exception </em><code class="descclassname">pyne.mesh.</code><code class="descname">MeshError</code><a class="reference internal" href="../_modules/pyne/mesh.html#MeshError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.MeshError" title="Permalink to this definition">¶</a></dt>
@@ -117,7 +133,7 @@ the desired functions each session.</p>
 
 <dl class="class">
 <dt id="pyne.mesh.IMeshTag">
-<em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">IMeshTag</code><span class="sig-paren">(</span><em>size=1</em>, <em>dtype='f8'</em>, <em>default=0.0</em>, <em>mesh=None</em>, <em>name=None</em>, <em>doc=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#IMeshTag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.IMeshTag" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">IMeshTag</code><span class="sig-paren">(</span><em>size=1</em>, <em>dtype=’f8’</em>, <em>default=0.0</em>, <em>mesh=None</em>, <em>name=None</em>, <em>doc=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#IMeshTag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.IMeshTag" title="Permalink to this definition">¶</a></dt>
 <dd><p>A mesh tag which looks itself up as a tag on the iMesh.Mesh instance.
 This makes the following expressions equivalent for a given iMesh.Mesh tag
 name:</p>
@@ -166,7 +182,7 @@ then the tag is created empty.</p>
 <code class="descname">expand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#IMeshTag.expand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.IMeshTag.expand" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function creates a group of scalar tags from a vector tag. For
 a vector tag named &lt;tag_name&gt; of length N, scalar tags in the form:</p>
-<p>&lt;tag_name&gt;_000, &lt;tag_name&gt;_001, &lt;tag_name&gt;_002... &lt;tag_name&gt;_N</p>
+<p>&lt;tag_name&gt;_000, &lt;tag_name&gt;_001, &lt;tag_name&gt;_002… &lt;tag_name&gt;_N</p>
 <p>are created and the data is tagged accordingly.</p>
 </dd></dl>
 
@@ -240,7 +256,7 @@ features to this process.</p>
 
 <dl class="class">
 <dt id="pyne.mesh.Mesh">
-<em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">Mesh</code><span class="sig-paren">(</span><em>mesh=None</em>, <em>structured=False</em>, <em>structured_coords=None</em>, <em>structured_set=None</em>, <em>structured_ordering='xyz'</em>, <em>mats=()</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">Mesh</code><span class="sig-paren">(</span><em>mesh=None</em>, <em>structured=False</em>, <em>structured_coords=None</em>, <em>structured_set=None</em>, <em>structured_ordering=’xyz’</em>, <em>mats=()</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class houses an iMesh instance and contains methods for various mesh
 operations. Special methods exploit the properties of structured mesh.</p>
 <p class="rubric">Attributes</p>
@@ -260,7 +276,7 @@ operations. Special methods exploit the properties of structured mesh.</p>
 <td>(list of lists) A list containing lists of x_points, y_points and z_points that make up a structured mesh.</td>
 </tr>
 <tr class="row-even"><td>structured_ordering</td>
-<td>(str) A three character string denoting the iteration order of the mesh (e.g. &#8216;xyz&#8217;, meaning z changest fastest, then y, then x.)</td>
+<td>(str) A three character string denoting the iteration order of the mesh (e.g. ‘xyz’, meaning z changest fastest, then y, then x.)</td>
 </tr>
 </tbody>
 </table>
@@ -285,12 +301,12 @@ that make up a structured mesh.</p>
 <p><strong>structured_set</strong> : iMesh entity set handle, optional</p>
 <blockquote>
 <div><p>A preexisting structured entity set on an iMesh instance with a
-&#8220;BOX_DIMS&#8221; tag.</p>
+“BOX_DIMS” tag.</p>
 </div></blockquote>
 <p><strong>structured_ordering</strong> : str, optional</p>
 <blockquote>
 <div><p>A three character string denoting the iteration order of the mesh
-(e.g. &#8216;xyz&#8217;, meaning z changest fastest, then y, then x.)</p>
+(e.g. ‘xyz’, meaning z changest fastest, then y, then x.)</p>
 </div></blockquote>
 <p><strong>mats</strong> : MaterialLibrary or dict or Materials or None, optional</p>
 <blockquote class="last">
@@ -317,11 +333,11 @@ structured=True, and optional preexisting iMesh instance
 </ul>
 </dd>
 </dl>
-<p>The &#8220;BOX_DIMS&#8221; tag on iMesh instances containing structured mesh is
+<p>The “BOX_DIMS” tag on iMesh instances containing structured mesh is
 a vector of floats it the following form:
 [i_min, j_min, k_min, i_max, j_max, k_max]
 where each value is a volume element index number. Typically volume
-elements should be indexed from 0. The &#8220;BOX_DIMS&#8221; information is
+elements should be indexed from 0. The “BOX_DIMS” information is
 stored in self.dims.</p>
 </div></blockquote>
 </td>
@@ -386,7 +402,7 @@ material each cell is made of.</p>
 <dt id="pyne.mesh.Mesh.elem_volume">
 <code class="descname">elem_volume</code><span class="sig-paren">(</span><em>ve</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.elem_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.elem_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the volume of a hexahedral or tetrahedral volume element</p>
-<p>Approaches are adapted from MOAB&#8217;s measure.cpp.</p>
+<p>Approaches are adapted from MOAB’s measure.cpp.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -399,7 +415,7 @@ material each cell is made of.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>..</strong> : float</p>
 <blockquote class="last">
-<div><p>Element&#8217;s volume. Returns None if volume is not a hex or tet.</p>
+<div><p>Element’s volume. Returns None if volume is not a hex or tet.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -414,14 +430,14 @@ material each cell is made of.</p>
 iteration order. Note that idx is assigned upon instantiation in the
 order of the structured_ordering attribute. This method is meant to be
 used when the order argument is different from structured_ordering.
-When they are the same, the iterator (0, 1, 2, ... N-1) is returned.</p>
+When they are the same, the iterator (0, 1, 2, … N-1) is returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>order</strong> : str, optional</p>
 <blockquote class="last">
-<div><p>The requested iteration order (e.g. &#8216;zyx&#8217;).</p>
+<div><p>The requested iteration order (e.g. ‘zyx’).</p>
 </div></blockquote>
 </td>
 </tr>
@@ -439,41 +455,41 @@ When they are the same, the iterator (0, 1, 2, ... N-1) is returned.</p>
 <dt id="pyne.mesh.Mesh.structured_get_divisions">
 <code class="descname">structured_get_divisions</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_divisions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_divisions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the mesh divisions on a given dimension</p>
-<p>Given a dimension &#8220;x&#8221;, &#8220;y&#8221;, or &#8220;z&#8221;, return a list of the mesh vertices
+<p>Given a dimension “x”, “y”, or “z”, return a list of the mesh vertices
 along that dimension.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_get_hex">
 <code class="descname">structured_get_hex</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_hex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the handle for the (i,j,k)&#8217;th hexahedron in the mesh</p>
+<dd><p>Return the handle for the (i,j,k)’th hexahedron in the mesh</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_get_vertex">
 <code class="descname">structured_get_vertex</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_vertex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the handle for (i,j,k)&#8217;th vertex in the mesh</p>
+<dd><p>Return the handle for (i,j,k)’th vertex in the mesh</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_hex_volume">
 <code class="descname">structured_hex_volume</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_hex_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_hex_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the volume of the (i,j,k)&#8217;th hexahedron in the mesh</p>
+<dd><p>Return the volume of the (i,j,k)’th hexahedron in the mesh</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_iterate_hex">
-<code class="descname">structured_iterate_hex</code><span class="sig-paren">(</span><em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_iterate_hex</code><span class="sig-paren">(</span><em>order=’zyx’</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator over the hexahedra of the mesh</p>
 <p>The order argument specifies the iteration order.  It must be a string
 of 1-3 letters from the set (x,y,z).  The rightmost letter is the axis
-along which the iteration will advance the most quickly.  Thus &#8220;zyx&#8221; &#8211;
-x coordinates changing fastest, z coordinates changing least fast&#8211; is
+along which the iteration will advance the most quickly.  Thus “zyx” –
+x coordinates changing fastest, z coordinates changing least fast– is
 the default, and is identical to the order that would be given by the
 structured_set.iterate() function.</p>
 <p>When a dimension is absent from the order, iteration will proceed over
 only the column in the mesh that has the lowest corresonding (i/j/k)
-coordinate.  Thus, with order &#8220;xy,&#8221; iteration proceeds over the i/j
+coordinate.  Thus, with order “xy,” iteration proceeds over the i/j
 plane of the structured mesh with the smallest k coordinate.</p>
 <p>Specific slices can be specified with keyword arguments:</p>
 <p>Keyword args:</p>
@@ -503,7 +519,7 @@ plane of the structured mesh with the smallest k coordinate.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_iterate_hex_volumes">
-<code class="descname">structured_iterate_hex_volumes</code><span class="sig-paren">(</span><em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex_volumes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_iterate_hex_volumes</code><span class="sig-paren">(</span><em>order=’zyx’</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex_volumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator over the volumes of the mesh hexahedra</p>
 <p>See structured_iterate_hex() for an explanation of the order argument
 and the available keyword arguments.</p>
@@ -511,7 +527,7 @@ and the available keyword arguments.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_iterate_vertex">
-<code class="descname">structured_iterate_vertex</code><span class="sig-paren">(</span><em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_vertex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_iterate_vertex</code><span class="sig-paren">(</span><em>order=’zyx’</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_vertex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator over the vertices of the mesh</p>
 <p>See structured_iterate_hex() for an explanation of the order argument
 and the available keyword arguments.</p>
@@ -537,8 +553,8 @@ the data.</p>
 <p><strong>tagtype</strong> : Tag or str, optional</p>
 <blockquote>
 <div><p>The type of tag this should be any of the following classes or
-strings are accepted: IMeshTag, MetadataTag, ComputedTag, &#8216;imesh&#8217;,
-&#8216;metadata&#8217;, or &#8216;computed&#8217;.</p>
+strings are accepted: IMeshTag, MetadataTag, ComputedTag, ‘imesh’,
+‘metadata’, or ‘computed’.</p>
 </div></blockquote>
 <p><strong>doc</strong> : str, optional</p>
 <blockquote>
@@ -711,6 +727,23 @@ metadata attributes.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -735,8 +768,17 @@ metadata attributes.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

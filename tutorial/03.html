@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -11715,8 +11731,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11727,9 +11745,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style scoped="scoped" type="text/css">
@@ -11783,9 +11803,7 @@ body {
 div#notebook {
   overflow: visible;
   border-top: none;
-}
-
-@media print {
+}@media print {
   div.cell {
     display: block;
     page-break-inside: avoid;
@@ -11806,7 +11824,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -11830,12 +11848,11 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Nuclear-Data">Nuclear Data<a class="anchor-link" href="#Nuclear-Data">&#182;</a></h1><p>PyNE provides a top-level interface for a variety of basic nuclear data needs. This aims to provide quick access to very high fidelity data. Values are taken from the <code>nuc_data.h5</code> library.  The basic suite of data comes from public sources.  However if you have access to proprietary or export-controlled data, such as CINDER cross sections, then PyNE will attempt to provide an interface to this as well.</p>
+<h1 id="Nuclear-Data">Nuclear Data<a class="anchor-link" href="#Nuclear-Data">&#194;&#182;</a></h1><p>PyNE provides a top-level interface for a variety of basic nuclear data needs. This aims to provide quick access to very high fidelity data. Values are taken from the <code>nuc_data.h5</code> library.  The basic suite of data comes from public sources.  However if you have access to proprietary or export-controlled data, such as CINDER cross sections, then PyNE will attempt to provide an interface to this as well.</p>
 <p>All functionality may be found in the data module:</p>
 
 </div>
@@ -11858,7 +11875,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>-c:1: QAWarning: pyne.data is not yet QA compliant.
@@ -11870,8 +11889,7 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11880,12 +11898,11 @@ div#notebook {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Atomic-Mass-[amu]">Atomic Mass [amu]<a class="anchor-link" href="#Atomic-Mass-[amu]">&#182;</a></h2><p>Finds the atomic mass of a nuclide</p>
+<h2 id="Atomic-Mass-[amu]">Atomic Mass [amu]<a class="anchor-link" href="#Atomic-Mass-[amu]">&#194;&#182;</a></h2><p>Finds the atomic mass of a nuclide</p>
 
 </div>
 </div>
@@ -11907,7 +11924,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[2]:</div>
+
 
 
 
@@ -11921,12 +11940,11 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Natural-Abundance-Ratios">Natural Abundance Ratios<a class="anchor-link" href="#Natural-Abundance-Ratios">&#182;</a></h2><p>Finds the natural abundance of a nuclide</p>
+<h2 id="Natural-Abundance-Ratios">Natural Abundance Ratios<a class="anchor-link" href="#Natural-Abundance-Ratios">&#194;&#182;</a></h2><p>Finds the natural abundance of a nuclide</p>
 
 </div>
 </div>
@@ -11948,7 +11966,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[3]:</div>
+
 
 
 
@@ -11979,7 +11999,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[4]:</div>
+
 
 
 
@@ -11993,12 +12015,11 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Half-Lives-(s)-&amp;-Decay-Constants-(1/s)">Half Lives (s) &amp; Decay Constants (1/s)<a class="anchor-link" href="#Half-Lives-(s)-&amp;-Decay-Constants-(1/s)">&#182;</a></h2><p>Finds the amount of time for half of the radionuclide to decay (half life). Decay constant is another measure of the rate of radioactive decay.</p>
+<h2 id="Half-Lives-(s)-&amp;-Decay-Constants-(1/s)">Half Lives (s) &amp; Decay Constants (1/s)<a class="anchor-link" href="#Half-Lives-(s)-&amp;-Decay-Constants-(1/s)">&#194;&#182;</a></h2><p>Finds the amount of time for half of the radionuclide to decay (half life). Decay constant is another measure of the rate of radioactive decay.</p>
 
 </div>
 </div>
@@ -12020,7 +12041,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[5]:</div>
+
 
 
 
@@ -12051,7 +12074,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[6]:</div>
+
 
 
 
@@ -12065,12 +12090,11 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Decay-Children">Decay Children<a class="anchor-link" href="#Decay-Children">&#182;</a></h2>
+<h2 id="Decay-Children">Decay Children<a class="anchor-link" href="#Decay-Children">&#194;&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12091,7 +12115,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[7]:</div>
+
 
 
 
@@ -12125,7 +12151,9 @@ div#notebook {
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Rb86 decayse to two isotopes, 
@@ -12159,7 +12187,9 @@ The second daughter is Sr86
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>It decays to  Kr86  with a branch ratio of  5.2e-05
@@ -12171,12 +12201,11 @@ The second daughter is Sr86
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Neutron-Scattering-Lengths-[cm]">Neutron Scattering Lengths [cm]<a class="anchor-link" href="#Neutron-Scattering-Lengths-[cm]">&#182;</a></h2><p>Finds the bound scattering length; the generic value is computed from the coherent and incoherent scattering data:</p>
+<h2 id="Neutron-Scattering-Lengths-[cm]">Neutron Scattering Lengths [cm]<a class="anchor-link" href="#Neutron-Scattering-Lengths-[cm]">&#194;&#182;</a></h2><p>Finds the bound scattering length; the generic value is computed from the coherent and incoherent scattering data:</p>
 $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 </div>
 </div>
@@ -12198,7 +12227,9 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[12]:</div>
+
 
 
 
@@ -12229,7 +12260,9 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[13]:</div>
+
 
 
 
@@ -12260,7 +12293,9 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[14]:</div>
+
 
 
 
@@ -12274,12 +12309,11 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Half-life-Plot">Half-life Plot<a class="anchor-link" href="#Half-life-Plot">&#182;</a></h2>
+<h2 id="Half-life-Plot">Half-life Plot<a class="anchor-link" href="#Half-life-Plot">&#194;&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12316,7 +12350,9 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[15]:</div>
+
 
 
 
@@ -12327,7 +12363,9 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 </div>
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/usr/lib/pymodules/python2.7/matplotlib/scale.py:90: RuntimeWarning: invalid value encountered in less_equal
@@ -12337,7 +12375,9 @@ $$b = \sqrt{\left| b_{\mbox{coh}} \right|^2 + \left| b_{\mbox{inc}} \right|^2}$$
 </div>
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 
@@ -13233,12 +13273,11 @@ YRhGRWFKimEYhmEYhmEYFcX/B5CnAGrIziQLAAAAAElFTkSuQmCC
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="ENSDF-decay-data">ENSDF decay data<a class="anchor-link" href="#ENSDF-decay-data">&#182;</a></h1><p>In addition to the basic ENSDF data interface shown above, there is an extended interface that provides access to a large portion of the decay data in the ENSDF dataset. For example lets look at Cs-137:</p>
+<h1 id="ENSDF-decay-data">ENSDF decay data<a class="anchor-link" href="#ENSDF-decay-data">&#194;&#182;</a></h1><p>In addition to the basic ENSDF data interface shown above, there is an extended interface that provides access to a large portion of the decay data in the ENSDF dataset. For example lets look at Cs-137:</p>
 
 </div>
 </div>
@@ -13268,7 +13307,9 @@ YRhGRWFKimEYhmEYhmEYFcX/B5CnAGrIziQLAAAAAElFTkSuQmCC
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>The decay pairs are  [(561370001, 561370000), (561370002, 561370000)] ,
@@ -13326,7 +13367,9 @@ and they have these energies (paired with errors): [(283.5, 0.1), (661.657, 0.00
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
@@ -13342,12 +13385,11 @@ U229 decays to Th225 with intensities [0.2, 0.6000000000000001, 0.2, 2.2, 4.0, 1
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Another-possible-use-is-the-search-for-candidate-gamma-rays">Another possible use is the search for candidate gamma rays<a class="anchor-link" href="#Another-possible-use-is-the-search-for-candidate-gamma-rays">&#182;</a></h2>
+<h2 id="Another-possible-use-is-the-search-for-candidate-gamma-rays">Another possible use is the search for candidate gamma rays<a class="anchor-link" href="#Another-possible-use-is-the-search-for-candidate-gamma-rays">&#194;&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13376,7 +13418,9 @@ U229 decays to Th225 with intensities [0.2, 0.6000000000000001, 0.2, 2.2, 4.0, 1
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>number of possible parents of 661.657 +- 1keV decay is 876 
@@ -13437,7 +13481,9 @@ U229 decays to Th225 with intensities [0.2, 0.6000000000000001, 0.2, 2.2, 4.0, 1
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>possible candidate: Ag110M
@@ -13536,6 +13582,23 @@ intensity: 99.6 %
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -13560,8 +13623,17 @@ intensity: 99.6 %
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

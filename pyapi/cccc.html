@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,13 +74,13 @@
           <div class="body" role="main">
             
   <div class="section" id="cccc-formats-pyne-cccc">
-<span id="pyne-cccc"></span><h1>CCCC Formats &#8211; <a class="reference internal" href="../usersguide/cccc.html#module-pyne.cccc" title="pyne.cccc"><code class="xref py py-mod docutils literal"><span class="pre">pyne.cccc</span></code></a><a class="headerlink" href="#cccc-formats-pyne-cccc" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-cccc"></span><h1>CCCC Formats – <a class="reference internal" href="../usersguide/cccc.html#module-pyne.cccc" title="pyne.cccc"><code class="xref py py-mod docutils literal"><span class="pre">pyne.cccc</span></code></a><a class="headerlink" href="#cccc-formats-pyne-cccc" title="Permalink to this headline">¶</a></h1>
 <p>All functionality may be found in the <code class="docutils literal"><span class="pre">cccc</span></code> package:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">cccc</span>
 </pre></div>
 </div>
 <p>The information below represents the complete specification of the classes in
-the cccc module. For examples of usage, please refer to the User&#8217;s Guide entry
+the cccc module. For examples of usage, please refer to the User’s Guide entry
 for <a class="reference internal" href="../usersguide/cccc.html#usersguide-cccc"><span class="std std-ref">CCCC Formats</span></a>.</p>
 <div class="section" id="module-pyne.cccc">
 <span id="cccc-api"></span><h2>CCCC API<a class="headerlink" href="#module-pyne.cccc" title="Permalink to this headline">¶</a></h2>
@@ -73,7 +89,7 @@ flux, geometry, and data files with specifications given by the Committee for
 Computer Code Coordination. The following types of files can be read using
 classes from this module: ISOTXS, DLAYXS, BRKOXS, RTFLUX, ATFLUX, RZFLUX, MATXS,
 and SPECTR.</p>
-<p>The ISOTXS reader was originally derived from Professor James Holloway&#8217;s
+<p>The ISOTXS reader was originally derived from Professor James Holloway’s
 open-source C++ classes from the University of Michigan and later expanded by
 Nick Touran for work on his PhD thesis. DLAYXS was later added by Paul Romano.
 RTFLUX was done by Elliott Biondo.</p>
@@ -132,27 +148,27 @@ DLAYXS file would be related to cross-section files in ISOTXS and GRUPXS.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>isotopes</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of strs</span><dd><p class="first last">Names of the isotopes in the DLAYXS file.</p>
+<dt><strong>isotopes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of strs</span></dt>
+<dd><p class="first last">Names of the isotopes in the DLAYXS file.</p>
 </dd>
-<dt><strong>isotopeFamily</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd><p class="first last">Dictionary whose keys are the isotope names and whose values are</p>
+<dt><strong>isotopeFamily</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary whose keys are the isotope names and whose values are</p>
 </dd>
-<dt><strong>decay</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd><p class="first last">Dictionary whose keys are names of nuclides and whose values are decay
+<dt><strong>decay</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary whose keys are names of nuclides and whose values are decay
 constants for each delayed neutron family.</p>
 </dd>
 </dl>
 <p><strong>spectrum</strong> : dict</p>
 <dl class="docutils">
-<dt><strong>nGroups</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd><p class="first last">Number of energy groups</p>
+<dt><strong>nGroups</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of energy groups</p>
 </dd>
-<dt><strong>nIsotopes</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd><p class="first last">Number of isotopes</p>
+<dt><strong>nIsotopes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of isotopes</p>
 </dd>
-<dt><strong>nFamilies</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd><p class="first last">Number of delayed neutron families</p>
+<dt><strong>nFamilies</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of delayed neutron families</p>
 </dd>
 </dl>
 <p><strong>nu</strong> : dict</p>
@@ -184,29 +200,29 @@ CCCC specifications.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>chi</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span><dd><p class="first last">Fission yields by group.</p>
+<dt><strong>chi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Fission yields by group.</p>
 </dd>
-<dt><strong>emax</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span><dd><p class="first last">Maximum energy bound for each group</p>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">Maximum energy bound for each group</p>
 </dd>
-<dt><strong>emin</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd><p class="first last">Minimum energy bound of set</p>
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy bound of set</p>
 </dd>
-<dt><strong>fc</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd><p class="first last">Dictionary with file-control information</p>
+<dt><strong>fc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary with file-control information</p>
 </dd>
-<dt><strong>fileVersion</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd><p class="first last">Version of the ISOTXS file.</p>
+<dt><strong>fileVersion</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Version of the ISOTXS file.</p>
 </dd>
-<dt><strong>label</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd><p class="first last">File identification string</p>
+<dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">File identification string</p>
 </dd>
-<dt><strong>nuclides</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of _Nuclides</span><dd><p class="first last">List of individual nuclides in the ISOTXS file.</p>
+<dt><strong>nuclides</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of _Nuclides</span></dt>
+<dd><p class="first last">List of individual nuclides in the ISOTXS file.</p>
 </dd>
-<dt><strong>vel</strong></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd><p class="first last">Mean neutron velocity in each group.</p>
+<dt><strong>vel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Mean neutron velocity in each group.</p>
 </dd>
 </dl>
 </td>
@@ -359,10 +375,10 @@ broad energy groups for different geometric zones.</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">CCCC Formats &#8211; <code class="docutils literal"><span class="pre">pyne.cccc</span></code></a><ul>
+<li><a class="reference internal" href="#">CCCC Formats – <code class="docutils literal"><span class="pre">pyne.cccc</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.cccc">CCCC API</a></li>
 </ul>
 </li>
@@ -414,6 +430,23 @@ broad energy groups for different geometric zones.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -438,8 +471,17 @@ broad energy groups for different geometric zones.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

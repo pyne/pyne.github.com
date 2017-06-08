@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="mcnp-input-and-output-interfaces-pyne-mcnp">
-<span id="pyne-mcnp"></span><h1>MCNP Input and Output Interfaces &#8211; <a class="reference internal" href="#module-pyne.mcnp" title="pyne.mcnp"><code class="xref py py-mod docutils literal"><span class="pre">pyne.mcnp</span></code></a><a class="headerlink" href="#mcnp-input-and-output-interfaces-pyne-mcnp" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-mcnp"></span><h1>MCNP Input and Output Interfaces – <a class="reference internal" href="#module-pyne.mcnp" title="pyne.mcnp"><code class="xref py py-mod docutils literal"><span class="pre">pyne.mcnp</span></code></a><a class="headerlink" href="#mcnp-input-and-output-interfaces-pyne-mcnp" title="Permalink to this headline">¶</a></h1>
 <p>There is a class for a variety of types of files that MCNP produces.  The
 functionality of the module can be obtained by importing as such:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">mcnp</span>
@@ -80,7 +96,7 @@ available to use.</p>
 <em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">MeshTally</code><span class="sig-paren">(</span><em>f</em>, <em>tally_number</em>, <em>tag_names=None</em>, <em>mesh_has_mats=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#MeshTally"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.MeshTally" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class stores all information from all single MCNP mesh tally that
 exists within some meshtal file. Header information is stored as attributes
-and the &#8220;mesh&#8221; attribute is a MOAB mesh with all result and relative error
+and the “mesh” attribute is a MOAB mesh with all result and relative error
 data tagged. This class inherits from StatMesh, exposing all statistical
 mesh manipulation methods.</p>
 <p class="rubric">Notes</p>
@@ -97,7 +113,7 @@ StatMesh.__init__().</p>
 <td>(int) The MCNP tally number. Must end in 4 (e.g. 4, 14, 214).</td>
 </tr>
 <tr class="row-even"><td>particle</td>
-<td>(string) Either &#8220;neutron&#8221; for a neutron mesh tally or &#8220;photon&#8221; for a photon mesh tally.</td>
+<td>(string) Either “neutron” for a neutron mesh tally or “photon” for a photon mesh tally.</td>
 </tr>
 <tr class="row-odd"><td>dose_response</td>
 <td>(bool) True is the tally is modified by a dose response function.</td>
@@ -158,7 +174,7 @@ objects.</p>
 <dt id="pyne.mcnp.Meshtal">
 <em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">Meshtal</code><span class="sig-paren">(</span><em>filename</em>, <em>tags=None</em>, <em>meshes_have_mats=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#Meshtal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.Meshtal" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class stores all the information from an MCNP meshtal file with
-single or multiple fmesh4 neutron or photon tallies. The &#8220;tally&#8221; attribute
+single or multiple fmesh4 neutron or photon tallies. The “tally” attribute
 provides key/value access to invidial MeshTally objects.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
@@ -186,7 +202,7 @@ provides key/value access to invidial MeshTally objects.</p>
 <td>(dict) A dictionary with MCNP fmesh4 tally numbers (e.g. 4, 14, 24) as keys and MeshTally objects as values.</td>
 </tr>
 <tr class="row-odd"><td>tags</td>
-<td>(dict) Maps integer tally numbers to iterables containing four strs, the results tag name, the relative error tag name, the total results tag name, and the total relative error tag name. If tags is None the tags are named &#8216;x_result&#8217;, &#8216;x_rel_error&#8217;, &#8216;x_result_total&#8217;, &#8216;x_rel_error_total&#8217; where x is n or p for neutrons or photons.</td>
+<td>(dict) Maps integer tally numbers to iterables containing four strs, the results tag name, the relative error tag name, the total results tag name, and the total relative error tag name. If tags is None the tags are named ‘x_result’, ‘x_rel_error’, ‘x_result_total’, ‘x_rel_error_total’ where x is n or p for neutrons or photons.</td>
 </tr>
 </tbody>
 </table>
@@ -203,8 +219,8 @@ provides key/value access to invidial MeshTally objects.</p>
 <div><p>Maps integer tally numbers to iterables containing four strs: the
 results tag name, the relative error tag name, the total results
 tag name, and the total relative error tag name. If tags is None
-the tags are named &#8216;x_result&#8217;, &#8216;x_rel_error&#8217;, &#8216;x_result_total&#8217;,
-&#8216;x_rel_error_total&#8217; where x is n or p for neutrons or photons.</p>
+the tags are named ‘x_result’, ‘x_rel_error’, ‘x_result_total’,
+‘x_rel_error_total’ where x is n or p for neutrons or photons.</p>
 </div></blockquote>
 <p><strong>meshes_have_mats</strong> : bool</p>
 <blockquote class="last">
@@ -222,12 +238,12 @@ material objects.</p>
 <em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">PtracReader</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#PtracReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.PtracReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to read _binary_ PTRAC files generated by MCNP.</p>
 <p>Construct a new Ptrac reader for a given filename, determine the
-number format and read the file&#8217;s headers.</p>
+number format and read the file’s headers.</p>
 <dl class="method">
 <dt id="pyne.mcnp.PtracReader.determine_endianness">
 <code class="descname">determine_endianness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#PtracReader.determine_endianness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.PtracReader.determine_endianness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine the number format (endianness) used in the Ptrac file.
-For this, the file&#8217;s first entry is used. It is always minus one
+For this, the file’s first entry is used. It is always minus one
 and has a length of 4 bytes.</p>
 </dd></dl>
 
@@ -248,9 +264,9 @@ Ptrac file.</p>
 <dt id="pyne.mcnp.PtracReader.read_next">
 <code class="descname">read_next</code><span class="sig-paren">(</span><em>format</em>, <em>number=1</em>, <em>auto=False</em>, <em>raw_format=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#PtracReader.read_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.PtracReader.read_next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper method for reading records from the Ptrac file.
-All binary records consist of the record content&#8217;s length in bytes,
+All binary records consist of the record content’s length in bytes,
 the content itself and then the length again.
-format can be one of the struct module&#8217;s format characters (i.e. i
+format can be one of the struct module’s format characters (i.e. i
 for an int, f for a float, s for a string).
 The length of the record can either be hard-coded by setting the
 number parameter (e.g. to read 10 floats) or determined automatically
@@ -288,8 +304,8 @@ console each N events by passing the print_progress=N parameter.</p>
 <dl class="class">
 <dt id="pyne.mcnp.Srctp">
 <em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">Srctp</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#Srctp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.Srctp" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class stores source site data from a &#8216;srctp&#8217; file written by
-MCNP. The source sites are stored in the &#8216;fso&#8217; array in MCNP.</p>
+<dd><p>This class stores source site data from a ‘srctp’ file written by
+MCNP. The source sites are stored in the ‘fso’ array in MCNP.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -306,7 +322,7 @@ MCNP. The source sites are stored in the &#8216;fso&#8217; array in MCNP.</p>
 
 <dl class="class">
 <dt id="pyne.mcnp.SurfSrc">
-<em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">SurfSrc</code><span class="sig-paren">(</span><em>filename</em>, <em>mode='rb'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#SurfSrc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.SurfSrc" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">SurfSrc</code><span class="sig-paren">(</span><em>filename</em>, <em>mode=’rb’</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#SurfSrc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.SurfSrc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enables manipulating both the header and tracklists in surface source
 files.</p>
 <p>Example use cases include adding source particles from other codes, and
@@ -323,7 +339,7 @@ track information in a way suitable to the use case.</p>
 </div></blockquote>
 <p><strong>mode</strong> : str, optional</p>
 <blockquote class="last">
-<div><p>String indicating file opening mode to be used (defaults to &#8216;rb&#8217;).</p>
+<div><p>String indicating file opening mode to be used (defaults to ‘rb’).</p>
 </div></blockquote>
 </td>
 </tr>
@@ -332,14 +348,14 @@ track information in a way suitable to the use case.</p>
 <dl class="method">
 <dt id="pyne.mcnp.SurfSrc.print_header">
 <code class="descname">print_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#SurfSrc.print_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.SurfSrc.print_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns contents of SurfSrc&#8217;s header as an informative string.</p>
+<dd><p>Returns contents of SurfSrc’s header as an informative string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>header_string</strong> : str</p>
 <blockquote class="last">
-<div><p>A line-by-line listing of the contents of the SurfSrc&#8217;s header.</p>
+<div><p>A line-by-line listing of the contents of the SurfSrc’s header.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -432,7 +448,7 @@ comprises five parts shown below.</p>
 <dt id="pyne.mcnp.SurfSrc.write_tracklist">
 <code class="descname">write_tracklist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#SurfSrc.write_tracklist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.SurfSrc.write_tracklist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write track records for individual particles. Second part of the MCNP
-surface source file.  Tracklist is also known as a &#8216;phase space&#8217;.</p>
+surface source file.  Tracklist is also known as a ‘phase space’.</p>
 </dd></dl>
 
 </dd></dl>
@@ -446,7 +462,7 @@ Cartesian mesh WWINP files are supported. Neutron, photon, and
 simotaneous neutron and photon WWINP files are supported.</p>
 <p class="rubric">Notes</p>
 <p>Attribute names are identical to names speficied in WWINP file
-description in the MCNP5 User&#8217;s Guide Volume 3 Appendix J.</p>
+description in the MCNP5 User’s Guide Volume 3 Appendix J.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -491,7 +507,7 @@ description in the MCNP5 User&#8217;s Guide Volume 3 Appendix J.</p>
 <td>(list of lists) of spacial bounds in the i, j, k dimensions.</td>
 </tr>
 <tr class="row-odd"><td>mesh</td>
-<td>(Mesh object) with a structured mesh containing all the neutron and/or photon weight window lower bounds. These tags have the form &#8220;ww_X&#8221; where X is n or p The mesh has rootSet tags in the form X_e_upper_bounds.</td>
+<td>(Mesh object) with a structured mesh containing all the neutron and/or photon weight window lower bounds. These tags have the form “ww_X” where X is n or p The mesh has rootSet tags in the form X_e_upper_bounds.</td>
 </tr>
 </tbody>
 </table>
@@ -499,7 +515,7 @@ description in the MCNP5 User&#8217;s Guide Volume 3 Appendix J.</p>
 <dt id="pyne.mcnp.Wwinp.read_mesh">
 <code class="descname">read_mesh</code><span class="sig-paren">(</span><em>mesh</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#Wwinp.read_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.Wwinp.read_mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method creates a Wwinp object from a structured mesh object.
-The mesh must have tags in the form &#8220;ww_X&#8221; where X is n
+The mesh must have tags in the form “ww_X” where X is n
 or p. For every particle there must be a rootSet tag in the form
 X_e_upper_bounds containing a list of energy upper bounds.</p>
 </dd></dl>
@@ -523,7 +539,7 @@ X_e_upper_bounds containing a list of energy upper bounds.</p>
 <em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">Xsdir</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#Xsdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.Xsdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class stores the information contained in a single MCNP xsdir file.</p>
 <p class="rubric">Notes</p>
-<p>See MCNP5 User&#8217;s Guide Volume 3 Appendix K for more information.</p>
+<p>See MCNP5 User’s Guide Volume 3 Appendix K for more information.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -637,7 +653,7 @@ in the xsdir.</p>
 <em class="property">class </em><code class="descclassname">pyne.mcnp.</code><code class="descname">XsdirTable</code><a class="reference internal" href="../_modules/pyne/mcnp.html#XsdirTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.XsdirTable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stores all information that describes a xsdir table entry, which appears
 as a single line in xsdir file. Attribute names are based off of those
-found in the MCNP5 User&#8217;s Guide Volume 3, appendix K.</p>
+found in the MCNP5 User’s Guide Volume 3, appendix K.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -646,7 +662,7 @@ found in the MCNP5 User&#8217;s Guide Volume 3, appendix K.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>name</td>
-<td>(str) The ZAID and library identifier, delimited by a &#8216;.&#8217;.</td>
+<td>(str) The ZAID and library identifier, delimited by a ‘.’.</td>
 </tr>
 <tr class="row-even"><td>awr</td>
 <td>(float) The atomic mass ratio of the nuclide.</td>
@@ -682,7 +698,7 @@ found in the MCNP5 User&#8217;s Guide Volume 3, appendix K.</p>
 </table>
 <dl class="method">
 <dt id="pyne.mcnp.XsdirTable.to_serpent">
-<code class="descname">to_serpent</code><span class="sig-paren">(</span><em>directory=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#XsdirTable.to_serpent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.XsdirTable.to_serpent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">to_serpent</code><span class="sig-paren">(</span><em>directory=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#XsdirTable.to_serpent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.XsdirTable.to_serpent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts table to serpent format.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -730,7 +746,7 @@ otherwise.</p>
 
 <dl class="function">
 <dt id="pyne.mcnp.mat_from_inp_line">
-<code class="descclassname">pyne.mcnp.</code><code class="descname">mat_from_inp_line</code><span class="sig-paren">(</span><em>filename</em>, <em>mat_line</em>, <em>densities='None'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#mat_from_inp_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.mat_from_inp_line" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.mcnp.</code><code class="descname">mat_from_inp_line</code><span class="sig-paren">(</span><em>filename</em>, <em>mat_line</em>, <em>densities=’None’</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#mat_from_inp_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.mat_from_inp_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function reads an MCNP material card from a file and returns a
 Material or Multimaterial object for the material described by the card.
 This function is used by <a class="reference internal" href="#pyne.mcnp.mats_from_inp" title="pyne.mcnp.mats_from_inp"><code class="xref py py-func docutils literal"><span class="pre">mats_from_inp()</span></code></a>.</p>
@@ -792,7 +808,7 @@ materials).</p>
 
 <dl class="function">
 <dt id="pyne.mcnp.mesh_to_geom">
-<code class="descclassname">pyne.mcnp.</code><code class="descname">mesh_to_geom</code><span class="sig-paren">(</span><em>mesh</em>, <em>frac_type='mass'</em>, <em>title_card='Generated from PyNE Mesh'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#mesh_to_geom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.mesh_to_geom" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.mcnp.</code><code class="descname">mesh_to_geom</code><span class="sig-paren">(</span><em>mesh</em>, <em>frac_type=’mass’</em>, <em>title_card=’Generated from PyNE Mesh’</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mcnp.html#mesh_to_geom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mcnp.mesh_to_geom" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function reads a structured Mesh object and returns the geometry
 portion of an MCNP input file (cells, surfaces, materials), prepended by a
 title card. The mesh must be axis aligned. Surfaces and cells are written
@@ -807,7 +823,7 @@ in xyz iteration order (z changing fastest).</p>
 </div></blockquote>
 <p><strong>frac_type</strong> : str, optional</p>
 <blockquote>
-<div><p>Either &#8216;mass&#8217; or &#8216;atom&#8217;. The type of fraction to use for the material
+<div><p>Either ‘mass’ or ‘atom’. The type of fraction to use for the material
 definition.</p>
 </div></blockquote>
 <p><strong>title_card</strong> : str, optional</p>
@@ -838,10 +854,10 @@ the proper order.</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">MCNP Input and Output Interfaces &#8211; <code class="docutils literal"><span class="pre">pyne.mcnp</span></code></a><ul>
+<li><a class="reference internal" href="#">MCNP Input and Output Interfaces – <code class="docutils literal"><span class="pre">pyne.mcnp</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.mcnp">MCNP API</a></li>
 </ul>
 </li>
@@ -893,6 +909,23 @@ the proper order.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -917,8 +950,17 @@ the proper order.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

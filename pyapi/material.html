@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="materials-pyne-material">
-<span id="pyne-material"></span><h1>Materials &#8211; <code class="xref py py-mod docutils literal"><span class="pre">pyne.material</span></code><a class="headerlink" href="#materials-pyne-material" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-material"></span><h1>Materials – <code class="xref py py-mod docutils literal"><span class="pre">pyne.material</span></code><a class="headerlink" href="#materials-pyne-material" title="Permalink to this headline">¶</a></h1>
 <p>This module contains the Material class, which is used to represent nuclear
 materials throughout PyNE.</p>
 <p>All functionality may be found in the <code class="docutils literal"><span class="pre">material</span></code> package:</p>
@@ -90,9 +106,9 @@ have two main attributes which define them.</p>
 not be normalized; Material initialization will automatically
 renormalize the stream.  Thus the comp simply is a dictionary of
 relative mass.  The keys of comp must be integers representing
-nuclides in id-form.  The values are floats for each nuclide&#8217;s
+nuclides in id-form.  The values are floats for each nuclide’s
 mass fraction. If a string is provided instead of a dictionary, then
-Material will read in the comp vector from a file at the string&#8217;s
+Material will read in the comp vector from a file at the string’s
 location.  This either plaintext or hdf5 files. If no comp is provided,
 an empty Material object is constructed.</p>
 </div></blockquote>
@@ -100,7 +116,7 @@ an empty Material object is constructed.</p>
 <blockquote>
 <div><p>This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
-sum of compdict&#8217;s components before normalization.  If the mass here is
+sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
 </div></blockquote>
 <p><strong>density</strong> : float, optional</p>
@@ -121,7 +137,7 @@ arbitrary metadata about the material.</p>
 </div></blockquote>
 <p><strong>free_mat</strong> : bool, optional</p>
 <blockquote class="last">
-<div><p>Flag for whether this wrapper &#8216;owns&#8217; this underlying C++ pyne::Material
+<div><p>Flag for whether this wrapper ‘owns’ this underlying C++ pyne::Material
 object, and thus determines whether or not to deallocate it on wrapper
 destruction.</p>
 </div></blockquote>
@@ -168,7 +184,7 @@ attributes as ALARA valid comments.</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; None.  Remove all items from D.<a class="headerlink" href="#pyne.material.Material.clear" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None.  Remove all items from D.<a class="headerlink" href="#pyne.material.Material.clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -329,7 +345,7 @@ inhale_dose returns mrem per g</p>
 <dl class="method">
 <dt id="pyne.material.Material.expand_elements">
 <code class="descname">expand_elements</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.expand_elements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exapnds the elements (&#8216;U&#8217;, &#8216;C&#8217;, etc) in the material by replacing them
+<dd><p>Exapnds the elements (‘U’, ‘C’, etc) in the material by replacing them
 with their natural isotopic distributions.  This function returns a copy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -352,7 +368,7 @@ with their natural isotopic distributions.  This function returns a copy.</p>
 otherwise return the compound material record and the fluka
 compound record
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>The sequential material id starting from 26 unless predefined</div></blockquote>
 </dd></dl>
@@ -363,7 +379,7 @@ Parameters
 <dd><p>Return the FLUKA MATERIAL record for the compound, and the 
 FLUKA COMPOUND record for the components
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>The sequential compound id starting from 26 unless predefined</div></blockquote>
 </dd></dl>
@@ -373,7 +389,7 @@ Parameters
 <code class="descname">fluka_format_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_format_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string for a single field in the FLUKA MATERIAL record
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>The field value</div></blockquote>
 </dd></dl>
@@ -383,7 +399,7 @@ Parameters
 <code class="descname">fluka_material_component</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_component" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the FLUKA MATERIAL record with the given id, nucid and name. 
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>The sequential material id, the (single) nucid, and the fluka name</div></blockquote>
 </dd></dl>
@@ -394,7 +410,7 @@ Parameters
 <dd><p>Return the FLUKA MATERIAL record with the given znum, atomic mass, id, 
 and fluka name
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>The znum, atomic mass, material id, and the fluka name</div></blockquote>
 </dd></dl>
@@ -405,7 +421,7 @@ Parameters
 <dd><p>Return the FLUKA MATERIAL record with the given id. 
 A single-component material is expected
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>The sequential material id starting from 26 unless predefined</div></blockquote>
 </dd></dl>
@@ -465,7 +481,7 @@ This is possible because Materials are hashable.</p>
 <p><strong>datapath</strong> : str</p>
 <blockquote>
 <div><p>Path to HDF5 table or group that represents the data.
-In the example below, datapath = &#8220;/material&#8221;.</p>
+In the example below, datapath = “/material”.</p>
 </div></blockquote>
 <p><strong>row</strong> : int, optional</p>
 <blockquote>
@@ -490,8 +506,8 @@ deprecated method using a group of arrays.  Protocol 1 is the newer,
 prefered method which uses a table of materials plus a side array of
 nuclides.</p>
 <p>The Protocol 0 HDF5 representation of a Material is a group that holds
-several extendable array datasets.  One array is entitled &#8220;Mass&#8221; while
-the other datasets are nuclide names in name form (&#8220;U235&#8221;, &#8220;NP237&#8221;,
+several extendable array datasets.  One array is entitled “Mass” while
+the other datasets are nuclide names in name form (“U235”, “NP237”,
 <em>etc</em>).  For example:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">file</span><span class="o">.</span><span class="n">h5</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="o">|--</span> <span class="n">material</span> <span class="p">(</span><span class="n">group</span><span class="p">)</span>
@@ -520,7 +536,7 @@ the comp array:</p>
     <span class="o">|--</span> <span class="n">material_attr</span> <span class="p">(</span><span class="n">variable</span> <span class="n">length</span> <span class="n">char</span> <span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The material table has a string attribute called &#8216;nucpath&#8217; which holds
+<p>The material table has a string attribute called ‘nucpath’ which holds
 the path to the nuclide array inside this HDF5 file.  The same nucpath
 may be used for multiple material tables.  The length of the nucpath
 must match the length of the comp arrays.</p>
@@ -617,32 +633,32 @@ Initialization is therefore a two-step process:</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; D[k] if k in D, else d.  d defaults to None.<a class="headerlink" href="#pyne.material.Material.get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D[k] if k in D, else d.  d defaults to None.<a class="headerlink" href="#pyne.material.Material.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.items">
-<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list of D's (key, value) pairs, as 2-tuples<a class="headerlink" href="#pyne.material.Material.items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D’s (key, value) pairs, as 2-tuples<a class="headerlink" href="#pyne.material.Material.items" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.iteritems">
-<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; an iterator over the (key, value) items of D<a class="headerlink" href="#pyne.material.Material.iteritems" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the (key, value) items of D<a class="headerlink" href="#pyne.material.Material.iteritems" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.iterkeys">
-<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; an iterator over the keys of D<a class="headerlink" href="#pyne.material.Material.iterkeys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the keys of D<a class="headerlink" href="#pyne.material.Material.iterkeys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.itervalues">
-<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; an iterator over the values of D<a class="headerlink" href="#pyne.material.Material.itervalues" title="Permalink to this definition">¶</a></dt>
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the values of D<a class="headerlink" href="#pyne.material.Material.itervalues" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list of D's keys<a class="headerlink" href="#pyne.material.Material.keys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D’s keys<a class="headerlink" href="#pyne.material.Material.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -700,9 +716,9 @@ for water is 3.0.</p>
 <code class="descname">mcnp</code><span class="sig-paren">(</span><em>frac_type</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mcnp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an mcnp card
 Parameters
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
-<div>int 0 means use &#8220;mass&#8221; as the frac_type</div></blockquote>
+<div>int 0 means use “mass” as the frac_type</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -743,9 +759,39 @@ nuctopic vector.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nucvec</strong> : dict</p>
 <blockquote class="last">
 <div><p>For a Material mat,</p>
-<div class="math">
-<p><img src="../_images/math/bf59a8c155f6dde73729d7a348bc81dba5296f56.png" alt="\mbox{nucvec[nuc]} = \mbox{mat.comp[nuc]} \times \mbox{mat.mass}"/></p>
-</div></div></blockquote>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\mbox{nucvec[nuc]} = \mbox{mat.comp[nuc]} \times \mbox{mat.mass}
+
+</tt>)</p>
+<p>latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</p>
+</div>
+</div></blockquote>
 </td>
 </tr>
 </tbody>
@@ -771,7 +817,7 @@ mass = 1.0.</p>
 <code class="descname">not_fluka_builtin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.not_fluka_builtin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether a string is in the fluka built-in list
 Parameters 
-&#8212;&#8212;&#8212;-</p>
+———-</p>
 <blockquote>
 <div>A string representing a FLUKA material name</div></blockquote>
 </dd></dl>
@@ -837,13 +883,13 @@ intensities</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.pop">
-<code class="descname">pop</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; v, remove specified key and return the corresponding value.<a class="headerlink" href="#pyne.material.Material.pop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pop</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; v, remove specified key and return the corresponding value.<a class="headerlink" href="#pyne.material.Material.pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.popitem">
-<code class="descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; (k, v), remove and return some (key, value) pair<a class="headerlink" href="#pyne.material.Material.popitem" title="Permalink to this definition">¶</a></dt>
+<code class="descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; (k, v), remove and return some (key, value) pair<a class="headerlink" href="#pyne.material.Material.popitem" title="Permalink to this definition">¶</a></dt>
 <dd><p>as a 2-tuple; but raise KeyError if D is empty.</p>
 </dd></dl>
 
@@ -858,7 +904,7 @@ material.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc_sequence</strong> : sequence</p>
 <blockquote>
-<div><p>Nuctopes &#8211;OR&#8211; elements to be taken from current stream.
+<div><p>Nuctopes –OR– elements to be taken from current stream.
 Members of this list must be integers.  For example, [922350, 942390]
 would take U-235 and Pu-239.</p>
 </div></blockquote>
@@ -916,7 +962,7 @@ a new mass weight value.</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.setdefault">
-<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; D.get(k,d), also set D[k]=d if k not in D<a class="headerlink" href="#pyne.material.Material.setdefault" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D.get(k,d), also set D[k]=d if k not in D<a class="headerlink" href="#pyne.material.Material.setdefault" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1023,7 +1069,7 @@ of only the specified nuclides.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc_sequence</strong> : sequence</p>
 <blockquote>
-<div><p>Nuctopes &#8211;OR&#8211; elements to be taken from current stream.
+<div><p>Nuctopes –OR– elements to be taken from current stream.
 Members of this list must be integers.  For example, [922350, 942390]
 would take U-235 and Pu-239.</p>
 </div></blockquote>
@@ -1170,7 +1216,7 @@ material.</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.update">
-<code class="descname">update</code><span class="sig-paren">(</span><span class="optional">[</span><em>E</em>, <span class="optional">]</span><em>**F</em><span class="sig-paren">)</span> &rarr; None.  Update D from mapping/iterable E and F.<a class="headerlink" href="#pyne.material.Material.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><span class="optional">[</span><em>E</em>, <span class="optional">]</span><em>**F</em><span class="sig-paren">)</span> &#x2192; None.  Update D from mapping/iterable E and F.<a class="headerlink" href="#pyne.material.Material.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
 If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
 In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
@@ -1178,7 +1224,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list of D's values<a class="headerlink" href="#pyne.material.Material.values" title="Permalink to this definition">¶</a></dt>
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D’s values<a class="headerlink" href="#pyne.material.Material.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1202,7 +1248,7 @@ to the file with the supplied filename.</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.write_hdf5">
-<code class="descname">write_hdf5</code><span class="sig-paren">(</span><em>filename</em>, <em>datapath=&quot;/material&quot;</em>, <em>nucpath=&quot;/nucid&quot;</em>, <em>row=-0.0</em>, <em>chunksize=100</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_hdf5" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write_hdf5</code><span class="sig-paren">(</span><em>filename</em>, <em>datapath=”/material”</em>, <em>nucpath=”/nucid”</em>, <em>row=-0.0</em>, <em>chunksize=100</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the material to an HDF5 file, using Protocol 1 (see the
 from_hdf5() method).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1288,7 +1334,7 @@ exists, it will be overwritten.</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.write_mcnp">
-<code class="descname">write_mcnp</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>frac_type='mass'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_mcnp" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write_mcnp</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>frac_type=’mass’</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_mcnp" title="Permalink to this definition">¶</a></dt>
 <dd><p>The method appends an MCNP mass fraction definition, with
 attributes to the file with the supplied filename.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1301,7 +1347,7 @@ attributes to the file with the supplied filename.</p>
 </div></blockquote>
 <p><strong>frac_type</strong> : str, optional</p>
 <blockquote class="last">
-<div><p>Either &#8216;mass&#8217; or &#8216;atom&#8217;. Speficies whether mass or atom fractions
+<div><p>Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
 are used to describe material composition.</p>
 </div></blockquote>
 </td>
@@ -1378,7 +1424,7 @@ must be castable to floats.</p>
 <blockquote>
 <div><p>This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
-sum of compdict&#8217;s components before normalization.  If the mass here is
+sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
 </div></blockquote>
 <p><strong>density</strong> : float, optional</p>
@@ -1503,7 +1549,7 @@ the HDF5 file.</p>
 <blockquote>
 <div><p>This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
-sum of compdict&#8217;s components before normalization.  If the mass here is
+sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
 </div></blockquote>
 <p><strong>atoms_per_molecule</strong> : float, optional</p>
@@ -1547,7 +1593,7 @@ arbitrary metadata about the material.</p>
 <h2>Material Library<a class="headerlink" href="#material-library" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pyne.material.MaterialLibrary">
-<em class="property">class </em><code class="descclassname">pyne.material.</code><code class="descname">MaterialLibrary</code><span class="sig-paren">(</span><em>lib=None</em>, <em>datapath=&quot;/materials&quot;</em>, <em>nucpath=&quot;/nucid&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyne.material.</code><code class="descname">MaterialLibrary</code><span class="sig-paren">(</span><em>lib=None</em>, <em>datapath=”/materials”</em>, <em>nucpath=”/nucid”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary" title="Permalink to this definition">¶</a></dt>
 <dd><p>The material library is a collection of unique keys mapped to
 Material objects.  This is useful for organization and declaring
 prefernces between several sources (multiple libraries).</p>
@@ -1574,7 +1620,7 @@ string, it is interpreted as a path to a file.</p>
 </table>
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; None.  Remove all items from D.<a class="headerlink" href="#pyne.material.MaterialLibrary.clear" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None.  Remove all items from D.<a class="headerlink" href="#pyne.material.MaterialLibrary.clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1623,54 +1669,54 @@ string, it is interpreted as a path to a file.</p>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; D[k] if k in D, else d.  d defaults to None.<a class="headerlink" href="#pyne.material.MaterialLibrary.get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D[k] if k in D, else d.  d defaults to None.<a class="headerlink" href="#pyne.material.MaterialLibrary.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.items">
-<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list of D's (key, value) pairs, as 2-tuples<a class="headerlink" href="#pyne.material.MaterialLibrary.items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D’s (key, value) pairs, as 2-tuples<a class="headerlink" href="#pyne.material.MaterialLibrary.items" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.iteritems">
-<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; an iterator over the (key, value) items of D<a class="headerlink" href="#pyne.material.MaterialLibrary.iteritems" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the (key, value) items of D<a class="headerlink" href="#pyne.material.MaterialLibrary.iteritems" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.iterkeys">
-<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; an iterator over the keys of D<a class="headerlink" href="#pyne.material.MaterialLibrary.iterkeys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the keys of D<a class="headerlink" href="#pyne.material.MaterialLibrary.iterkeys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.itervalues">
-<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; an iterator over the values of D<a class="headerlink" href="#pyne.material.MaterialLibrary.itervalues" title="Permalink to this definition">¶</a></dt>
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the values of D<a class="headerlink" href="#pyne.material.MaterialLibrary.itervalues" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list of D's keys<a class="headerlink" href="#pyne.material.MaterialLibrary.keys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D’s keys<a class="headerlink" href="#pyne.material.MaterialLibrary.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.pop">
-<code class="descname">pop</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; v, remove specified key and return the corresponding value.<a class="headerlink" href="#pyne.material.MaterialLibrary.pop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pop</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; v, remove specified key and return the corresponding value.<a class="headerlink" href="#pyne.material.MaterialLibrary.pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.popitem">
-<code class="descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; (k, v), remove and return some (key, value) pair<a class="headerlink" href="#pyne.material.MaterialLibrary.popitem" title="Permalink to this definition">¶</a></dt>
+<code class="descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; (k, v), remove and return some (key, value) pair<a class="headerlink" href="#pyne.material.MaterialLibrary.popitem" title="Permalink to this definition">¶</a></dt>
 <dd><p>as a 2-tuple; but raise KeyError if D is empty.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.setdefault">
-<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; D.get(k,d), also set D[k]=d if k not in D<a class="headerlink" href="#pyne.material.MaterialLibrary.setdefault" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D.get(k,d), also set D[k]=d if k not in D<a class="headerlink" href="#pyne.material.MaterialLibrary.setdefault" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.update">
-<code class="descname">update</code><span class="sig-paren">(</span><span class="optional">[</span><em>E</em>, <span class="optional">]</span><em>**F</em><span class="sig-paren">)</span> &rarr; None.  Update D from mapping/iterable E and F.<a class="headerlink" href="#pyne.material.MaterialLibrary.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><span class="optional">[</span><em>E</em>, <span class="optional">]</span><em>**F</em><span class="sig-paren">)</span> &#x2192; None.  Update D from mapping/iterable E and F.<a class="headerlink" href="#pyne.material.MaterialLibrary.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
 If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
 In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
@@ -1678,7 +1724,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list of D's values<a class="headerlink" href="#pyne.material.MaterialLibrary.values" title="Permalink to this definition">¶</a></dt>
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D’s values<a class="headerlink" href="#pyne.material.MaterialLibrary.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1738,10 +1784,10 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Materials &#8211; <code class="docutils literal"><span class="pre">pyne.material</span></code></a><ul>
+<li><a class="reference internal" href="#">Materials – <code class="docutils literal"><span class="pre">pyne.material</span></code></a><ul>
 <li><a class="reference internal" href="#material-class">Material Class</a></li>
 <li><a class="reference internal" href="#material-generation-functions">Material Generation Functions</a></li>
 <li><a class="reference internal" href="#material-library">Material Library</a></li>
@@ -1795,6 +1841,23 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -1819,8 +1882,17 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

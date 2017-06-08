@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -68,7 +84,7 @@ Generation of DRAGLIB and ACELIB.  Please see the tutorial at
 <blockquote>
 <div>This code was originally distirbuted under the LGPL license (below).
 However, we have been given written permission from the author Alain
-Herbert to redistribute it under PyNE&#8217;s BSD license.</div></blockquote>
+Herbert to redistribute it under PyNE’s BSD license.</div></blockquote>
 <p>Original Copyright:</p>
 <blockquote>
 <div>Copyright (C) 2003 Ecole Polytechnique de Montreal
@@ -82,7 +98,7 @@ processing of an evaluated datafile is done by invoking methods of the Njoy99
 class. This class contains the various instance variables and methods required
 to use NJOY in the simplest possible way.</p>
 <p>For a complete specification for the classes in the <code class="docutils literal"><span class="pre">njoy</span></code> module, please
-refer to the Library Reference entry for <a class="reference internal" href="../pyapi/njoy.html#pyne-njoy"><span class="std std-ref">NJOY Automation &#8211; pyne.njoy</span></a>.</p>
+refer to the Library Reference entry for <a class="reference internal" href="../pyapi/njoy.html#pyne-njoy"><span class="std std-ref">NJOY Automation – pyne.njoy</span></a>.</p>
 <div class="section" id="njoy99-attributes">
 <h2>Njoy99 Attributes<a class="headerlink" href="#njoy99-attributes" title="Permalink to this headline">¶</a></h2>
 <p>The generation of cross section libraries is controlled by a number of
@@ -109,7 +125,7 @@ coupled sets (equal to zero by default)</dd>
 weighting; = 4 recommended/default)</dd>
 <dt>self.wght</dt>
 <dd>User-defined weighting spectra to be used if self.iwt = 1. Given as
-&#8220;&#8221;&#8220;–delimited string.</dd>
+“”“–delimited string.</dd>
 <dt>self.autolib</dt>
 <dd>Three-component tuple containing the energy limits of the autolibs (must
 correspond to energy-group limits) and the elementary lethargy width of the
@@ -188,12 +204,12 @@ evaluated datafile for the particular element, one can obtain the value for
 self.potential. In general we cannot provide more than ten temperature values
 and ten dilution values. If one has to generate cross sections for more than ten
 dilution values, it has to be split, as shown in example for U-235. After each
-&#8220;self.dragr()&#8221; run, one will obtain a file &#8220;out draglib elementname&#8221;. Energy
+“self.dragr()” run, one will obtain a file “out draglib elementname”. Energy
 information is recovered from this ascii file by method self.burnup() and is
-collected in a file named &#8216;chain&#8217; + self.evaluationName (stored on directory
+collected in a file named ‘chain’ + self.evaluationName (stored on directory
 self.evaluationName). Sometimes, it is likely that fission energy is not
-provided in the tape.  In that case one obtains &#8221;????????&#8221; in the &#8220;out draglib
-elementname&#8221; file. In that case, one has to obtain the energy value from some
+provided in the tape.  In that case one obtains “????????” in the “out draglib
+elementname” file. In that case, one has to obtain the energy value from some
 other source (typically, from another evaluation) and provide it using the
 self.eFiss instance variable, even if one does not use the tape for generation
 of multigroup data.</p>
@@ -219,9 +235,96 @@ fission products. All the isotopes missing in the ’chain’
 + self.evaluationName file are tested against a lumping criterion and are lumped. The criterion for
 lumping a depleting isotope is a half life less than thirty days and a fission yield less than 0.01%. If this
 criterion is not met, this isotope is lumped and a warning message is issued.</p>
-<p>Information on energies for various reaction types like (n, <img class="math" src="../_images/math/0ebb67342b546ca42a1c634b1ef03c893c4cdedb.png" alt="\gamma"/>), (n,
-f), (n, 2n), (n, 3n), (n, 4n), (n, <img class="math" src="../_images/math/ad59b6e24a4a00ac621801f8d7513d68be654ab5.png" alt="\alpha"/>), (n, p), (n, 2
-<img class="math" src="../_images/math/ad59b6e24a4a00ac621801f8d7513d68be654ab5.png" alt="\alpha"/>), (n, np), (n, d), (n, t) are recovered from earlier DRAGR
+<p>Information on energies for various reaction types like (n, <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\gamma</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+), (n,
+f), (n, 2n), (n, 3n), (n, 4n), (n, <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\alpha</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+), (n, p), (n, 2
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\alpha</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+), (n, np), (n, d), (n, t) are recovered from earlier DRAGR
 single-isotope calculations and used for inclusion in relevant depletion data in
 DRAGLIB format. The fission energy (n, f) is obtained from MF1 MT458 and the
 energy from delayed betas and gammas are subtracted from it. Information
@@ -336,19 +439,19 @@ of elements will be provided to understand the nuances of ACELIB library
 generation. The examples will be along the same lines as that for DRAGLIB
 library generation, i.e scattering material (heavy water), structural material
 (Zirconium), fission product (Xe135), Actinide (U-235). The prsent script is
-such that the ACELIBs are appended in a single file named &#8220;acecandu&#8221; and is
+such that the ACELIBs are appended in a single file named “acecandu” and is
 available in the same directory as the draglib file. The other important file
-that is generated is the &#8220;acexsdir&#8221;, which contains the information about the
+that is generated is the “acexsdir”, which contains the information about the
 nuclides for which the cross sections are generated and the temperature at which
-the ACELIB is generated. A small code has been written-&#8220;append.f&#8221;, which will
-read the file acecandu and acexsdir and create the file &#8220;myxsdir&#8221;. This file has
+the ACELIB is generated. A small code has been written-“append.f”, which will
+read the file acecandu and acexsdir and create the file “myxsdir”. This file has
 to be appended to existing xsdir file provided with MCNP5 data. It is important
-to provide suffix values &#8220;self.suff&#8221; for different temperatures. This will be
+to provide suffix values “self.suff” for different temperatures. This will be
 automatically appended to the ZA value and written in main ACELIB and xsdir
-file. Care should be taken not to repeat the &#8221;.suff&#8221; value already used in xsdir
+file. Care should be taken not to repeat the “.suff” value already used in xsdir
 file for other evaluations. For each temperature provide different
-&#8220;self.dirName&#8221; so that all the required data for comparison with PENDF tape
-generated using PREPRO code is made possible. The &#8220;self.comp()&#8221; does the task of
+“self.dirName” so that all the required data for comparison with PENDF tape
+generated using PREPRO code is made possible. The “self.comp()” does the task of
 verifying the ACELIBs generated, and is described in the next section.  The
 example provided here helps in generating ACELIB alone. In case a DRAGLIB file
 also is to be generated, please refer to Figure 2.</p>
@@ -483,7 +586,7 @@ also is to be generated, please refer to Figure 2.</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">NJOY Automation</a><ul>
@@ -553,6 +656,23 @@ also is to be generated, please refer to Figure 2.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -577,8 +697,17 @@ also is to be generated, please refer to Figure 2.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

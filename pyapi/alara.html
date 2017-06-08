@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="alara-input-and-output-interfaces-pyne-alara">
-<span id="pyne-alara"></span><h1>ALARA Input and Output Interfaces &#8211; <a class="reference internal" href="#module-pyne.alara" title="pyne.alara"><code class="xref py py-mod docutils literal"><span class="pre">pyne.alara</span></code></a><a class="headerlink" href="#alara-input-and-output-interfaces-pyne-alara" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-alara"></span><h1>ALARA Input and Output Interfaces – <a class="reference internal" href="#module-pyne.alara" title="pyne.alara"><code class="xref py py-mod docutils literal"><span class="pre">pyne.alara</span></code></a><a class="headerlink" href="#alara-input-and-output-interfaces-pyne-alara" title="Permalink to this headline">¶</a></h1>
 <p>This is a module for reading and writing ALARA input to and from PyNE Mesh
 objects. The functionality of the module can be obtained by importing as such:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">alara</span>
@@ -99,13 +115,13 @@ objects. The functionality of the module can be obtained by importing as such:</
 
 <dl class="function">
 <dt id="pyne.alara.irradiation_blocks">
-<code class="descclassname">pyne.alara.</code><code class="descname">irradiation_blocks</code><span class="sig-paren">(</span><em>material_lib</em>, <em>element_lib</em>, <em>data_library</em>, <em>cooling</em>, <em>flux_file</em>, <em>irr_time</em>, <em>output = &quot;number_density&quot;</em>, <em>truncation=1E-12</em>, <em>impurity = (5E-6</em>, <em>1E-3)</em>, <em>dump_file = &quot;dump_file&quot;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#irradiation_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.irradiation_blocks" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.alara.</code><code class="descname">irradiation_blocks</code><span class="sig-paren">(</span><em>material_lib</em>, <em>element_lib</em>, <em>data_library</em>, <em>cooling</em>, <em>flux_file</em>, <em>irr_time</em>, <em>output = “number_density”</em>, <em>truncation=1E-12</em>, <em>impurity = (5E-6</em>, <em>1E-3)</em>, <em>dump_file = “dump_file”</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#irradiation_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.irradiation_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function returns a string of the irradation-related input blocks. This
 function is meant to be used with files created by the mesh_to_geom
 function, in order to append the remaining input blocks to form a complete
 ALARA input file. Only the simplest irradiation schedule is supported: a
 single pulse of time &lt;irr_time&gt;. The notation in this function is consistent
-with the ALARA users&#8217; guide, found at:</p>
+with the ALARA users’ guide, found at:</p>
 <p><a class="reference external" href="http://alara.engr.wisc.edu/users.guide.html/">http://alara.engr.wisc.edu/users.guide.html/</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -121,33 +137,33 @@ with the ALARA users&#8217; guide, found at:</p>
 </div></blockquote>
 <p><strong>data_library</strong> : str</p>
 <blockquote>
-<div><p>The data_library card (see ALARA user&#8217;s guide).</p>
+<div><p>The data_library card (see ALARA user’s guide).</p>
 </div></blockquote>
 <p><strong>cooling</strong> : str or iterable of str</p>
 <blockquote>
 <div><p>Cooling times for which output is requested. Given in ALARA form (e.g.
-&#8220;1 h&#8221;, &#8220;0.5 y&#8221;). Note that &#8220;shutdown&#8221; is always implicitly included.</p>
+“1 h”, “0.5 y”). Note that “shutdown” is always implicitly included.</p>
 </div></blockquote>
 <p><strong>flux_file</strong> : str</p>
 <blockquote>
-<div><p>Path to the &#8220;fluxin&#8221; file.</p>
+<div><p>Path to the “fluxin” file.</p>
 </div></blockquote>
 <p><strong>irr_time</strong> : str</p>
 <blockquote>
 <div><p>The duration of the single pulse irradiation. Given in the ALARA form
-(e.g. &#8220;1 h&#8221;, &#8220;0.5 y&#8221;).</p>
+(e.g. “1 h”, “0.5 y”).</p>
 </div></blockquote>
 <p><strong>output</strong> : str or iterable of str, optional.</p>
 <blockquote>
-<div><p>The requested output blocks (see ALARA users&#8217; guide).</p>
+<div><p>The requested output blocks (see ALARA users’ guide).</p>
 </div></blockquote>
 <p><strong>truncation</strong> : float, optional</p>
 <blockquote>
-<div><p>The chain truncation value (see ALARA users&#8217; guide).</p>
+<div><p>The chain truncation value (see ALARA users’ guide).</p>
 </div></blockquote>
 <p><strong>impurity</strong> : tuple of two floats, optional</p>
 <blockquote>
-<div><p>The impurity parameters (see ALARA users&#8217; guide).</p>
+<div><p>The impurity parameters (see ALARA users’ guide).</p>
 </div></blockquote>
 <p><strong>dump_file: str, optional</strong></p>
 <blockquote>
@@ -167,7 +183,7 @@ with the ALARA users&#8217; guide, found at:</p>
 
 <dl class="function">
 <dt id="pyne.alara.mesh_to_fluxin">
-<code class="descclassname">pyne.alara.</code><code class="descname">mesh_to_fluxin</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>flux_tag</em>, <em>fluxin='fluxin.out'</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#mesh_to_fluxin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.mesh_to_fluxin" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.alara.</code><code class="descname">mesh_to_fluxin</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>flux_tag</em>, <em>fluxin=’fluxin.out’</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#mesh_to_fluxin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.mesh_to_fluxin" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function creates an ALARA fluxin file from fluxes tagged on a PyNE
 Mesh object. Fluxes are printed in the order of the flux_mesh.__iter__().</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -243,20 +259,20 @@ idx on the Mesh object.</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lines</strong> : list or str</p>
 <blockquote>
-<div><p>ALARA output from ALARA run with &#8216;number_density&#8217; in the &#8216;output&#8217; block
+<div><p>ALARA output from ALARA run with ‘number_density’ in the ‘output’ block
 of the input file. Lines can either be a filename or the equivalent to
 calling readlines() on an ALARA output file. If reading in ALARA output
-from stdout, call split(&#8216;</p>
+from stdout, call split(‘</p>
 </div></blockquote>
-<p><strong>&#8216;) before passing it in as the lines parameter.</strong></p>
+<p><strong>‘) before passing it in as the lines parameter.</strong></p>
 <blockquote class="last">
 <div><dl class="docutils">
-<dt>time</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd><p class="first last">The decay time for which number densities are requested (e.g. &#8216;1 h&#8217;,
-&#8216;shutdown&#8217;, etc.)</p>
+<dt>time <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The decay time for which number densities are requested (e.g. ‘1 h’,
+‘shutdown’, etc.)</p>
 </dd>
-<dt>m</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh</span><dd><p class="first last">Mesh object for which mats will be applied to.</p>
+<dt>m <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh</span></dt>
+<dd><p class="first last">Mesh object for which mats will be applied to.</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -289,14 +305,14 @@ file is assumed to be in mesh.__iter__() order</p>
 <blockquote class="last">
 <div><p>A dictionary were the keys are tuples with two values. The first is a
 string denoting an nuclide in any form that is understood by
-pyne.nucname (e.g. &#8216;1001&#8217;, &#8216;U-235&#8217;, &#8216;242Am&#8217;) or &#8216;TOTAL&#8217; for all
+pyne.nucname (e.g. ‘1001’, ‘U-235’, ‘242Am’) or ‘TOTAL’ for all
 nuclides. The second is a string denoting the decay time as it appears
-in the file (e.g. &#8216;shutdown&#8217;, &#8216;1 h&#8217; &#8216;3 d&#8217;). The values of the
+in the file (e.g. ‘shutdown’, ‘1 h’ ‘3 d’). The values of the
 dictionary are the requested tag names for the combination of nuclide
 and decay time. For example if one wanted tags for the photon source
 densities from U235 at shutdown and from all nuclides at 1 hour, the
 dictionary could be:</p>
-<p>tags = {(&#8216;U-235&#8217;, &#8216;shutdown&#8217;) : &#8216;tag1&#8217;, (&#8216;TOTAL&#8217;, &#8216;1 h&#8217;) : &#8216;tag2&#8217;}</p>
+<p>tags = {(‘U-235’, ‘shutdown’) : ‘tag1’, (‘TOTAL’, ‘1 h’) : ‘tag2’}</p>
 </div></blockquote>
 </td>
 </tr>
@@ -313,16 +329,16 @@ quick later use.</p>
 table headings:</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>idx</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd>The volume element index assuming the volume elements appear in xyz
+<dt>idx <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The volume element index assuming the volume elements appear in xyz
 order (z changing fastest) within the photon source file in the case of
 a structured mesh or imesh.iterate() order for an unstructured mesh.</dd>
-<dt>nuc</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd>The nuclide name as it appears in the photon source file.</dd>
-<dt>time</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd>The decay time as it appears in the photon source file.</dd>
-<dt>phtn_src</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">1D array of floats</span><dd>Contains the photon source density for each energy group.</dd>
+<dt>nuc <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The nuclide name as it appears in the photon source file.</dd>
+<dt>time <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The decay time as it appears in the photon source file.</dd>
+<dt>phtn_src <span class="classifier-delimiter">:</span> <span class="classifier">1D array of floats</span></dt>
+<dd>Contains the photon source density for each energy group.</dd>
 </dl>
 </div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
@@ -387,8 +403,8 @@ equal up to &lt;sig_figs&gt; digits to be the same mixture within ALARA.</p>
 <div><p>The Mesh object for which the geometry is discretized.</p>
 </div></blockquote>
 <dl class="docutils">
-<dt>cell_fracs</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">structured array</span><dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
+<dt>cell_fracs <span class="classifier-delimiter">:</span> <span class="classifier">structured array</span></dt>
+<dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
 <blockquote class="last">
 <div><table class="docutils field-list" frame="void" rules="none">
@@ -411,9 +427,9 @@ The relative error associated with the volume fraction.</td>
 </table>
 </div></blockquote>
 </dd>
-<dt>cell_mats</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd><p class="first last">Maps geometry cell numbers to PyNE Material objects. Each PyNE material
-object must have &#8216;name&#8217; specified in Material.metadata.</p>
+<dt>cell_mats <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Maps geometry cell numbers to PyNE Material objects. Each PyNE material
+object must have ‘name’ specified in Material.metadata.</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -447,10 +463,10 @@ to be treated as the same mixture within ALARA.</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">ALARA Input and Output Interfaces &#8211; <code class="docutils literal"><span class="pre">pyne.alara</span></code></a><ul>
+<li><a class="reference internal" href="#">ALARA Input and Output Interfaces – <code class="docutils literal"><span class="pre">pyne.alara</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.alara">ALARA API</a></li>
 </ul>
 </li>
@@ -502,6 +518,23 @@ to be treated as the same mixture within ALARA.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -526,8 +559,17 @@ to be treated as the same mixture within ALARA.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

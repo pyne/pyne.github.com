@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,13 +74,13 @@
           <div class="body" role="main">
             
   <div class="section" id="module-pyne.dbgen.eaf">
-<span id="eaf-pyne-dbgen-eaf"></span><span id="pyne-dbgen-eaf"></span><h1>EAF &#8211; <a class="reference internal" href="#module-pyne.dbgen.eaf" title="pyne.dbgen.eaf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.eaf</span></code></a><a class="headerlink" href="#module-pyne.dbgen.eaf" title="Permalink to this headline">¶</a></h1>
+<span id="eaf-pyne-dbgen-eaf"></span><span id="pyne-dbgen-eaf"></span><h1>EAF – <a class="reference internal" href="#module-pyne.dbgen.eaf" title="pyne.dbgen.eaf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.eaf</span></code></a><a class="headerlink" href="#module-pyne.dbgen.eaf" title="Permalink to this headline">¶</a></h1>
 <p>Module handles parsing EAF formatted cross section files and adding
-the data to PyNE&#8217;s HDF5 storage.  The data here is autonatically grabbed from
+the data to PyNE’s HDF5 storage.  The data here is autonatically grabbed from
 the IAEA.</p>
 <dl class="function">
 <dt id="pyne.dbgen.eaf.grab_eaf_data">
-<code class="descclassname">pyne.dbgen.eaf.</code><code class="descname">grab_eaf_data</code><span class="sig-paren">(</span><em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/eaf.html#grab_eaf_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.eaf.grab_eaf_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.eaf.</code><code class="descname">grab_eaf_data</code><span class="sig-paren">(</span><em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/eaf.html#grab_eaf_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.eaf.grab_eaf_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grabs the EAF activation data files
 if not already present.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -73,7 +89,7 @@ if not already present.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>build_dir</strong> : str</p>
 <blockquote class="last">
-<div><p>Major directory to place EAF data file(s) in. &#8216;EAF/&#8217; will be appended.</p>
+<div><p>Major directory to place EAF data file(s) in. ‘EAF/’ will be appended.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -89,7 +105,7 @@ if not already present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.eaf.make_eaf_table">
-<code class="descclassname">pyne.dbgen.eaf.</code><code class="descname">make_eaf_table</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_path=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/eaf.html#make_eaf_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.eaf.make_eaf_table" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.eaf.</code><code class="descname">make_eaf_table</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_path=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/eaf.html#make_eaf_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.eaf.make_eaf_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for adding EAF group and table to HDF5 storage.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -191,6 +207,23 @@ found in the EAF data.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -215,8 +248,17 @@ found in the EAF data.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

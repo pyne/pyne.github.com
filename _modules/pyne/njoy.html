@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,21 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -93,7 +108,7 @@
 
 <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the NJOY module is untested and considered experimental&quot;</span><span class="p">,</span> 
               <span class="ne">RuntimeWarning</span><span class="p">)</span>
-<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PyNjoyError"><a class="viewcode-back" href="../../pyapi/njoy.html#pyne.njoy.PyNjoyError">[docs]</a><span class="k">class</span> <span class="nc">PyNjoyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception indicating an error in PyNjoy.&quot;&quot;&quot;</span>
@@ -207,7 +222,7 @@
             <span class="n">nbatoms</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">elasopt</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;textdil&quot;</span><span class="p">:</span> <span class="n">textdil</span><span class="p">,</span> <span class="s2">&quot;nbdil&quot;</span><span class="p">:</span> <span class="n">nbdil</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;textdil&quot;</span><span class="p">:</span> <span class="n">textdil</span><span class="p">,</span> <span class="s2">&quot;nbdil&quot;</span><span class="p">:</span> <span class="n">nbdil</span><span class="p">,</span>
                               <span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">,</span> <span class="s2">&quot;nbtmp&quot;</span><span class="p">:</span> <span class="n">nbtmp</span><span class="p">,</span>  
                               <span class="s2">&quot;unitlaw&quot;</span><span class="p">:</span> <span class="n">unitlaw</span><span class="p">,</span> <span class="s2">&quot;matlaw&quot;</span><span class="p">:</span> <span class="n">matlaw</span><span class="p">,</span>
                               <span class="s2">&quot;typelaw&quot;</span><span class="p">:</span> <span class="n">typelaw</span><span class="p">,</span> <span class="s2">&quot;nbatoms&quot;</span><span class="p">:</span> <span class="n">nbatoms</span><span class="p">,</span>
@@ -223,35 +238,35 @@
             <span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2"> 1/</span><span class="se">\n</span><span class="s2">0.001  0.  0.005/</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;broadr</span><span class="se">\n</span><span class="s2">-21 -22 -23</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0.001/</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+            <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">purr</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
                 <span class="s2">&quot;purr</span><span class="se">\n</span><span class="s2">-21 -23 -24</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(nbdil)d</span><span class="s2"> 20 32/</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
                 <span class="s2">&quot;unresr</span><span class="se">\n</span><span class="s2">-21 -23 -24</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(nbdil)d</span><span class="s2"> 1/</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                <span class="s2">&quot;</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
                 <span class="s2">&quot;thermr</span><span class="se">\n</span><span class="s2">0 -24 -35</span><span class="se">\n</span><span class="s2">0 </span><span class="si">%(mat)d</span><span class="s2"> 16 </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(typelaw)d</span><span class="s2"> 0 &quot;</span>
                 <span class="s2">&quot;</span><span class="si">%(nbatoms)d</span><span class="s2"> 221 0</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0.001 4.0</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
                 <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
                     <span class="s2">&quot;thermr</span><span class="se">\n</span><span class="si">%(unitlaw)d</span><span class="s2"> -23 -35</span><span class="se">\n</span><span class="si">%(matlaw)d</span><span class="s2"> </span><span class="si">%(mat)d</span><span class="s2"> 16 &quot;</span>
                     <span class="s2">&quot;</span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(typelaw)d</span><span class="s2"> </span><span class="si">%(elasopt)d</span><span class="s2"> </span><span class="si">%(nbatoms)d</span><span class="s2"> &quot;</span>
                     <span class="s2">&quot;</span><span class="si">%(matsab_inc)d</span><span class="s2"> 0/</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">0.001 4.0</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                    <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">eaf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
                     <span class="s2">&quot;thermr</span><span class="se">\n</span><span class="s2">0 -23 -35</span><span class="se">\n</span><span class="s2">0 </span><span class="si">%(mat)d</span><span class="s2"> 16 </span><span class="si">%(nbtmp)d</span><span class="s2"> &quot;</span>
                     <span class="s2">&quot;</span><span class="si">%(typelaw)d</span><span class="s2"> 0 </span><span class="si">%(nbatoms)d</span><span class="s2"> 221 0</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;0.001 4.0</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                    <span class="s2">&quot;0.001 4.0</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-35 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">text_data</span> <span class="o">+=</span>  <span class="p">(</span>
-                    <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">-23 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                    <span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">-23 29</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -335,7 +350,7 @@
         <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperatures</span><span class="p">:</span>
             <span class="n">texttmp</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tmp</span>
         <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;textdil&quot;</span><span class="p">:</span> <span class="n">textdil</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;textdil&quot;</span><span class="p">:</span> <span class="n">textdil</span><span class="p">,</span>
                               <span class="s2">&quot;nbdil&quot;</span>  <span class="p">:</span> <span class="n">nbdil</span><span class="p">,</span>
                               <span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">,</span>
                               <span class="s2">&quot;nbtmp&quot;</span>  <span class="p">:</span> <span class="n">nbtmp</span><span class="p">,</span>
@@ -349,10 +364,10 @@
                      <span class="s2">&quot;-21 -25 0 -26</span><span class="se">\n</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(nstr)d</span><span class="s2"> </span><span class="si">%(gstr)d</span><span class="s2"> </span><span class="si">%(newiwt)d</span><span class="s2"> &quot;</span>
                      <span class="s2">&quot;</span><span class="si">%(legendre)d</span><span class="s2"> </span><span class="si">%(nbtmp)d</span><span class="s2"> </span><span class="si">%(nbdil)d</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
                      <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="si">%(texttmp)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span>
-                     <span class="s2">&quot;</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                     <span class="s2">&quot;</span><span class="si">%(textdil)s</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%(autosup)f</span><span class="s2"> </span><span class="si">%(potential)f</span><span class="s2"> 20000 / &quot;</span>
-                          <span class="s2">&quot;Homog. Flux Calc.Param&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                          <span class="s2">&quot;Homog. Flux Calc.Param&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wght</span>
         <span class="k">elif</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">newiwt</span> <span class="o">==</span> <span class="o">-</span><span class="mi">4</span><span class="p">:</span>
@@ -361,9 +376,9 @@
             <span class="k">if</span> <span class="n">eaf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">matsab_coh</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">3 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                  <span class="s2">&quot;3 </span><span class="si">%(matsab_coh)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                                  <span class="s2">&quot;3 </span><span class="si">%(matsab_coh)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">3 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+                    <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">3 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
             <span class="k">else</span><span class="p">:</span>
               <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;3/</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fission</span><span class="p">:</span>
@@ -375,9 +390,9 @@
             <span class="k">if</span> <span class="n">eaf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">matsab_coh</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">6 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">6 &quot;</span>
-                                  <span class="s2">&quot;</span><span class="si">%(matsab_coh)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                                  <span class="s2">&quot;</span><span class="si">%(matsab_coh)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">6 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+                    <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">6 </span><span class="si">%(matsab_inc)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;6 /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;0/</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-26 30</span><span class="se">\n</span><span class="s2">stop&quot;</span>
@@ -411,7 +426,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
         <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
 
         <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">40 -41</span><span class="se">\n</span><span class="s2">reconr</span><span class="se">\n</span><span class="s2">-41 -42</span><span class="se">\n</span><span class="s2">&quot;</span>
                      <span class="s2">&quot;&#39;pendf tape from </span><span class="si">%(evaluation_name)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -420,7 +435,7 @@
                      <span class="s2">&quot;-41 -42 0 -43</span><span class="se">\n</span><span class="si">%(matgg)d</span><span class="s2"> </span><span class="si">%(gstr)d</span><span class="s2"> 3 </span><span class="si">%(legendregg)d</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">&quot;</span>
                      <span class="s2">&quot;&#39;</span><span class="si">%(hmatgg)s</span><span class="s2"> (gamma) from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at &quot;</span>
                      <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">-1 /</span><span class="se">\n</span><span class="s2">0 /</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">-43 44</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> 
-                     <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                     <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -486,7 +501,7 @@
         <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dilutions</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span>
                                   <span class="s2">&quot;iold&quot;</span> <span class="p">:</span> <span class="n">iold</span><span class="p">,</span>
                                   <span class="s2">&quot;ss0&quot;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ss</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                   <span class="s2">&quot;ss1&quot;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ss</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
@@ -496,24 +511,24 @@
                                   <span class="s2">&quot;fp&quot;</span>   <span class="p">:</span> <span class="n">fp</span><span class="p">})</span>
             <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">22 -23</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">&quot;</span>
                          <span class="s2">&quot;dragr</span><span class="se">\n</span><span class="s2">-21 -23 -25 0 0 </span><span class="si">%(iold)d</span><span class="s2"> 30 </span><span class="si">%(fp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> 
-                         <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                         <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">iold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;&#39;draglib from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at &quot;</span>
-                              <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                              <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(hmat)s</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
                           <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> (</span><span class="si">%(mat)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">&quot;</span>
                           <span class="s2">&quot;</span><span class="si">%(ss0)E</span><span class="s2"> </span><span class="si">%(ss1)E</span><span class="s2"> /</span><span class="se">\n</span><span class="si">%(auto0)E</span><span class="s2"> </span><span class="si">%(auto1)E</span><span class="s2"> </span><span class="si">%(auto2)E</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;0/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                          <span class="s2">&quot;0/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span> <span class="s2">&quot;iold&quot;</span><span class="p">:</span> <span class="n">iold</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">,</span> <span class="s2">&quot;iold&quot;</span><span class="p">:</span> <span class="n">iold</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="p">})</span>
             <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">dragr</span><span class="se">\n</span><span class="s2">-21 0 -25 0 0 &quot;</span>
-                         <span class="s2">&quot;</span><span class="si">%(iold)d</span><span class="s2"> 30 </span><span class="si">%(fp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                         <span class="s2">&quot;</span><span class="si">%(iold)d</span><span class="s2"> 30 </span><span class="si">%(fp)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">iold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;&#39;draglib from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at </span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
-                              <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                              <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(hmat)s</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
                           <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> (</span><span class="si">%(mat)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39; /</span><span class="se">\n</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;0.1 1.0E10 /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                          <span class="s2">&quot;0.1 1.0E10 /</span><span class="se">\n</span><span class="s2">0/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -583,23 +598,23 @@
                    <span class="mi">640</span><span class="p">,</span> <span class="mi">174</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">172</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">1968</span><span class="p">,</span> <span class="mi">315</span><span class="p">,</span> <span class="mi">172</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">281</span><span class="p">,</span> <span class="mi">349</span><span class="p">,</span> <span class="mi">89</span><span class="p">]</span>
         <span class="n">listGro2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
         <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nbGro&quot;</span><span class="p">:</span> <span class="n">listGro</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nstr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nbGro&quot;</span><span class="p">:</span> <span class="n">listGro</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nstr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
                               <span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">matxsr</span><span class="se">\n</span><span class="s2">-25 0 28/</span><span class="se">\n</span><span class="s2">1 &#39;</span><span class="si">%(hmat)s</span><span class="s2"> from &quot;</span>
                          <span class="s2">&quot;</span><span class="si">%(evaluation_name)s</span><span class="s2"> (</span><span class="si">%(mat)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
                          <span class="s2">&quot;1 2 1 1</span><span class="se">\n</span><span class="s2">&#39;neutron library&#39;/</span><span class="se">\n</span><span class="s2">&#39;n&#39;</span><span class="se">\n</span><span class="si">%(nbGro)d</span><span class="se">\n</span><span class="s2">&quot;</span>
                          <span class="s2">&quot;&#39;nscat&#39; &#39;ntherm&#39;/</span><span class="se">\n</span><span class="s2">1 1</span><span class="se">\n</span><span class="s2">1 1</span><span class="se">\n</span><span class="si">%(hmat)s</span><span class="s2"> </span><span class="si">%(mat)d</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">&quot;</span>
-                         <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                         <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nbGro2&quot;</span><span class="p">:</span> <span class="n">listGro2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;nbGro2&quot;</span><span class="p">:</span> <span class="n">listGro2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gstr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]})</span>
             <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">24 -25</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">26 -27</span><span class="se">\n</span><span class="s2">matxsr</span><span class="se">\n</span><span class="s2">-25 -27 28/</span><span class="se">\n</span><span class="s2">&quot;</span>
                          <span class="s2">&quot;1 &#39;</span><span class="si">%(hmat)s</span><span class="s2"> coupled-set from </span><span class="si">%(evaluation_name)s</span><span class="s2"> &quot;</span>
                          <span class="s2">&quot;(</span><span class="si">%(mat)d</span><span class="s2">+</span><span class="si">%(matgg)d</span><span class="s2">) at </span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">2 3 1 1</span><span class="se">\n</span><span class="s2">&quot;</span>
                          <span class="s2">&quot;&#39;neutron-gamma library&#39;/</span><span class="se">\n</span><span class="s2">&#39;n&#39; &#39;g&#39;</span><span class="se">\n</span><span class="si">%(nbGro)d</span><span class="s2"> &quot;</span>
                          <span class="s2">&quot;</span><span class="si">%(nbGro2)d</span><span class="se">\n</span><span class="s2">&#39;nscat&#39; &#39;ng&#39; &#39;gscat&#39; &#39;ntherm&#39;/</span><span class="se">\n</span><span class="s2">1 1 2 1</span><span class="se">\n</span><span class="s2">&quot;</span>
                          <span class="s2">&quot;1 2 2 1</span><span class="se">\n</span><span class="si">%(hmat)s</span><span class="s2"> </span><span class="si">%(mat)d</span><span class="s2"> </span><span class="si">%(matgg)d</span><span class="s2">/</span><span class="se">\n</span><span class="s2">stop</span><span class="se">\n</span><span class="s2">&quot;</span> 
-                         <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                         <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;ln -s gamma&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmatgg</span> <span class="o">+</span> <span class="s2">&quot; tape26&quot;</span><span class="p">)</span>
         <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
@@ -675,11 +690,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">iold</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">htime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;iold&quot;</span><span class="p">:</span> <span class="n">iold</span><span class="p">,</span> <span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
-        <span class="n">text_data</span> <span class="o">=</span> <span class="s2">&quot;dragr</span><span class="se">\n</span><span class="s2">0 0 0 23 24 </span><span class="si">%(iold)d</span><span class="s2"> 30/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;iold&quot;</span><span class="p">:</span> <span class="n">iold</span><span class="p">,</span> <span class="s2">&quot;htime&quot;</span><span class="p">:</span> <span class="n">htime</span><span class="p">})</span>
+        <span class="n">text_data</span> <span class="o">=</span> <span class="s2">&quot;dragr</span><span class="se">\n</span><span class="s2">0 0 0 23 24 </span><span class="si">%(iold)d</span><span class="s2"> 30/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
         <span class="k">if</span> <span class="n">iold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
           <span class="n">text_data</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;&#39;draglib from </span><span class="si">%(evaluation_name)s</span><span class="s2"> at &quot;</span>
-                        <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                        <span class="s2">&quot;</span><span class="si">%(htime)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text_data</span><span class="p">)</span>
         <span class="n">file_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -767,12 +782,12 @@
         <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tempace</span><span class="p">:</span>
             <span class="n">texttmp</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">%E</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tmp</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;texttmp&quot;</span><span class="p">:</span> <span class="n">texttmp</span><span class="p">})</span>
         <span class="n">text_data</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;moder</span><span class="se">\n</span><span class="s2">20 -21</span><span class="se">\n</span><span class="s2">moder</span><span class="se">\n</span><span class="s2">29 -25</span><span class="se">\n</span><span class="s2">acer</span><span class="se">\n</span><span class="s2">-21 -25 0 38 39</span><span class="se">\n</span><span class="s2">&quot;</span>
                      <span class="s2">&quot;1 0 1 </span><span class="si">%(suff)f</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&#39;pendf tape from </span><span class="si">%(evaluation_name)s</span><span class="s2">&#39;/</span><span class="se">\n</span><span class="s2">&quot;</span>
                      <span class="s2">&quot;</span><span class="si">%(mat)d</span><span class="s2">  </span><span class="si">%(texttmp)s</span><span class="s2"> /</span><span class="se">\n</span><span class="s2">1 1/</span><span class="se">\n</span><span class="s2">0.001/</span><span class="se">\n</span><span class="s2">acer / &quot;</span>
                      <span class="s2">&quot;Check ACE files</span><span class="se">\n</span><span class="s2">0 38 0 40 41</span><span class="se">\n</span><span class="s2">7 1 1 -1/</span><span class="se">\n</span><span class="s2">/</span><span class="se">\n</span><span class="s2">&quot;</span> 
-                     <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                     <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scattering_law</span><span class="p">:</span>
             <span class="n">matsab_inc</span> <span class="o">=</span> <span class="mi">221</span>
             <span class="n">matsab_coh</span> <span class="o">=</span> <span class="mi">0</span>
@@ -833,7 +848,7 @@
                           <span class="s2">&quot;0 48 0 50 51</span><span class="se">\n</span><span class="s2">&quot;</span>
                           <span class="s2">&quot;7 1 1 -1/</span><span class="se">\n</span><span class="s2">&quot;</span>
                           <span class="s2">&quot;/</span><span class="se">\n</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+                          <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">text_data</span> <span class="o">+=</span> <span class="s2">&quot;stop</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;file_data&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
@@ -928,6 +943,23 @@
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -953,8 +985,17 @@
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -60,11 +76,11 @@
   <div class="section" id="spatial-solvers">
 <span id="theorymanual-spatialsolver"></span><h1>Spatial Solvers<a class="headerlink" href="#spatial-solvers" title="Permalink to this headline">¶</a></h1>
 <p>This page presents a brief summary of the implemented spatial discretization  methods used in the
-<code class="xref py py-mod docutils literal"><span class="pre">spatialsolver</span></code> module. For full details, consult &#8220;Development of a
+<code class="xref py py-mod docutils literal"><span class="pre">spatialsolver</span></code> module. For full details, consult “Development of a
 Quantitative Decision Metric for Selecting the Most Suitable Discretization
-Method for SN Transport Problems&#8221;, a dissertation by Sebastian Schunert <a class="reference internal" href="#schunert" id="id1">[Schunert]</a>.
+Method for SN Transport Problems”, a dissertation by Sebastian Schunert <a class="reference internal" href="#schunert" id="id1">[Schunert]</a>.
 Chapter 2 contains a detailed description of the methods implemented in PyNE. All
-code in this module is derived from Dr. Schunert&#8217;s PhD work.</p>
+code in this module is derived from Dr. Schunert’s PhD work.</p>
 <p>The first order multigroup SN transport equations are a set of hyperbolic partial
 differential equations that are derived from the neutron transport equation by discretization
 of energy (multigroup) and direction (SN method). A single SN equations  approximates the
@@ -146,7 +162,7 @@ moments (this is called the NEFD algorithm) (<a class="reference internal" href=
 becomes identical to the higher order diamond difference (HODD) method
 (<a class="reference internal" href="#schunert" id="id8">[Schunert]</a>, p.37).</p>
 <p>The order of trial functions used in the AHOTN method is denoted by appending a
-&#8220;-#&#8221;. E.g., AHOTN-1 uses a first order expansion.</p>
+“-#”. E.g., AHOTN-1 uses a first order expansion.</p>
 </div>
 <div class="section" id="ahotn-ll-ln">
 <span id="id9"></span><h3>AHOTN-LL/-LN<a class="headerlink" href="#ahotn-ll-ln" title="Permalink to this headline">¶</a></h3>
@@ -154,7 +170,7 @@ becomes identical to the higher order diamond difference (HODD) method
 that increase the level of approximations in order to  streamline the execution of the
 methods. The linear nature of this approximation allows for
 achieving high accuracy in reasonably short execution time, thus resulting in
-improved computational efficiency&#8221; (<a class="reference internal" href="#schunert" id="id10">[Schunert]</a>, p.37).
+improved computational efficiency” (<a class="reference internal" href="#schunert" id="id10">[Schunert]</a>, p.37).
 The major difference to the AHOTN-1 method is that only those volume moments are retained
 whose sum (over x,y, and z) is equal or less than one. Further, the leakage terms are appropriately
 truncated to not introduce more unknowns. This reduces the number of equations to four balance relations and twelve WDD equations
@@ -173,7 +189,7 @@ has stronger coupling than LL and LN in the nodal balance equations [<a class="r
 each cell. To derive a set of equations for the unknown expansion coefficients, the weak form
 of the SN transport equations is used. The weak form is an integral statement that is obtained
 by multiplying the SN transport equations with a test function and integrating it over the extend
-of a single mesh cell; finally using Green&#8217;s theorem yields the weak form.
+of a single mesh cell; finally using Green’s theorem yields the weak form.
 The weak form is used by selecting identical polynomial test and trial functions sets and substituting
 them into the weak form. As there are as many test functions as there are expansion coefficients, a closed
 set of equations is obtained (<a class="reference internal" href="#schunert" id="id13">[Schunert]</a>, p.25).</p>
@@ -213,7 +229,7 @@ The number of unknowns per cell and angular direction is (Λ+1)^3.</p>
 <span id="id17"></span><h3>DGFEM-LD<a class="headerlink" href="#dgfem-ld" title="Permalink to this headline">¶</a></h3>
 <p>The linear discontinuous DGFEM method is the special case of the complete DGFEM
 method of order Λ = 1. It is special in that the local matrix implementing the
-equations is of size 4 × 4 and, therefore, its inverse can be precomputed &#8211;
+equations is of size 4 × 4 and, therefore, its inverse can be precomputed –
 saving execution time (<a class="reference internal" href="#schunert" id="id18">[Schunert]</a>, p.92).</p>
 </div>
 </div>
@@ -229,11 +245,11 @@ This leads to a line (planes in 3D) of discontinuity within the domain which is 
 deliver inaccurate results that, depending on the chosen error norm, either do not converge to the exact solution (cell wise
 error norm) or converge at an extremely small convergence rate.</p>
 <p>A new method called Singular Characteristic Tracking Step solver (SCT-STEP) was developed by Schunert
-and Azmy to try to rectify this, by using a &#8220;step approximation in all cells
-that are intersected by lines and planes of non-smoothness&#8221; (<a class="reference internal" href="#schunert" id="id20">[Schunert]</a>, p.4).
+and Azmy to try to rectify this, by using a “step approximation in all cells
+that are intersected by lines and planes of non-smoothness” (<a class="reference internal" href="#schunert" id="id20">[Schunert]</a>, p.4).
 The SCT-STEP method is an extension of Duo’s SCT Step algorithm to three-
 dimensional cartesian geometry.</p>
-<p>The basic idea for the SCT-STEP is borrowed from Duo&#8217;s method: In
+<p>The basic idea for the SCT-STEP is borrowed from Duo’s method: In
 two-dimensional geometry Duo suggested tracking the singular characteristic line
 through the mesh and applying a sub-cell approach in intersected cells to keep
 segments in these cells isolated from each other. For the solution of the subcell
@@ -259,10 +275,10 @@ only marginally cheaper than AHOTN. DGFEM with Lagrange function space and Λ &g
 surprisingly takes the longest execution time. The reason why DGLA-Λ with Λ &gt; 1 features
 much longer execution times than AHOTN or HODD of the same order is the significantly more
 expensive solution of the linear system of equations. Schunert conjectures that the structure of the
-DGLA matrices causes the Lapack routine dgesv to execute slower&#8221; (<a class="reference internal" href="#schunert" id="id22">[Schunert]</a>, p.103).</p>
+DGLA matrices causes the Lapack routine dgesv to execute slower” (<a class="reference internal" href="#schunert" id="id22">[Schunert]</a>, p.103).</p>
 <p>The ultimate performance indicator is the computational efficiency which is the ability to
 obtain accurate results in as short a computational execution time as possible. While a detailed
-discussion of the various methods&#8217; computational efficiency is comprised in <a class="reference internal" href="#schunert" id="id23">[Schunert]</a>, the following
+discussion of the various methods’ computational efficiency is comprised in <a class="reference internal" href="#schunert" id="id23">[Schunert]</a>, the following
 summarizes these findings:</p>
 <ul class="simple">
 <li>If the problem features a discontinuous angular flux and the error is measured in the cell-wise infinity norm or 2-norm, the <a class="reference internal" href="#sct-step"><span class="std std-ref">SCT-STEP</span></a>  method is the most
@@ -307,7 +323,7 @@ spatial solvers. The spatial solvers are not limited to non-multiplying media.</
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Spatial Solvers</a><ul>
@@ -376,6 +392,23 @@ spatial solvers. The spatial solvers are not limited to non-multiplying media.</
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -400,8 +433,17 @@ spatial solvers. The spatial solvers are not limited to non-multiplying media.</
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

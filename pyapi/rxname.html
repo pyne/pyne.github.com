@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="module-pyne.rxname">
-<span id="reaction-names-pyne-rxname"></span><span id="pyne-rxname"></span><h1>Reaction Names &#8211; <a class="reference internal" href="#module-pyne.rxname" title="pyne.rxname"><code class="xref py py-mod docutils literal"><span class="pre">pyne.rxname</span></code></a><a class="headerlink" href="#module-pyne.rxname" title="Permalink to this headline">¶</a></h1>
+<span id="reaction-names-pyne-rxname"></span><span id="pyne-rxname"></span><h1>Reaction Names – <a class="reference internal" href="#module-pyne.rxname" title="pyne.rxname"><code class="xref py py-mod docutils literal"><span class="pre">pyne.rxname</span></code></a><a class="headerlink" href="#module-pyne.rxname" title="Permalink to this headline">¶</a></h1>
 <p>Python wrapper for rxname library.</p>
 <p>The rxname module provides a string-based canonical form for reaction
 channel names, an integer identifier, labeling and documentation, and
@@ -70,10 +86,10 @@ that they are valid variable names in most programming languages
 naming</em> and enables a <em>namespace</em> of reactions.  Therefore, all
 names must match the regular expression <code class="docutils literal"><span class="pre">[A-Za-z_][A-Za-z0-9_]*</span></code>.
 For example, the elastic scattering cross section is simply
-&#8220;elastic&#8221; while the pair production reaction is given by
-&#8220;pair_prod&#8221;.</p>
+“elastic” while the pair production reaction is given by
+“pair_prod”.</p>
 <p>A number of patterns dictate how a reaction should be named.
-Foremost among these are particle names.  Where required, &#8220;z&#8221; is a
+Foremost among these are particle names.  Where required, “z” is a
 variable for any incident particle.  The following table displays
 particle types and their names:</p>
 <blockquote>
@@ -113,23 +129,23 @@ particle types and their names:</p>
 </table>
 </div></blockquote>
 <p>From this we can see that a reaction which produces a neutron and a
-proton is called &#8220;np&#8221;.  If multiple particles of the same type are
+proton is called “np”.  If multiple particles of the same type are
 produced, then the number precedes the particle type.  Thus, one
-neutron and two protons are given by &#8220;n2p&#8221;.  However if this would
+neutron and two protons are given by “n2p”.  However if this would
 result in the name starting with a number, then the name is
 prepended with <code class="docutils literal"><span class="pre">z_</span></code> to indicate any incident particle.  For
-example, the reaction which yields two neutrons is &#8220;z_2n&#8221; (because
-&#8220;2n&#8221; is not a valid variable name in most programming languages).</p>
+example, the reaction which yields two neutrons is “z_2n” (because
+“2n” is not a valid variable name in most programming languages).</p>
 <p>Furthermore, if a reaction name ends in <code class="docutils literal"><span class="pre">_[0-9]+</span></code> (underscore plus
 digits), then this means that the nucleus is left in the nth excited
-state after the interaction.  For example, &#8220;n_0&#8221; produces a neutron
-and leaves the nucleus in the ground state, &#8220;n_1&#8221; produces a neutron
+state after the interaction.  For example, “n_0” produces a neutron
+and leaves the nucleus in the ground state, “n_1” produces a neutron
 and the nucleus is in the first excited state, and so on.  However,
-&#8220;_continuum&#8221; means that the nucleus in an energy state in the
+“_continuum” means that the nucleus in an energy state in the
 continuum.</p>
 <p>If a reaction name begins with <code class="docutils literal"><span class="pre">erel_</span></code>, then this channel is for
 the energy release from the reaction by the name without <code class="docutils literal"><span class="pre">erel_</span></code>.
-E.g. &#8220;erel_p&#8221; is the energy release from proton emission.</p>
+E.g. “erel_p” is the energy release from proton emission.</p>
 <p><strong>Reaction IDs:</strong> While the reaction names are sufficient for
 defining all possible reactions in a partially physically meaningful
 way, they do so using a variable length format (strings).  It is
@@ -162,33 +178,33 @@ retrieving reaction names and their associated data described above.
 These functions have a variety of interfaces. Lookup may occur either by
 name, ID, MT number, a string of ID, or a string of MT number.</p>
 <p>However, lookup may also occur via alternate names or abbreviations.
-For example, &#8220;tot&#8221; and &#8220;abs&#8221; will give the names &#8220;total&#8221; and
-&#8220;absorption&#8221;.  Spelling out particles will also work; &#8220;alpha&#8221; and &#8220;duet&#8221;
-will give &#8220;a&#8221; and &#8220;d&#8221;.  For a listing of all alternative names see the
+For example, “tot” and “abs” will give the names “total” and
+“absorption”.  Spelling out particles will also work; “alpha” and “duet”
+will give “a” and “d”.  For a listing of all alternative names see the
 <code class="docutils literal"><span class="pre">altnames</span></code> variable.</p>
 <p>Furthermore, certain reactions may be inferred from the nuclide prior
 and post reaction.  For example, if an incident neutron hit U-235 and
 Th-232 was produced then an alpha production reaction is assumed to have
 occurred. Thus most of the functions in rxname will take a from nuclide,
-a to nuclide, and z &#8211; the incident particle type (which defaults to &#8220;n&#8221;
-neutron).  Note that z may also be &#8220;decay&#8221;, indicating a radioactive
+a to nuclide, and z – the incident particle type (which defaults to “n”
+neutron).  Note that z may also be “decay”, indicating a radioactive
 decay occurrence.</p>
 <div class="section" id="adding-new-reaction-names">
 <h2>Adding New Reaction Names<a class="headerlink" href="#adding-new-reaction-names" title="Permalink to this headline">¶</a></h2>
 <p>If for some reason the existing reaction names are insufficient, the
 following procedure will add a new reaction to the suite provided.</p>
 <ol class="arabic simple">
-<li>Increment <code class="docutils literal"><span class="pre">NUM_RX_NAMES</span></code> in &#8220;rxname.h&#8221;.</li>
-<li>Add the name to the <code class="docutils literal"><span class="pre">_names</span></code> array at the top of &#8220;rxname.cpp&#8221;.
+<li>Increment <code class="docutils literal"><span class="pre">NUM_RX_NAMES</span></code> in “rxname.h”.</li>
+<li>Add the name to the <code class="docutils literal"><span class="pre">_names</span></code> array at the top of “rxname.cpp”.
 Note the location in this array that the new name was added.</li>
-<li>In the <code class="docutils literal"><span class="pre">_fill_maps()</span></code> function in &#8220;rxname.cpp&#8221;, add the MT number
+<li>In the <code class="docutils literal"><span class="pre">_fill_maps()</span></code> function in “rxname.cpp”, add the MT number
 to the <code class="docutils literal"><span class="pre">_mts</span></code> array at the same index the name was added in step 2.
 If the reaction does not have a corresponding MT number, add a zero
 (0) at this location instead.</li>
-<li>In the <code class="docutils literal"><span class="pre">_fill_maps()</span></code> function in &#8220;rxname.cpp&#8221;, add a short label
+<li>In the <code class="docutils literal"><span class="pre">_fill_maps()</span></code> function in “rxname.cpp”, add a short label
 to the <code class="docutils literal"><span class="pre">_labels</span></code> array at the same index the name was added in step
 2.</li>
-<li>In the <code class="docutils literal"><span class="pre">_fill_maps()</span></code> function in &#8220;rxname.cpp&#8221;, add a docstring to
+<li>In the <code class="docutils literal"><span class="pre">_fill_maps()</span></code> function in “rxname.cpp”, add a docstring to
 the <code class="docutils literal"><span class="pre">_docs</span></code> array at the same index the name was added in step 2.</li>
 </ol>
 <p>Repeat this procedure as necessary.</p>
@@ -220,7 +236,7 @@ the <code class="docutils literal"><span class="pre">_docs</span></code> array a
 <hr class="docutils" />
 <dl class="function">
 <dt id="pyne.rxname.child">
-<code class="descclassname">pyne.rxname.</code><code class="descname">child</code><span class="sig-paren">(</span><em>nuc</em>, <em>rx</em>, <em>char * z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.child" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.rxname.</code><code class="descname">child</code><span class="sig-paren">(</span><em>nuc</em>, <em>rx</em>, <em>char * z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.child" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the child nuclide that comes from a parent and a reaction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -236,7 +252,7 @@ the <code class="docutils literal"><span class="pre">_docs</span></code> array a
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...).</p>
+<div><p>incident particle type (“n”, “p”, …).</p>
 </div></blockquote>
 </td>
 </tr>
@@ -252,7 +268,7 @@ the <code class="docutils literal"><span class="pre">_docs</span></code> array a
 
 <dl class="function">
 <dt id="pyne.rxname.doc">
-<code class="descclassname">pyne.rxname.</code><code class="descname">doc</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.doc" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.rxname.</code><code class="descname">doc</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.doc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives documentation string for the reaction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -268,7 +284,7 @@ the <code class="docutils literal"><span class="pre">_docs</span></code> array a
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...) when x and y are nuclides.</p>
+<div><p>incident particle type (“n”, “p”, …) when x and y are nuclides.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -291,7 +307,7 @@ the h &lt; 1000 for MT numbers.</p>
 
 <dl class="function">
 <dt id="pyne.rxname.id">
-<code class="descclassname">pyne.rxname.</code><code class="descname">id</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.id" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.rxname.</code><code class="descname">id</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the unique reaction id.  This is originally calculated as the hash of the
 name.  This id may not be less than 1000, since these integers are reserved for
 MT numbers.</p>
@@ -309,7 +325,7 @@ MT numbers.</p>
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...) when x and y are nuclides.</p>
+<div><p>incident particle type (“n”, “p”, …) when x and y are nuclides.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -325,7 +341,7 @@ MT numbers.</p>
 
 <dl class="function">
 <dt id="pyne.rxname.label">
-<code class="descclassname">pyne.rxname.</code><code class="descname">label</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.label" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.rxname.</code><code class="descname">label</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives a short reaction label, useful for user interfaces.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -341,7 +357,7 @@ MT numbers.</p>
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...) when x and y are nuclides.</p>
+<div><p>incident particle type (“n”, “p”, …) when x and y are nuclides.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -357,7 +373,7 @@ MT numbers.</p>
 
 <dl class="function">
 <dt id="pyne.rxname.mt">
-<code class="descclassname">pyne.rxname.</code><code class="descname">mt</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.mt" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.rxname.</code><code class="descname">mt</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.mt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the reaction MT number. This may not be greater than 1000.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -373,7 +389,7 @@ MT numbers.</p>
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...) when x and y are nuclides.</p>
+<div><p>incident particle type (“n”, “p”, …) when x and y are nuclides.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -389,8 +405,8 @@ MT numbers.</p>
 
 <dl class="function">
 <dt id="pyne.rxname.name">
-<code class="descclassname">pyne.rxname.</code><code class="descname">name</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives the unique reaction name.  Note that this name follows the &#8216;natural naming&#8217; 
+<code class="descclassname">pyne.rxname.</code><code class="descname">name</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the unique reaction name.  Note that this name follows the ‘natural naming’ 
 convention and may be used as a variable in most languages.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -406,7 +422,7 @@ convention and may be used as a variable in most languages.</p>
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...) when x and y are nuclides.</p>
+<div><p>incident particle type (“n”, “p”, …) when x and y are nuclides.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -422,7 +438,7 @@ convention and may be used as a variable in most languages.</p>
 
 <dl class="function">
 <dt id="pyne.rxname.parent">
-<code class="descclassname">pyne.rxname.</code><code class="descname">parent</code><span class="sig-paren">(</span><em>nuc</em>, <em>rx</em>, <em>char * z=&quot;n&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.rxname.</code><code class="descname">parent</code><span class="sig-paren">(</span><em>nuc</em>, <em>rx</em>, <em>char * z=”n”</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.rxname.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the parent nuclide that produces a child from a reaction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -438,7 +454,7 @@ convention and may be used as a variable in most languages.</p>
 </div></blockquote>
 <p><strong>z</strong> : str, optional</p>
 <blockquote>
-<div><p>incident particle type (&#8220;n&#8221;, &#8220;p&#8221;, ...).</p>
+<div><p>incident particle type (“n”, “p”, …).</p>
 </div></blockquote>
 </td>
 </tr>
@@ -1532,10 +1548,10 @@ excited state</td>     </tr> </table>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Reaction Names &#8211; <code class="docutils literal"><span class="pre">pyne.rxname</span></code></a><ul>
+<li><a class="reference internal" href="#">Reaction Names – <code class="docutils literal"><span class="pre">pyne.rxname</span></code></a><ul>
 <li><a class="reference internal" href="#adding-new-reaction-names">Adding New Reaction Names</a></li>
 <li><a class="reference internal" href="#reaction-listing">Reaction Listing</a></li>
 </ul>
@@ -1588,6 +1604,23 @@ excited state</td>     </tr> </table>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -1612,8 +1645,17 @@ excited state</td>     </tr> </table>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

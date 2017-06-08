@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="ensdf-file-support-pyne-ensdf">
-<span id="pyne-ensdf"></span><h1>ENSDF File Support &#8211; <a class="reference internal" href="#module-pyne.ensdf" title="pyne.ensdf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.ensdf</span></code></a><a class="headerlink" href="#ensdf-file-support-pyne-ensdf" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-ensdf"></span><h1>ENSDF File Support – <a class="reference internal" href="#module-pyne.ensdf" title="pyne.ensdf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.ensdf</span></code></a><a class="headerlink" href="#ensdf-file-support-pyne-ensdf" title="Permalink to this headline">¶</a></h1>
 <p>Pyne should nominally contain support for reading and writing
 Evaluated Nuclear Structure Data Files (ENSDF).  Currently it
 can parse most of the level and decay datasets. This data can
@@ -88,7 +104,7 @@ formatted data</p>
 <p><strong>decaylist</strong> : list of tuples</p>
 <blockquote>
 <div><p>This is a list object which all newly processed decays will be added
-to. If it&#8217;s None a new one will be created.</p>
+to. If it’s None a new one will be created.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -232,7 +248,7 @@ formatted data</p>
 <p><strong>levellist</strong> : list of tuples</p>
 <blockquote>
 <div><p>This is a list object which all newly processed levels will be added
-to. If it&#8217;s None a new one will be created.</p>
+to. If it’s None a new one will be created.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -246,23 +262,23 @@ nuc_id : int</p>
 <div><p>The state_id of the level</p>
 </div></blockquote>
 <dl class="docutils">
-<dt>rx_id</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd><p class="first last">The id of the decay &#8220;reaction&#8221; in PyNE reaction id form.</p>
+<dt>rx_id <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The id of the decay “reaction” in PyNE reaction id form.</p>
 </dd>
-<dt>half_life</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd><p class="first last">Half life of the state in s</p>
+<dt>half_life <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Half life of the state in s</p>
 </dd>
-<dt>level</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd><p class="first last">energy of the level in keV</p>
+<dt>level <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">energy of the level in keV</p>
 </dd>
-<dt>branch_ratio</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd><p class="first last">if rx_id != 0 this is the percent of decays in that channel</p>
+<dt>branch_ratio <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">if rx_id != 0 this is the percent of decays in that channel</p>
 </dd>
-<dt>metastable</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd><p class="first last">metastable id number of the level (if given)</p>
+<dt>metastable <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">metastable id number of the level (if given)</p>
 </dd>
-<dt>special</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">string</span><dd><p class="first last">single character denoting levels with unknown relation to ground
+<dt>special <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">single character denoting levels with unknown relation to ground
 state</p>
 </dd>
 </dl>
@@ -284,10 +300,10 @@ state</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">ENSDF File Support &#8211; <code class="docutils literal"><span class="pre">pyne.ensdf</span></code></a><ul>
+<li><a class="reference internal" href="#">ENSDF File Support – <code class="docutils literal"><span class="pre">pyne.ensdf</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.ensdf">ENSDF API</a></li>
 </ul>
 </li>
@@ -339,6 +355,23 @@ state</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -363,8 +396,17 @@ state</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

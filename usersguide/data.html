@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -85,7 +101,7 @@ from the amalgamated source and do not need to carry the nuc_data.h5 with you.</
 </div>
 <p>Running this example gives.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>./test
-Atomic mass of deuterium is 2.0141018
+Atomic mass of deuterium is <span class="m">2</span>.0141018
 </pre></div>
 </div>
 </div>
@@ -98,12 +114,12 @@ Atomic mass of deuterium is 2.0141018
 <span class="go">2.01410177812</span>
 </pre></div>
 </div>
-<p>If for whatever reason the nuc_data.h5 file is not found or doesn&#8217;t exist, the above command will still work. You can force the nuc_data.h5m file to be not found as shown in the below example.</p>
+<p>If for whatever reason the nuc_data.h5 file is not found or doesn’t exist, the above command will still work. You can force the nuc_data.h5m file to be not found as shown in the below example.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">pyne.pyne_config</span> <span class="kn">import</span> <span class="n">pyne_conf</span>
 
 <span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">pyne.data</span> <span class="kn">import</span> <span class="n">atomic_mass</span>
 <span class="c"># note, never do this, this is just for testing and this example</span>
-<span class="gp">In [3]: </span><span class="n">pyne_conf</span><span class="o">.</span><span class="n">NUC_DATA_PATH</span> <span class="o">=</span> <span class="n">b</span><span class="s1">&#39;some silly path that doesnt exist&#39;</span>
+<span class="gp">In [3]: </span><span class="n">pyne_conf</span><span class="o">.</span><span class="n">NUC_DATA_PATH</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;some silly path that doesnt exist&#39;</span>
 
 <span class="gp">In [4]: </span><span class="k">print</span> <span class="n">atomic_mass</span><span class="p">(</span><span class="s1">&#39;2H&#39;</span><span class="p">)</span>
 <span class="go">2.01410177812</span>
@@ -120,7 +136,7 @@ Atomic mass of deuterium is 2.0141018
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Atomic &amp; Isotopic Data</a><ul>
@@ -176,6 +192,23 @@ Atomic mass of deuterium is 2.0141018
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -200,8 +233,17 @@ Atomic mass of deuterium is 2.0141018
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

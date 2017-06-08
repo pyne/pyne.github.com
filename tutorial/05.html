@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -11715,8 +11731,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11727,9 +11745,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style scoped="scoped" type="text/css">
@@ -11783,9 +11803,7 @@ body {
 div#notebook {
   overflow: visible;
   border-top: none;
-}
-
-@media print {
+}@media print {
   div.cell {
     display: block;
     page-break-inside: avoid;
@@ -11806,7 +11824,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -11830,12 +11848,11 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Cross-Section-Interface">Cross Section Interface<a class="anchor-link" href="#Cross-Section-Interface">&#182;</a></h1><p>PyNE provides a top-level interface for computing (and caching) multigroup neutron cross sections.
+<h1 id="Cross-Section-Interface">Cross Section Interface<a class="anchor-link" href="#Cross-Section-Interface">&#194;&#182;</a></h1><p>PyNE provides a top-level interface for computing (and caching) multigroup neutron cross sections.
 These cross sections will be computed from a variety of available data sources (stored in <code>nuc_data.h5</code>).
 This interface remains the same across all data sources, allowing the user to easily swap out which 
 cross section library they wish to use.</p>
@@ -11860,23 +11877,21 @@ channels</code></pre>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Data-Sources">Data Sources<a class="anchor-link" href="#Data-Sources">&#182;</a></h2><p>Data sources are classes that provide the common interface for grabbing cross section data from a data source.  Unless otherwise specified, this is lazily evaluated.  The data source object itself then acts as an in-memory cache, making further look ups of the raw data very quick!</p>
+<h2 id="Data-Sources">Data Sources<a class="anchor-link" href="#Data-Sources">&#194;&#182;</a></h2><p>Data sources are classes that provide the common interface for grabbing cross section data from a data source.  Unless otherwise specified, this is lazily evaluated.  The data source object itself then acts as an in-memory cache, making further look ups of the raw data very quick!</p>
 <p>To get a sense of how this works, let's pull in some data that we know about.</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="EAF-Data-Source">EAF Data Source<a class="anchor-link" href="#EAF-Data-Source">&#182;</a></h3>
+<h3 id="EAF-Data-Source">EAF Data Source<a class="anchor-link" href="#EAF-Data-Source">&#194;&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -11897,7 +11912,9 @@ channels</code></pre>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/home/pyne-user/.local/lib/python2.7/site-packages/pyne/openmc.py:18: QAWarning: pyne.openmc is not yet QA compliant.
@@ -11947,7 +11964,9 @@ channels</code></pre>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[2]:</div>
+
 
 
 
@@ -12019,8 +12038,7 @@ channels</code></pre>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12056,7 +12074,9 @@ channels</code></pre>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>[  2.52625773e-02   1.50668227e-01   3.94173552e-01   8.29069757e-01
@@ -12073,8 +12093,7 @@ channels</code></pre>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12122,7 +12141,9 @@ channels</code></pre>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[13]:</div>
+
 
 
 
@@ -12133,7 +12154,9 @@ channels</code></pre>
 </div>
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 
@@ -12479,12 +12502,11 @@ Ipn8f4fAmn3lSVJnAAAAAElFTkSuQmCC
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Simple-Data-Source">Simple Data Source<a class="anchor-link" href="#Simple-Data-Source">&#182;</a></h3><p>This interface is independent of where the data came from. As it should be!</p>
+<h3 id="Simple-Data-Source">Simple Data Source<a class="anchor-link" href="#Simple-Data-Source">&#194;&#182;</a></h3><p>This interface is independent of where the data came from. As it should be!</p>
 
 </div>
 </div>
@@ -12509,7 +12531,9 @@ Ipn8f4fAmn3lSVJnAAAAAElFTkSuQmCC
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>True
@@ -12543,7 +12567,9 @@ Ipn8f4fAmn3lSVJnAAAAAElFTkSuQmCC
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[12]:</div>
+
 
 
 
@@ -12554,7 +12580,9 @@ Ipn8f4fAmn3lSVJnAAAAAElFTkSuQmCC
 </div>
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 
@@ -12970,8 +12998,7 @@ LFEiIiJF/w9ceCjnmed4hQAAAABJRU5ErkJggg==
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13003,7 +13030,9 @@ the same data are very fast!</p>
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>CPU times: user 16.7 ms, sys: 1.32 ms, total: 18.1 ms
@@ -13023,12 +13052,11 @@ Wall time: 61 µs
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Cross-Section-Caching">Cross Section Caching<a class="anchor-link" href="#Cross-Section-Caching">&#182;</a></h2><p>Now suppose you want to perform the same discretization and wish to pull cross sections from many sources (with some precedence) based on whether the data is available or not.  Enter <code>XSCache</code>.  This is a class to do exactly that.</p>
+<h2 id="Cross-Section-Caching">Cross Section Caching<a class="anchor-link" href="#Cross-Section-Caching">&#194;&#182;</a></h2><p>Now suppose you want to perform the same discretization and wish to pull cross sections from many sources (with some precedence) based on whether the data is available or not.  Enter <code>XSCache</code>.  This is a class to do exactly that.</p>
 <p>This class acts like a dictionary whose keys are <code>(nuclide, rx)</code> or <code>(nuclide, rx, temp)</code> tuples for the nuclide, reaction id, and temperature that you wish to know.</p>
 
 </div>
@@ -13051,7 +13079,9 @@ Wall time: 61 µs
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/home/pyne-user/.local/lib/python2.7/site-packages/pyne/xs/cache.py:19: QAWarning: pyne.xs.cache is not yet QA compliant.
@@ -13095,7 +13125,9 @@ Wall time: 61 µs
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[17]:</div>
+
 
 
 
@@ -13128,7 +13160,9 @@ Wall time: 61 µs
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[18]:</div>
+
 
 
 
@@ -13142,12 +13176,11 @@ Wall time: 61 µs
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Reading-ACE-Files">Reading ACE Files<a class="anchor-link" href="#Reading-ACE-Files">&#182;</a></h2><p>To load data from an ACE file, one needs to simply initialize an instance of the <code>Library</code> class specifying the path to the <code>Library</code> file:</p>
+<h2 id="Reading-ACE-Files">Reading ACE Files<a class="anchor-link" href="#Reading-ACE-Files">&#194;&#182;</a></h2><p>To load data from an ACE file, one needs to simply initialize an instance of the <code>Library</code> class specifying the path to the <code>Library</code> file:</p>
 
 <pre><code>from pyne import ace
 libFile = ace.Library('endf70a')
@@ -13156,12 +13189,11 @@ libFile.read()</code></pre>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Reading-ENDF-Files">Reading ENDF Files<a class="anchor-link" href="#Reading-ENDF-Files">&#182;</a></h2><p>Similarly, ENDF file reading and cross-section discretization is supported.</p>
+<h2 id="Reading-ENDF-Files">Reading ENDF Files<a class="anchor-link" href="#Reading-ENDF-Files">&#194;&#182;</a></h2><p>Similarly, ENDF file reading and cross-section discretization is supported.</p>
 
 </div>
 </div>
@@ -13207,8 +13239,7 @@ libFile.read()</code></pre>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13247,7 +13278,9 @@ libFile.read()</code></pre>
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[22]:</div>
+
 
 
 
@@ -13258,7 +13291,9 @@ libFile.read()</code></pre>
 </div>
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 
@@ -13627,12 +13662,11 @@ Q5WIiMghDFUiIiKHMFSJiIgcwlAlIiJyCEOViIjIIX8B4NxXDgi+ndQAAAAASUVORK5CYII=
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Cross-Section-Channels">Cross Section Channels<a class="anchor-link" href="#Cross-Section-Channels">&#182;</a></h2><p>PyNE also provides an easy interface to very quickly grab multigroup cross sections from the cross section cache and collapse them to the appropriate group structure. This is done in the <code>pyne.xs.channels</code> module.  This contains functions such as <code>sigma_f()</code> for computing the fission cross section.</p>
+<h2 id="Cross-Section-Channels">Cross Section Channels<a class="anchor-link" href="#Cross-Section-Channels">&#194;&#182;</a></h2><p>PyNE also provides an easy interface to very quickly grab multigroup cross sections from the cross section cache and collapse them to the appropriate group structure. This is done in the <code>pyne.xs.channels</code> module.  This contains functions such as <code>sigma_f()</code> for computing the fission cross section.</p>
 <p>The functions in the channels module are extended from what you would normally be able to see from the cache.  For example, you may compute cross sections for materials, fission energy spectra, metastable ratios, etc.</p>
 
 </div>
@@ -13656,7 +13690,9 @@ Q5WIiMghDFUiIiKHMFSJiIgcwlAlIiJyCEOViIjIIX8B4NxXDgi+ndQAAAAASUVORK5CYII=
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/home/pyne-user/.local/lib/python2.7/site-packages/pyne/xs/channels.py:21: QAWarning: pyne.material is not yet QA compliant.
@@ -13692,7 +13728,9 @@ Q5WIiMghDFUiIiKHMFSJiIgcwlAlIiJyCEOViIjIIX8B4NxXDgi+ndQAAAAASUVORK5CYII=
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[24]:</div>
+
 
 
 
@@ -13779,6 +13817,23 @@ Q5WIiMghDFUiIiKHMFSJiIgcwlAlIiJyCEOViIjIIX8B4NxXDgi+ndQAAAAASUVORK5CYII=
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -13803,8 +13858,17 @@ Q5WIiMghDFUiIiKHMFSJiIgcwlAlIiJyCEOViIjIIX8B4NxXDgi+ndQAAAAASUVORK5CYII=
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

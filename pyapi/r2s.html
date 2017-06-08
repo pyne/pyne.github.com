@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="mesh-based-rigourous-2-step-activation-pyne-r2s">
-<span id="pyne-r2s"></span><h1>Mesh-based Rigourous 2-Step Activation &#8211; <a class="reference internal" href="../usersguide/r2s.html#module-pyne.r2s" title="pyne.r2s"><code class="xref py py-mod docutils literal"><span class="pre">pyne.r2s</span></code></a><a class="headerlink" href="#mesh-based-rigourous-2-step-activation-pyne-r2s" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-r2s"></span><h1>Mesh-based Rigourous 2-Step Activation – <a class="reference internal" href="../usersguide/r2s.html#module-pyne.r2s" title="pyne.r2s"><code class="xref py py-mod docutils literal"><span class="pre">pyne.r2s</span></code></a><a class="headerlink" href="#mesh-based-rigourous-2-step-activation-pyne-r2s" title="Permalink to this headline">¶</a></h1>
 <p>This module contains functions for mesh-based Rigorous 2-Step activation [1]
 using MCNP for neutron and photon transport and ALARA for nuclear inventory
 analysis. The functionality of the module can be obtained by importing as
@@ -73,7 +89,7 @@ Fusion Engineering and Design, 63-64, 107–114 (2002).</p>
 <span id="rigorous-2-step-activation-api"></span><h2>Rigorous 2-Step Activation API<a class="headerlink" href="#module-pyne.r2s" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="pyne.r2s.irradiation_setup">
-<code class="descclassname">pyne.r2s.</code><code class="descname">irradiation_setup</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>cell_mats</em>, <em>alara_params</em>, <em>tally_num=4</em>, <em>geom=None</em>, <em>num_rays=10</em>, <em>grid=False</em>, <em>flux_tag='n_flux'</em>, <em>fluxin='alara_fluxin'</em>, <em>reverse=False</em>, <em>alara_inp='alara_geom'</em>, <em>alara_matlib='alara_matlib'</em>, <em>output_mesh='r2s_step1.h5m'</em>, <em>output_material=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#irradiation_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.irradiation_setup" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.r2s.</code><code class="descname">irradiation_setup</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>cell_mats</em>, <em>alara_params</em>, <em>tally_num=4</em>, <em>geom=None</em>, <em>num_rays=10</em>, <em>grid=False</em>, <em>flux_tag=’n_flux’</em>, <em>fluxin=’alara_fluxin’</em>, <em>reverse=False</em>, <em>alara_inp=’alara_geom’</em>, <em>alara_matlib=’alara_matlib’</em>, <em>output_mesh=’r2s_step1.h5m’</em>, <em>output_material=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#irradiation_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.irradiation_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is used to setup the irradiation inputs after the first
 R2S transport step.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -178,13 +194,13 @@ step.</p>
 <blockquote class="last">
 <div><p>A dictionary were the keys are tuples with two values. The first is a
 string denoting an nuclide in any form that is understood by
-pyne.nucname (e.g. &#8216;1001&#8217;, &#8216;U-235&#8217;, &#8216;242Am&#8217;) or &#8216;TOTAL&#8217; for all
+pyne.nucname (e.g. ‘1001’, ‘U-235’, ‘242Am’) or ‘TOTAL’ for all
 nuclides. The second is a string denoting the decay time as it appears
-in the phtn_src file (e.g. &#8216;shutdown&#8217;, &#8216;1 h&#8217; &#8216;3 d&#8217;). The values of the
+in the phtn_src file (e.g. ‘shutdown’, ‘1 h’ ‘3 d’). The values of the
 dictionary are the requested tag names for the combination of nuclide
 and decay time. These tag names should be the tag names that are read
 by the sampling subroutine. For example:</p>
-<p>tags = {(&#8216;U-235&#8217;, &#8216;shutdown&#8217;): &#8216;tag1&#8217;, (&#8216;TOTAL&#8217;, &#8216;1 h&#8217;): &#8216;tag2&#8217;}</p>
+<p>tags = {(‘U-235’, ‘shutdown’): ‘tag1’, (‘TOTAL’, ‘1 h’): ‘tag2’}</p>
 </div></blockquote>
 </td>
 </tr>
@@ -232,10 +248,10 @@ the total photon emission desinty.</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Mesh-based Rigourous 2-Step Activation &#8211; <code class="docutils literal"><span class="pre">pyne.r2s</span></code></a><ul>
+<li><a class="reference internal" href="#">Mesh-based Rigourous 2-Step Activation – <code class="docutils literal"><span class="pre">pyne.r2s</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.r2s">Rigorous 2-Step Activation API</a></li>
 </ul>
 </li>
@@ -287,6 +303,23 @@ the total photon emission desinty.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -311,8 +344,17 @@ the total photon emission desinty.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

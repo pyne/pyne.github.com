@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -67,7 +83,7 @@ file to the desired branch/tag.</p>
 $ <span class="nb">cd</span> conda-recipes
 </pre></div>
 </div>
-<p>Now edit the &#8220;url:&#8221; line and the version line to match the desired tag and
+<p>Now edit the “url:” line and the version line to match the desired tag and
 version. After this build pyne, install pyne, run nuc_data_make and run the
 tests. In order to use the steps shown below you need jinja2, conda-build,
 binstar and nose installed.</p>
@@ -83,7 +99,7 @@ $ nosetests
 </div>
 <p>If all expected tests pass the binary should now be ready to upload to binstar.
 If you are uploading to your personal repo (a good idea so you can test on a
-clean VM before bricking the primary pyne binary) don&#8217;t specify a user.</p>
+clean VM before bricking the primary pyne binary) don’t specify a user.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$ binstar upload <span class="nv">$pyneout</span>
 </pre></div>
 </div>
@@ -92,7 +108,7 @@ need the proper priveleges to do this)</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$ binstar upload -u pyne <span class="nv">$pyneout</span>
 </pre></div>
 </div>
-<p>You may need to add the &#8211;force option depending on if binstar has added support
+<p>You may need to add the –force option depending on if binstar has added support
 for multiple simultaneous versions (currently not available).</p>
 <p>The strategy is similar on windows but you need to:</p>
 <ol class="arabic simple">
@@ -102,7 +118,7 @@ for multiple simultaneous versions (currently not available).</p>
 <li>Use the pynewin branch from &#64;crbates <a class="reference external" href="https://github.com/crbates/pyne/tree/pynewin">https://github.com/crbates/pyne/tree/pynewin</a></li>
 <li>Download and install the hdf5 1.8.11 shared library version (VS9 or VS10
 32-bit)</li>
-<li>Add the hdf5 dll&#8217;s to your path</li>
+<li>Add the hdf5 dll’s to your path</li>
 <li>Write a bld.bat script to build pyne and copy the necessary hdf5 libraries</li>
 <li>Edit the pyne meta.yaml file to include libpython and mingw and remove hdf5
 from both the build and run steps.</li>
@@ -164,6 +180,23 @@ from both the build and run steps.</li>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -188,8 +221,17 @@ from both the build and run steps.</li>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>
