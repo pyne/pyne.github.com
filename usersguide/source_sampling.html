@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -101,7 +117,7 @@ source_sampling entry in the PyNE theory manual.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">analog and uniform constructor:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first docutils">
 <dt>Sampler(std::string filename,</dt>
 <dd><p class="first last">std::string src_tag_name,
 std::vector&lt;double&gt; e_bounds,
@@ -111,7 +127,7 @@ bool uniform)</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">user constructor:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
 <dt>Sampler(std::string filename,</dt>
 <dd><p class="first last">std::string src_tag_name,
 std::vector&lt;double&gt; e_bounds,
@@ -122,10 +138,10 @@ std::string bias_tag_name)</p>
 </tr>
 </tbody>
 </table>
-<p>The &#8220;filename&#8221; is a MOAB mesh file (.h5m). The &#8220;src_tag_name&#8221; is the name
+<p>The “filename” is a MOAB mesh file (.h5m). The “src_tag_name” is the name
 of the tag on the mesh that stores the source densities. The source density can
 be specified for an arbitrary number of energy groups, stored as a MOAB vector
-tag. The &#8220;e_bounds&#8221; parameter describes the upper and lower bounds of these
+tag. The “e_bounds” parameter describes the upper and lower bounds of these
 energy groups. For example if the src_tag_name tag is a vector of length 175
 (for 175 energy groups), e_bounds should be of length 176. The final parameter
 differs for the two constructors. A bool can be supplied: false for analog
@@ -138,7 +154,7 @@ This method takes a single argument: a vector of 6 pseudorandom number between
 z position, energy, and weight respectively.
 eight
 An example C++ program is supplied below. This program requires a mesh file
-named &#8220;source.h5m&#8221; with a tag named &#8220;source_density&#8221; of length 1.</p>
+named “source.h5m” with a tag named “source_density” of length 1.</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;stdlib.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span>  <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;pyne/source_sampling.h&quot;</span><span class="cp"></span>
@@ -193,12 +209,12 @@ with python.nose. It can be used in the same manner as the C++ class:</p>
 <div class="section" id="fortran-interface">
 <h2>Fortran Interface<a class="headerlink" href="#fortran-interface" title="Permalink to this headline">¶</a></h2>
 <p>Because Fortran cannot store an instance of the Sampler class, to perform
-source sampling from Fortran, a free-standing function &#8220;sampling_setup&#8221; is
+source sampling from Fortran, a free-standing function “sampling_setup” is
 called to create a global instance of the sampling class. This function takes
 a single argument: an integer representing the problem mode (0: analog, 1:
-uniform, 2: user). This function assumes the mesh file is &#8220;source.h5m&#8221; and
-that the tag names are &#8220;source_density&#8221; and &#8220;biased_source_density&#8221;. In
-addition, this function assumes that a file &#8220;e_bounds&#8221; is present which is
+uniform, 2: user). This function assumes the mesh file is “source.h5m” and
+that the tag names are “source_density” and “biased_source_density”. In
+addition, this function assumes that a file “e_bounds” is present which is
 a plain text file containing the energy boundaries.</p>
 <p>An example program using the Fortran interface is shown below:</p>
 <div class="highlight-fortran"><div class="highlight"><pre><span></span><span class="k">program </span><span class="n">test</span>
@@ -231,7 +247,7 @@ a plain text file containing the energy boundaries.</p>
 </div>
 <div class="section" id="source-sampling-in-mcnp5">
 <h2>Source Sampling in MCNP5<a class="headerlink" href="#source-sampling-in-mcnp5" title="Permalink to this headline">¶</a></h2>
-<p>Standard MCNP5 ships with an empty source subroutine &#8220;source.F90&#8221; which can
+<p>Standard MCNP5 ships with an empty source subroutine “source.F90” which can
 be completed by the user in order to implement any form of custom source
 sampling. A source.F90 file has been written to allow for the use of PyNE
 source sampling within MCNP5. This file is found in pyne/share/source.F90.
@@ -250,14 +266,14 @@ The simplest way to compile MCNP5 with the source subroutine is as follows:</p>
 <li>Remove the pre-existing empty source.F90 file.</li>
 <li>Soft-link pyne/src/source.F90.</li>
 <li>Open the file MCNP/Source/src/FILE.list.</li>
-<li>Edit line 78 to include the additional source files. It should look like &#8220;CXX_SRC := measure.cpp source_sampling.cpp&#8221;.</li>
+<li>Edit line 78 to include the additional source files. It should look like “CXX_SRC := measure.cpp source_sampling.cpp”.</li>
 <li>Compile MCNP5 using the standard build method.</li>
 </ol>
 </div></blockquote>
-<p>Once MCNP5 is compiled, MCNP5 can be run normally. The file &#8220;source.h5m&#8221; must
+<p>Once MCNP5 is compiled, MCNP5 can be run normally. The file “source.h5m” must
 be present in the working directory that MCNP5 is run from. This file should
-contain source densities (on the &#8220;source_density&#8221; tag) and optionally biased
-source densities (the &#8220;biased_source_density&#8221; tag). An &#8220;idum&#8221; card must be used
+contain source densities (on the “source_density” tag) and optionally biased
+source densities (the “biased_source_density” tag). An “idum” card must be used
 in the MCNP5 input file. This card should have three arguments. The first is the
 sampling mode (0: analog, 1: uniform, 2: user). The second is the resample
 limit for void rejection. For a given particle, if a source position is
@@ -265,9 +281,9 @@ selected in void (MCNP materal 0) the source position is resampled within the
 selected mesh volume element until either a non-void position is found, or this
 user-specified limit is researched. The third argument should specify the
 particle type: 1 for neutrons, 2 for photons.</p>
-<p>For example, this &#8220;idum&#8221; card specifies uniform sampling with a resample limit
+<p>For example, this “idum” card specifies uniform sampling with a resample limit
 of 100 with source particles specified as photons:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>idum <span class="m">1</span> <span class="m">100</span> 2
+<div class="highlight-bash"><div class="highlight"><pre><span></span>idum <span class="m">1</span> <span class="m">100</span> <span class="m">2</span>
 </pre></div>
 </div>
 </div>
@@ -281,7 +297,7 @@ of 100 with source particles specified as photons:</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Mesh-Based Source Sampling</a><ul>
@@ -339,6 +355,23 @@ of 100 with source particles specified as photons:</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -363,8 +396,17 @@ of 100 with source particles specified as photons:</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

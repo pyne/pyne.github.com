@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -63,15 +79,15 @@
 to release the pyne code base.</p>
 <div class="section" id="release-candidates-branches">
 <h2>Release Candidates &amp; Branches<a class="headerlink" href="#release-candidates-branches" title="Permalink to this headline">¶</a></h2>
-<p>All releases should have a release candidate (&#8216;-rc1&#8217;) that comes out 2 - 5 days
+<p>All releases should have a release candidate (‘-rc1’) that comes out 2 - 5 days
 prior to the scheduled release.  During this time, no changes should occur to
-a special release branch (&#8216;vX.X.X-release&#8217;).</p>
+a special release branch (‘vX.X.X-release’).</p>
 <p>The release branch is there so that development can continue on the
 develop branch while the release candidates (rc) are out and under review.
 This is because otherwise any new developments would have to wait until
 post-release to be merged into develop to prevent them from accidentally
 getting released early.</p>
-<p>As such, the &#8216;vX.X.X-release&#8217; branch should only exist while there are
+<p>As such, the ‘vX.X.X-release’ branch should only exist while there are
 release candidates out.  They are akin to a temporary second level of staging
 to be used to keep master clean and safe.  As such, everything that is in this
 branch should also be part of develop.  Graphically,</p>
@@ -79,9 +95,9 @@ branch should also be part of develop.  Graphically,</p>
 <img alt="../_images/release-1.svg" src="../_images/release-1.svg" /><p class="caption"><span class="caption-text"><strong>Figure 1:</strong> Branch hierarchy under release.</span></p>
 </div>
 <p>Every time a new release candidate comes out the vX.X.X-release should be
-tagged with the name &#8216;X.X.X-rcX&#8217;.  There should be a 2 - 5 day period of time
+tagged with the name ‘X.X.X-rcX’.  There should be a 2 - 5 day period of time
 in between release candidates.  When the full and final release happens, the
-&#8216;vX.X.X-release&#8217; branch is merged into master and then deleted.</p>
+‘vX.X.X-release’ branch is merged into master and then deleted.</p>
 <p>If you have a new fix that needs to be in the next release candidate, you should
 make a topical branch and then pull request it into the release branch.  After this
 has been accepted, the topical branch should be merged with develop as well.</p>
@@ -93,8 +109,8 @@ release.</p>
 <p>When releasing pyne, make sure to do the following items in order:</p>
 <ol class="arabic simple">
 <li>Review <strong>ALL</strong> issues in the issue tracker, reassigning or closing them as needed.</li>
-<li>Ensure that all issues in this release&#8217;s milestone have been closed.  Moving issues
-to the next release&#8217;s milestone is a perfectly valid strategy for completing this
+<li>Ensure that all issues in this release’s milestone have been closed.  Moving issues
+to the next release’s milestone is a perfectly valid strategy for completing this
 milestone.</li>
 <li>Perform maintainence tasks for this project, see below.</li>
 <li>Write and commit the release notes.</li>
@@ -103,14 +119,14 @@ milestone.</li>
 <li>If this is a release candidate, tag the release branch with a name that matches
 that of the release:<ul>
 <li>If this is the first release candidate, create a release branch called
-&#8216;vX.X.X-release&#8217; off of develop.  Tag this branch with the name &#8216;X.X.X-rc1&#8217;.</li>
+‘vX.X.X-release’ off of develop.  Tag this branch with the name ‘X.X.X-rc1’.</li>
 <li>If this is the second or later release candidate, tag the release branch
-with the name &#8216;X.X.X-rcX&#8217;.</li>
+with the name ‘X.X.X-rcX’.</li>
 </ul>
 </li>
 <li>If this is the full and final release (and not a release candidate),
 merge the release branch into the master branch.  Next, tag the master branch
-with the name &#8216;X.X.X&#8217;.  Finally, delete the release branch.</li>
+with the name ‘X.X.X’.  Finally, delete the release branch.</li>
 <li>Push the tags upstream</li>
 <li>Update release information on the website.</li>
 </ol>
@@ -139,7 +155,7 @@ from the root dir):</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Release Instructions</a><ul>
@@ -196,6 +212,23 @@ from the root dir):</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -220,8 +253,17 @@ from the root dir):</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

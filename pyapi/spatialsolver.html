@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="spatialsolver-support-pyne-spatialsolver">
-<span id="pyne-spatialsolver"></span><h1>Spatialsolver Support &#8211; <code class="xref py py-mod docutils literal"><span class="pre">pyne.spatialsolver</span></code><a class="headerlink" href="#spatialsolver-support-pyne-spatialsolver" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-spatialsolver"></span><h1>Spatialsolver Support – <code class="xref py py-mod docutils literal"><span class="pre">pyne.spatialsolver</span></code><a class="headerlink" href="#spatialsolver-support-pyne-spatialsolver" title="Permalink to this headline">¶</a></h1>
 <p>Spatialsolver is a pyne module that contains seven neutron transport equation solvers.  Each
 solver is its own unique nodal method.  The solvers included in this module are listed below.  The theory and methodology behind each
 can be found in the <a class="reference internal" href="../theorymanual/spatial_solvers.html#theorymanual-spatialsolver"><span class="std std-ref">theory documentation</span></a>.</p>
@@ -245,7 +261,7 @@ The quadrature order may only be an even number!
       <span class="ow">in</span> <span class="n">each</span> <span class="n">spatial</span> <span class="n">cell</span><span class="o">.</span> <span class="n">The</span> <span class="n">cells</span> <span class="n">are</span> <span class="n">ordered</span> <span class="k">as</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span>
 </pre></div>
 </div>
-<p><strong>Input Dictionary Entry: &#8220;quadrature_file&#8221; [optional; only needed for quadrature type 2]</strong></p>
+<p><strong>Input Dictionary Entry: “quadrature_file” [optional; only needed for quadrature type 2]</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;quad_file&quot;</span>
 <span class="nb">type</span><span class="p">:</span> <span class="n">String</span>
 <span class="n">ex</span><span class="p">:</span> <span class="s1">&#39;quad_file&#39;</span>
@@ -440,7 +456,7 @@ and the cross section data should be in the following format.  It should be save
 <p>1.1          ! Total XS</p>
 <p>0.2         ! Scattering matrix</p>
 <p>! Material 2</p>
-<p>. . .</p>
+<p>…</p>
 <p>! End Cross section file</p>
 </div></blockquote>
 </div></blockquote>
@@ -483,11 +499,11 @@ The source entries should be in the following order:</p>
 <p>(1,1,1,2,2,2,.)</p>
 <p>(1,1,1,2,2,.,.)</p>
 <p>(1,1,1,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(1,1,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(1,.,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(.,.,.,.,.,.,.)</p>
 </div></blockquote>
 <dl class="docutils">
@@ -592,25 +608,25 @@ The source entries should be in the following order:</p>
 <p>(0,0,0,0,0,0,1)</p>
 <p>(0,0,0,0,0,1,0)</p>
 <p>(0,0,0,0,0,1,1)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,0,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,nz,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,ny,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,nz,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,.,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(ng,.,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 </div></blockquote>
 <dl class="docutils">
 <dt>DGFEM Solvers: Unformatted file, with all mesh scalar flux values in the following order:</dt>
@@ -618,33 +634,33 @@ The source entries should be in the following order:</p>
 <blockquote class="last">
 <div><p>(0,0,0,0,0,0,0)</p>
 <p>(0,0,0,0,0,0,1)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,0,0,spatial_order)</p>
 <p>(0,0,0,0,0,1,0)</p>
 <p>(0,0,0,0,0,1,1)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,0,1,spatial_order)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,0,spatial_order,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,spatial_order,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,0,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,nz,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,0,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,ny,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,0,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,nz,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(0,.,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 <p>(ng,.,.,.,.,.,.)</p>
-<p>...</p>
+<p>…</p>
 </div></blockquote>
 </dd>
 </dl>
@@ -668,10 +684,10 @@ The source entries should be in the following order:</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Spatialsolver Support &#8211; <code class="docutils literal"><span class="pre">pyne.spatialsolver</span></code></a><ul>
+<li><a class="reference internal" href="#">Spatialsolver Support – <code class="docutils literal"><span class="pre">pyne.spatialsolver</span></code></a><ul>
 <li><a class="reference internal" href="#spatialsolver-api">Spatialsolver API</a></li>
 <li><a class="reference internal" href="#input-dictionary-entries">Input Dictionary Entries</a></li>
 <li><a class="reference internal" href="#output-dictionary-entries">Output Dictionary Entries</a><ul>
@@ -729,6 +745,23 @@ The source entries should be in the following order:</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -753,8 +786,17 @@ The source entries should be in the following order:</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -73,22 +89,219 @@
 Carlo variance reduction method that utilizes a deterministic estimate of the
 adjoint flux (the <em>importance</em>) to generate a biased source and weight windows
 that optimize a Monte Carlo simulation relative to a detector response
-function. One major feature of the scheme is &#8220;consistency&#8221;, that is, weight
+function. One major feature of the scheme is “consistency”, that is, weight
 windows are chosen such that particles are always born within them.</p>
 <p>In the CADIS method the response is defined as:</p>
-<div class="math">
-<p><img src="../_images/math/017ec021546a293f26f057dd65848cc42b5758e0.png" alt="R = \int \, q(P) \, \Psi^+(P) \, dP,"/></p>
-</div><p>where <img class="math" src="../_images/math/23f1b45408e5b4130c0f940fcbfcec54492cbdcd.png" alt="q"/> is the probability distribution function describing the source
-strength as a function of the phase space variable <img class="math" src="../_images/math/f48b617185733d8dd6712643f1ab17c736661a06.png" alt="P"/> (which may
-represent any combination of space, energy, and direction). <img class="math" src="../_images/math/913a083cc2f99a03c6e1586ddd0417d70b0abdd3.png" alt="\Phi^+(P)"/>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">R = \int \, q(P) \, \Psi^+(P) \, dP,</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>where <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ is the probability distribution function describing the source
+strength as a function of the phase space variable <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">P</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ (which may
+represent any combination of space, energy, and direction). <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\Phi^+(P)</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+
 is the adjoint flux relative to the detector response function being
 optimized. The CADIS method defines the biased source distribution as:</p>
-<div class="math">
-<p><img src="../_images/math/0098a67a20b9db7f683701567e477fa98375e281.png" alt="\hat{q}(P) = \frac{q(P) \, \Psi^+(P)}{R}."/></p>
-</div><p>The corresponding weight window lower bounds are defined by:</p>
-<div class="math">
-<p><img src="../_images/math/78c2f498e7578d00e1801dfe78cc19c1bab568d0.png" alt="ww(P) = \frac{R}{\Psi^+(P) \, \frac{\beta + 1}{2}},"/></p>
-</div><p>where <img class="math" src="../_images/math/8ce03f78ed945f2ef3dac87c8799b55b393527e7.png" alt="\beta"/> is the ratio of the weight window upper bound to the weight
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\hat{q}(P) = \frac{q(P) \, \Psi^+(P)}{R}.</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>The corresponding weight window lower bounds are defined by:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ww(P) = \frac{R}{\Psi^+(P) \, \frac{\beta + 1}{2}},</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>where <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\beta</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ is the ratio of the weight window upper bound to the weight
 window lower bound (default of 5 in MCNP5).</p>
 <div class="section" id="pyne-implementation">
 <h3>PyNE implementation<a class="headerlink" href="#pyne-implementation" title="Permalink to this headline">¶</a></h3>
@@ -97,37 +310,489 @@ is designed to be used in conjunction with the mesh-based source sampling
 capabilities in the source_sampling module. This means that the above method, which
 is continuous in phase space must be adapted for discretization of space (mesh
 volume elements) and energy (in energy bins).</p>
-<p>Source density (<img class="math" src="../_images/math/9849cb4e998bf90d819ab1701298eabf1cbae3df.png" alt="q'"/>, units: <img class="math" src="../_images/math/7553e32e07326a1b00ba242f3ac39604c9531713.png" alt="time^{-1}length^{-3}"/>) is the
+<p>Source density (<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q'</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+, units: <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">time^{-1}length^{-3}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+) is the
 canonical quantity for representing a mesh-based source within PyNE. This
-means that the first step of the CADIS method within PyNE is to create a <img class="math" src="../_images/math/23f1b45408e5b4130c0f940fcbfcec54492cbdcd.png" alt="q"/>
-PDF from a source density mesh. The total source strength <img class="math" src="../_images/math/07278e475bbd33b5827cc79eb2f6ccf633e73bcd.png" alt="q_tot"/> is
-first found by integrating the source density over space (<img class="math" src="../_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>) and energy
-(<img class="math" src="../_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/>):</p>
-<div class="math">
-<p><img src="../_images/math/d00a9d05571edb02b173788f8613f5847657e37a.png" alt="q_{tot} = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j},"/></p>
-</div><p>The <img class="math" src="../_images/math/23f1b45408e5b4130c0f940fcbfcec54492cbdcd.png" alt="q"/> PDF can then be defined by:</p>
-<div class="math">
-<p><img src="../_images/math/7a838a70bfa89f22d28a70b979a4784ef74ab9ea.png" alt="q_{i,j } = \frac{V_i \, q'_{i, j}}{q_tot} \, for i \in I, j \in J"/></p>
-</div><p>The response can then be calculated by integrating the product of <img class="math" src="../_images/math/23f1b45408e5b4130c0f940fcbfcec54492cbdcd.png" alt="q"/> and the adjoint flux over all phase space:</p>
-<div class="math">
-<p><img src="../_images/math/81633fc2824befe93af597f740a654b472d4bbbc.png" alt="R = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}}"/></p>
-</div><p>The weight window lower bound is then:</p>
-<div class="math">
-<p><img src="../_images/math/d2e66cb5b326aed944d39a13fe5849238c32d0b1.png" alt="ww_{i, j} = \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}}."/></p>
-</div><p>These values are tagged to the weight window output mesh and can be printed out as
+means that the first step of the CADIS method within PyNE is to create a <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+
+PDF from a source density mesh. The total source strength <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q_tot</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ is
+first found by integrating the source density over space (<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">i</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+) and energy
+(<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">j</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+):</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q_{tot} = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j},</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>The <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ PDF can then be defined by:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q_{i,j } = \frac{V_i \, q'_{i, j}}{q_tot} \, for i \in I, j \in J</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>The response can then be calculated by integrating the product of <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ and the adjoint flux over all phase space:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">R = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>The weight window lower bound is then:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ww_{i, j} = \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}}.</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>These values are tagged to the weight window output mesh and can be printed out as
 an MCNP5 WWINP file. In the event that the adjoint flux is 0 for some
-<img class="math" src="../_images/math/2b0c7ba91040f34d839421e25d79a17193a421ce.png" alt="(i, j)"/>, the <img class="math" src="../_images/math/3dd295df5efbb79ffb2421e639ce9fd9a7a645fd.png" alt="ww_{i, j}"/> value is replaced with 0. MCNP5 will not
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">(i, j)</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+, the <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ww_{i, j}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ value is replaced with 0. MCNP5 will not
 play the weight window game when a particle enters a region of phase space
 where the weight window lower bound is 0.</p>
 <p>The biased source strength is:</p>
-<div class="math">
-<p><img src="../_images/math/a78a6247aea585606b3ca54f4b3c832461c7305b.png" alt="\hat{q}_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j} \, V_i}{R \, q_{tot}}"/></p>
-</div><p>However, the biased source strength is not the quantity of interest, because
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\hat{q}_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j} \, V_i}{R \, q_{tot}}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>However, the biased source strength is not the quantity of interest, because
 the source_sampling module is expecting biased source densities. The biased
 source densities that are tagged to the output mesh are:</p>
-<div class="math">
-<p><img src="../_images/math/9749c120dcb6601ff12ed0145159eee6094bf482.png" alt="\hat{q}'_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}}."/></p>
-</div></div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\hat{q}'_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}}.</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</div>
 <div class="section" id="assumptions">
 <h3>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h3>
 <p>The source density mesh and adjoint flux mesh must have the spatial bounds.</p>
@@ -135,7 +800,7 @@ source densities that are tagged to the output mesh are:</p>
 <div class="section" id="sample-calculations">
 <h3>Sample Calculations<a class="headerlink" href="#sample-calculations" title="Permalink to this headline">¶</a></h3>
 <p>In this section the expected results for the the test_variancereduction.py unit
-test &#8220;test_cadis_multiple_e&#8221; are calculated. Consider a 2D mesh with the
+test “test_cadis_multiple_e” are calculated. Consider a 2D mesh with the
 following properties.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -143,58 +808,601 @@ following properties.</p>
 <col width="50%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><p class="first"><img class="math" src="../_images/math/276e5ebc77bdd44874432c87f9e9c603cd48f5d4.png" alt="q' = [2.6, 2.5]"/></p>
-<p><img class="math" src="../_images/math/bc1323168f095b81062ac1e4f40152cc7cf4eb38.png" alt="\Phi = [1.3, 1.4]"/></p>
-<p class="last"><img class="math" src="../_images/math/a14f8fdd50ee6a92038e77082be297ddb2c1d4c4.png" alt="V = 2"/></p>
+<tr class="row-odd"><td><p class="first"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q' = [2.6, 2.5]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\Phi = [1.3, 1.4]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p class="last"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">V = 2</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
 </td>
-<td><p class="first"><img class="math" src="../_images/math/7bc8a52ff12529252fec5af88813830b0b2ff7ff.png" alt="q' = [2.9, 0]"/></p>
-<p><img class="math" src="../_images/math/95bfa4e3092cf925e093ecaa9312d9ac388813fc.png" alt="\Phi = [1.7, 1.9]"/></p>
-<p class="last"><img class="math" src="../_images/math/a14f8fdd50ee6a92038e77082be297ddb2c1d4c4.png" alt="V = 2"/></p>
+<td><p class="first"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q' = [2.9, 0]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\Phi = [1.7, 1.9]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p class="last"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">V = 2</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
 </td>
 </tr>
-<tr class="row-even"><td><p class="first"><img class="math" src="../_images/math/7298a37649db5255ed571dfac815e469dd8f54d0.png" alt="q' = [2.9, 2.8]"/></p>
-<p><img class="math" src="../_images/math/99afec31e8fd109cef70340770f48fd8ddb22965.png" alt="\Phi = [1.1, 1.2]"/></p>
-<p class="last"><img class="math" src="../_images/math/39252787bdbff288e0da5c5934b30704ffe75c2f.png" alt="V = 8"/></p>
+<tr class="row-even"><td><p class="first"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q' = [2.9, 2.8]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\Phi = [1.1, 1.2]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p class="last"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">V = 8</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
 </td>
-<td><p class="first"><img class="math" src="../_images/math/590fd8b58a2957dd92b9772146f6fd23396d0b30.png" alt="q' = [2.4, 2.2]"/></p>
-<p><img class="math" src="../_images/math/e6ce310b5bb6222dccc926e85b9f73a24229c53c.png" alt="\Phi = [0, 1.6]"/></p>
-<p class="last"><img class="math" src="../_images/math/39252787bdbff288e0da5c5934b30704ffe75c2f.png" alt="V = 8"/></p>
+<td><p class="first"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q' = [2.4, 2.2]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\Phi = [0, 1.6]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
+<p class="last"><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">V = 8</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</p>
 </td>
 </tr>
 </tbody>
 </table>
 <p>Here, the vector quantities represent values at two energy groups. First
-calculate <img class="math" src="../_images/math/21ce006c272c7c290661a9b612b86960b64be6a0.png" alt="q_{tot}"/> and <img class="math" src="../_images/math/9d86170e7de539c0ff999de09621ee0c7b6c8ed0.png" alt="R"/>:</p>
-<div class="math">
-<p><img src="../_images/math/caaa312553e4b619c70084a0de87b337ffa0f5da.png" alt="q_{tot} &amp; = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j} \\
+calculate <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q_{tot}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ and <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">R</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">q_{tot} &amp; = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j} \\
         &amp; = 8 \cdot 2.9 + 8 \cdot 2.8 + 2 \cdot 2.6 + 2 \cdot 2.5 \\
         &amp;   + 8 \cdot 2.4 + 8 \cdot 2.2 + 2 \cdot 2.9 + 2 \cdot 0  \\
-        &amp; = 98.4"/></p>
-</div><div class="math">
-<p><img src="../_images/math/ff154ac06eff91e047bc1cf7ea98b3266656062b.png" alt="R &amp; = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}} \\
+        &amp; = 98.4</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">R &amp; = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}} \\
   &amp; = \frac{1}{98.4} (
            1.1 \cdot 8 \cdot 2.9 + 1.2 \cdot 8 \cdot 2.8
           + 1.3 \cdot 2 \cdot 2.6 + 1.4 \cdot 2 \cdot 2.5 \\
           &amp; \qquad \quad + 0 \cdot 8 \cdot 2.4 + 1.6 \cdot 8 \cdot 2.2
           + 1.7 \cdot 2 \cdot 2.9 + 1.9 \cdot 2 \cdot 0 ) \\
-  &amp; = 1.0587398374"/></p>
-</div><p>The expected results are:</p>
-<div class="math">
-<p><img src="../_images/math/af537bdb785cb7ca422ce732e06fdd0bd31619d9.png" alt="\hat{q}' &amp;= \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}} \\
+  &amp; = 1.0587398374</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>The expected results are:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\hat{q}' &amp;= \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}} \\
          &amp;= \frac{1}{98.4 \cdot 1.0587398374}
           [1.1 \cdot 2.9, 1.2 \cdot 2.8, 1.3 \cdot 2.6, 1.4 \cdot 2.5, \\
          &amp; \qquad \qquad \qquad \qquad \qquad 0 \cdot 2.4, 1.6 \cdot 2.2, 1.7 \cdot 2.9, 1.9 \cdot 0] \\
          &amp;= [0.0306200806, 0.0322518718, 0.0324438472, 0.0335956998, \\
-         &amp; \qquad 0.0, 0.0337876752, 0.0473219428, 0.0]"/></p>
-</div><div class="math">
-<p><img src="../_images/math/5874ba3c56a176823ab9fad8f765b8ae718ace1c.png" alt="ww &amp;= \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}} \\
+         &amp; \qquad 0.0, 0.0337876752, 0.0473219428, 0.0]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ww &amp;= \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}} \\
    &amp;= [ \frac{1.0587398374}{1.1 \cdot{3}}, \frac{1.0587398374}{1.2 \cdot{3}},
              \frac{1.0587398374}{1.3 \cdot{3}}, \frac{1.0587398374}{1.4 \cdot{3}}, \\
    &amp; \qquad  \frac{1.0587398374}{0 \cdot{3}}, \frac{1.0587398374}{1.6 \cdot{3}},
              \frac{1.0587398374}{1.7 \cdot{3}}, \frac{1.0587398374}{1.9 \cdot{3}} ] \\
    &amp;= [0.3208302538, 0.2940943993, 0.2714717532, 0.2520809137, \\
-   &amp; \qquad  0.0, 0.2205707995, 0.2075960465, 0.1857438311]"/></p>
-</div><p>Notice that the value in the <img class="math" src="../_images/math/eca65e2fe8109ccd3dd3be789de13a2e7eb8bdd8.png" alt="ww"/> vector that is a division by 0 has been replaced with 0.</p>
+   &amp; \qquad  0.0, 0.2205707995, 0.2075960465, 0.1857438311]</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>Notice that the value in the <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ww</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ vector that is a division by 0 has been replaced with 0.</p>
 </div>
 </div>
 <div class="section" id="magic-method">
@@ -224,35 +1432,497 @@ should be performed with the appropriate energy cut-off and cross section data.<
 <div class="section" id="id2">
 <h3>PyNE implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>The implementation of MAGIC in PyNE uses a PyNE meshtally object, which is the
-result of a meshtal file processed by PyNE&#8217;s mcnp.Meshtally. Using the results
-of the meshtal file and a specified tolerance for relative error <img class="math" src="../_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/> and
-null value <img class="math" src="../_images/math/2890f475336d7daf12e0f9ab3e274c81cf2e599d.png" alt="\phi_o"/>, the flux will be normalized for each energy bin and
+result of a meshtal file processed by PyNE’s mcnp.Meshtally. Using the results
+of the meshtal file and a specified tolerance for relative error <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">t</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ and
+null value <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_o</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+, the flux will be normalized for each energy bin and
 then be used to generate a wwinp file to be used in a subsequent iteration. The
 steps are as follows:</p>
 <ol class="arabic simple">
-<li>Read meshtally and determine maximum flux <img class="math" src="../_images/math/79656cad8c3aaabda360ba440b63d9b2a39c42b3.png" alt="\phi_m^k"/> for each enery bin <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/>.</li>
-<li>Normalize flux <img class="math" src="../_images/math/26c8d466b90b8ee6d402533bd80894f924753cda.png" alt="\phi_i^k"/> in every mesh voxel <img class="math" src="../_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> for each energy
-bin <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/> according to <img class="math" src="../_images/math/79656cad8c3aaabda360ba440b63d9b2a39c42b3.png" alt="\phi_m^k"/> to obtain a new <img class="math" src="../_images/math/5da33fa62c2b4517b4fa2858aa4233d3ed6e1037.png" alt="\phi_i^{'k}"/>.
-If the relative error <img class="math" src="../_images/math/a7d7fe26ae02da56b37391c8b2b1c6dcef0bf987.png" alt="e_i^k"/>
-for voxel <img class="math" src="../_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> in energy bin <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/> is larger than the tolerance
-value <img class="math" src="../_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/>, then set flux <img class="math" src="../_images/math/5da33fa62c2b4517b4fa2858aa4233d3ed6e1037.png" alt="\phi_i^{'k}"/> to the null value <img class="math" src="../_images/math/2890f475336d7daf12e0f9ab3e274c81cf2e599d.png" alt="\phi_o"/>
+<li>Read meshtally and determine maximum flux <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_m^k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ for each enery bin <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+.</li>
+<li>Normalize flux <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_i^k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ in every mesh voxel <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">i</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ for each energy
+bin <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ according to <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_m^k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ to obtain a new <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_i^{'k}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+.
+If the relative error <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_i^k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+
+for voxel <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">i</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ in energy bin <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">k</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ is larger than the tolerance
+value <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">t</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+, then set flux <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_i^{'k}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ to the null value <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_o</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+
 instead.</li>
 </ol>
 <blockquote>
-<div><div class="math">
-<p><img src="../_images/math/831810d0f5ee8bbc880030dc216f41f50f6c2b85.png" alt="\text{If } e_i^k &lt; t \text{ then, } \phi_i^{'k} = \frac{\phi_i^{k}}{2 \, \phi_m^k}
+<div><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\text{If } e_i^k &lt; t \text{ then, } \phi_i^{'k} = \frac{\phi_i^{k}}{2 \, \phi_m^k}
 
-\text{If } e_i^k &gt; t \text{ then, } \phi_i^{'k} = \phi_o"/></p>
-</div></div></blockquote>
+\text{If } e_i^k &gt; t \text{ then, } \phi_i^{'k} = \phi_o</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</div></blockquote>
 <ol class="arabic simple" start="3">
 <li>Use new flux values to create a weight window tag on the provide meshtally
-and use PyNE&#8217;s Wwinp class to create a weight window mesh.</li>
+and use PyNE’s Wwinp class to create a weight window mesh.</li>
 </ol>
 </div>
 <div class="section" id="id3">
 <h3>Sample Calculations<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>In this section, the expected results of the test_variancereduction.py unit test
-&#8220;test_magic_multi_bins&#8221; are shown. In this test, a 3D 2x2 mesh is given. Each
+“test_magic_multi_bins” are shown. In this test, a 3D 2x2 mesh is given. Each
 voxel contains flux data corresponding to 2 energy bins. The mesh is described by
 the following flux and relative error data.</p>
 <table border="1" class="docutils">
@@ -263,34 +1933,730 @@ the following flux and relative error data.</p>
 <col width="24%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><img class="math" src="../_images/math/cbeae6c7af10eaa0ac53b65265e82ba070a5c56d.png" alt="\phi_1^{1} = 1.2"/></td>
-<td><img class="math" src="../_images/math/1886ad7fb679a4e50a913bc18eca549053c8a70e.png" alt="e_1^1 = 0.11"/></td>
-<td><img class="math" src="../_images/math/aaa4a2e60cae27ffe56709f02b578c5e7ae055af.png" alt="\phi_1^{2} = 3.3"/></td>
-<td><img class="math" src="../_images/math/22f3ee2d2327d80f435fbb9fc2d52648425f603f.png" alt="e_1^2 = 0.013"/></td>
+<tr class="row-odd"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_1^{1} = 1.2</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_1^1 = 0.11</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_1^{2} = 3.3</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_1^2 = 0.013</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/112f05b540c6b87e532679533ed4f162fb883f84.png" alt="\phi_2^{1} = 1.6"/></td>
-<td><img class="math" src="../_images/math/d4291fba3e7192c1e92f4b064fd1aee7704c04d4.png" alt="e_2^1 = 0.14"/></td>
-<td><img class="math" src="../_images/math/9268be9d39fdcefa71c12c3a3bcd9ff175fd5bbe.png" alt="\phi_2^{2} = 1.7"/></td>
-<td><img class="math" src="../_images/math/3f25586867e023785e736d63584bfca4b79577ef.png" alt="e_2^2 = 0.19"/></td>
+<tr class="row-even"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_2^{1} = 1.6</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_2^1 = 0.14</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_2^{2} = 1.7</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_2^2 = 0.19</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
-<tr class="row-odd"><td><img class="math" src="../_images/math/0d7c7a714f4dbe8a551ba3250d5f9a96d150de63.png" alt="\phi_3^{1} = 1.5"/></td>
-<td><img class="math" src="../_images/math/3035d866f0ab8bb2bb1ae6bcf005430617d9af23.png" alt="e_3^1 = 0.02"/></td>
-<td><img class="math" src="../_images/math/5f7d743c0b53985b0648d0aa1667cfa9ee5eb6e5.png" alt="\phi_3^{2} = 1.4"/></td>
-<td><img class="math" src="../_images/math/adea1581a9875ebd4c84f242d073f08fe356689c.png" alt="e_3^2 = 0.16"/></td>
+<tr class="row-odd"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_3^{1} = 1.5</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_3^1 = 0.02</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_3^{2} = 1.4</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_3^2 = 0.16</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/5cdd961a36af1484337ce98f11d2ec4dde8ae94f.png" alt="\phi_4^{1} = 2.6"/></td>
-<td><img class="math" src="../_images/math/807e33ce1d74b7e9886c6ea4ea7a4b6a14db1584.png" alt="e_4^1 = 0.04"/></td>
-<td><img class="math" src="../_images/math/c2cd13b1d5a274495255ae25e7f57b3f34887bbb.png" alt="\phi_4^{2} = 1.0"/></td>
-<td><img class="math" src="../_images/math/7bbdfb18b2b2384b5974f7d932938f82661a2cc3.png" alt="e_4^2 = 0.09"/></td>
+<tr class="row-even"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_4^{1} = 2.6</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_4^1 = 0.04</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_4^{2} = 1.0</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">e_4^2 = 0.09</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 </tbody>
 </table>
 <p>First, the maximum flux for each energy bin is found. In this case the maximum
-for energy bin <img class="math" src="../_images/math/c994cb031f0d1049710a5e4f2d7a39655cbe4f4f.png" alt="k = 1"/> occurs in voxel 4 <img class="math" src="../_images/math/5cdd961a36af1484337ce98f11d2ec4dde8ae94f.png" alt="\phi_4^{1} = 2.6"/> and in
-voxel 1 <img class="math" src="../_images/math/aaa4a2e60cae27ffe56709f02b578c5e7ae055af.png" alt="\phi_1^{2} = 3.3"/> for energy bin <img class="math" src="../_images/math/56b1aeb1d3196a78c5fb18cd2d3fbc581fb17aa7.png" alt="k = 2"/>. In the first
-energy bin, the flux values are normalized by <img class="math" src="../_images/math/339ea333e0f09ba0ee3c854c6f905531bd885fa1.png" alt="\phi_m^1 = 2.6"/> and in the
-second <img class="math" src="../_images/math/097a1796f918527a18068f879d1619d4c0452e46.png" alt="\phi_m^2 = 3.3"/>. If the error tolerance is set <img class="math" src="../_images/math/6071b58147128cdf276ce6e6152a68e67f123885.png" alt="t = 0.15"/> and the
-null value set to <img class="math" src="../_images/math/cfc0221793fe76a76a7c41c5f6662cb3a4d9646f.png" alt="\phi_o = 0.001"/>, then voxels
+for energy bin <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">k = 1</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ occurs in voxel 4 <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_4^{1} = 2.6</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ and in
+voxel 1 <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_1^{2} = 3.3</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ for energy bin <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">k = 2</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+. In the first
+energy bin, the flux values are normalized by <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_m^1 = 2.6</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ and in the
+second <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_m^2 = 3.3</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+. If the error tolerance is set <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">t = 0.15</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ and the
+null value set to <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_o = 0.001</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+, then voxels
 2 and 3 in the second energy bin have errors larger than the tolerance and are
 therefore set to the null value while everything else is normalized. The following
 is the result.</p>
@@ -300,31 +2666,292 @@ is the result.</p>
 <col width="50%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><img class="math" src="../_images/math/aee3e1fd60bbde030d316500517c763ef3dcbc8d.png" alt="\phi_1^{'1} = \frac{\phi_1^1}{2 \, \phi_m^1} = \frac{1.2}{2*2.6} = 0.23077"/></td>
-<td><img class="math" src="../_images/math/4ce319463e93178aae8f6f8437fc0c99c1d71757.png" alt="\phi_1^{'2} = \frac{\phi_1^2}{2 \, \phi_m^2} = \frac{3.3}{2*3.3} = 0.5"/></td>
+<tr class="row-odd"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_1^{'1} = \frac{\phi_1^1}{2 \, \phi_m^1} = \frac{1.2}{2*2.6} = 0.23077</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_1^{'2} = \frac{\phi_1^2}{2 \, \phi_m^2} = \frac{3.3}{2*3.3} = 0.5</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/810f9f4f289e7f0840e8c75bbb91c545142c8fcd.png" alt="\phi_2^{'1} = \frac{\phi_2^1}{2 \, \phi_m^1} = \frac{1.6}{2*2.6} = 0.30769"/></td>
-<td><img class="math" src="../_images/math/f101b21e0e9af152d837c1c5ad4f533cda7f87ff.png" alt="\phi_2^{'2} = \phi_o = 0.001"/></td>
+<tr class="row-even"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_2^{'1} = \frac{\phi_2^1}{2 \, \phi_m^1} = \frac{1.6}{2*2.6} = 0.30769</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_2^{'2} = \phi_o = 0.001</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
-<tr class="row-odd"><td><img class="math" src="../_images/math/5c4c8bbd40eb37a39d46760e3c9de2447649b4eb.png" alt="\phi_3^{'1} = \frac{\phi_3^1}{2 \, \phi_m^1} = \frac{1.5}{2*2.6} = 0.28846"/></td>
-<td><img class="math" src="../_images/math/5f66826767d666e4015c9e776d847e2d64cfaac9.png" alt="\phi_3^{'2} = \phi_o = 0.001"/></td>
+<tr class="row-odd"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_3^{'1} = \frac{\phi_3^1}{2 \, \phi_m^1} = \frac{1.5}{2*2.6} = 0.28846</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_3^{'2} = \phi_o = 0.001</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/7eb4c780ffeaa265e5e2fb89b9d40aec90300449.png" alt="\phi_4^{'1} = \frac{\phi_4^1}{2 \, \phi_m^1} = \frac{2.6}{2*2.6} = 0.5"/></td>
-<td><img class="math" src="../_images/math/7f84915a94f116e966d0fc6f1085fd098b4dfda4.png" alt="\phi_4^{'2} = \frac{\phi_4^2}{2 \, \phi_m^2} = \frac{1.0}{2*3.3} = 0.12122"/></td>
+<tr class="row-even"><td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_4^{'1} = \frac{\phi_4^1}{2 \, \phi_m^1} = \frac{2.6}{2*2.6} = 0.5</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
+<td><div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_4^{'2} = \frac{\phi_4^2}{2 \, \phi_m^2} = \frac{1.0}{2*3.3} = 0.12122</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 </tbody>
 </table>
-<p>The values <img class="math" src="../_images/math/5da33fa62c2b4517b4fa2858aa4233d3ed6e1037.png" alt="\phi_i^{'k}"/> are then set as the new weight window values.</p>
+<p>The values <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\phi_i^{'k}</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+ are then set as the new weight window values.</p>
 </div>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt>[1] Haghighat, A. and Wagner, J. C., &#8220;Monte Carlo Variance Reduction with</dt>
-<dd>Deterministic Importance Functions,&#8221; Progress in Nuclear Energy, Vol. 42,
+<dt>[1] Haghighat, A. and Wagner, J. C., “Monte Carlo Variance Reduction with</dt>
+<dd>Deterministic Importance Functions,” Progress in Nuclear Energy, Vol. 42,
 No. 1, pp. 25-53, 2003.</dd>
-<dt>[2] Davis, A. and Turner, A., &#8220;Comparison of global variance reduction</dt>
-<dd>techniques for Monte Carlo radiation transport simulations of ITER,&#8221; Fusion
+<dt>[2] Davis, A. and Turner, A., “Comparison of global variance reduction</dt>
+<dd>techniques for Monte Carlo radiation transport simulations of ITER,” Fusion
 Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
 </dl>
 </div>
@@ -338,7 +2965,7 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Variance Reduction</a><ul>
@@ -404,6 +3031,23 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -428,8 +3072,17 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

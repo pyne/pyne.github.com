@@ -2,7 +2,7 @@ var searchData=
 [
   ['m',['M',['../classpyne_1_1enrichment_1_1_cascade.html#a9a337df5a380a86cf1d814c817fcaa37',1,'pyne::enrichment::Cascade']]],
   ['m_5fconv_5fe',['m_conv_e',['../structpyne_1_1gamma.html#a6c664717050818947e2e79d75e914c41',1,'pyne::gamma::m_conv_e()'],['../structpyne_1_1ecbp.html#afed47f1b2eea323a4de63f67fdd236c6',1,'pyne::ecbp::m_conv_e()']]],
-  ['ma',['ma',['../namespacepyne_1_1nucname.html#ac487913e792a1d98664af236f1c567b7',1,'pyne::nucname::ma()'],['../namespacepyne_1_1nucname.html#a361c7b8fb365a6e606ab45ef8b5688d8',1,'pyne::nucname::MA()']]],
+  ['ma',['MA',['../namespacepyne_1_1nucname.html#a361c7b8fb365a6e606ab45ef8b5688d8',1,'pyne::nucname::MA()'],['../namespacepyne_1_1nucname.html#ac487913e792a1d98664af236f1c567b7',1,'pyne::nucname::ma()']]],
   ['ma_5farray',['MA_array',['../namespacepyne_1_1nucname.html#a1fc606ecf5edbc2390523178c65ac856',1,'pyne::nucname']]],
   ['mass',['mass',['../structpyne_1_1atomic__mass__data.html#a33ec032fd9e4ea538008c276a03a87c7',1,'pyne::atomic_mass_data::mass()'],['../classpyne_1_1_material.html#a729ebba0be2879f26f1fcf3b100d3b5d',1,'pyne::Material::mass()'],['../structpyne_1_1material__data.html#a8e5fa2bf074f5c7770fcefca825640b9',1,'pyne::material_data::mass()']]],
   ['mass_5fdensity',['mass_density',['../classpyne_1_1_material.html#ac5bbc836d8b9042297444c51506b7439',1,'pyne::Material']]],

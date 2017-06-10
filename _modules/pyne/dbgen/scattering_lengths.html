@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,21 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -82,13 +97,13 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">nucname</span>
 <span class="kn">from</span> <span class="nn">.api</span> <span class="k">import</span> <span class="n">BASIC_FILTERS</span>
 
-<span class="n">warn</span><span class="p">(</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
 
 <div class="viewcode-block" id="grab_scattering_lengths"><a class="viewcode-back" href="../../../pyapi/dbgen/scattering_lengths.html#pyne.dbgen.scattering_lengths.grab_scattering_lengths">[docs]</a><span class="k">def</span> <span class="nf">grab_scattering_lengths</span><span class="p">(</span><span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file_out</span><span class="o">=</span><span class="s1">&#39;scattering_lengths.html&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Grabs the scattering cross-section lengths for neutrons from the NIST website</span>
 <span class="sd">    or locally from this module.&quot;&quot;&quot;</span>
     <span class="n">build_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">build_dir</span><span class="p">,</span> <span class="n">file_out</span><span class="p">)</span>
-    <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">file_out</span><span class="p">)</span>
+    <span class="n">local_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">file_out</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">local_filename</span><span class="p">):</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="n">build_filename</span><span class="p">)</span>
@@ -156,8 +171,8 @@
         <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
 
         <span class="n">slrow</span> <span class="o">=</span> <span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;iso&#39;</span><span class="p">]),</span>
-                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;b_coherent&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">13</span><span class="p">),</span>
-                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;b_incoherent&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">13</span><span class="p">),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;b_coherent&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1E-13</span><span class="p">),</span>
+                 <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;b_incoherent&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1E-13</span><span class="p">),</span>
                  <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;xs_coherent&#39;</span><span class="p">]),</span>
                  <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;xs_incoherent&#39;</span><span class="p">]),</span>
                  <span class="n">nist_num</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]))</span>
@@ -277,6 +292,23 @@
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -302,8 +334,17 @@
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

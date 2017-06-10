@@ -1,7 +1,7 @@
 var searchData=
 [
   ['abund',['abund',['../structpyne_1_1atomic__mass__data.html#ace923c525f6151899458705dbcb51676',1,'pyne::atomic_mass_data']]],
-  ['act',['act',['../namespacepyne_1_1nucname.html#a388ff81a89b2258f0ac2b353af72032a',1,'pyne::nucname::act()'],['../namespacepyne_1_1nucname.html#a47f7c8b69afe39df2b9de731a6018e64',1,'pyne::nucname::ACT()']]],
+  ['act',['ACT',['../namespacepyne_1_1nucname.html#a47f7c8b69afe39df2b9de731a6018e64',1,'pyne::nucname::ACT()'],['../namespacepyne_1_1nucname.html#a388ff81a89b2258f0ac2b353af72032a',1,'pyne::nucname::act()']]],
   ['act_5farray',['ACT_array',['../namespacepyne_1_1nucname.html#a5b7bd8782296656958a06b01b78f78ba',1,'pyne::nucname']]],
   ['activity',['activity',['../classpyne_1_1_material.html#aae4cbb00f956e2b89fc30ec65124408e',1,'pyne::Material']]],
   ['alias',['alias',['../classpyne_1_1_alias_table.html#af946606a3f7426fef270f3e32ee46a68',1,'pyne::AliasTable']]],
@@ -18,7 +18,7 @@ var searchData=
   ['atomic_5fmass',['atomic_mass',['../namespacepyne.html#aaab79c2417fc60c1a248dd702403befb',1,'pyne::atomic_mass(int nuc)'],['../namespacepyne.html#a070a35bbdb0217ff8c4b222572912f87',1,'pyne::atomic_mass(char *nuc)'],['../namespacepyne.html#a42514c3a14ce0ed7b91da7d742210ceb',1,'pyne::atomic_mass(std::string nuc)']]],
   ['atomic_5fmass_5fdata',['atomic_mass_data',['../structpyne_1_1atomic__mass__data.html',1,'pyne']]],
   ['atomic_5fmass_5fdata',['atomic_mass_data',['../namespacepyne.html#a4d33f77321c43a895b32c56b0c4b9256',1,'pyne']]],
-  ['atomic_5fmass_5ferror_5fmap',['atomic_mass_error_map',['../namespacepyne.html#a70711189f1078e2ebc132db9ce7ab0a7',1,'pyne']]],
+  ['atomic_5fmass_5ferror_5fmap',['atomic_mass_error_map',['../namespacepyne.html#a0b5e8bedb1b53fcfac588b21d76ccf58',1,'pyne']]],
   ['atomic_5fmass_5fmap',['atomic_mass_map',['../namespacepyne.html#ad57b70e4dd814b1efc458ff58641bcef',1,'pyne']]],
   ['atoms_5fper_5fmol',['atoms_per_mol',['../structpyne_1_1material__data.html#a135b69d35e0bc6c49a025a24cb153798',1,'pyne::material_data']]],
   ['atoms_5fper_5fmolecule',['atoms_per_molecule',['../classpyne_1_1_material.html#a7ddff1aaebc94bcda22d3422c093a756',1,'pyne::Material']]],

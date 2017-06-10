@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -57,103 +73,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-pyne.transmute.chainsolve">
-<span id="chain-solve-pyne-transmute-chainsolve"></span><span id="pyne-transmute-channels"></span><h1>Chain Solve &#8211; <a class="reference internal" href="#module-pyne.transmute.chainsolve" title="pyne.transmute.chainsolve"><code class="xref py py-mod docutils literal"><span class="pre">pyne.transmute.chainsolve</span></code></a><a class="headerlink" href="#module-pyne.transmute.chainsolve" title="Permalink to this headline">¶</a></h1>
-<p>This module implements an ALARA[1]-like chain-based transmutation solver.</p>
-<p>[1] Wilson, P. P. H. &#8220;ALARA: Analytic Laplacian Adaptive Radioactivity 
-Analysis,&#8221; a Ph.D. Dissertation, University of Wisconsin, Madison, WI, 1999.</p>
-<dl class="class">
-<dt id="pyne.transmute.chainsolve.Transmuter">
-<em class="property">class </em><code class="descclassname">pyne.transmute.chainsolve.</code><code class="descname">Transmuter</code><span class="sig-paren">(</span><em>t=0.0</em>, <em>phi=0.0</em>, <em>temp=300.0</em>, <em>tol=1e-07</em>, <em>rxs=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class for transmuting materials using an ALARA-like chain solver.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>t</strong> : float</p>
-<blockquote>
-<div><p>Transmutations time [sec].</p>
-</div></blockquote>
-<p><strong>phi</strong> : float or array of floats</p>
-<blockquote>
-<div><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
-a scalar or match the group structure of EAF.</p>
-</div></blockquote>
-<p><strong>temp</strong> : float, optional</p>
-<blockquote>
-<div><p>Temperature [K] of material, defaults to 300.0.</p>
-</div></blockquote>
-<p><strong>tol</strong> : float</p>
-<blockquote>
-<div><p>Tolerance level for chain truncation.</p>
-</div></blockquote>
-<p><strong>rxs</strong> : set of ints or strs</p>
-<blockquote>
-<div><p>Reaction ids or names to use in transmutation that produce well-defined 
-children.  This set should thus not include fission.  If None, then the 
-reactions from EAF are used.</p>
-</div></blockquote>
-<p><strong>log</strong> : file-like or None</p>
-<blockquote>
-<div><p>The log file object should be written. A None imples the log is 
-not desired.</p>
-</div></blockquote>
-<p><strong>args</strong> : tuple, optional</p>
-<blockquote>
-<div><p>Other arguments ignored for compatibility with other Transmuters.</p>
-</div></blockquote>
-<p><strong>kwargs</strong> : dict, optional</p>
-<blockquote class="last">
-<div><p>Other keyword arguments ignored for compatibility with other Transmuters.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="pyne.transmute.chainsolve.Transmuter.transmute">
-<code class="descname">transmute</code><span class="sig-paren">(</span><em>x</em>, <em>t=None</em>, <em>phi=None</em>, <em>tol=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter.transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter.transmute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transmutes a material into its daughters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : Material or similar</p>
-<blockquote>
-<div><p>Input material for transmutation.</p>
-</div></blockquote>
-<p><strong>t</strong> : float</p>
-<blockquote>
-<div><p>Transmutations time [sec].</p>
-</div></blockquote>
-<p><strong>phi</strong> : float or array of floats</p>
-<blockquote>
-<div><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
-a scalar or match the group structure of EAF.</p>
-</div></blockquote>
-<p><strong>tol</strong> : float</p>
-<blockquote>
-<div><p>Tolerance level for chain truncation.</p>
-</div></blockquote>
-<p><strong>log</strong> : file-like or None</p>
-<blockquote>
-<div><p>The log file object should be written. A None imples the log is 
-not desired.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : Material</p>
-<blockquote class="last">
-<div><p>The output material post-transmutation.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="chain-solve-pyne-transmute-chainsolve">
+<span id="pyne-transmute-channels"></span><h1>Chain Solve – <code class="xref py py-mod docutils literal"><span class="pre">pyne.transmute.chainsolve</span></code><a class="headerlink" href="#chain-solve-pyne-transmute-chainsolve" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -210,6 +131,23 @@ not desired.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -234,8 +172,17 @@ not desired.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

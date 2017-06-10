@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,13 +74,13 @@
           <div class="body" role="main">
             
   <div class="section" id="endf-file-support-pyne-endf">
-<span id="pyne-endf"></span><h1>ENDF File Support &#8211; <a class="reference internal" href="#module-pyne.endf" title="pyne.endf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.endf</span></code></a><a class="headerlink" href="#endf-file-support-pyne-endf" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-endf"></span><h1>ENDF File Support – <a class="reference internal" href="#module-pyne.endf" title="pyne.endf"><code class="xref py py-mod docutils literal"><span class="pre">pyne.endf</span></code></a><a class="headerlink" href="#endf-file-support-pyne-endf" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-pyne.endf"></span><p>Module for parsing and manipulating data from ENDF evaluations. Currently, it
 only can read several MTs from File 1, but with time it will be expanded to
 include the entire ENDF format.</p>
 <p>All the classes and functions in this module are based on document
-ENDF-102 titled &#8220;Data Formats and Procedures for the Evaluated Nuclear
-Data File ENDF-6&#8221;. The latest version from June 2009 can be found at
+ENDF-102 titled “Data Formats and Procedures for the Evaluated Nuclear
+Data File ENDF-6”. The latest version from June 2009 can be found at
 <a class="reference external" href="http://www-nds.iaea.org/ndspub/documents/endf/endf102/endf102.pdf">http://www-nds.iaea.org/ndspub/documents/endf/endf102/endf102.pdf</a></p>
 <p>For more information on the Evaluation class, contact Paul Romano
 &lt;<a class="reference external" href="mailto:paul&#46;k&#46;romano&#37;&#52;&#48;gmail&#46;com">paul<span>&#46;</span>k<span>&#46;</span>romano<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;. For more information on the Library class, contact
@@ -155,9 +171,38 @@ subsection</p>
 <dt id="pyne.endf.ArbitraryTabulated">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">ArbitraryTabulated</code><a class="headerlink" href="#pyne.endf.ArbitraryTabulated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arbitrary tabulated function given in ENDF MF=5, LF=1 represented as</p>
-<div class="math">
-<p><img src="../_images/math/86ea92631f93273c2714a4814df963c44c4426a4.png" alt="f(E \rightarrow E') = g(E \rightarrow E')"/></p>
-</div><p class="rubric">Attributes</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">f(E \rightarrow E') = g(E \rightarrow E')
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="7%" />
@@ -479,7 +524,7 @@ parsing capabilities is as follows:</p>
 <td>(dict) Miscallaneous information about the evaluation.</td>
 </tr>
 <tr class="row-odd"><td>target</td>
-<td>(dict) Information about the target material, such as its mass, isomeric state, whether it&#8217;s stable, and whether it&#8217;s fissionable.</td>
+<td>(dict) Information about the target material, such as its mass, isomeric state, whether it’s stable, and whether it’s fissionable.</td>
 </tr>
 <tr class="row-even"><td>projectile</td>
 <td>(dict) Information about the projectile such as its mass.</td>
@@ -535,9 +580,38 @@ file. A single reaction can be read if provided.</p>
 <dt id="pyne.endf.Evaporation">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Evaporation</code><a class="headerlink" href="#pyne.endf.Evaporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaporation spectrum given in ENDF MF=5, LF=9 represented as</p>
-<div class="math">
-<p><img src="../_images/math/9506c19b33884b64e200a503490dc7905ed1f3c7.png" alt="f(E \rightarrow E') = \frac{E'}{I} e^{-E'/\theta(E)}"/></p>
-</div><p class="rubric">Attributes</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">f(E \rightarrow E') = \frac{E'}{I} e^{-E'/\theta(E)}
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="4%" />
@@ -548,7 +622,36 @@ file. A single reaction can be read if provided.</p>
 <td>(Tab1) Tabulated function of incident neutron energy</td>
 </tr>
 <tr class="row-even"><td>u</td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">0 \le E' \le E - U</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -558,9 +661,38 @@ file. A single reaction can be read if provided.</p>
 <dt id="pyne.endf.GeneralEvaporation">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">GeneralEvaporation</code><a class="headerlink" href="#pyne.endf.GeneralEvaporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>General evaporation spectrum given in ENDF MF=5, LF=5 represented as</p>
-<div class="math">
-<p><img src="../_images/math/a32000a44fab329c7ae4c69e61c9f3aab85beb1a.png" alt="f(E \rightarrow E') = g(E'/\theta(E))"/></p>
-</div><p class="rubric">Attributes</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">f(E \rightarrow E') = g(E'/\theta(E))
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="4%" />
@@ -568,13 +700,100 @@ file. A single reaction can be read if provided.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>theta</td>
-<td>(Tab1) Tabulated function of incident neutron energy <img class="math" src="../_images/math/cfd13a0f26eb7ef0093319a7669da7dd3771dbac.png" alt="E"/></td>
+<td>(Tab1) Tabulated function of incident neutron energy <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">E</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 <tr class="row-even"><td>g</td>
-<td>(Tab1) Tabulated function of <img class="math" src="../_images/math/2f4ebc352523c3a053905bef702e0b2db1413c97.png" alt="x = E'/\theta(E)"/></td>
+<td>(Tab1) Tabulated function of <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">x = E'/\theta(E)</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 <tr class="row-odd"><td>u</td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">0 \le E' \le E - U</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -714,16 +933,74 @@ Default value is 0, which reads in the entire reaction.</p>
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">MadlandNix</code><a class="headerlink" href="#pyne.endf.MadlandNix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy-dependent fission neutron spectrum (Madland and Nix) given in
 ENDF MF=5, LF=12 represented as</p>
-<div class="math">
-<p><img src="../_images/math/3325f4ad142eba40ad4ce998527fb22c0fe1b157.png" alt="f(E \rightarrow E') = \frac{1}{2} [ g(E', E_F(L)) + g(E', E_F(H))]"/></p>
-</div><p>where</p>
-<div class="math">
-<p><img src="../_images/math/a8736a947f7f6079f89f5aadc4791d627b17650e.png" alt="g(E',E_F) = \frac{1}{3\sqrt{E_F T_M}} \left [ u_2^{3/2} E_1 (u_2) -
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">f(E \rightarrow E') = \frac{1}{2} [ g(E', E_F(L)) + g(E', E_F(H))]
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p>where</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">g(E',E_F) = \frac{1}{3\sqrt{E_F T_M}} \left [ u_2^{3/2} E_1 (u_2) -
 u_1^{3/2} E_1 (u_1) + \gamma \left ( \frac{3}{2}, u_2 \right ) - \gamma
 \left ( \frac{3}{2}, u_1 \right ) \right ] \\ u_1 = \left ( \sqrt{E'} -
 \sqrt{E_F} \right )^2 / T_M \\ u_2 = \left ( \sqrt{E'} + \sqrt{E_F}
-\right )^2 / T_M."/></p>
-</div><p class="rubric">Attributes</p>
+\right )^2 / T_M.
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="6%" />
@@ -745,9 +1022,38 @@ u_1^{3/2} E_1 (u_1) + \gamma \left ( \frac{3}{2}, u_2 \right ) - \gamma
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Maxwellian</code><a class="headerlink" href="#pyne.endf.Maxwellian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple Maxwellian fission spectrum given in ENDF MF=5, LF=7 represented
 as</p>
-<div class="math">
-<p><img src="../_images/math/3dedded53669c9ca5267fa9c7e1fded4862dff62.png" alt="f(E \rightarrow E') = \frac{\sqrt{E'}}{I} e^{-E'/\theta(E)}"/></p>
-</div><p class="rubric">Attributes</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">f(E \rightarrow E') = \frac{\sqrt{E'}}{I} e^{-E'/\theta(E)}
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="4%" />
@@ -758,7 +1064,36 @@ as</p>
 <td>(Tab1) Tabulated function of incident neutron energy</td>
 </tr>
 <tr class="row-even"><td>u</td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">0 \le E' \le E - U</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -815,7 +1150,7 @@ energy-dependent.</p>
 <td>(ndarray of int) Neutron orbital angular momentum values</td>
 </tr>
 <tr class="row-odd"><td>q</td>
-<td>(ndarray of float) Q-value to be added to incident particle&#8217;s center-of-mass energy to determine the channel energy for use in the penetrability factor. Given as a function of the l-value.</td>
+<td>(ndarray of float) Q-value to be added to incident particle’s center-of-mass energy to determine the channel energy for use in the penetrability factor. Given as a function of the l-value.</td>
 </tr>
 <tr class="row-even"><td>competitive</td>
 <td>(ndarray of bool) Whether a competitive width is given for each l-value.</td>
@@ -977,7 +1312,7 @@ angle/energy distribution.</p>
 <td>(list of dict) List of radioactive nuclides produced as given in MF=8.</td>
 </tr>
 <tr class="row-odd"><td>reference_frame</td>
-<td>({&#8216;laboratory&#8217;, &#8216;center-of-mass&#8217;, &#8216;light-heavy&#8217;}) Indicates what reference frame is used for outgoing energies and angles. Only relevant for product energy-angle distributions read in MF=6.</td>
+<td>({‘laboratory’, ‘center-of-mass’, ‘light-heavy’}) Indicates what reference frame is used for outgoing energies and angles. Only relevant for product energy-angle distributions read in MF=6.</td>
 </tr>
 <tr class="row-even"><td>subshell_binding_energy</td>
 <td>(float) Subshell binding energy in eV as given in MF=23. Only relevant for photoelectric subshell ionization reactions in a photo-atomic sublibrary.</td>
@@ -1351,10 +1686,39 @@ subsection</p>
 <dt id="pyne.endf.Watt">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Watt</code><a class="headerlink" href="#pyne.endf.Watt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy-dependent Watt spectrum given in ENDF MF=5, LF=11 represented as</p>
-<div class="math">
-<p><img src="../_images/math/7b1137e90198e4da2cb05e275b54f9729a3072a5.png" alt="f(E \rightarrow E') = \frac{e^{-E'/a}}{I} \sinh \left ( \sqrt{bE'}
-\right )"/></p>
-</div><p class="rubric">Attributes</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">f(E \rightarrow E') = \frac{e^{-E'/a}}{I} \sinh \left ( \sqrt{bE'}
+\right )
+
+</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+<p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="3%" />
@@ -1365,7 +1729,36 @@ subsection</p>
 <td>(Tab1) Energy-dependent parameters tabulated as function of incident neutron energy</td>
 </tr>
 <tr class="row-even"><td>u</td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <img class="math" src="../_images/math/7118d4755e7b4fa6a52a9e9ca2aa9c5a3dab61b4.png" alt="0 \le E' \le E - U"/></td>
+<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">0 \le E' \le E - U</tt>)</p>
+latex exited with error
+[stdout]
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex)
+ restricted \write18 enabled.
+entering extended mode
+(./math.tex
+LaTeX2e &lt;2016/02/01&gt;
+Babel &lt;3.9q&gt; and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+
+! LaTeX Error: File `utf8x.def' not found.
+
+Type X to quit or &lt;RETURN&gt; to proceed,
+or enter new name. (Default extension: def)
+
+Enter file name: 
+! Emergency stop.
+&lt;read *&gt; 
+         
+l.173 \endinput
+               ^^M
+No pages of output.
+Transcript written on math.log.
+</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1505,6 +1898,23 @@ subsection</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -1529,8 +1939,17 @@ subsection</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

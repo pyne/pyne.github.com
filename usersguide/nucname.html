@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -61,7 +77,7 @@
 <span id="usersguide-nucname"></span><h1>Nuclide Naming Conventions<a class="headerlink" href="#nuclide-naming-conventions" title="Permalink to this headline">¶</a></h1>
 <p>One of the most frustrating aspects of nuclear data software is the large number
 of different ways that people choose to nuclide names.  Functionally, there are
-three pieces of information that <em>should</em> be included in a radionuclide&#8217;s name</p>
+three pieces of information that <em>should</em> be included in a radionuclide’s name</p>
 <ol class="arabic simple">
 <li><strong>Z Number</strong>: The number of protons.</li>
 <li><strong>A Number</strong>: The number of nucleons (neutrons + protons).</li>
@@ -73,26 +89,26 @@ supported by PyNE.  Functions to convert between forms may be seen in <a class="
 <li><strong>id (zas)</strong>: This type places the charge of the nucleus out front, then has three
 digits for the atomic mass number, and ends with four state digits (0 = ground,
 1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
-be expressed as &#8216;922350000&#8217;.  This is th canonical form for nuclides.</li>
+be expressed as ‘922350000’.  This is th canonical form for nuclides.</li>
 <li><strong>name</strong>: This is the more common, human readable notation.  The chemical symbol
 (one or two characters long) is first, followed by the atomic weight.  Lastly if
 the nuclide is metastable, the letter <em>M</em> is concatenated to the end.  For
-example, &#8216;H-1&#8217; and &#8216;Am242M&#8217; are both valid.  Note that nucname will always
+example, ‘H-1’ and ‘Am242M’ are both valid.  Note that nucname will always
 return name form with the dash removed and all letters uppercase.</li>
 <li><strong>zzaaam</strong>: This type places the charge of the nucleus out front, then has three
 digits for the atomic mass number, and ends with a metastable flag (0 = ground,
 1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
-be expressed as &#8216;922350&#8217;.</li>
+be expressed as ‘922350’.</li>
 <li><strong>zzzaaa</strong>: This type places the charge of the nucleus out front, then has three
 digits for the atomic mass.  It contains no information about the excited state.</li>
 <li><strong>zzllaaam</strong>: The ZZLLAAAM naming convention is similar to name form.  However, it
 is preceded by the nuclides two AA numbers, followed by the two LL characters.
 Of the two LL characters, only the first letter in the chemical symbol is uppercase,
 the dash is always present, and the the meta-stable flag is lowercase.  For
-instance, &#8216;95-Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+instance, ‘95-Am-242m’ is the valid serpent notation for this nuclide.</li>
 <li><strong>SZA</strong>: This type places three state digits out front, the charge of the nucleus in
 the middle, and then has three digits for the atomic mass number. Uranium-235M here
-would be expressed as &#8216;1092235&#8217;.</li>
+would be expressed as ‘1092235’.</li>
 <li><strong>MCNP</strong>: The MCNP format for entering nuclides is unfortunately
 non-standard.  In most ways it is similar to zzaaam form, except that it
 lacks the metastable flag.  For information on how metastable isotopes are
@@ -100,22 +116,22 @@ named, please consult the MCNPX documentation for more information.</li>
 <li><strong>Serpent</strong>: The serpent naming convention is similar to name form.
 However, only the first letter in the chemical symbol is uppercase, the
 dash is always present, and the the meta-stable flag is lowercase.  For
-instance, &#8216;Am-242m&#8217; is the valid serpent notation for this nuclide.</li>
+instance, ‘Am-242m’ is the valid serpent notation for this nuclide.</li>
 <li><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.
 However, this convention contains no metastable information.  Moreover, the
-A-number comes before the element symbol.  For example, &#8216;242Am&#8217; is the
+A-number comes before the element symbol.  For example, ‘242Am’ is the
 valid NIST notation.</li>
 <li><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the
 placement of the Z- and A-numbers are swapped. Therefore, this format is
-effectively aaazzzm.  For example, &#8216;2420951&#8217; is the valid cinder notation
-for &#8216;AM242M&#8217;.</li>
+effectively aaazzzm.  For example, ‘2420951’ is the valid cinder notation
+for ‘AM242M’.</li>
 <li><strong>ALARA</strong>: In ALARA format, elements are denoted by the lower case atomic symbol.
-Nuclides are specified by appending a semicolon and A-number. For example, &#8220;fe&#8221;
-and &#8220;fe:56&#8221; represent elemental iron and iron-56 respectively. No metastable
+Nuclides are specified by appending a semicolon and A-number. For example, “fe”
+and “fe:56” represent elemental iron and iron-56 respectively. No metastable
 flag exists.</li>
 <li><strong>Groundstate</strong>:  In Groundstate format, the nuclide is stored in a form similar
 to the standard id form, but the last four digits are zero to eliminate the
-information about the nuclide&#8217;s state.</li>
+information about the nuclide’s state.</li>
 <li><strong>state_id</strong>: The state id naming convention uses the form zzzaaassss. It is
 different from the canonical zzzaaassss form in that ssss refers to a list
 of states by ordered by energy. This is derived from the levels listed in the
@@ -200,7 +216,7 @@ For more information please refer to the
 <span class="gr">Out[9]: </span><span class="s1">&#39;fe:56&#39;</span>
 </pre></div>
 </div>
-<p>Further information on the naming module may be seen in the library reference <a class="reference internal" href="../pyapi/nucname.html#pyne-nucname"><span class="std std-ref">Nuclide Naming Module &#8211; pyne.nucname</span></a>.</p>
+<p>Further information on the naming module may be seen in the library reference <a class="reference internal" href="../pyapi/nucname.html#pyne-nucname"><span class="std std-ref">Nuclide Naming Module – pyne.nucname</span></a>.</p>
 </div>
 </div>
 
@@ -212,7 +228,7 @@ For more information please refer to the
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../index.html" title="index">
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Nuclide Naming Conventions</a><ul>
@@ -271,6 +287,23 @@ For more information please refer to the
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -295,8 +328,17 @@ For more information please refer to the
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

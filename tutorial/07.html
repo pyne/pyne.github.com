@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -11715,8 +11731,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11727,9 +11745,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style scoped="scoped" type="text/css">
@@ -11783,9 +11803,7 @@ body {
 div#notebook {
   overflow: visible;
   border-top: none;
-}
-
-@media print {
+}@media print {
   div.cell {
     display: block;
     page-break-inside: avoid;
@@ -11806,7 +11824,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -11830,8 +11848,7 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11869,7 +11886,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/home/pyne-user/.local/lib/python2.7/site-packages/pyne/mesh.py:12: QAWarning: pyne.mesh is not yet QA compliant.
@@ -11906,17 +11925,15 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Basics">Basics<a class="anchor-link" href="#Basics">&#182;</a></h1>
+<h1 id="Basics">Basics<a class="anchor-link" href="#Basics">&#194;&#182;</a></h1>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11939,8 +11956,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11962,8 +11978,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -11985,8 +12000,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12015,7 +12029,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 <div class="output_html rendered_html output_subarea ">
@@ -12028,8 +12044,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12056,7 +12071,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[253]:</div>
+
 
 
 
@@ -12070,8 +12087,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12097,7 +12113,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[254]:</div>
+
 
 
 
@@ -12111,8 +12129,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12138,7 +12155,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[255]:</div>
+
 
 
 
@@ -12152,17 +12171,15 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="PyNE-Mesh-+-PyNE-Materials">PyNE Mesh + PyNE Materials<a class="anchor-link" href="#PyNE-Mesh-+-PyNE-Materials">&#182;</a></h1>
+<h1 id="PyNE-Mesh-+-PyNE-Materials">PyNE Mesh + PyNE Materials<a class="anchor-link" href="#PyNE-Mesh-+-PyNE-Materials">&#194;&#182;</a></h1>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12185,8 +12202,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12209,8 +12225,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12236,8 +12251,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12266,7 +12280,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 <div class="output_html rendered_html output_subarea ">
@@ -12279,8 +12295,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12306,7 +12321,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[235]:</div>
+
 
 
 
@@ -12320,8 +12337,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12347,7 +12363,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[234]:</div>
+
 
 
 
@@ -12361,8 +12379,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12388,7 +12405,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[223]:</div>
+
 
 
 
@@ -12402,8 +12421,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12429,7 +12447,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[6]:</div>
+
 
 
 
@@ -12443,8 +12463,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12470,7 +12489,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt output_prompt">Out[266]:</div>
+
 
 
 
@@ -12500,17 +12521,15 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Advanced-Feature:-Computed-Tags">Advanced Feature: Computed Tags<a class="anchor-link" href="#Advanced-Feature:-Computed-Tags">&#182;</a></h1>
+<h1 id="Advanced-Feature:-Computed-Tags">Advanced Feature: Computed Tags<a class="anchor-link" href="#Advanced-Feature:-Computed-Tags">&#194;&#182;</a></h1>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12541,8 +12560,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12571,7 +12589,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 <div class="output_html rendered_html output_subarea ">
@@ -12584,8 +12604,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12599,7 +12618,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 <div class="prompt input_prompt">In&nbsp;[288]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m2</span><span class="o">.</span><span class="n">sigma_t</span> <span class="o">=</span> <span class="n">ComputedTag</span><span class="p">(</span><span class="k">lambda</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">sigma_t</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">group_struct</span><span class="o">=</span><span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">],</span> <span class="n">phi_g</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m2</span><span class="o">.</span><span class="n">sigma_t</span> <span class="o">=</span> <span class="n">ComputedTag</span><span class="p">(</span><span class="k">lambda</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">sigma_t</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">group_struct</span><span class="o">=</span><span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">],</span> <span class="n">phi_g</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12627,7 +12646,9 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
 
 <div class="output_area">
+
 <div class="prompt"></div>
+
 
 
 <div class="output_html rendered_html output_subarea ">
@@ -12640,8 +12661,7 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -12709,6 +12729,23 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -12733,8 +12770,17 @@ A <code>Mesh</code> object stores a MOAB iMesh instance, and additionally a PyNE
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>

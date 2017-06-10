@@ -1,8 +1,8 @@
 
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -20,20 +20,36 @@
         VERSION:     '0.5.0-rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="PyNE 0.5.0-rc1" href="../../index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="search" title="Search" href="../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
   </head>
-  <body role="document">
+  <body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -58,7 +74,7 @@
           <div class="body" role="main">
             
   <div class="section" id="cinder-data-pyne-dbgen-cinder">
-<span id="pyne-dbgen-cinder"></span><h1>CINDER Data &#8211; <a class="reference internal" href="#module-pyne.dbgen.cinder" title="pyne.dbgen.cinder"><code class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.cinder</span></code></a><a class="headerlink" href="#cinder-data-pyne-dbgen-cinder" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-dbgen-cinder"></span><h1>CINDER Data – <a class="reference internal" href="#module-pyne.dbgen.cinder" title="pyne.dbgen.cinder"><code class="xref py py-mod docutils literal"><span class="pre">pyne.dbgen.cinder</span></code></a><a class="headerlink" href="#cinder-data-pyne-dbgen-cinder" title="Permalink to this headline">¶</a></h1>
 <p>This module locates, parses, and adds CINDER cross section and fission product yield data to <code class="docutils literal"><span class="pre">nuc_data.h5</span></code>.
 Note that this module requires that the <code class="docutils literal"><span class="pre">cinder.dat</span></code> file exist within the <code class="docutils literal"><span class="pre">DATAPATH</span></code> directory.
 This often requires that MCNPX is installed.</p>
@@ -136,7 +152,7 @@ sections.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.grab_cinder_dat">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">grab_cinder_dat</code><span class="sig-paren">(</span><em>build_dir=''</em>, <em>datapath=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#grab_cinder_dat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.grab_cinder_dat" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">grab_cinder_dat</code><span class="sig-paren">(</span><em>build_dir=’‘</em>, <em>datapath=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#grab_cinder_dat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.grab_cinder_dat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grabs the cinder.dat file from the DATAPATH directory if not already
 present.</p>
 </dd></dl>
@@ -157,7 +173,7 @@ present.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>info_table</strong> : array</p>
 <blockquote class="last">
-<div><p>Structured array with the form &#8220;(index, nuc, type, mass)&#8221;.</p>
+<div><p>Structured array with the form “(index, nuc, type, mass)”.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -173,7 +189,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_mg_absorption">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_absorption</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_absorption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_absorption" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_absorption</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_absorption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_absorption" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the absorption reaction rate cross sections to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -195,7 +211,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_mg_fission">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_fission</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_fission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_fission" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_fission</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_fission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_fission" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the fission reaction rate cross sections to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -217,7 +233,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_mg_gamma_decay">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_gamma_decay</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_gamma_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_gamma_decay" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_gamma_decay</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_gamma_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_gamma_decay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the gamma decay spectrum information to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -239,7 +255,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_mg_group_structure">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_group_structure</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_group_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_group_structure" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_mg_group_structure</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_mg_group_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_mg_group_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the energy group bounds arrays to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -261,7 +277,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_neutron_fp_info">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_neutron_fp_info</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_neutron_fp_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_neutron_fp_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_neutron_fp_info</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_neutron_fp_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_neutron_fp_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the neutron fission product yield info to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -283,7 +299,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_neutron_fp_yields">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_neutron_fp_yields</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_neutron_fp_yields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_neutron_fp_yields" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_neutron_fp_yields</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_neutron_fp_yields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_neutron_fp_yields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the neutron fission product yields to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -305,7 +321,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.make_photon_fp_info">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_photon_fp_info</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_photon_fp_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_photon_fp_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">make_photon_fp_info</code><span class="sig-paren">(</span><em>nuc_data</em>, <em>build_dir=’‘</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#make_photon_fp_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.make_photon_fp_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the photofission product yield info to the hdf5 library.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -363,7 +379,7 @@ present.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>info_table</strong> : array</p>
 <blockquote class="last">
-<div><p>Structured array with the form &#8220;(index, nuc, type, mass)&#8221;.</p>
+<div><p>Structured array with the form “(index, nuc, type, mass)”.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -373,7 +389,7 @@ present.</p>
 
 <dl class="function">
 <dt id="pyne.dbgen.cinder.safe_decode">
-<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">safe_decode</code><span class="sig-paren">(</span><em>b</em>, <em>encs=(None</em>, <em>'utf-8'</em>, <em>'latin-1')</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#safe_decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.safe_decode" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.dbgen.cinder.</code><code class="descname">safe_decode</code><span class="sig-paren">(</span><em>b</em>, <em>encs=(None</em>, <em>’utf-8’</em>, <em>’latin-1’)</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/dbgen/cinder.html#safe_decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.dbgen.cinder.safe_decode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tries to decode a bytes array in a few different ways.</p>
 </dd></dl>
 
@@ -388,10 +404,10 @@ present.</p>
         <div class="sphinxsidebarwrapper">
         <p class="logo"><a href="../../index.html" title="index">
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
-        </a></p><div class="sphinxlocaltoc">
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">CINDER Data &#8211; <code class="docutils literal"><span class="pre">pyne.dbgen.cinder</span></code></a><ul>
+<li><a class="reference internal" href="#">CINDER Data – <code class="docutils literal"><span class="pre">pyne.dbgen.cinder</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.dbgen.cinder">CINDER Data API</a></li>
 </ul>
 </li>
@@ -443,6 +459,23 @@ present.</p>
 
         </div>
       </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
       <div class="clearer"></div>
     </div>
     <div class="relbar-bottom">
@@ -467,8 +500,17 @@ present.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jan 24, 2017.
-    </div>
+      Last updated on Jun 08, 2017.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
     <!-- cloud_sptheme 1.4 -->
     </div>
     </div>
