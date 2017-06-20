@@ -37,9 +37,9 @@ unzipped directory::
     scripts/nuc_data_make
 
 The ``setup.py`` command compiles and installs the PyNE source code.
-Note that this command must be done in the top PyNE directory.
 The ``nuc_data_make`` builds and installs a database of nuclear data.
-Unfortunately, this must be done as a second step because most nuclear 
+Note that these both commands must be done in the top PyNE directory.
+Unfortunately, ``nuc_data_make`` must be done as a second step because most nuclear 
 data is under some form of license restriction or export control which 
 prevents the developers from distributing it with PyNE.  However, the 
 ``nuc_data_make`` program (which is installed by ``setup.py``) will
