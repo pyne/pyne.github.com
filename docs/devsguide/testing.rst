@@ -67,8 +67,10 @@ Putting It All Together
 If you'd like to run all of the tests automatically from the root pyne dir, 
 you can chain the following BASH commands together::
 
-    $ cd tests && nosetests && cd ../examples && ../execer.py || cd ../tutorial && \
+    $ cd tests && ./travis-run-tests.sh && cd ../examples && ../execer.py || cd ../tutorial && \
       ../execer.py || cd ..
 
+
+If you get any test errors try running nuc_data_make --clean=1
 Happy testing!
 
