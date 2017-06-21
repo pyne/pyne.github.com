@@ -14,7 +14,6 @@ PyNE has the following dependencies:
    #. `CMake <http://www.cmake.org/>`_ (>= 2.8.5)
    #. `NumPy <http://www.numpy.org/>`_ (1.11.0)
    #. `SciPy <http://www.scipy.org/>`_
-   #. `Jinja2 <http://jinja.pocoo.org/docs/2.9/intro/>`_
    #. `Cython <http://cython.org/>`_ (>= 0.19.1)
    #. `HDF5 <http://www.hdfgroup.org/HDF5/>`_
    #. `PyTables <http://www.pytables.org/>`_

@@ -9,8 +9,10 @@ This guide will teach you the basics of how to test PyNE code.
 Unit Testing
 ------------
 
-First, install nose:
-http://nose.readthedocs.org/en/latest/
+First, install:
+
+   #. `nose <http://nose.readthedocs.org/en/latest/>`_
+   #. `Jinja2 <http://jinja.pocoo.org/docs/2.9/intro/>`_ 
 
 To perform all unit tests::
 
