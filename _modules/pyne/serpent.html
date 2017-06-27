@@ -120,6 +120,13 @@ if(ga_enabled){
 
 <span class="n">_detector_pattern_all</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(DET\w+)\s*=\s*&quot;</span>
 
+<span class="n">_imaterial_line_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(i[a-zA-Z]\w+)\s*=\s*\d*;&quot;</span>
+
+<span class="k">def</span> <span class="nf">_delete_imaterial</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;Remove imaterial information from the top of Serpent2 *_dep.m file started from &#39;i&#39; with nothing.&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">_imaterial_line_pattern</span><span class="p">,</span>
+               <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
 
 <span class="k">def</span> <span class="nf">_replace_comments</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Replaces matlab comments with python arrays in string s.&quot;&quot;&quot;</span>
@@ -283,12 +290,15 @@ if(ga_enabled){
     <span class="k">else</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">depfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
+    <span class="c1"># Remove imaterial information from the top of Serpent2 *_dep.m file</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">_delete_imaterial</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
     <span class="c1"># Keep comments around</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_replace_comments</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="c1"># Replace matlab Arrays</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_replace_arrays</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
+    
     <span class="c1"># Now to find and convert arrays that have comments in them</span>
     <span class="n">comment_arrays</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">_comment_array_pattern</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">comment_arrays</span><span class="p">:</span>
@@ -534,7 +544,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 08, 2017.
+      Last updated on Jun 27, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -73,8 +73,53 @@ if(ga_enabled){
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="cross-section-cache-pyne-xs-cache">
-<span id="pyne-xs-cache"></span><h1>Cross Section Cache – <code class="xref py py-mod docutils literal"><span class="pre">pyne.xs.cache</span></code><a class="headerlink" href="#cross-section-cache-pyne-xs-cache" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyne.xs.cache">
+<span id="cross-section-cache-pyne-xs-cache"></span><span id="pyne-xs-cache"></span><h1>Cross Section Cache – <a class="reference internal" href="#module-pyne.xs.cache" title="pyne.xs.cache"><code class="xref py py-mod docutils literal"><span class="pre">pyne.xs.cache</span></code></a><a class="headerlink" href="#module-pyne.xs.cache" title="Permalink to this headline">¶</a></h1>
+<p>This module provides a cross section cache which automatically extracts 
+cross-sections from provided nuclear data sets.</p>
+<dl class="class">
+<dt id="pyne.xs.cache.XSCache">
+<em class="property">class </em><code class="descclassname">pyne.xs.cache.</code><code class="descname">XSCache</code><span class="sig-paren">(</span><em>group_struct=None</em>, <em>data_sources=(&lt;class ‘pyne.xs.data_source.CinderDataSource’&gt;</em>, <em>&lt;class ‘pyne.xs.data_source.OpenMCDataSource’&gt;</em>, <em>&lt;class ‘pyne.xs.data_source.SimpleDataSource’&gt;</em>, <em>&lt;class ‘pyne.xs.data_source.EAFDataSource’&gt;</em>, <em>&lt;class ‘pyne.xs.data_source.NullDataSource’&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/cache.html#XSCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.cache.XSCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lightweight multigroup cross section cache based off of python 
+dictionaries. This relies on a list of cross section data source from which
+discretized group constants may be computed from raw, underlying data.  
+Normally this requires that some cross section data be built into nuc_data.
+A default instance of this class is provided (pyne.xs.cache.xs_cache).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>group_struct</strong> : array-like of floats, optional</p>
+<blockquote>
+<div><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1.
+If the group structure is not present in the cache or is None, all cross 
+sections pulled from the sources will not be discretized or collapsed.</p>
+</div></blockquote>
+<p><strong>data_sources</strong> : list of DataSources and DataSource classes, optional</p>
+<blockquote class="last">
+<div><p>Sequence of DataSource obejects or classes from which to grab cross 
+section data. Data from a source earlier in the sequence (eg, index 1)
+will take precednce over data later in the sequence (eg, index 5).
+If a class is given rather than an object, the class is instantiated.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.xs.cache.XSCache.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/cache.html#XSCache.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.cache.XSCache.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the cache, retaining E_g and phi_g.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.xs.cache.XSCache.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>temp=300.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/cache.html#XSCache.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.cache.XSCache.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the cross sections from all data sources.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -172,7 +217,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 08, 2017.
+      Last updated on Jun 27, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

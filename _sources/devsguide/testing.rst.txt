@@ -9,18 +9,20 @@ This guide will teach you the basics of how to test PyNE code.
 Unit Testing
 ------------
 
-First, install nose:
-http://nose.readthedocs.org/en/latest/
+First, install:
+
+   #. `nose <http://nose.readthedocs.org/en/latest/>`_
+   #. `Jinja2 <http://jinja.pocoo.org/docs/2.9/intro/>`_ 
 
 To perform all unit tests::
 
     $ cd tests/
-    $ nosetests
+    $ ./travis-run-tests.sh
 
 This will recursively look through the currently directory, open up every file
 named test_* and run every function (or method) named test_*.
 
-Nosetests can also take file(s) as an argument. For example, to just run the
+Nosetests can take file(s) as an argument. For example, to just run the
 mcnp and material module tests:
 
     nosetests test_mcnp.py test_material.py
@@ -67,8 +69,10 @@ Putting It All Together
 If you'd like to run all of the tests automatically from the root pyne dir, 
 you can chain the following BASH commands together::
 
-    $ cd tests && nosetests && cd ../examples && ../execer.py || cd ../tutorial && \
+    $ cd tests && ./travis-run-tests.sh && cd ../examples && ../execer.py || cd ../tutorial && \
       ../execer.py || cd ..
 
+
+If you get any test errors try running nuc_data_make --clean=1
 Happy testing!
 

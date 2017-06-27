@@ -73,8 +73,103 @@ if(ga_enabled){
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="chain-solve-pyne-transmute-chainsolve">
-<span id="pyne-transmute-channels"></span><h1>Chain Solve – <code class="xref py py-mod docutils literal"><span class="pre">pyne.transmute.chainsolve</span></code><a class="headerlink" href="#chain-solve-pyne-transmute-chainsolve" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyne.transmute.chainsolve">
+<span id="chain-solve-pyne-transmute-chainsolve"></span><span id="pyne-transmute-channels"></span><h1>Chain Solve – <a class="reference internal" href="#module-pyne.transmute.chainsolve" title="pyne.transmute.chainsolve"><code class="xref py py-mod docutils literal"><span class="pre">pyne.transmute.chainsolve</span></code></a><a class="headerlink" href="#module-pyne.transmute.chainsolve" title="Permalink to this headline">¶</a></h1>
+<p>This module implements an ALARA[1]-like chain-based transmutation solver.</p>
+<p>[1] Wilson, P. P. H. “ALARA: Analytic Laplacian Adaptive Radioactivity 
+Analysis,” a Ph.D. Dissertation, University of Wisconsin, Madison, WI, 1999.</p>
+<dl class="class">
+<dt id="pyne.transmute.chainsolve.Transmuter">
+<em class="property">class </em><code class="descclassname">pyne.transmute.chainsolve.</code><code class="descname">Transmuter</code><span class="sig-paren">(</span><em>t=0.0</em>, <em>phi=0.0</em>, <em>temp=300.0</em>, <em>tol=1e-07</em>, <em>rxs=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for transmuting materials using an ALARA-like chain solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>t</strong> : float</p>
+<blockquote>
+<div><p>Transmutations time [sec].</p>
+</div></blockquote>
+<p><strong>phi</strong> : float or array of floats</p>
+<blockquote>
+<div><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
+a scalar or match the group structure of EAF.</p>
+</div></blockquote>
+<p><strong>temp</strong> : float, optional</p>
+<blockquote>
+<div><p>Temperature [K] of material, defaults to 300.0.</p>
+</div></blockquote>
+<p><strong>tol</strong> : float</p>
+<blockquote>
+<div><p>Tolerance level for chain truncation.</p>
+</div></blockquote>
+<p><strong>rxs</strong> : set of ints or strs</p>
+<blockquote>
+<div><p>Reaction ids or names to use in transmutation that produce well-defined 
+children.  This set should thus not include fission.  If None, then the 
+reactions from EAF are used.</p>
+</div></blockquote>
+<p><strong>log</strong> : file-like or None</p>
+<blockquote>
+<div><p>The log file object should be written. A None imples the log is 
+not desired.</p>
+</div></blockquote>
+<p><strong>args</strong> : tuple, optional</p>
+<blockquote>
+<div><p>Other arguments ignored for compatibility with other Transmuters.</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : dict, optional</p>
+<blockquote class="last">
+<div><p>Other keyword arguments ignored for compatibility with other Transmuters.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.transmute.chainsolve.Transmuter.transmute">
+<code class="descname">transmute</code><span class="sig-paren">(</span><em>x</em>, <em>t=None</em>, <em>phi=None</em>, <em>tol=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter.transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter.transmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transmutes a material into its daughters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : Material or similar</p>
+<blockquote>
+<div><p>Input material for transmutation.</p>
+</div></blockquote>
+<p><strong>t</strong> : float</p>
+<blockquote>
+<div><p>Transmutations time [sec].</p>
+</div></blockquote>
+<p><strong>phi</strong> : float or array of floats</p>
+<blockquote>
+<div><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
+a scalar or match the group structure of EAF.</p>
+</div></blockquote>
+<p><strong>tol</strong> : float</p>
+<blockquote>
+<div><p>Tolerance level for chain truncation.</p>
+</div></blockquote>
+<p><strong>log</strong> : file-like or None</p>
+<blockquote>
+<div><p>The log file object should be written. A None imples the log is 
+not desired.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : Material</p>
+<blockquote class="last">
+<div><p>The output material post-transmutation.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -172,7 +267,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 08, 2017.
+      Last updated on Jun 27, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
