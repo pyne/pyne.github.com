@@ -78,16 +78,21 @@ if(ga_enabled){
 <p>This guide will teach you the basics of how to test PyNE code.</p>
 <div class="section" id="unit-testing">
 <h2>Unit Testing<a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h2>
-<p>First, install nose:
-<a class="reference external" href="http://nose.readthedocs.org/en/latest/">http://nose.readthedocs.org/en/latest/</a></p>
+<p>First, install:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference external" href="http://nose.readthedocs.org/en/latest/">nose</a></li>
+<li><a class="reference external" href="http://jinja.pocoo.org/docs/2.9/intro/">Jinja2</a></li>
+</ol>
+</div></blockquote>
 <p>To perform all unit tests:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ cd tests/
-$ nosetests
+$ ./travis-run-tests.sh
 </pre></div>
 </div>
 <p>This will recursively look through the currently directory, open up every file
 named test_* and run every function (or method) named test_*.</p>
-<p>Nosetests can also take file(s) as an argument. For example, to just run the
+<p>Nosetests can take file(s) as an argument. For example, to just run the
 mcnp and material module tests:</p>
 <blockquote>
 <div>nosetests test_mcnp.py test_material.py</div></blockquote>
@@ -125,11 +130,12 @@ $ ../execer.py
 <h2>Putting It All Together<a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
 <p>If you’d like to run all of the tests automatically from the root pyne dir,
 you can chain the following BASH commands together:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd tests &amp;&amp; nosetests &amp;&amp; cd ../examples &amp;&amp; ../execer.py || cd ../tutorial &amp;&amp; \
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cd tests &amp;&amp; ./travis-run-tests.sh &amp;&amp; cd ../examples &amp;&amp; ../execer.py || cd ../tutorial &amp;&amp; \
   ../execer.py || cd ..
 </pre></div>
 </div>
-<p>Happy testing!</p>
+<p>If you get any test errors try running nuc_data_make –clean=1
+Happy testing!</p>
 </div>
 </div>
 
@@ -240,7 +246,7 @@ you can chain the following BASH commands together:</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 08, 2017.
+      Last updated on Jun 27, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
