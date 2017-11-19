@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Diffusion &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>Diffusion &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -11852,7 +11849,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Neutron-Diffusion-in-Python">Neutron Diffusion in Python<a class="anchor-link" href="#Neutron-Diffusion-in-Python">&#194;&#182;</a></h1><hr>
+<h1 id="Neutron-Diffusion-in-Python">Neutron Diffusion in Python<a class="anchor-link" href="#Neutron-Diffusion-in-Python">&#182;</a></h1><hr>
 <p>NOTE: The plotting/display portion of example is currenty BROKEN! see <a href="https://groups.google.com/forum/#!topic/pyne-dev/rM7iIorXHJA">the forum discussion</a> and <a href="https://github.com/pyne/pyne/pull/667">the PR</a> and <a href="https://github.com/pyne/pyne/issues/576">the issue</a>. The code itself is completely valid and a great example of cool things you can do in PyNE.</p>
 <hr>
 <p>This notebook is an entirely self-contained solution to a basic <a href="http://mragheb.com/NPRE%20402%20ME%20405%20Nuclear%20Power%20Engineering/One%20Group%20Reactor%20Theory.pdf">neutron diffision</a> equation for a reactor <em>rx</em> made up of a single fuel rod. The one-group diffusion equation that we will be stepping through time and space is,</p>
@@ -11873,7 +11870,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="First,-Make-a-Mesh">First, Make a Mesh<a class="anchor-link" href="#First,-Make-a-Mesh">&#194;&#182;</a></h2><p>PyNE Meshes will be used to compute all of the nuclear data needs here and for a semi-structured MOAB Hex8 meshes. The simulation, analysis, and visulaization here takes place entirely within memory.</p>
+<h2 id="First,-Make-a-Mesh">First, Make a Mesh<a class="anchor-link" href="#First,-Make-a-Mesh">&#182;</a></h2><p>PyNE Meshes will be used to compute all of the nuclear data needs here and for a semi-structured MOAB Hex8 meshes. The simulation, analysis, and visulaization here takes place entirely within memory.</p>
 
 </div>
 </div>
@@ -11936,7 +11933,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-Laplacian">The Laplacian<a class="anchor-link" href="#The-Laplacian">&#194;&#182;</a></h3><p>The functions in the following cell solve for the laplacian ($\nabla^2$) for any index in in the mesh using a <a href="http://en.wikipedia.org/wiki/Five-point_stencil">3 point stencil</a> along each axis. This implements reflecting boundary conditions along the edges of the domain.</p>
+<h3 id="The-Laplacian">The Laplacian<a class="anchor-link" href="#The-Laplacian">&#182;</a></h3><p>The functions in the following cell solve for the laplacian ($\nabla^2$) for any index in in the mesh using a <a href="http://en.wikipedia.org/wiki/Five-point_stencil">3 point stencil</a> along each axis. This implements reflecting boundary conditions along the edges of the domain.</p>
 
 </div>
 </div>
@@ -11985,7 +11982,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Solve-in-space">Solve in space<a class="anchor-link" href="#Solve-in-space">&#194;&#182;</a></h3><p>The <code>timestep()</code> function sweeps through the entire mesh and computes the new flux everywhere.  This operation takes place entirely on the mesh object.</p>
+<h3 id="Solve-in-space">Solve in space<a class="anchor-link" href="#Solve-in-space">&#182;</a></h3><p>The <code>timestep()</code> function sweeps through the entire mesh and computes the new flux everywhere.  This operation takes place entirely on the mesh object.</p>
 
 </div>
 </div>
@@ -12023,7 +12020,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Solve-in-time">Solve in time<a class="anchor-link" href="#Solve-in-time">&#194;&#182;</a></h3><p>The <code>render()</code> function steps through time calling the <code>timestep()</code> function and then creating an image.  The images that are generated are then dumped into a movie.</p>
+<h3 id="Solve-in-time">Solve in time<a class="anchor-link" href="#Solve-in-time">&#182;</a></h3><p>The <code>render()</code> function steps through time calling the <code>timestep()</code> function and then creating an image.  The images that are generated are then dumped into a movie.</p>
 
 </div>
 </div>
@@ -12062,7 +12059,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Reactor">Reactor<a class="anchor-link" href="#Reactor">&#194;&#182;</a></h3><p>This setups up a simple light water reactor fuel pin in a water cell.  Note that our cells are allowed to have varing aspect ratios.  This allows us to be coarsely refined inside of the pin, finely refined around the edge of the pin, and then have a different coarse refinement out in the coolant.</p>
+<h3 id="Reactor">Reactor<a class="anchor-link" href="#Reactor">&#182;</a></h3><p>This setups up a simple light water reactor fuel pin in a water cell.  Note that our cells are allowed to have varing aspect ratios.  This allows us to be coarsely refined inside of the pin, finely refined around the edge of the pin, and then have a different coarse refinement out in the coolant.</p>
 
 </div>
 </div>
@@ -12172,7 +12169,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Exercises:">Exercises:<a class="anchor-link" href="#Exercises:">&#194;&#182;</a></h3><p>Left to the reader is to modify this notebook to diffuse</p>
+<h3 id="Exercises:">Exercises:<a class="anchor-link" href="#Exercises:">&#182;</a></h3><p>Left to the reader is to modify this notebook to diffuse</p>
 <ul>
 <li>a point source, or</li>
 <li>a line source.</li>
@@ -12280,8 +12277,8 @@ div#notebook {
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

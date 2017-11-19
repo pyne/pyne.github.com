@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Binning &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>Binning &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -82,32 +79,32 @@ with physics.</p>
 <div class="section" id="pointwise-linear-collapse">
 <h2>Pointwise Linear Collapse<a class="headerlink" href="#pointwise-linear-collapse" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="xref py py-func docutils literal"><span class="pre">pointwise_linear_collapse()</span></code> function takes an array of pointwise
-data <img class="math" src="../_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> that has the independent variable <img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> and collapses this into
-<img class="math" src="../_images/math/b92c09a649305a0aef3239729d93cdf941e0e5cf.png" alt="G"/> groups as defined by the bin boundaries <img class="math" src="../_images/math/8d7933f8f95cd8f8322be1d70d706d9959a65c01.png" alt="x_g"/> where <img class="math" src="../_images/math/67f4714f065d485540ad40829e0717bf75e9dd85.png" alt="g"/>
-indexes <img class="math" src="../_images/math/b92c09a649305a0aef3239729d93cdf941e0e5cf.png" alt="G"/>. Both <img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> and <img class="math" src="../_images/math/8d7933f8f95cd8f8322be1d70d706d9959a65c01.png" alt="x_g"/> must be monotonic and in the
-same direction.  Say that there are <img class="math" src="../_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> points in <img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> and <img class="math" src="../_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/>.
-Let <img class="math" src="../_images/math/413f8a8e40062a9090d9d50b88bc7b551b314c26.png" alt="n"/> index <img class="math" src="../_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/>. Then for all points internal to a group, the
-collapsed value <img class="math" src="../_images/math/14ebce7d0454f2c50a5d775af18c93958cc1a157.png" alt="y_g"/> is:</p>
+data <span class="math">y</span> that has the independent variable <span class="math">x</span> and collapses this into
+<span class="math">G</span> groups as defined by the bin boundaries <span class="math">x_g</span> where <span class="math">g</span>
+indexes <span class="math">G</span>. Both <span class="math">x</span> and <span class="math">x_g</span> must be monotonic and in the
+same direction.  Say that there are <span class="math">N</span> points in <span class="math">x</span> and <span class="math">y</span>.
+Let <span class="math">n</span> index <span class="math">N</span>. Then for all points internal to a group, the
+collapsed value <span class="math">y_g</span> is:</p>
 <div class="math">
-<p><img src="../_images/math/448084fb2e82fdf470ec04a6b962d93a01573568.png" alt="y_g = \frac{1}{x_{g+1} - x_g} \sum_{n|x_g \le x_n}^{x_n \le x_{g+1}}
-    \frac{y_{n+1} + y_n}{2} * (x_{n+1} - x_n)"/></p>
-</div><p>The term <img class="math" src="../_images/math/06e1c933af0d5fcfd95eae0867c3b55d77a9715b.png" alt="(y_{n+1} + y_n)/2"/> is the center (average) value of a linear
-interpolation between the two points.  Therefore, <img class="math" src="../_images/math/14ebce7d0454f2c50a5d775af18c93958cc1a157.png" alt="y_g"/> is the
-<img class="math" src="../_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/>-weighted average of <img class="math" src="../_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> over the entire group.</p>
-<p>In the event that the line between <img class="math" src="../_images/math/2623d55b1760a35694c4eaa7362c6cb118a18a38.png" alt="y_n"/> and <img class="math" src="../_images/math/fd814902b5662370ea31747b343d2b81c37e45ca.png" alt="y_{n+1}"/> crosses
+<p><span class="math">y_g = \frac{1}{x_{g+1} - x_g} \sum_{n|x_g \le x_n}^{x_n \le x_{g+1}}
+    \frac{y_{n+1} + y_n}{2} * (x_{n+1} - x_n)</span></p>
+</div><p>The term <span class="math">(y_{n+1} + y_n)/2</span> is the center (average) value of a linear
+interpolation between the two points.  Therefore, <span class="math">y_g</span> is the
+<span class="math">x</span>-weighted average of <span class="math">y</span> over the entire group.</p>
+<p>In the event that the line between <span class="math">y_n</span> and <span class="math">y_{n+1}</span> crosses
 either the lower or upper bin boundary (or both) then their values are
 adjusted via a linear interpolation to the value at the bin boundary.</p>
 <p>For a lower boundary crossing, the following substitutions are made to the
 equation above:</p>
 <div class="math">
-<p><img src="../_images/math/cd8e8be56f6f811fdaf310b14c95ec82fc9807c2.png" alt="x_n \to x_g"/></p>
+<p><span class="math">x_n \to x_g</span></p>
 </div><div class="math">
-<p><img src="../_images/math/dabe85fea7a2f637d286b26b338ba440dd477780.png" alt="y_n \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_g - x_n) + y_n"/></p>
+<p><span class="math">y_n \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_g - x_n) + y_n</span></p>
 </div><p>For an upper boundary crossing:</p>
 <div class="math">
-<p><img src="../_images/math/8da4268c45a0e4f6a81c6ec484fbcd786b06cb18.png" alt="x_{n+1} \to x_{g+1}"/></p>
+<p><span class="math">x_{n+1} \to x_{g+1}</span></p>
 </div><div class="math">
-<p><img src="../_images/math/f14c7b5bb385a7b8c667f1ef939b30ded4bfc2a9.png" alt="y_{n+1} \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_{g+1} - x_n) + y_n"/></p>
+<p><span class="math">y_{n+1} \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_{g+1} - x_n) + y_n</span></p>
 </div></div>
 </div>
 
@@ -214,8 +211,8 @@ equation above:</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Decay &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>Decay &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -92,10 +89,10 @@ is better suited for computation than the traditional expression.</p>
 <div class="section" id="canonical-bateman-equations-for-decay">
 <h2>Canonical Bateman Equations for Decay<a class="headerlink" href="#canonical-bateman-equations-for-decay" title="Permalink to this headline">¶</a></h2>
 <p>The canonical expression of the Bateman equations for a decay chain
-proceeding from a nuclide <img class="math" src="../_images/math/0acafa529182e79b4f56165ec677554fba7fcf98.png" alt="A"/> to a nuclide <img class="math" src="../_images/math/c4563e7ecec2336a3934447a6c10ef8519b0b452.png" alt="Z"/> at time
-<img class="math" src="../_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/> following a specific path is as follows <a class="footnote-reference" href="#id3" id="id1">[1]</a>:</p>
+proceeding from a nuclide <span class="math">A</span> to a nuclide <span class="math">Z</span> at time
+<span class="math">t</span> following a specific path is as follows <a class="footnote-reference" href="#id3" id="id1">[1]</a>:</p>
 <div class="math">
-<p><img src="../_images/math/436435ef347c617652f9dc974365b6bcd7cc6b32.png" alt="N_C(t) = \frac{N_1(0)}{\lambda_C} \cdot \gamma \cdot \sum_{i=1}^C \lambda_i c_{i} e^{-\lambda_i t}"/></p>
+<p><span class="math">N_C(t) = \frac{N_1(0)}{\lambda_C} \cdot \gamma \cdot \sum_{i=1}^C \lambda_i c_{i} e^{-\lambda_i t}</span></p>
 </div><p>The symbols in this expression have the following meaning:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -108,53 +105,122 @@ proceeding from a nuclide <img class="math" src="../_images/math/0acafa529182e79
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><img class="math" src="../_images/math/2bcc65482aa8e15cd4c9e9f2542451fb4e971a91.png" alt="C"/></td>
+<tr class="row-even"><td><span class="math">C</span></td>
 <td>length of the decay chain</td>
 </tr>
-<tr class="row-odd"><td><img class="math" src="../_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/></td>
+<tr class="row-odd"><td><span class="math">i</span></td>
 <td>index for ith species, on range [1, C]</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/></td>
+<tr class="row-even"><td><span class="math">j</span></td>
 <td>index for jth species, on range [1, C]</td>
 </tr>
-<tr class="row-odd"><td><img class="math" src="../_images/math/ef9270877405055756d345facd044e4ab297f858.png" alt="t"/></td>
+<tr class="row-odd"><td><span class="math">t</span></td>
 <td>time [seconds]</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/b7899e45c94b312c8bdea3a90aec0cfa400e74ec.png" alt="N_i(t)"/></td>
+<tr class="row-even"><td><span class="math">N_i(t)</span></td>
 <td>number density of the ith species at time t</td>
 </tr>
-<tr class="row-odd"><td><img class="math" src="../_images/math/43c76a77dea026eec022b581e5a82007936cdc2d.png" alt="t_{1/2,i}"/></td>
+<tr class="row-odd"><td><span class="math">t_{1/2,i}</span></td>
 <td>half-life of the ith species</td>
 </tr>
-<tr class="row-even"><td><img class="math" src="../_images/math/3b765ea6939f1eba2541e91f870cb3c078aa29be.png" alt="\lambda_i"/></td>
-<td>decay constant of ith species, <img class="math" src="../_images/math/06087aec794484d3bfd55826bb6f580454cfd0f7.png" alt="ln(2)/t_{1/2,i}"/></td>
+<tr class="row-even"><td><span class="math">\lambda_i</span></td>
+<td>decay constant of ith species, <span class="math">ln(2)/t_{1/2,i}</span></td>
 </tr>
-<tr class="row-odd"><td><img class="math" src="../_images/math/0ebb67342b546ca42a1c634b1ef03c893c4cdedb.png" alt="\gamma"/></td>
+<tr class="row-odd"><td><span class="math">\gamma</span></td>
 <td>The total branch ratio for this chain</td>
 </tr>
 </tbody>
 </table>
-<p>Additionally, <img class="math" src="../_images/math/f2b30171a3b0d3395cb190d1bec47494cba58eef.png" alt="c_{i}"/> is defined as:</p>
+<p>Additionally, <span class="math">c_{i}</span> is defined as:</p>
 <div class="math">
-<p><img src="../_images/math/558448a66c5587e716e2fbb0eb07e546ec7c4661.png" alt="c_i = \prod_{j=1,i\ne j}^C \frac{\lambda_j}{\lambda_j - \lambda_i}"/></p>
+<p><span class="math">c_i = \prod_{j=1,i\ne j}^C \frac{\lambda_j}{\lambda_j - \lambda_i}</span></p>
 </div><p>Furthermore, the total chain branch ratio is defined as the product of the
 branch ratio between any two species <a class="footnote-reference" href="#id4" id="id2">[2]</a>:</p>
 <div class="math">
-<p><img src="../_images/math/8728ee4f6dc0e015a78e80cd4c122e2d3cf560d5.png" alt="\gamma = \prod_{i=i}^{C-1} \gamma_{i \to i+1}"/></p>
+<p><span class="math">\gamma = \prod_{i=i}^{C-1} \gamma_{i \to i+1}</span></p>
 </div><p>Minor modifications are needed for terminal species: the first nuclide of a
-decay chain and the ending stable species. By setting <img class="math" src="../_images/math/969207f036f3832051b025c8615ce01ddf1e93e7.png" alt="C=1"/>, the Bateman
+decay chain and the ending stable species. By setting <span class="math">C=1</span>, the Bateman
 equations can be reduced to simply:</p>
 <div class="math">
-<p><img src="../_images/math/554378124337a01a796bde98ba4b1c71f3c6552a.png" alt="N_C(t) = N_1(0) e^{-\lambda_1 t}"/></p>
+<p><span class="math">N_C(t) = N_1(0) e^{-\lambda_1 t}</span></p>
 </div><p>For stable species, the appropriate equation is derived by taking the limit
-of when the decay constant of the stable nuclide (<img class="math" src="../_images/math/83d8e20db57c0c97fce0f32d82df97c008ad98ee.png" alt="\lambda_C"/>) goes to
-zero.  Also notice that every <img class="math" src="../_images/math/496867ca68c428fa123f26f0f73997632e61e116.png" alt="c_i"/> contains exactly one <img class="math" src="../_images/math/83d8e20db57c0c97fce0f32d82df97c008ad98ee.png" alt="\lambda_C"/>
-in the numerator which cancels with the <img class="math" src="../_images/math/83d8e20db57c0c97fce0f32d82df97c008ad98ee.png" alt="\lambda_C"/> in the denominator
+of when the decay constant of the stable nuclide (<span class="math">\lambda_C</span>) goes to
+zero. Also notice that every <span class="math">c_i</span> contains exactly one <span class="math">\lambda_C</span>
+in the numerator which cancels with the <span class="math">\lambda_C</span> in the denominator
 in front of the summation:</p>
 <div class="math">
-<p><img src="../_images/math/e89d8b67cc10603ec59c692d2387d039ca552b20.png" alt="\lim_{\lambda_C \to 0} N_C(t) = N_1(0)  \gamma \left[e^{-0t} + \sum_{i=1}^{C-1} \lambda_i \left(\frac{1}{0 - \lambda_i} \prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i} \right) e^{-\lambda_i t} \right]
+<p><span class="math">\lim_{\lambda_C \to 0} N_C(t) = N_1(0)  \gamma \left[e^{-0t} + \sum_{i=1}^{C-1} \lambda_i \left(\frac{1}{0 - \lambda_i} \prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i} \right) e^{-\lambda_i t} \right]
 
-N_C(t) = N_1(0)  \gamma \left[1.0 - \sum_{i=1}^{C-1} \left(\prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i} \right) e^{-\lambda_i t} \right]"/></p>
+N_C(t) = N_1(0)  \gamma \left[1.0 - \sum_{i=1}^{C-1} \left(\prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i} \right) e^{-\lambda_i t} \right]</span></p>
+</div><p>Now, certain chains have intermeadiate nuclides that are <em>almost</em> stable. For example, decaying
+from Es-254 to Po-210 goes through U-238, which is very close to stable relative to all of the
+other nuclides in the chain. This can trigger floating point precision issues, where certain
+terms will underflow or overflow or generate NaNs. Obviously this is a situation to be avoided,
+if at all possible. To handle this sitiuation, let’s call <span class="math">p</span> the index of the nuclide
+that is almost stable. We can then note that the Bateman equations can be reduced by the
+observation that <span class="math">\lambda_p \ll \lambda_{i\ne p}</span> after we separate out the p-term
+from the summation:</p>
+<div class="math">
+<p><span class="math">\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p}^C \left[\lambda_i \frac{\lambda_p}{\lambda_p - \lambda_i}
+                                                     \left(\prod_{j\ne i,p}^C \frac{\lambda_j}{\lambda_j - \lambda_i}\right)
+                                                     e^{-\lambda_i t}\right]
+                        + \frac{\gamma}{\lambda_C} \lambda_p \left(\prod_{j\ne p}^C \frac{\lambda_j}{\lambda_j - \lambda_p} \right) e^{-\lambda_p t}
+
+\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p}^C \left[\lambda_i \frac{\lambda_p}{\lambda_p - \lambda_i}
+                                                     \left(\prod_{j\ne i,p}^C \frac{\lambda_j}{\lambda_j - \lambda_i}\right)
+                                                     e^{-\lambda_i t}\right]
+                        + \frac{\gamma}{\lambda_C} \lambda_p \left(\prod_{j\ne p}^C \frac{\lambda_j}{\lambda_j - \lambda_p}\right) e^{-\lambda_p t}
+
+\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p}^C \left[\lambda_i \frac{\lambda_p}{- \lambda_i}
+                                                     \left(\prod_{j\ne i,p}^C \frac{\lambda_j}{\lambda_j - \lambda_i}\right)
+                                                     e^{-\lambda_i t}\right]
+                        + \frac{\gamma}{\lambda_C} \lambda_p \left(\prod_{j\ne p}^C \frac{\lambda_j}{\lambda_j}\right) e^{-\lambda_p t}
+
+\frac{N_C(t)}{N_1(0)} = \frac{-\gamma\lambda_p}{\lambda_C}\sum_{i\ne p}^C \left[
+                                                     \left(\prod_{j\ne i,p}^C \frac{\lambda_j}{\lambda_j - \lambda_i}\right)
+                                                     e^{-\lambda_i t}\right]
+                        + \frac{\gamma\lambda_p}{\lambda_C} e^{-\lambda_p t}</span></p>
+</div><p>The above expression for intermediate nuclides that are almost stable is valid when the last
+nuclide in the chain is unstable. When the last nuclide is stable, both the pth
+(almost stable nuclide) and the Cth (last and stable nuclide) must be removed can be split off from
+the summation and handled separately. As previously, then take <span class="math">\lambda_C \to 0</span> and <span class="math">\lambda_p \ll \lambda_{i\ne p,C}</span>.</p>
+<div class="math">
+<p><span class="math">\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p}^{C-1} \left[\lambda_i \frac{\lambda_C}{\lambda_C - \lambda_i} \frac{\lambda_p}{\lambda_p - \lambda_i}
+                                                     \left(\prod_{j\ne i,p}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}\right)
+                                                     e^{-\lambda_i t}\right]
+                        + \frac{\gamma}{\lambda_C} \lambda_p \frac{\lambda_C}{\lambda_C - \lambda_p} \left(\prod_{j\ne p}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_p} \right) e^{-\lambda_p t}
+                        + \frac{\gamma}{\lambda_C} \lambda_C \frac{\lambda_p}{\lambda_p - \lambda_C} \left(\prod_{j\ne p}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_C} \right) e^{-\lambda_C t}
+
+\frac{N_C(t)}{N_1(0)} = \gamma\sum_{i\ne p}^{C-1} \left[\frac{\lambda_i \lambda_p}{(\lambda_C - \lambda_i)(\lambda_p - \lambda_i)}
+                                                     \left(\prod_{j\ne i,p}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}\right)
+                                                     e^{-\lambda_i t}\right]
+                        + \frac{\gamma\lambda_p}{\lambda_C - \lambda_p} \left(\prod_{j\ne p}^{C-1} \frac{\lambda_j}{\lambda_j} \right) e^{-\lambda_p t}
+                        + \frac{\gamma\lambda_p}{\lambda_p - \lambda_C} \left(\prod_{j\ne p}^{C-1} \frac{\lambda_j}{\lambda_j} \right) e^{-\lambda_C t}
+
+\frac{N_C(t)}{N_1(0)} = -\gamma\sum_{i\ne p}^{C-1} \left[\left(\prod_{j\ne i}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}\right) e^{-\lambda_i t}\right]
+                        + \frac{\gamma\lambda_p}{\lambda_C - \lambda_p} e^{-\lambda_p t}
+                        + \frac{\gamma\lambda_p}{\lambda_p - \lambda_C} e^{-\lambda_C t}
+
+\frac{N_C(t)}{N_1(0)} = -\gamma\sum_{i\ne p}^{C-1} \left[\left(\prod_{j\ne i}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}\right) e^{-\lambda_i t}\right]
+                        + \frac{\gamma\lambda_p}{\lambda_C - \lambda_p} \left(e^{-\lambda_p t} - e^{-\lambda_C t}\right)
+
+\frac{N_C(t)}{N_1(0)} = -\gamma\sum_{i\ne p}^{C-1} \left[\left(\prod_{j\ne i}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}\right) e^{-\lambda_i t}\right]
+                        -\gamma e^{-\lambda_p t} + \gamma</span></p>
+</div><p>Lastly, we must handle the degenerate case where two nuclides in a chain  have the same exact half-lives.
+This unfortunate situation arrises out of the fundemental nuclear data. Let’s call these the pth and qth
+species. To prevent underflow, overflow, and NaNs, we must separate these nuclides out of the summation
+and then take the limit as <span class="math">\lambda_q \to \lambda_p</span>.</p>
+<div class="math">
+<p><span class="math">\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p,q}^{C} \left[\lambda_i \left(\prod_{j\ne i}^{C} \frac{\lambda_j}{\lambda_j - \lambda_i}\right) e^{-\lambda_i t}\right]
+                        + \frac{\gamma}{\lambda_C} \lambda_p \frac{\lambda_q}{\lambda_q - \lambda_p} \left(\prod_{j\ne p,q}^{C} \frac{\lambda_j}{\lambda_j - \lambda_p} \right) e^{-\lambda_p t}
+                        + \frac{\gamma}{\lambda_C} \lambda_q \frac{\lambda_p}{\lambda_p - \lambda_q} \left(\prod_{j\ne p,q}^{C} \frac{\lambda_j}{\lambda_j - \lambda_q} \right) e^{-\lambda_q t}
+
+\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p,q}^{C} \left[\lambda_i \left(\prod_{j\ne i}^{C} \frac{\lambda_j}{\lambda_j - \lambda_i}\right) e^{-\lambda_i t}\right]
+                        + \frac{\gamma\lambda_p^2}{\lambda_C} \left(\prod_{j\ne p,q}^{C} \frac{\lambda_j}{\lambda_j - \lambda_p} \right)
+                          \lim_{\lambda_q\to\lambda_p}\frac{e^{-\lambda_p t} - e^{-\lambda_q t}}{\lambda_q - \lambda_p}
+
+\frac{N_C(t)}{N_1(0)} = \frac{\gamma}{\lambda_C}\sum_{i\ne p,q}^{C} \left[\lambda_i \left(\prod_{j\ne i}^{C} \frac{\lambda_j}{\lambda_j - \lambda_i}\right) e^{-\lambda_i t}\right]
+                        + \frac{\gamma\lambda_p^2}{\lambda_C} \left(\prod_{j\ne p,q}^{C} \frac{\lambda_j}{\lambda_j - \lambda_p} \right) t e^{-\lambda_p t}</span></p>
 </div></div>
 <div class="section" id="binary-reformulation-of-bateman-equations">
 <h2>Binary Reformulation of Bateman Equations<a class="headerlink" href="#binary-reformulation-of-bateman-equations" title="Permalink to this headline">¶</a></h2>
@@ -166,17 +232,45 @@ by grouping constants together and pre-calculating them. This saves the computer
 having to perform the same operations at run time.  It is possible to express the
 Bateman equations as a simple sum of exponentials</p>
 <div class="math">
-<p><img src="../_images/math/6c7a917d16d814facbc67882c24eb1e07f2781f4.png" alt="N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{-\lambda_i t}"/></p>
-</div><p>where the coefficients <img class="math" src="../_images/math/812f92da6db61fb4e16c0060582e4cab04c5cb60.png" alt="k_i"/> are defined as:</p>
+<p><span class="math">N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{-\lambda_i t}</span></p>
+</div><p>where the coefficients <span class="math">k_i</span> are defined as:</p>
+<p><strong>Single Nuclide in Chain:</strong></p>
 <div class="math">
-<p><img src="../_images/math/6b44e99e1875c1de632f247c68ab2b88cefa5f33.png" alt="k_i = \frac{\gamma}{\lambda_C} \lambda_i c_i"/></p>
-</div><p>If <img class="math" src="../_images/math/812f92da6db61fb4e16c0060582e4cab04c5cb60.png" alt="k_i"/> are computed at run time then the this expression results in much more
-computational effort that than the original Bateman equations since <img class="math" src="../_images/math/57be377296c4dbf4d003ca7dacb5f0a034ea127b.png" alt="\gamma/\lambda_C"/>
-are brought into the summation. However, when <img class="math" src="../_images/math/812f92da6db61fb4e16c0060582e4cab04c5cb60.png" alt="k_i"/> are pre-caluclated,
-many floating point operations are saved by avoiding explicitly computing <img class="math" src="../_images/math/496867ca68c428fa123f26f0f73997632e61e116.png" alt="c_i"/>.</p>
+<p><span class="math">k_i = 1</span></p>
+</div><p><strong>Last Nuclide Unstable:</strong></p>
+<div class="math">
+<p><span class="math">k_i = \frac{\gamma}{\lambda_C} \lambda_i \prod_{j\ne i}^C \frac{\lambda_j}{\lambda_j - \lambda_i}</span></p>
+</div><p><strong>Last Nuclide Stable:</strong></p>
+<div class="math">
+<p><span class="math">k_{i\ne C} = -\gamma \prod_{j=1,i\ne j}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}
+
+k_C = \gamma</span></p>
+</div><p><strong>Last Nuclide Unstable and pth Almost Stable:</strong></p>
+<div class="math">
+<p><span class="math">k_{i\ne p} = -\frac{\gamma\lambda_p}{\lambda_C} \prod_{j\ne i,p}^C \frac{\lambda_j}{\lambda_j - \lambda_i}
+
+k_p = \frac{\gamma\lambda_p}{\lambda_C}</span></p>
+</div><p><strong>Last Nuclide Stable and pth Almost Stable:</strong></p>
+<div class="math">
+<p><span class="math">k_{i\ne p,C} = -\gamma \prod_{j\ne i}^{C-1} \frac{\lambda_j}{\lambda_j - \lambda_i}
+
+k_p = -\gamma
+
+k_C = \gamma</span></p>
+</div><p><strong>Half-life Degeneracy Between pth and qth:</strong></p>
+<div class="math">
+<p><span class="math">k_i = \frac{\gamma}{\lambda_C} \lambda_i \prod_{j\ne i}^C \frac{\lambda_j}{\lambda_j - \lambda_i}
+
+k_p = \frac{\gamma\lambda_p^2}{\lambda_C} t \prod_{j\ne p,q}^C \frac{\lambda_j}{\lambda_j - \lambda_p}
+
+k_q = 0</span></p>
+</div><p>If <span class="math">k_i</span> are computed at run time then the this expression results in much more
+computational effort that than the original Bateman equations since <span class="math">\gamma/\lambda_C</span>
+are brought into the summation. However, when <span class="math">k_i</span> are pre-caluclated,
+many floating point operations are saved by avoiding explicitly computing <span class="math">c_i</span>.</p>
 <p>The second strategy is to note that computers are much better at dealing with powers of
-2 then then any other base, even <img class="math" src="../_images/math/630e3a780577ea7921e81ee2ac5237dd1802ec8d.png" alt="e"/>. Thus the <code class="docutils literal"><span class="pre">exp2(x)</span></code> function, or <img class="math" src="../_images/math/b19da9de2a542b86cc7d7a118feebf3be13a80a2.png" alt="2^x"/>,
-is faster than the natural exponential function <code class="docutils literal"><span class="pre">exp(x)</span></code>, <img class="math" src="../_images/math/cd4321c696b6b066437c8c595b3e947d8e6677fd.png" alt="e^x"/>.  As proof of this
+2 then then any other base, even <span class="math">e</span>. Thus the <code class="docutils literal"><span class="pre">exp2(x)</span></code> function, or <span class="math">2^x</span>,
+is faster than the natural exponential function <code class="docutils literal"><span class="pre">exp(x)</span></code>, <span class="math">e^x</span>.  As proof of this
 the following are some simple timing results:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span>In [1]: import numpy as np
 
@@ -193,32 +287,61 @@ In [4]: %timeit np.exp2(r)
 it is worthwhile to squeeze this algorithm as much as possible.  Luckily, the decay constant
 provides an intrinsic mechanism to convert to base-2:</p>
 <div class="math">
-<p><img src="../_images/math/cd4ddd73ef1034644bee05fa8e8da95ef0b44c0f.png" alt="N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{-\lambda_i t}
+<p><span class="math">N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{-\lambda_i t}
 
 N_C(t) = N_1(0) \sum_{i=1}^C k_{i} e^{\frac{-\ln(2)\cdot t}{t_{1/2,i}}}
 
-N_C(t) = N_1(0) \sum_{i=1}^C k_{i} 2^{\frac{-t}{t_{1/2,i}}}"/></p>
-</div><p>This expression can be further collapsed by defining <img class="math" src="../_images/math/7dd2a5ea01fbd72ad2a58dd1f3d6ecbfde6208a1.png" alt="a"/> to be the precomputed
+N_C(t) = N_1(0) \sum_{i=1}^C k_{i} 2^{\frac{-t}{t_{1/2,i}}}</span></p>
+</div><p>This expression can be further collapsed by defining <span class="math">a</span> to be the precomputed
 exponent values:</p>
 <div class="math">
-<p><img src="../_images/math/a1ece8b9f5e7169ff5d584dff758d1d6d9e05b19.png" alt="a_i = \frac{-1}{t_{1/2,i}}"/></p>
+<p><span class="math">a_i = \frac{-1}{t_{1/2,i}}</span></p>
 </div><p>Thus, the final form of the binary representation of the Bateman equations are
 as follows:</p>
 <p><strong>General Formulation:</strong></p>
 <div class="math">
-<p><img src="../_images/math/b075d780384e471b19aeb22ad0396924451ea933.png" alt="N_C(t) = N_1(0) \sum_{i=1}^C k_{i} 2^{a_i t}"/></p>
-</div><p><strong>First Nuclide in Chain:</strong></p>
+<p><span class="math">N_C(t) = N_1(0) \sum_{i=1}^C k_{i} 2^{a_i t}</span></p>
+</div><p>where the <span class="math">k_i</span> are as listed above.  However, for practical purposes, it is better to
+compute the <span class="math">k_i</span> from half-lives rather than decay constants.  This is because they
+provide less floating point error, fewer oppurtunities to underflow or overflow to NaN or infinity,
+and a better mechanism for detecting stability. Thus, alternatively, the <span class="math">k_i</span> are computed
+as:</p>
+<p><strong>Single Nuclide in Chain:</strong></p>
 <div class="math">
-<p><img src="../_images/math/427ce0d8400db7fb708f746d15496174638d8d9e.png" alt="N_C(t) = N_1(0) \cdot 2^{a_1 t}"/></p>
-</div><p><strong>Stable Nuclide:</strong></p>
+<p><span class="math">k_i = 1</span></p>
+</div><p><strong>Last Nuclide Unstable:</strong></p>
 <div class="math">
-<p><img src="../_images/math/4835d98e3dc88b84780b7e556f7751d10dc1ab74.png" alt="N_C(t) = N_1(0) \left[1.0 + \sum_{i=1}^{C-1} \lim_{\lambda_C\to 0}(k_{i}) \cdot 2^{a_i t} \right]"/></p>
-</div><p>With completely precomputed <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/>, <img class="math" src="../_images/math/7dd2a5ea01fbd72ad2a58dd1f3d6ecbfde6208a1.png" alt="a"/>, and the <code class="docutils literal"><span class="pre">exp2()</span></code> function, this
+<p><span class="math">k_i = \gamma t_{1/2,i}^{C-2} t_{1/2,C} \prod_{j\ne i}^{C} \frac{1}{t_{1/2,i} - t_{1/2,j}}</span></p>
+</div><p><strong>Last Nuclide Stable:</strong></p>
+<div class="math">
+<p><span class="math">k_i = -\gamma t_{1/2,i}^{C-2} \prod_{j\ne i}^{C-1} \frac{1}{t_{1/2,i} - t_{1/2,j}}
+
+k_C = \gamma</span></p>
+</div><p><strong>Last Nuclide Unstable and pth Almost Stable:</strong></p>
+<div class="math">
+<p><span class="math">k_{i\ne p} = -\frac{\gamma t_{1/2,C}}{t_{1/2,p}} t_{1/2,i}^{C-2} \prod_{j\ne i,p}^C \frac{1}{t_{1/2,i} - t_{1/2,j}}
+
+k_p = \frac{\gamma t_{1/2,C}}{t_{1/2,p}}</span></p>
+</div><p><strong>Last Nuclide Stable and pth Almost Stable:</strong></p>
+<div class="math">
+<p><span class="math">k_{i\ne p,C} = -\gamma t_{1/2,i}^{C-2} \prod_{j\ne i}^{C-1} \frac{1}{t_{1/2,i} - t_{1/2,j}}
+
+k_p = -\gamma
+
+k_C = \gamma</span></p>
+</div><p><strong>Half-life Degeneracy Between pth and qth:</strong></p>
+<div class="math">
+<p><span class="math">k_i = \gamma t_{1/2,i}^{C-2} t_{1/2,C} \prod_{j\ne i}^{C} \frac{1}{t_{1/2,i} - t_{1/2,j}}
+
+k_p = \gamma\ln(2) t_{1/2,p}^{C-4} t_{1/2,C}  t \prod_{j\ne p,q}^C \frac{1}{t_{1/2,p} - t_{1/2,j}}
+
+k_q = 0</span></p>
+</div><p>With completely precomputed <span class="math">k</span>, <span class="math">a</span>, and the <code class="docutils literal"><span class="pre">exp2()</span></code> function, this
 formulation minimizes the number of floating point operations while completely
 preserving physics. No assumptions were made aside from the Bateman equations
 themselves in this proof.</p>
 <p>Note that it is not possible to reduce the number of operations further.  This
-is because  <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/> and <img class="math" src="../_images/math/7dd2a5ea01fbd72ad2a58dd1f3d6ecbfde6208a1.png" alt="a"/> cannot be combined without adding further
+is because  <span class="math">k</span> and <span class="math">a</span> cannot be combined without adding further
 operations.</p>
 </div>
 <div class="section" id="implementation-specific-approximations">
@@ -227,24 +350,19 @@ operations.</p>
 approximations are used in practice to reduce the number of chains and terms
 that are calculated.</p>
 <ol class="arabic simple">
-<li>Decay chains coming from spontaneous fission are not tallied as they
+<li>Decay chains coming from spontaneous fission are only optionally tallied as they
 lead to an explosion of the total number of chains while contributing to
 extraordinarily rare branches.</li>
 <li>Decay alphas are not treated as He-4 production.</li>
-<li>For chains longer than length 2, any
-term whose half-life is less than <img class="math" src="../_images/math/21657abf2dea8e36fed8ad9de97c6a7d36bb6953.png" alt="10^{-8}"/> of the sum of all
-half-lives in the chain is dropped. This filtering prevents excessive
+<li>The <span class="math">k_i</span> and <span class="math">a_i</span> are filtered to reject terms where
+<span class="math">|k_i| / \max(|k_i|) &lt; 10^{-16}</span>.
+This filtering prevents excessive
 calculation from species which do not significantly contribute to
-end atom fraction. The threshold <img class="math" src="../_images/math/21657abf2dea8e36fed8ad9de97c6a7d36bb6953.png" alt="10^{-8}"/> was chosen as
+end atom fraction. The threshold <span class="math">10^{-16}</span> was chosen as
 because it is a reasonable naive estimate of floating point error after
-many operations. If the filtering causes there to be less than
-two terms in the summation, then the filtering is turned off and all
-terms are computed.</li>
-<li>To prevent other sources of floating point error, a nuclide is determined
-to be stable when <img class="math" src="../_images/math/cbe9c684691c599b381b66ecc129c9661d272d3e.png" alt="\lambda_i &lt; 10^{-16}"/>, rather than when
-<img class="math" src="../_images/math/af6ea7209dedcf6a7f3bb83ae13ae3176e0b7c67.png" alt="\lambda_i = 0.0"/>.</li>
-<li>If a chain has any <code class="docutils literal"><span class="pre">NaN</span></code> decay constants, the chain in rejected.</li>
-<li>If a chain has any infinite <img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/>, the chain in rejected.</li>
+many operations. Note that we may filter only on the <span class="math">k_i</span> because
+<span class="math">2^{a_i t} \le 1</span>.  That is, the exponentional component can only
+reduce the magnitude of a term, not increase it.</li>
 </ol>
 <p>In principle, each of these statements is reasonable. However, they
 may preclude desired behavior by users. In such a situation, these
@@ -388,8 +506,8 @@ Air Force Institute of Technology. 2007. <a class="reference external" href="htt
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

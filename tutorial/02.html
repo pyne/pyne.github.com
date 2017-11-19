@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Materials &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>Materials &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -11852,7 +11849,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Materials">Materials<a class="anchor-link" href="#Materials">&#194;&#182;</a></h1><p>PyNE <code>Material</code> objects provide a way of representing, manipulating, and storing materials. A <code>Material</code> object is a collection of nuclides with various mass fractions (though methods for converting to/from atom fractions are present as well). Optionally, a <code>Material</code> object may have an associated mass. By keeping the mass and the composition separate, operations that only affect one attribute may be performed independent of the other. Most of the functionality of the <code>Material</code> class is
+<h1 id="Materials">Materials<a class="anchor-link" href="#Materials">&#182;</a></h1><p>PyNE <code>Material</code> objects provide a way of representing, manipulating, and storing materials. A <code>Material</code> object is a collection of nuclides with various mass fractions (though methods for converting to/from atom fractions are present as well). Optionally, a <code>Material</code> object may have an associated mass. By keeping the mass and the composition separate, operations that only affect one attribute may be performed independent of the other. Most of the functionality of the <code>Material</code> class is
 implemented in a C++, so this interface is very fast and light-weight.</p>
 <p><code>Material</code>s may be initialized in a number of different ways.  For example, initializing from
 dictionaries of compositions are shown below. First import the <code>Material</code> class:</p>
@@ -11988,7 +11985,7 @@ Cm244  0.111111111111
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Normalization">Normalization<a class="anchor-link" href="#Normalization">&#194;&#182;</a></h2><p>Upon instantiation, the mass fraction that define a <code>Material</code> are normalized. However, you can always obtain the unnormalized mass vector through <code>Material.mult_by_mass()</code>.  Normalization routines to normalize the mass <code>Material.normalize()</code> or the composition <code>Material.norm_comp()</code> are also available. Here we see that our 42 units of LEU consists of 1.68 units of U-235 and 40.32 units of U-238:</p>
+<h2 id="Normalization">Normalization<a class="anchor-link" href="#Normalization">&#182;</a></h2><p>Upon instantiation, the mass fraction that define a <code>Material</code> are normalized. However, you can always obtain the unnormalized mass vector through <code>Material.mult_by_mass()</code>.  Normalization routines to normalize the mass <code>Material.normalize()</code> or the composition <code>Material.norm_comp()</code> are also available. Here we see that our 42 units of LEU consists of 1.68 units of U-235 and 40.32 units of U-238:</p>
 
 </div>
 </div>
@@ -12107,7 +12104,7 @@ Cm244  0.111111111111
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Material-Arithmetic">Material Arithmetic<a class="anchor-link" href="#Material-Arithmetic">&#194;&#182;</a></h2><p>Various arithmetic operations between Materials and numeric types are also defined.
+<h2 id="Material-Arithmetic">Material Arithmetic<a class="anchor-link" href="#Material-Arithmetic">&#182;</a></h2><p>Various arithmetic operations between Materials and numeric types are also defined.
 Adding two Materials together will return a new Material whose values are the weighted union
 of the two original. Multiplying a Material by 2, however, will simply double the mass of the original Material.</p>
 
@@ -12240,7 +12237,7 @@ Cm244  0.0333333333333
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Raw-Member-Access">Raw Member Access<a class="anchor-link" href="#Raw-Member-Access">&#194;&#182;</a></h2><p>You may also change the attributes of a material directly without generating a new 
+<h2 id="Raw-Member-Access">Raw Member Access<a class="anchor-link" href="#Raw-Member-Access">&#182;</a></h2><p>You may also change the attributes of a material directly without generating a new 
 material instance.</p>
 
 </div>
@@ -12338,7 +12335,7 @@ U235   0.833333333333
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Indexing-&amp;-Slicing">Indexing &amp; Slicing<a class="anchor-link" href="#Indexing-&amp;-Slicing">&#194;&#182;</a></h2><p>Additionally (and very powerfully!), you may index into either the material or the composition 
+<h2 id="Indexing-&amp;-Slicing">Indexing &amp; Slicing<a class="anchor-link" href="#Indexing-&amp;-Slicing">&#182;</a></h2><p>Additionally (and very powerfully!), you may index into either the material or the composition 
 to get, set, or remove sub-materials.  Generally speaking, you may only index into the 
 composition by integer-key and only to retrieve the normalized value.  Indexing into the material allows the 
 full range of operations and returns the unnormalized mass weight.  Moreover, indexing into
@@ -12532,7 +12529,7 @@ Plutonium vector.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Molecular-Weights-&amp;-Atom-Fractions">Molecular Weights &amp; Atom Fractions<a class="anchor-link" href="#Molecular-Weights-&amp;-Atom-Fractions">&#194;&#182;</a></h3><p>You may also calculate the molecular weight of a material via the <code>Material.molecular_weight</code> method.
+<h3 id="Molecular-Weights-&amp;-Atom-Fractions">Molecular Weights &amp; Atom Fractions<a class="anchor-link" href="#Molecular-Weights-&amp;-Atom-Fractions">&#182;</a></h3><p>You may also calculate the molecular weight of a material via the <code>Material.molecular_weight</code> method.
 This uses the <code>pyne.data.atomic_mass</code> function to look up the atomic mass values of
 the constituent nuclides.</p>
 
@@ -12856,7 +12853,7 @@ U238   0.846224196138
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="User-defined-Metadata">User-defined Metadata<a class="anchor-link" href="#User-defined-Metadata">&#194;&#182;</a></h3><p>Materials also have an <code>metadata</code> attribute which allows users to store arbitrary 
+<h3 id="User-defined-Metadata">User-defined Metadata<a class="anchor-link" href="#User-defined-Metadata">&#182;</a></h3><p>Materials also have an <code>metadata</code> attribute which allows users to store arbitrary 
 custom information about the material.  This can include things like units, comments, 
 provenance information, or anything else the user desires.  This is implemented as an
 in-memory JSON object attached to the C++ class.  Therefore, what may be stored in
@@ -13121,19 +13118,6 @@ Doing so invalidates any previous views into this container.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
     </div>
   </div>
 
@@ -13233,8 +13217,8 @@ Doing so invalidates any previous views into this container.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

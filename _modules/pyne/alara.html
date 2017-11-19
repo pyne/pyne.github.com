@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pyne.alara &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>pyne.alara &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -109,7 +106,8 @@ if(ga_enabled){
 
 
 <div class="viewcode-block" id="mesh_to_fluxin"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.mesh_to_fluxin">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_fluxin</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="n">flux_tag</span><span class="p">,</span> <span class="n">fluxin</span><span class="o">=</span><span class="s2">&quot;fluxin.out&quot;</span><span class="p">,</span>
-                   <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                   <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sub_voxel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cell_fracs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">cell_mats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function creates an ALARA fluxin file from fluxes tagged on a PyNE</span>
 <span class="sd">    Mesh object. Fluxes are printed in the order of the flux_mesh.__iter__().</span>
 
@@ -125,6 +123,30 @@ if(ga_enabled){
 <span class="sd">    reverse : bool</span>
 <span class="sd">        If true, fluxes will be printed in the reverse order as they appear in</span>
 <span class="sd">        the flux vector tagged on the mesh.</span>
+<span class="sd">    sub_voxel: bool, optional</span>
+<span class="sd">        If true, sub-voxel r2s work flow will be sued. Flux of a voxel will</span>
+<span class="sd">        be duplicated c times. Where c is the cell numbers of that voxel.</span>
+<span class="sd">    cell_fracs : structured array, optional</span>
+<span class="sd">        The output from dagmc.discretize_geom(). A sorted, one dimensional</span>
+<span class="sd">        array, each entry containing the following fields:</span>
+
+<span class="sd">            :idx: int</span>
+<span class="sd">                The volume element index.</span>
+<span class="sd">            :cell: int</span>
+<span class="sd">                The geometry cell number.</span>
+<span class="sd">            :vol_frac: float</span>
+<span class="sd">                The volume fraction of the cell withing the mesh ve.</span>
+<span class="sd">            :rel_error: float</span>
+<span class="sd">                The relative error associated with the volume fraction.</span>
+
+<span class="sd">        The array must be sorted with respect to both idx and cell, with</span>
+<span class="sd">        cell changing fastest.</span>
+<span class="sd">    cell_mats : dict, optional</span>
+<span class="sd">        Maps geometry cell numbers to PyNE Material objects.</span>
+
+<span class="sd">        The cell_fracs and cell_mats are used only when sub_voxel=True.</span>
+<span class="sd">        If sub_voxel=False, neither cell_fracs nor cell_mats will be used.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tag_flux</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">flux_tag</span><span class="p">)</span>
 
@@ -147,18 +169,16 @@ if(ga_enabled){
         <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">flux_mesh</span><span class="p">:</span>
-        <span class="c1"># print flux data to file</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">flux_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">tag_flux</span><span class="p">[</span><span class="n">ve</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{:.6E}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flux_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="c1"># fluxin formatting: create a new line after every 6th entry</span>
-            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">6</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-
-        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_voxel</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">flux_mesh</span><span class="p">:</span>
+            <span class="c1"># print flux data to file</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">flux_mesh</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">comp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="n">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span>
+                                          <span class="n">direction</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fluxin</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
@@ -612,14 +632,14 @@ if(ga_enabled){
     <span class="k">return</span> <span class="n">s</span></div>
 
 <div class="viewcode-block" id="phtn_src_energy_bounds"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.phtn_src_energy_bounds">[docs]</a><span class="k">def</span> <span class="nf">phtn_src_energy_bounds</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reads an ALARA input file and extracts the energy bounds from the </span>
+    <span class="sd">&quot;&quot;&quot;Reads an ALARA input file and extracts the energy bounds from the</span>
 <span class="sd">    photon_source block.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input_file : str</span>
 <span class="sd">         The ALARA input file name, which must contain a photon_source block.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    e_bounds : list of floats</span>
@@ -781,6 +801,32 @@ if(ga_enabled){
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Rational approximation of degree </span><span class="si">{0}</span><span class="s1"> is not supported.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
+<span class="k">def</span> <span class="nf">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span><span class="n">output</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">direction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is used to get neutron flux for fluxin</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ve : entity, a mesh sub-voxel</span>
+<span class="sd">    tag_flux : array, neutron flux of the sub-voxel</span>
+<span class="sd">    output : string</span>
+<span class="sd">    start : int</span>
+<span class="sd">    stop : int</span>
+<span class="sd">    direction: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">flux_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">tag_flux</span><span class="p">[</span><span class="n">ve</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{:.6E}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flux_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="c1"># fluxin formatting: create a new line</span>
+        <span class="c1"># after every 6th entry</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">6</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">output</span>
 </pre></div>
 
           </div>
@@ -877,8 +923,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 29, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Materials &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>Materials &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -11852,7 +11849,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Materials">Materials<a class="anchor-link" href="#Materials">&#194;&#182;</a></h2><p>Materials are the primary container for radionuclides. They map nuclides to <strong>mass weights</strong>,
+<h2 id="Materials">Materials<a class="anchor-link" href="#Materials">&#182;</a></h2><p>Materials are the primary container for radionuclides. They map nuclides to <strong>mass weights</strong>,
 though they contain methods for converting to/from atom fractions as well.
 In many ways they take inspiration from numpy arrays and python dictionaries.  Materials
 have two main attributes which define them.</p>
@@ -11970,7 +11967,7 @@ Cm244  0.111111111111
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Normalization">Normalization<a class="anchor-link" href="#Normalization">&#194;&#182;</a></h3><p>Materials may also be initialized from plain text or HDF5 files (see <code>Material.from_text</code> and
+<h3 id="Normalization">Normalization<a class="anchor-link" href="#Normalization">&#182;</a></h3><p>Materials may also be initialized from plain text or HDF5 files (see <code>Material.from_text</code> and
 <code>Material.from_hdf5</code>).  Once you have a Material instance, you can always obtain the unnormalized
 mass vector through <code>Material.mult_by_mass</code>.  Normalization routines to normalize the mass 
 <code>Material.normalize</code> or the composition <code>Material.norm_comp</code> are also available.</p>
@@ -12082,7 +12079,7 @@ mass vector through <code>Material.mult_by_mass</code>.  Normalization routines 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Material-Arithmetic">Material Arithmetic<a class="anchor-link" href="#Material-Arithmetic">&#194;&#182;</a></h3><p>Furthermore, various arithmetic operations between Materials and numeric types are also defined.
+<h3 id="Material-Arithmetic">Material Arithmetic<a class="anchor-link" href="#Material-Arithmetic">&#182;</a></h3><p>Furthermore, various arithmetic operations between Materials and numeric types are also defined.
 Adding two Materials together will return a new Material whose values are the weighted union
 of the two original. Multiplying a Material by 2, however, will simply double the mass.</p>
 
@@ -12205,7 +12202,7 @@ Cm244  0.0333333333333
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Raw-Member-Access">Raw Member Access<a class="anchor-link" href="#Raw-Member-Access">&#194;&#182;</a></h3><p>You may also change the attributes of a material directly without generating a new 
+<h3 id="Raw-Member-Access">Raw Member Access<a class="anchor-link" href="#Raw-Member-Access">&#182;</a></h3><p>You may also change the attributes of a material directly without generating a new 
 material instance.</p>
 
 </div>
@@ -12302,7 +12299,7 @@ U235   0.833333333333
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Indexing-&amp;-Slicing">Indexing &amp; Slicing<a class="anchor-link" href="#Indexing-&amp;-Slicing">&#194;&#182;</a></h3><p>Additionally (and very powerfully!), you may index into either the material or the composition 
+<h3 id="Indexing-&amp;-Slicing">Indexing &amp; Slicing<a class="anchor-link" href="#Indexing-&amp;-Slicing">&#182;</a></h3><p>Additionally (and very powerfully!), you may index into either the material or the composition 
 to get, set, or remove sub-materials.  Generally speaking, the composition you may only index 
 into by integer-key and only to retrieve the normalized value.  Indexing into the material allows the 
 full range of operations and returns the unnormalized mass weight.  Moreover, indexing into
@@ -12496,7 +12493,7 @@ Plutonium vector.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Molecular-Mass-&amp;-Atom-Fractions">Molecular Mass &amp; Atom Fractions<a class="anchor-link" href="#Molecular-Mass-&amp;-Atom-Fractions">&#194;&#182;</a></h3><p>You may also calculate the molecular mass of a material via the <code>Material.molecular_mass</code> method.
+<h3 id="Molecular-Mass-&amp;-Atom-Fractions">Molecular Mass &amp; Atom Fractions<a class="anchor-link" href="#Molecular-Mass-&amp;-Atom-Fractions">&#182;</a></h3><p>You may also calculate the molecular mass of a material via the <code>Material.molecular_mass</code> method.
 This uses the <code>pyne.data.atomic_mass</code> function to look up the atomic mass values of
 the constituent nuclides.</p>
 
@@ -12820,7 +12817,7 @@ U238   0.846224196138
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="User-defined-Metadata">User-defined Metadata<a class="anchor-link" href="#User-defined-Metadata">&#194;&#182;</a></h3><p>Materials also have an <code>attrs</code> attribute which allows users to store arbitrary 
+<h3 id="User-defined-Metadata">User-defined Metadata<a class="anchor-link" href="#User-defined-Metadata">&#182;</a></h3><p>Materials also have an <code>attrs</code> attribute which allows users to store arbitrary 
 custom information about the material.  This can include things like units, comments, 
 provenance information, or anything else the user desires.  This is implemented as an
 in-memory JSON object attached to the C++ class.  Therefore, what may be stored in
@@ -13183,8 +13180,8 @@ Doing so invalidates any previous views into this container.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pyne.mesh &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>pyne.mesh &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -768,7 +765,7 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="s2">&quot;BOX_DIMS&quot;</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">structured_set</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vertex_dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span> \
                                <span class="o">+</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]]</span>
- 
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">structured_coords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">structured_coords</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">),</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">),</span>
@@ -851,6 +848,12 @@ if(ga_enabled){
                 <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;see Material.</span><span class="si">{0}</span><span class="s2">() for more information&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">MaterialMethodTag</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                         <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">))</span>
+
+        <span class="c1"># add a property: cell_cell_fracs_tag and set it to None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_number_tag</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_fracs_tag</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_largest_frac_number_tag</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_largest_frac_tag</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
@@ -1271,7 +1274,73 @@ if(ga_enabled){
                 <span class="n">mat_col</span><span class="p">[</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span>
 
             <span class="n">mixed</span> <span class="o">=</span> <span class="n">MultiMaterial</span><span class="p">(</span><span class="n">mat_col</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mixed</span><span class="o">.</span><span class="n">mix_by_volume</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mixed</span><span class="o">.</span><span class="n">mix_by_volume</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Mesh.tag_cell_fracs"><a class="viewcode-back" href="../../pyapi/mesh.html#pyne.mesh.Mesh.tag_cell_fracs">[docs]</a>    <span class="k">def</span> <span class="nf">tag_cell_fracs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_fracs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function uses the output from dagmc.discretize_geom() and</span>
+<span class="sd">        a mapping of geometry cells to set the cell_fracs_tag.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell_fracs : structured array</span>
+<span class="sd">            The output from dagmc.discretize_geom(). A sorted, one dimensional</span>
+<span class="sd">            array, each entry containing the following fields:</span>
+
+<span class="sd">                :idx: int</span>
+<span class="sd">                    The volume element index.</span>
+<span class="sd">                :cell: int</span>
+<span class="sd">                    The geometry cell number.</span>
+<span class="sd">                :vol_frac: float</span>
+<span class="sd">                    The volume fraction of the cell withing the mesh ve.</span>
+<span class="sd">                :rel_error: float</span>
+<span class="sd">                    The relative error associated with the volume fraction.</span>
+
+<span class="sd">            The array must be sorted with respect to both idx and cell, with</span>
+<span class="sd">            cell changing fastest.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">num_vol_elements</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Find the maximum cell number in a voxel</span>
+        <span class="n">max_cell_number</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">ve</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_vol_elements</span><span class="p">):</span>
+            <span class="n">max_cell_number</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cell_number</span><span class="p">,</span>
+                                  <span class="nb">len</span><span class="p">(</span><span class="n">cell_fracs</span><span class="p">[</span><span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ve</span><span class="p">]))</span>
+        <span class="c1"># set the cell_number_tag &amp; cell_fracs_tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_number_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">max_cell_number</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cell_number_tag&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_fracs_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">max_cell_number</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                       <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cell_fracs_tag&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_largest_frac_number_tag</span> <span class="o">=</span> \
+            <span class="n">IMeshTag</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cell_largest_frac_number&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_largest_frac_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                              <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cell_largest_frac&#39;</span><span class="p">)</span>
+        <span class="n">cell_largest_frac_number</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_vol_elements</span>
+        <span class="n">cell_largest_frac</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_vol_elements</span>
+
+        <span class="c1"># fill the data</span>
+        <span class="n">voxel_cell_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_vol_elements</span><span class="p">,</span><span class="n">max_cell_number</span><span class="p">))</span>
+        <span class="n">voxel_cell_fracs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_vol_elements</span><span class="p">,</span><span class="n">max_cell_number</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ve</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_vol_elements</span><span class="p">):</span>
+            <span class="n">voxel_cell_number</span><span class="p">[</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_cell_number</span>
+            <span class="n">voxel_cell_fracs</span><span class="p">[</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_cell_number</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_fracs</span><span class="p">[</span><span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ve</span><span class="p">]):</span>
+                <span class="n">voxel_cell_number</span><span class="p">[</span><span class="n">ve</span><span class="p">,</span> <span class="n">cell</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span>
+                <span class="n">voxel_cell_fracs</span><span class="p">[</span><span class="n">ve</span><span class="p">,</span> <span class="n">cell</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span>
+            <span class="c1"># cell_largest_frac_tag</span>
+            <span class="n">cell_largest_frac</span><span class="p">[</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">voxel_cell_fracs</span><span class="p">[</span><span class="n">ve</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">largest_index</span> <span class="o">=</span> \
+                <span class="nb">list</span><span class="p">(</span><span class="n">voxel_cell_fracs</span><span class="p">[</span><span class="n">ve</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cell_largest_frac</span><span class="p">[</span><span class="n">ve</span><span class="p">])</span>
+            <span class="n">cell_largest_frac_number</span><span class="p">[</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="nb">int</span><span class="p">(</span><span class="n">voxel_cell_number</span><span class="p">[</span><span class="n">ve</span><span class="p">,</span> <span class="n">largest_index</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_number_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">voxel_cell_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_fracs_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">voxel_cell_fracs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_largest_frac_number_tag</span> <span class="o">=</span> <span class="n">cell_largest_frac_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_largest_frac_tag</span> <span class="o">=</span> <span class="n">cell_largest_frac</span></div></div>
+
+
+
+
 
 
 <span class="c1">######################################################</span>
@@ -1503,8 +1572,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 29, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

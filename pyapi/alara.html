@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -115,7 +112,7 @@ objects. The functionality of the module can be obtained by importing as such:</
 
 <dl class="function">
 <dt id="pyne.alara.irradiation_blocks">
-<code class="descclassname">pyne.alara.</code><code class="descname">irradiation_blocks</code><span class="sig-paren">(</span><em>material_lib</em>, <em>element_lib</em>, <em>data_library</em>, <em>cooling</em>, <em>flux_file</em>, <em>irr_time</em>, <em>output = “number_density”</em>, <em>truncation=1E-12</em>, <em>impurity = (5E-6</em>, <em>1E-3)</em>, <em>dump_file = “dump_file”</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#irradiation_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.irradiation_blocks" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.alara.</code><code class="descname">irradiation_blocks</code><span class="sig-paren">(</span><em>material_lib</em>, <em>element_lib</em>, <em>data_library</em>, <em>cooling</em>, <em>flux_file</em>, <em>irr_time</em>, <em>output = &quot;number_density&quot;</em>, <em>truncation=1E-12</em>, <em>impurity = (5E-6</em>, <em>1E-3)</em>, <em>dump_file = &quot;dump_file&quot;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#irradiation_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.irradiation_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function returns a string of the irradation-related input blocks. This
 function is meant to be used with files created by the mesh_to_geom
 function, in order to append the remaining input blocks to form a complete
@@ -183,7 +180,7 @@ with the ALARA users’ guide, found at:</p>
 
 <dl class="function">
 <dt id="pyne.alara.mesh_to_fluxin">
-<code class="descclassname">pyne.alara.</code><code class="descname">mesh_to_fluxin</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>flux_tag</em>, <em>fluxin=’fluxin.out’</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#mesh_to_fluxin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.mesh_to_fluxin" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.alara.</code><code class="descname">mesh_to_fluxin</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>flux_tag</em>, <em>fluxin='fluxin.out'</em>, <em>reverse=False</em>, <em>sub_voxel=False</em>, <em>cell_fracs=None</em>, <em>cell_mats=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#mesh_to_fluxin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.mesh_to_fluxin" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function creates an ALARA fluxin file from fluxes tagged on a PyNE
 Mesh object. Fluxes are printed in the order of the flux_mesh.__iter__().</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -204,9 +201,47 @@ groups are assumed to be represented as vector tags.</p>
 <div><p>The name of the ALARA fluxin file to be output.</p>
 </div></blockquote>
 <p><strong>reverse</strong> : bool</p>
-<blockquote class="last">
+<blockquote>
 <div><p>If true, fluxes will be printed in the reverse order as they appear in
 the flux vector tagged on the mesh.</p>
+</div></blockquote>
+<p><strong>sub_voxel: bool, optional</strong></p>
+<blockquote>
+<div><p>If true, sub-voxel r2s work flow will be sued. Flux of a voxel will
+be duplicated c times. Where c is the cell numbers of that voxel.</p>
+</div></blockquote>
+<p><strong>cell_fracs</strong> : structured array, optional</p>
+<blockquote>
+<div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
+array, each entry containing the following fields:</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">idx:</th><td class="field-body">int
+The volume element index.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cell:</th><td class="field-body">int
+The geometry cell number.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">vol_frac:</th><td class="field-body">float
+The volume fraction of the cell withing the mesh ve.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rel_error:</th><td class="field-body">float
+The relative error associated with the volume fraction.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The array must be sorted with respect to both idx and cell, with
+cell changing fastest.</p>
+</div></blockquote>
+<p><strong>cell_mats</strong> : dict, optional</p>
+<blockquote class="last">
+<div><p>Maps geometry cell numbers to PyNE Material objects.</p>
+<p>The cell_fracs and cell_mats are used only when sub_voxel=True.
+If sub_voxel=False, neither cell_fracs nor cell_mats will be used.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -362,7 +397,7 @@ a structured mesh or imesh.iterate() order for an unstructured mesh.</dd>
 <dl class="function">
 <dt id="pyne.alara.phtn_src_energy_bounds">
 <code class="descclassname">pyne.alara.</code><code class="descname">phtn_src_energy_bounds</code><span class="sig-paren">(</span><em>input_file</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#phtn_src_energy_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.phtn_src_energy_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads an ALARA input file and extracts the energy bounds from the 
+<dd><p>Reads an ALARA input file and extracts the energy bounds from the
 photon_source block.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -558,8 +593,8 @@ to be treated as the same mixture within ALARA.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -7,17 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Enrichment &#8212; PyNE 0.5.0-rc1</title>
-    
+    <title>Enrichment &#8212; PyNE 0.5.3</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0-rc1',
+        VERSION:     '0.5.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -83,27 +80,27 @@ done using gaseous diffusion or gas centrifuge cascades.</p>
 for the product and tails material streams given an initial feed material
 and the following parameters:</p>
 <ul class="simple">
-<li><img class="math" src="../_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/> (<code class="docutils literal"><span class="pre">j</span></code>) - enriched key component: nuclide to enrich in product
+<li><span class="math">j</span> (<code class="docutils literal"><span class="pre">j</span></code>) - enriched key component: nuclide to enrich in product
 stream [‘U-235’].</li>
-<li><img class="math" src="../_images/math/e9203da50e1059455123460d4e716c9c7f440cc3.png" alt="k"/> (<code class="docutils literal"><span class="pre">k</span></code>) - de-enriched key component: nuclide to enrich in tails
+<li><span class="math">k</span> (<code class="docutils literal"><span class="pre">k</span></code>) - de-enriched key component: nuclide to enrich in tails
 stream [‘U-238’].</li>
-<li><img class="math" src="../_images/math/ad59b6e24a4a00ac621801f8d7513d68be654ab5.png" alt="\alpha"/> (<code class="docutils literal"><span class="pre">alpha</span></code>) - stage separation factor: the proportion that
+<li><span class="math">\alpha</span> (<code class="docutils literal"><span class="pre">alpha</span></code>) - stage separation factor: the proportion that
 each stage enriches [1.05].</li>
-<li><img class="math" src="../_images/math/388482ead199a9a8b9ebdedd0a6570082b4ac6ef.png" alt="x^F_j"/> (<code class="docutils literal"><span class="pre">x_feed_j</span></code>) - target enrichment of jth key component in feed
+<li><span class="math">x^F_j</span> (<code class="docutils literal"><span class="pre">x_feed_j</span></code>) - target enrichment of jth key component in feed
 material [0.0072].</li>
-<li><img class="math" src="../_images/math/b362bd5e82ed43693b97f3e0c38f506585ce553d.png" alt="x^P_j"/> (<code class="docutils literal"><span class="pre">x_prod_j</span></code>) - target enrichment of jth key component in product
+<li><span class="math">x^P_j</span> (<code class="docutils literal"><span class="pre">x_prod_j</span></code>) - target enrichment of jth key component in product
 material [0.05].</li>
-<li><img class="math" src="../_images/math/9b386d02a77215e2b65c653aff1411f82649a982.png" alt="x^T_j"/> (<code class="docutils literal"><span class="pre">x_tail_j</span></code>) - target enrichment of jth key component in tails
+<li><span class="math">x^T_j</span> (<code class="docutils literal"><span class="pre">x_tail_j</span></code>) - target enrichment of jth key component in tails
 material [0.0025].</li>
 <li><code class="docutils literal"><span class="pre">mat_feed</span></code> - feed material stream: material to be enriched, this
 should only contains isotopes of a single element [natural uranium].</li>
 </ul>
 <p>The following cascade attributes must also be given as sane initial guesses:</p>
 <ul class="simple">
-<li><img class="math" src="../_images/math/ec67f244208831f60545f8008a85c32e3f0da9c8.png" alt="M^*"/> (<code class="docutils literal"><span class="pre">Mstar</span></code>) - mass separation factor: initial guess for overall
+<li><span class="math">M^*</span> (<code class="docutils literal"><span class="pre">Mstar</span></code>) - mass separation factor: initial guess for overall
 mass separation for the cascade [236.5].</li>
-<li><img class="math" src="../_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> (<code class="docutils literal"><span class="pre">N</span></code>) - number of enriching stages: initial guess [30.0].</li>
-<li><img class="math" src="../_images/math/2de38926392ba23abeac75effc66c37a5f5be5fd.png" alt="M"/> (<code class="docutils literal"><span class="pre">M</span></code>) - number of stripping stages: initial guess [10.0].</li>
+<li><span class="math">N</span> (<code class="docutils literal"><span class="pre">N</span></code>) - number of enriching stages: initial guess [30.0].</li>
+<li><span class="math">M</span> (<code class="docutils literal"><span class="pre">M</span></code>) - number of stripping stages: initial guess [10.0].</li>
 </ul>
 <p>For two component mixtures, i.e. those with only two nuclides in the feed material,
 the mass balance and flow rate equations are well defined and the optimal enrichment
@@ -112,8 +109,8 @@ However, for more than two components, the cascade cannot be determined from the
 target enrichments alone (<code class="docutils literal"><span class="pre">x_feed_j</span></code>, <code class="docutils literal"><span class="pre">x_prod_j</span></code>, <code class="docutils literal"><span class="pre">x_tail_j</span></code>).  Because the
 mass balance equations themselves are under-determined extra constraints must be
 emplaced.  This turns out to be a minimization of the total material flow rate
-through the cascade per unit of feed <a class="reference internal" href="#wood" id="id1">[WOOD]</a> <a class="reference internal" href="#garza" id="id2">[GARZA]</a>.  This value, <img class="math" src="../_images/math/29210a352e9dacb058b4d85446d6be2671a7e53c.png" alt="L_t/F"/>,
-may be seen as a function of the mass separation <img class="math" src="../_images/math/ec67f244208831f60545f8008a85c32e3f0da9c8.png" alt="M^*"/> below.</p>
+through the cascade per unit of feed <a class="reference internal" href="#wood" id="id1">[WOOD]</a> <a class="reference internal" href="#garza" id="id2">[GARZA]</a>.  This value, <span class="math">L_t/F</span>,
+may be seen as a function of the mass separation <span class="math">M^*</span> below.</p>
 <div class="figure align-center" id="id3">
 <img alt="../_images/mstar_vs_flowrate.png" src="../_images/mstar_vs_flowrate.png" />
 <p class="caption"><span class="caption-text"><strong>Figure 1:</strong> <em>The normalized total flow rate as a function of the mass separation
@@ -291,8 +288,8 @@ URL: <a class="reference external" href="http://dx.doi.org/10.2172/4106611">http
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2015, The PyNE Development Team.
-      Last updated on Jun 27, 2017.
+        &#169; Copyright 2011-2017, The PyNE Development Team.
+      Last updated on Nov 19, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
