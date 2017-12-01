@@ -7,14 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.alara &#8212; PyNE 0.5.5</title>
+    <title>pyne.alara &#8212; PyNE 0.5.6</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.5',
+        VERSION:     '0.5.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -174,11 +174,11 @@ if(ga_enabled){
             <span class="c1"># print flux data to file</span>
             <span class="n">output</span> <span class="o">=</span> <span class="n">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">ves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flux_mesh</span><span class="o">.</span><span class="n">iter_ve</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">flux_mesh</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">comp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">output</span> <span class="o">=</span> <span class="n">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span>
-                                          <span class="n">direction</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">comp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">_output_flux</span><span class="p">(</span><span class="n">ves</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]],</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span>
+                                      <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fluxin</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
@@ -313,7 +313,7 @@ if(ga_enabled){
                 <span class="n">tag_handles</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="n">cond</span><span class="p">]][</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_e_groups</span></div>
 
 <div class="viewcode-block" id="record_to_geom"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.record_to_geom">[docs]</a><span class="k">def</span> <span class="nf">record_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">cell_fracs</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">,</span> <span class="n">geom_file</span><span class="p">,</span> <span class="n">matlib_file</span><span class="p">,</span>
-                   <span class="n">sig_figs</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+                   <span class="n">sig_figs</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sub_voxel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function preforms the same task as alara.mesh_to_geom, except the</span>
 <span class="sd">    geometry is on the basis of the stuctured array output of</span>
 <span class="sd">    dagmc.discretize_geom rather than a PyNE material object with materials.</span>
@@ -325,7 +325,7 @@ if(ga_enabled){
 <span class="sd">    ----------</span>
 <span class="sd">    mesh : PyNE Mesh object</span>
 <span class="sd">        The Mesh object for which the geometry is discretized.</span>
-<span class="sd">     cell_fracs : structured array</span>
+<span class="sd">    cell_fracs : structured array</span>
 <span class="sd">        The output from dagmc.discretize_geom(). A sorted, one dimensional</span>
 <span class="sd">        array, each entry containing the following fields:</span>
 
@@ -348,6 +348,8 @@ if(ga_enabled){
 <span class="sd">    sig_figs : int</span>
 <span class="sd">        The number of significant figures that two mixtures must have in common</span>
 <span class="sd">        to be treated as the same mixture within ALARA.</span>
+<span class="sd">    sub_voxel : bool</span>
+<span class="sd">        If sub_voxel is True, the sub-voxel r2s will be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Create geometry information header. Note that the shape of the geometry</span>
     <span class="c1"># (rectangular) is actually inconsequential to the ALARA calculation so</span>
@@ -361,31 +363,50 @@ if(ga_enabled){
     <span class="n">mixture</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># mixture blocks</span>
 
     <span class="n">unique_mixtures</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
-        <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;    </span><span class="si">{0: 1.6E}</span><span class="s1">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ve</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_voxel</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
+            <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;    </span><span class="si">{0: 1.6E}</span><span class="s1">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ve</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
 
-        <span class="n">ve_mixture</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">[</span><span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">]:</span>
-            <span class="n">cell_mat</span> <span class="o">=</span> <span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">cell_mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">_is_void</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mat_void&#39;</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">ve_mixture</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sig_figs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ve_mixture</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sig_figs</span><span class="p">)</span>
+            <span class="n">ve_mixture</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">[</span><span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">]:</span>
+                <span class="n">cell_mat</span> <span class="o">=</span> <span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">cell_mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">_is_void</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mat_void&#39;</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">ve_mixture</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sig_figs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ve_mixture</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sig_figs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">ve_mixture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_mixtures</span><span class="p">:</span>
-            <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">)</span>
-            <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;mixture mix_</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                           <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;    material </span><span class="si">{0}</span><span class="s1"> 1 </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ve_mixture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_mixtures</span><span class="p">:</span>
+                <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">)</span>
+                <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;mixture mix_</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                            <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;    material </span><span class="si">{0}</span><span class="s1"> 1 </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-            <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
 
-        <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;    zone_</span><span class="si">{0}</span><span class="s1">    mix_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span>
-                        <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+            <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;    zone_</span><span class="si">{0}</span><span class="s1">    mix_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span>
+                            <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">iter_ve</span><span class="p">())</span>
+        <span class="n">sve_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">comp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;    </span><span class="si">{0: 1.6E}</span><span class="s1">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ves</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]])</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sve_count</span><span class="p">)</span>
+                <span class="n">cell_mat</span> <span class="o">=</span> <span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">cell_mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_mixtures</span><span class="p">:</span>
+                    <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;mixture </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;    material </span><span class="si">{0}</span><span class="s1"> 1 1</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;    zone_</span><span class="si">{0}</span><span class="s1">    </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">sve_count</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">sve_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
     <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
@@ -924,7 +945,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Nov 19, 2017.
+      Last updated on Dec 01, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

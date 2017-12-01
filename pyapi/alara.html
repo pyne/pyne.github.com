@@ -7,14 +7,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.5</title>
+    <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.6</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.5',
+        VERSION:     '0.5.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -421,7 +421,7 @@ photon_source block.</p>
 
 <dl class="function">
 <dt id="pyne.alara.record_to_geom">
-<code class="descclassname">pyne.alara.</code><code class="descname">record_to_geom</code><span class="sig-paren">(</span><em>mesh</em>, <em>cell_fracs</em>, <em>cell_mats</em>, <em>geom_file</em>, <em>matlib_file</em>, <em>sig_figs=6</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#record_to_geom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.record_to_geom" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.alara.</code><code class="descname">record_to_geom</code><span class="sig-paren">(</span><em>mesh</em>, <em>cell_fracs</em>, <em>cell_mats</em>, <em>geom_file</em>, <em>matlib_file</em>, <em>sig_figs=6</em>, <em>sub_voxel=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#record_to_geom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.record_to_geom" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function preforms the same task as alara.mesh_to_geom, except the
 geometry is on the basis of the stuctured array output of
 dagmc.discretize_geom rather than a PyNE material object with materials.
@@ -434,14 +434,14 @@ equal up to &lt;sig_figs&gt; digits to be the same mixture within ALARA.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : PyNE Mesh object</p>
 <blockquote>
-<div><blockquote>
 <div><p>The Mesh object for which the geometry is discretized.</p>
 </div></blockquote>
-<dl class="docutils">
-<dt>cell_fracs <span class="classifier-delimiter">:</span> <span class="classifier">structured array</span></dt>
-<dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
+<p><strong>cell_fracs</strong> : structured array</p>
+<blockquote>
+<div><blockquote>
+<div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
-<blockquote class="last">
+<blockquote>
 <div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -461,7 +461,8 @@ The relative error associated with the volume fraction.</td>
 </tbody>
 </table>
 </div></blockquote>
-</dd>
+</div></blockquote>
+<dl class="docutils">
 <dt>cell_mats <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">Maps geometry cell numbers to PyNE Material objects. Each PyNE material
 object must have ‘name’ specified in Material.metadata.</p>
@@ -477,9 +478,13 @@ object must have ‘name’ specified in Material.metadata.</p>
 <div><p>The name of the file to print the matlib.</p>
 </div></blockquote>
 <p><strong>sig_figs</strong> : int</p>
-<blockquote class="last">
+<blockquote>
 <div><p>The number of significant figures that two mixtures must have in common
 to be treated as the same mixture within ALARA.</p>
+</div></blockquote>
+<p><strong>sub_voxel</strong> : bool</p>
+<blockquote class="last">
+<div><p>If sub_voxel is True, the sub-voxel r2s will be used.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -594,7 +599,7 @@ to be treated as the same mixture within ALARA.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Nov 19, 2017.
+      Last updated on Dec 01, 2017.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
