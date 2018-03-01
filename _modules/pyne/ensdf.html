@@ -6,21 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.ensdf &#8212; PyNE 0.5.10</title>
+    <title>pyne.ensdf &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -45,8 +37,7 @@ if(ga_enabled){
   })();
 }
 </script>
-  </head>
-  <body>
+  </head><body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -79,11 +70,11 @@ if(ga_enabled){
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">time_conv_dict</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span><span class="p">,</span> <span class="n">rxname</span><span class="p">,</span> <span class="n">data</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">to_sec</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
     <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
@@ -143,6 +134,62 @@ if(ga_enabled){
     <span class="k">return</span> <span class="n">nucid</span>
 
 
+<span class="c1"># Energy to half-life conversion:  T1/2= ln(2) × (h/2 pi) / energy</span>
+<span class="c1"># See http://www.nndc.bnl.gov/nudat2/help/glossary.jsp#halflife</span>
+<span class="c1"># NIST CODATA https://physics.nist.gov/cgi-bin/cuu/Value?hbar</span>
+<span class="c1">#    h-bar = 1.054 571 800(13) x 1e-34 J</span>
+<span class="c1">#    1 J = 6.241 509 126(38) x 1e18 eV</span>
+<span class="n">HBAR_LN2</span> <span class="o">=</span> <span class="mf">4.5623775832376968e-16</span>  <span class="c1"># h-bar ln(2) in eV s</span>
+<span class="n">energy_conv_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ev&#39;</span><span class="p">:</span> <span class="n">HBAR_LN2</span><span class="p">,</span>
+                    <span class="s1">&#39;kev&#39;</span><span class="p">:</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">HBAR_LN2</span><span class="p">,</span>
+                    <span class="s1">&#39;mev&#39;</span><span class="p">:</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">HBAR_LN2</span><span class="p">,</span>
+                    <span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_halflife_to_seconds</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a halflife with err and units to seconds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value: number</span>
+<span class="sd">        Time or energy, depending on units.</span>
+<span class="sd">    err : number or (number, number)</span>
+<span class="sd">        Uncertainty, or (plus, minus) uncertainty in [units].</span>
+<span class="sd">    units : str</span>
+<span class="sd">        Units flag, eg &#39;min&#39;, &#39;ms&#39;, &#39;days&#39;, or even &#39;MeV&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sec_time : float</span>
+<span class="sd">        Time value in [sec].</span>
+<span class="sd">    sec_err : None or float or (float, float) in [sec].</span>
+<span class="sd">        Time uncertainty in [sec], or (plus, minus) if asymmetric uncertainty.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plus</span><span class="p">,</span> <span class="n">minus</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+        <span class="n">plus</span><span class="p">,</span> <span class="n">minus</span> <span class="o">=</span> <span class="n">err</span><span class="p">,</span> <span class="n">err</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plus</span><span class="p">,</span> <span class="n">minus</span> <span class="o">=</span> <span class="n">err</span>
+
+    <span class="n">units</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">time_conv_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sec_time</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">value</span>
+        <span class="n">sec_err</span> <span class="o">=</span> <span class="p">(</span><span class="n">scale</span> <span class="o">*</span> <span class="n">plus</span><span class="p">,</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">minus</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">energy_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="p">]</span>
+        <span class="n">sec_time</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">/</span> <span class="n">value</span>
+        <span class="n">sec_err</span> <span class="o">=</span> <span class="p">(</span><span class="n">scale</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.1</span><span class="o">*</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span> <span class="o">-</span> <span class="n">minus</span><span class="p">)</span> <span class="o">-</span> <span class="n">sec_time</span><span class="p">,</span>
+                   <span class="n">sec_time</span> <span class="o">-</span> <span class="n">scale</span> <span class="o">/</span> <span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="n">plus</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sec_time</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">sec_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sec_err</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">sec_time</span><span class="p">,</span> <span class="n">sec_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sec_time</span><span class="p">,</span> <span class="n">sec_err</span>
+
+
 <span class="k">def</span> <span class="nf">_to_time</span><span class="p">(</span><span class="n">tstr</span><span class="p">,</span> <span class="n">errstr</span><span class="p">):</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">tstr</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="c1"># This accepts questionable levels</span>
@@ -150,13 +197,8 @@ if(ga_enabled){
     <span class="n">tobj</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; ()&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tobj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">t</span><span class="p">,</span> <span class="n">t_unit</span> <span class="o">=</span> <span class="n">tobj</span>
-        <span class="n">t</span><span class="p">,</span> <span class="n">terr</span> <span class="o">=</span> <span class="n">_get_val_err</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">errstr</span><span class="p">)</span>
-        <span class="n">tfinal</span> <span class="o">=</span> <span class="n">to_sec</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t_unit</span><span class="p">)</span>
-        <span class="n">tfinalerr</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">terr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
-            <span class="n">tfinalerr</span> <span class="o">=</span> <span class="n">to_sec</span><span class="p">(</span><span class="n">terr</span><span class="p">,</span> <span class="n">t_unit</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">terr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tfinalerr</span> <span class="o">=</span> <span class="n">to_sec</span><span class="p">(</span><span class="n">terr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t_unit</span><span class="p">),</span> <span class="n">to_sec</span><span class="p">(</span><span class="n">terr</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">t_unit</span><span class="p">)</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">_get_val_err</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">errstr</span><span class="p">)</span>
+        <span class="n">tfinal</span><span class="p">,</span> <span class="n">tfinalerr</span> <span class="o">=</span> <span class="n">_halflife_to_seconds</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">t_unit</span><span class="p">)</span>
     <span class="k">elif</span> <span class="s1">&#39;STABLE&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
         <span class="n">tfinal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         <span class="n">tfinalerr</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1056,8 +1098,8 @@ if(ga_enabled){
                                   <span class="n">special</span><span class="p">))</span>
     <span class="n">_adjust_ge100_branches</span><span class="p">(</span><span class="n">levellist</span><span class="p">)</span>
     <span class="n">_adjust_metastables</span><span class="p">(</span><span class="n">levellist</span><span class="p">)</span>
-    <span class="n">_adjust_half_lives</span><span class="p">(</span><span class="n">levellist</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">levellist</span></div>
+    <span class="n">_adjust_half_lives</span><span class="p">(</span><span class="n">levellist</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">levellist</span>
 
 
 <div class="viewcode-block" id="decays"><a class="viewcode-back" href="../../pyapi/ensdf.html#pyne.ensdf.decays">[docs]</a><span class="k">def</span> <span class="nf">decays</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">decaylist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1197,8 +1239,8 @@ if(ga_enabled){
                                 <span class="n">ecbp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
                             <span class="n">decaylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">dc</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">decaylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decay</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">decaylist</span></div>
+                    <span class="n">decaylist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decay</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">decaylist</span>
 
 
 <span class="k">def</span> <span class="nf">_dlist_gen</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -1279,49 +1321,18 @@ if(ga_enabled){
         <p class="logo"><a href="../../index.html" title="index">
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
-  <div class="sphinxlocaltoc">
-  <h3>Getting Started</h3>
-  <ul>
-    <li><a href="../../install/index.html">Install</a></li>
-    <li><a href="../../tutorial/index.html">Tutorial</a></li>
-    <li><a href="../../examples/index.html">Examples</a></li>
-  </ul>
-  <h3>Using PyNE</h3>
-  <ul>
-    <li><a href="../../usersguide/index.html">User's Guide</a></li>
-    <li><a href="../../pyapi/index.html">Python API Documentation</a></li>
-    <li><a href="../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
-    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
-  </ul>
-  <h3>Contribute</h3>
-  <ul>
-    <li><a href="../../devsguide/index.html">Developer's Guide</a></li>
-    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
-        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
-    <li><a href="../../dev_team.html">The PyNE Team</a></li>
-  </ul>
-  <h3>Learn More</h3>
-  <ul>
-    <li><a href="../../theorymanual/index.html">Theory Manual</a></li>
-    <li><a href="../../pubs.html">Publications</a></li>
-    <li><a href="../../previous/index.html">Release Notes</a></li>
-    <li><a href="../../gsoc/index.html">Project Ideas</a></li>
-  </ul>
-  </div>
-  
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
     
@@ -1366,7 +1377,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Dec 03, 2017.
+      Last updated on Mar 01, 2018.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

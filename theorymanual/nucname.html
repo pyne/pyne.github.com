@@ -6,21 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>nucname &#8212; PyNE 0.5.10</title>
+    <title>nucname &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.5.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -45,8 +37,7 @@ if(ga_enabled){
   })();
 }
 </script>
-  </head>
-  <body>
+  </head><body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -72,14 +63,14 @@ if(ga_enabled){
             
   <div class="section" id="nucname">
 <span id="theorymanual-nucname"></span><h1>nucname<a class="headerlink" href="#nucname" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="xref py py-mod docutils literal"><span class="pre">pyne.nucname</span></code> implements a canonical form for nuclide naming that
-is used throughout PyNE.  This is called the <code class="docutils literal"><span class="pre">id</span></code> or <code class="docutils literal"><span class="pre">nucid</span></code>. This form is
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.nucname</span></code> implements a canonical form for nuclide naming that
+is used throughout PyNE.  This is called the <code class="docutils literal notranslate"><span class="pre">id</span></code> or <code class="docutils literal notranslate"><span class="pre">nucid</span></code>. This form is
 simple but powerful enough to unambiguously handle all nuclide naming conventions
 from other codes and conventions. All other nuclide naming schemas are
 derived from transformations of this form.</p>
 <p>Concisely, the format is three proton number digits (the Z-number) followed
 by three nucleon number digits (the A-number) followed by four state digits
-(the S-number). Thus we see that the full id form is <code class="docutils literal"><span class="pre">ZZZAAASSSS</span></code>.</p>
+(the S-number). Thus we see that the full id form is <code class="docutils literal notranslate"><span class="pre">ZZZAAASSSS</span></code>.</p>
 <p>This format has two important properties:</p>
 <ol class="arabic simple">
 <li>It preserves a natural sort order for nuclides (hydrogen species come before
@@ -92,35 +83,35 @@ this is the most common usage in nuclear engineering. In certain instances when
 specified explicitly, the state number may represent the internal excitation
 state of the nucleus. This usage arises most frequently in the context of
 radioactive decay.</p>
-<p>No physics should be performed on the nuclide <code class="docutils literal"><span class="pre">id</span></code> format directly.</p>
+<p>No physics should be performed on the nuclide <code class="docutils literal notranslate"><span class="pre">id</span></code> format directly.</p>
 <div class="section" id="rules-conventions">
 <h2>Rules &amp; Conventions<a class="headerlink" href="#rules-conventions" title="Permalink to this headline">¶</a></h2>
 <p>The following are rules about the semantic meaning of specific classes of
 identifiers, in no particular order:</p>
 <ul class="simple">
 <li>Negative nuclides have no meaning (yet).</li>
-<li>Nuclides where <code class="docutils literal"><span class="pre">AAA</span> <span class="pre">&lt;</span> <span class="pre">ZZZ</span></code> are physically impossible and thus not allowed.</li>
-<li>Nuclides where <code class="docutils literal"><span class="pre">SSSS</span> <span class="pre">==</span> <span class="pre">0</span></code> are considered to be in the ground state.</li>
-<li>Nuclides where <code class="docutils literal"><span class="pre">AAA</span> <span class="pre">==</span> <span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">ZZZ</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> represent the chemical element.
+<li>Nuclides where <code class="docutils literal notranslate"><span class="pre">AAA</span> <span class="pre">&lt;</span> <span class="pre">ZZZ</span></code> are physically impossible and thus not allowed.</li>
+<li>Nuclides where <code class="docutils literal notranslate"><span class="pre">SSSS</span> <span class="pre">==</span> <span class="pre">0</span></code> are considered to be in the ground state.</li>
+<li>Nuclides where <code class="docutils literal notranslate"><span class="pre">AAA</span> <span class="pre">==</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">ZZZ</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> represent the chemical element.
 In most applications this takes on the natural isotopic abundances. The
 state number is assumed to be zero for elements</li>
-<li>Humans should use a human readable format, computers should use <code class="docutils literal"><span class="pre">id</span></code>.</li>
+<li>Humans should use a human readable format, computers should use <code class="docutils literal notranslate"><span class="pre">id</span></code>.</li>
 </ul>
 <div class="section" id="well-defined-vs-ambiguous-situations">
 <h3>Well-Defined vs Ambiguous Situations<a class="headerlink" href="#well-defined-vs-ambiguous-situations" title="Permalink to this headline">¶</a></h3>
 <p>In situations where the input naming convention is well-defined, it is <em>highly</em>
-recommended that you use the direct <code class="docutils literal"><span class="pre">&lt;form&gt;_to_id()</span></code> functions (e.g.
-<code class="docutils literal"><span class="pre">mcnp_to_id()</span></code>) to convert from a nuclide in the given form to the id form
+recommended that you use the direct <code class="docutils literal notranslate"><span class="pre">&lt;form&gt;_to_id()</span></code> functions (e.g.
+<code class="docutils literal notranslate"><span class="pre">mcnp_to_id()</span></code>) to convert from a nuclide in the given form to the id form
 representation. When a high level of quality assurance is required, it is
 advisable to require an specific input format to leverage the exactness of the
 direct-to-id functions.</p>
 <p>However, in situations where arbitrary nuclide naming conventions are allowed,
-you must use the <code class="docutils literal"><span class="pre">id()</span></code> function. An example of such a situation is when accepting
+you must use the <code class="docutils literal notranslate"><span class="pre">id()</span></code> function. An example of such a situation is when accepting
 human input. This function attempts to resolve the underlying nuclide identifier.
 For most nuclides and most normal spellings, this resolution is straightforward.
 However, some nulcides are ambiguous between the various supported naming conventions.
 Other nuclide names are completely indeterminate. In the case of indeterminate
-species the <code class="docutils literal"><span class="pre">id()</span></code> function will throw an error. In the case of ambiguous forms
+species the <code class="docutils literal notranslate"><span class="pre">id()</span></code> function will throw an error. In the case of ambiguous forms
 where the input is an integer input, the form resolution order is:</p>
 <ul class="simple">
 <li>id</li>
@@ -130,7 +121,7 @@ where the input is an integer input, the form resolution order is:</p>
 <li>mcnp</li>
 <li>zzaaa</li>
 </ul>
-<p>For string (or <code class="docutils literal"><span class="pre">char</span> <span class="pre">*</span></code>) input, the form resolution order is as follows:</p>
+<p>For string (or <code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*</span></code>) input, the form resolution order is as follows:</p>
 <ul class="simple">
 <li>ZZ-LL-AAAM</li>
 <li>Integer form in a string representation, uses integer resolution</li>
@@ -139,8 +130,8 @@ where the input is an integer input, the form resolution order is:</p>
 <li>Serpent</li>
 <li>LL (element symbol)</li>
 </ul>
-<p>The <code class="docutils literal"><span class="pre">name()</span></code> function first converts functions to id form using the <code class="docutils literal"><span class="pre">id()</span></code>
-function. Thus the form order resolution for <code class="docutils literal"><span class="pre">id()</span></code> also applies to <code class="docutils literal"><span class="pre">name()</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">name()</span></code> function first converts functions to id form using the <code class="docutils literal notranslate"><span class="pre">id()</span></code>
+function. Thus the form order resolution for <code class="docutils literal notranslate"><span class="pre">id()</span></code> also applies to <code class="docutils literal notranslate"><span class="pre">name()</span></code>.</p>
 </div>
 <div class="section" id="nuclide-forms">
 <h3>Nuclide Forms<a class="headerlink" href="#nuclide-forms" title="Permalink to this headline">¶</a></h3>
@@ -224,49 +215,18 @@ with new releases of ENSDF data.</li>
 </ul>
 
   </div>
-  <div class="sphinxlocaltoc">
-  <h3>Getting Started</h3>
-  <ul>
-    <li><a href="../install/index.html">Install</a></li>
-    <li><a href="../tutorial/index.html">Tutorial</a></li>
-    <li><a href="../examples/index.html">Examples</a></li>
-  </ul>
-  <h3>Using PyNE</h3>
-  <ul>
-    <li><a href="../usersguide/index.html">User's Guide</a></li>
-    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
-    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
-    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
-  </ul>
-  <h3>Contribute</h3>
-  <ul>
-    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
-    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
-        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
-    <li><a href="../dev_team.html">The PyNE Team</a></li>
-  </ul>
-  <h3>Learn More</h3>
-  <ul>
-    <li><a href="index.html">Theory Manual</a></li>
-    <li><a href="../pubs.html">Publications</a></li>
-    <li><a href="../previous/index.html">Release Notes</a></li>
-    <li><a href="../gsoc/index.html">Project Ideas</a></li>
-  </ul>
-  </div>
-  
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
     
@@ -310,7 +270,7 @@ with new releases of ENSDF data.</li>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Dec 03, 2017.
+      Last updated on Mar 01, 2018.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

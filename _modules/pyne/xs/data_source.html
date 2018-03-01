@@ -6,21 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.xs.data_source &#8212; PyNE 0.5.10</title>
+    <title>pyne.xs.data_source &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.5.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -45,8 +37,7 @@ if(ga_enabled){
   })();
 }
 </script>
-  </head>
-  <body>
+  </head><body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -263,8 +254,8 @@ if(ga_enabled){
         <span class="n">rxkey</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_USES_TEMP</span> <span class="k">else</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rxkey</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">[</span><span class="n">rxkey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullyloaded</span> \
-                                       <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">[</span><span class="n">rxkey</span><span class="p">]</span></div>
+                                       <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">[</span><span class="n">rxkey</span><span class="p">]</span>
 
 <div class="viewcode-block" id="DataSource.discretize"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.DataSource.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Discretizes the reaction channel from the source group structure to that</span>
@@ -295,8 +286,8 @@ if(ga_enabled){
         <span class="n">src_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
         <span class="n">dst_sigma</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">src_sigma</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">group_collapse</span><span class="p">(</span><span class="n">src_sigma</span><span class="p">,</span>
                                                         <span class="n">src_phi_g</span><span class="p">,</span> <span class="n">dst_phi_g</span><span class="p">,</span>
-                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_src_to_dst_matrix</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dst_sigma</span></div>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_src_to_dst_matrix</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">dst_sigma</span>
 
 
 <div class="viewcode-block" id="DataSource.shield_weights"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.DataSource.shield_weights">[docs]</a>    <span class="k">def</span> <span class="nf">shield_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dens</span><span class="p">,</span> <span class="n">temp</span><span class="p">):</span>
@@ -320,8 +311,8 @@ if(ga_enabled){
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
                     <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">num_dens</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">reactions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-            <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">num_dens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">reactions</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">slf_shld_wgts</span> <span class="o">=</span> <span class="n">weights</span></div>
+            <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">num_dens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">reactions</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slf_shld_wgts</span> <span class="o">=</span> <span class="n">weights</span>
 
 
     <span class="c1"># Mix-in methods to implement</span>
@@ -337,10 +328,10 @@ if(ga_enabled){
 
     <span class="c1"># Optional mix-in methods to implement</span>
 <div class="viewcode-block" id="DataSource.load"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.DataSource.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loads the entire data source into memory.&quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
-
-    <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="sd">&quot;&quot;&quot;Loads the entire data source into memory.&quot;&quot;&quot;</span></div>
+        <span class="k">pass</span>
+</div>
+    <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="NullDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.NullDataSource">[docs]</a><span class="k">class</span> <span class="nc">NullDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cross section data source that always exists and always returns zeros.</span>
@@ -369,8 +360,8 @@ if(ga_enabled){
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src_ngroups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f8&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NullDataSource.discretize"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.NullDataSource.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns zeros.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dst_ngroups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f8&#39;</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Returns zeros.&quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dst_ngroups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f8&#39;</span><span class="p">)</span>
 
     <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -385,8 +376,8 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">_dst_ngroups</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dst_group_struct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dst_ngroups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_src_to_dst_matrix</span> <span class="o">=</span> <span class="kc">None</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dst_ngroups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src_to_dst_matrix</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="SimpleDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.SimpleDataSource">[docs]</a><span class="k">class</span> <span class="nc">SimpleDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
@@ -491,8 +482,8 @@ if(ga_enabled){
         <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dst_sigma</span> <span class="o">&lt;</span> <span class="n">dst_fissn</span><span class="p">)</span>
         <span class="n">dst_sigma</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">dst_fissn</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">dst_phi_g</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dst_sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">dst_sigma</span> <span class="o">*</span> <span class="n">dst_phi_g</span><span class="p">)</span> <span class="o">/</span> <span class="n">dst_phi_g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">dst_sigma</span></div>
+            <span class="n">dst_sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">dst_sigma</span> <span class="o">*</span> <span class="n">dst_phi_g</span><span class="p">)</span> <span class="o">/</span> <span class="n">dst_phi_g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">dst_sigma</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dst_group_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -508,8 +499,8 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">_dst_group_struct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dst_centers</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dst_group_struct</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">_dst_group_struct</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mf">2.0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dst_ngroups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_src_to_dst_matrix</span> <span class="o">=</span> <span class="kc">None</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dst_ngroups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src_to_dst_matrix</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="CinderDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.CinderDataSource">[docs]</a><span class="k">class</span> <span class="nc">CinderDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
@@ -620,8 +611,8 @@ if(ga_enabled){
         <span class="k">if</span> <span class="n">rx</span> <span class="o">==</span> <span class="n">absrx</span><span class="p">:</span>
             <span class="n">fdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">fissrx</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rxdata</span> <span class="o">=</span> <span class="n">fdata</span> <span class="k">if</span> <span class="n">rxdata</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rxdata</span> <span class="o">+</span> <span class="n">fdata</span>
-        <span class="k">return</span> <span class="n">rxdata</span></div>
+                <span class="n">rxdata</span> <span class="o">=</span> <span class="n">fdata</span> <span class="k">if</span> <span class="n">rxdata</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rxdata</span> <span class="o">+</span> <span class="n">fdata</span></div>
+        <span class="k">return</span> <span class="n">rxdata</span>
 
 <div class="viewcode-block" id="EAFDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.EAFDataSource">[docs]</a><span class="k">class</span> <span class="nc">EAFDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;European Activation File cross section data source.  The relevant EAF</span>
@@ -786,8 +777,8 @@ if(ga_enabled){
                 <span class="n">xs</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span>
                 <span class="n">rxcache</span><span class="p">[</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span>
                 <span class="n">abskey</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">absrx</span><span class="p">)</span>
-                <span class="n">rxcache</span><span class="p">[</span><span class="n">abskey</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">rxcache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">abskey</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fullyloaded</span> <span class="o">=</span> <span class="kc">True</span></div></div>
+                <span class="n">rxcache</span><span class="p">[</span><span class="n">abskey</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span> <span class="o">+</span> <span class="n">rxcache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">abskey</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fullyloaded</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ENDFDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.ENDFDataSource">[docs]</a><span class="k">class</span> <span class="nc">ENDFDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluated Nuclear Data File cross section data source.  The ENDF file</span>
@@ -892,8 +883,8 @@ if(ga_enabled){
         <span class="n">rx</span> <span class="o">=</span> <span class="n">rxname</span><span class="o">.</span><span class="n">mt</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
         <span class="n">nuc_i</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">nuc_i</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">nuc_i</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_load_reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">nuc_i</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">[</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">nuc_i</span><span class="p">]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">nuc_i</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rxcache</span><span class="p">[</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">nuc_i</span><span class="p">]</span>
 
 <div class="viewcode-block" id="ENDFDataSource.discretize"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.ENDFDataSource.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Discretizes the reaction channel from the source group structure to that</span>
@@ -931,8 +922,8 @@ if(ga_enabled){
         <span class="n">src_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">src_bounds</span><span class="p">,</span> <span class="n">intschemes</span><span class="p">))</span>
         <span class="n">dst_bounds</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dst_group_struct</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">dst_group_struct</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">dst_sigma</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">integrate_dst_group</span><span class="p">(</span><span class="n">dst_bound</span><span class="p">,</span> <span class="n">src_bounds</span><span class="p">,</span> <span class="n">src_dict</span><span class="p">,</span> <span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
-                     <span class="k">for</span> <span class="n">dst_bound</span> <span class="ow">in</span> <span class="n">dst_bounds</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">dst_sigma</span></div>
+                     <span class="k">for</span> <span class="n">dst_bound</span> <span class="ow">in</span> <span class="n">dst_bounds</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">dst_sigma</span>
 
     <span class="k">def</span> <span class="nf">integrate_dst_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dst_bounds</span><span class="p">,</span> <span class="n">src_bounds</span><span class="p">,</span> <span class="n">src_dict</span><span class="p">,</span> <span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
         <span class="n">dst_low</span><span class="p">,</span> <span class="n">dst_high</span> <span class="o">=</span> <span class="n">dst_bounds</span>
@@ -977,8 +968,8 @@ if(ga_enabled){
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dE</span> <span class="o">=</span> <span class="n">high</span> <span class="o">-</span> <span class="n">low</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="o">.</span><span class="n">integrate_tab_range</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span><span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">dE</span></div>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="o">.</span><span class="n">integrate_tab_range</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span><span class="n">e_int</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">dE</span>
 
 
 <div class="viewcode-block" id="OpenMCDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.OpenMCDataSource">[docs]</a><span class="k">class</span> <span class="nc">OpenMCDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
@@ -1079,8 +1070,8 @@ if(ga_enabled){
         <span class="k">if</span> <span class="p">(</span><span class="n">E_g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">E_g</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">E_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">E_points</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> \
            <span class="p">(</span><span class="n">E_g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">E_g</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">E_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">E_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">E_points</span> <span class="o">=</span> <span class="n">E_points</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">rawdata</span> <span class="o">=</span> <span class="n">rawdata</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">E_points</span><span class="p">,</span> <span class="n">rawdata</span></div>
+            <span class="n">rawdata</span> <span class="o">=</span> <span class="n">rawdata</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">E_points</span><span class="p">,</span> <span class="n">rawdata</span>
 
     <span class="k">def</span> <span class="nf">_load_reaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads reaction data from ACE files indexed by OpenMC.</span>
@@ -1141,8 +1132,8 @@ if(ga_enabled){
         <span class="n">numer</span> <span class="o">=</span> <span class="n">bins</span><span class="o">.</span><span class="n">pointwise_linear_collapse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src_group_struct</span><span class="p">,</span>
             <span class="n">E_points</span><span class="p">,</span> <span class="n">xs_points</span><span class="o">/</span><span class="p">(</span><span class="n">E_points</span><span class="o">*</span><span class="p">(</span><span class="n">sig_b</span> <span class="o">+</span> <span class="n">sig_t</span><span class="p">)))</span>
         <span class="n">denom</span> <span class="o">=</span> <span class="n">bins</span><span class="o">.</span><span class="n">pointwise_linear_collapse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src_group_struct</span><span class="p">,</span>
-            <span class="n">E_points</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">E_points</span><span class="o">*</span><span class="p">(</span><span class="n">sig_b</span> <span class="o">+</span> <span class="n">sig_t</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">numer</span><span class="o">/</span><span class="n">denom</span></div>
+            <span class="n">E_points</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">E_points</span><span class="o">*</span><span class="p">(</span><span class="n">sig_b</span> <span class="o">+</span> <span class="n">sig_t</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="n">numer</span><span class="o">/</span><span class="n">denom</span>
 
 <div class="viewcode-block" id="OpenMCDataSource.bkg_xs"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.OpenMCDataSource.bkg_xs">[docs]</a>    <span class="k">def</span> <span class="nf">bkg_xs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the background cross section for a nuclide (nuc)</span>
@@ -1167,8 +1158,8 @@ if(ga_enabled){
             <span class="n">rtn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointwise</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;total&#39;</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rtn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="n">sig_b</span> <span class="o">+=</span> <span class="n">a</span><span class="o">*</span><span class="n">bins</span><span class="o">.</span><span class="n">pointwise_linear_collapse</span><span class="p">(</span><span class="n">e_n</span><span class="p">,</span> <span class="n">rtn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rtn</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">sig_b</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_dens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
+            <span class="n">sig_b</span> <span class="o">+=</span> <span class="n">a</span><span class="o">*</span><span class="n">bins</span><span class="o">.</span><span class="n">pointwise_linear_collapse</span><span class="p">(</span><span class="n">e_n</span><span class="p">,</span> <span class="n">rtn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rtn</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">sig_b</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_dens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_rank_ace_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filters and sorts the potential ACE tables based on nucliude and</span>
@@ -1196,8 +1187,8 @@ if(ga_enabled){
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">atab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_sections</span><span class="o">.</span><span class="n">ace_tables</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">atab</span><span class="o">.</span><span class="n">abspath</span> <span class="ow">or</span> <span class="n">atab</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-                <span class="n">lib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">libs</span><span class="p">[</span><span class="n">atab</span><span class="p">]</span> <span class="o">=</span> <span class="n">ace</span><span class="o">.</span><span class="n">Library</span><span class="p">(</span><span class="n">atab</span><span class="o">.</span><span class="n">abspath</span> <span class="ow">or</span> <span class="n">atab</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-                <span class="n">lib</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">atab</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div></div>
+                <span class="n">lib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">libs</span><span class="p">[</span><span class="n">atab</span><span class="p">]</span> <span class="o">=</span> <span class="n">ace</span><span class="o">.</span><span class="n">Library</span><span class="p">(</span><span class="n">atab</span><span class="o">.</span><span class="n">abspath</span> <span class="ow">or</span> <span class="n">atab</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div></div>
+                <span class="n">lib</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">atab</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="StatePointDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.StatePointDataSource">[docs]</a><span class="k">class</span> <span class="nc">StatePointDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data source for reactions coming from openmc state points</span>
@@ -1279,8 +1270,8 @@ if(ga_enabled){
         <span class="n">rxkey</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rxkey</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">[</span><span class="n">rxkey</span><span class="p">]</span></div></div>
+        <span class="k">else</span><span class="p">:</span></div></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">[</span><span class="n">rxkey</span><span class="p">]</span>
 </pre></div>
 
           </div>
@@ -1291,49 +1282,18 @@ if(ga_enabled){
         <p class="logo"><a href="../../../index.html" title="index">
           <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
-  <div class="sphinxlocaltoc">
-  <h3>Getting Started</h3>
-  <ul>
-    <li><a href="../../../install/index.html">Install</a></li>
-    <li><a href="../../../tutorial/index.html">Tutorial</a></li>
-    <li><a href="../../../examples/index.html">Examples</a></li>
-  </ul>
-  <h3>Using PyNE</h3>
-  <ul>
-    <li><a href="../../../usersguide/index.html">User's Guide</a></li>
-    <li><a href="../../../pyapi/index.html">Python API Documentation</a></li>
-    <li><a href="../../../cppapi/index.html">C++ & Fortran API Documentation</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
-    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
-  </ul>
-  <h3>Contribute</h3>
-  <ul>
-    <li><a href="../../../devsguide/index.html">Developer's Guide</a></li>
-    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
-        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
-    <li><a href="../../../dev_team.html">The PyNE Team</a></li>
-  </ul>
-  <h3>Learn More</h3>
-  <ul>
-    <li><a href="../../../theorymanual/index.html">Theory Manual</a></li>
-    <li><a href="../../../pubs.html">Publications</a></li>
-    <li><a href="../../../previous/index.html">Release Notes</a></li>
-    <li><a href="../../../gsoc/index.html">Project Ideas</a></li>
-  </ul>
-  </div>
-  
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
     
@@ -1378,7 +1338,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Dec 03, 2017.
+      Last updated on Mar 01, 2018.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

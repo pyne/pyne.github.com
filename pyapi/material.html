@@ -6,21 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Materials – pyne.material &#8212; PyNE 0.5.10</title>
+    <title>Materials – pyne.material &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.5.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -45,8 +37,7 @@ if(ga_enabled){
   })();
 }
 </script>
-  </head>
-  <body>
+  </head><body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -71,11 +62,11 @@ if(ga_enabled){
           <div class="body" role="main">
             
   <div class="section" id="materials-pyne-material">
-<span id="pyne-material"></span><h1>Materials – <code class="xref py py-mod docutils literal"><span class="pre">pyne.material</span></code><a class="headerlink" href="#materials-pyne-material" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-material"></span><h1>Materials – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material</span></code><a class="headerlink" href="#materials-pyne-material" title="Permalink to this headline">¶</a></h1>
 <p>This module contains the Material class, which is used to represent nuclear
 materials throughout PyNE.</p>
-<p>All functionality may be found in the <code class="docutils literal"><span class="pre">material</span></code> package:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">material</span>
+<p>All functionality may be found in the <code class="docutils literal notranslate"><span class="pre">material</span></code> package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">material</span>
 </pre></div>
 </div>
 <p>Materials are the primary container for radionuclides. They map nuclides to <strong>mass weights</strong>,
@@ -237,7 +228,9 @@ the set nucset. This function returns a copy of the material.</p>
 <dl class="method">
 <dt id="pyne.material.Material.decay_heat">
 <code class="descname">decay_heat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.decay_heat" title="Permalink to this definition">¶</a></dt>
-<dd><p>This provides the decay heat using the comp of the the Material.</p>
+<dd><p>This provides the decay heat using the comp of the the Material. It
+assumes that the composition of material is given in units of [grams]
+and returns decay heat in units of [MW].</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -468,13 +461,13 @@ The values must be castable to floats.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>To get a material from water, based on atom fractions:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 <span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
 <span class="n">mat</span><span class="o">.</span><span class="n">from_atom_frac</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or for Uranium-Oxide, based on an initial fuel vector:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Define initial heavy metal</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define initial heavy metal</span>
 <span class="n">ihm</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
 <span class="n">ihm</span><span class="o">.</span><span class="n">from_atom_frac</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
 
@@ -531,7 +524,7 @@ nuclides.</p>
 several extendable array datasets.  One array is entitled “Mass” while
 the other datasets are nuclide names in name form (“U235”, “NP237”,
 <em>etc</em>).  For example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">file</span><span class="o">.</span><span class="n">h5</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span><span class="o">.</span><span class="n">h5</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="o">|--</span> <span class="n">material</span> <span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="o">|--</span> <span class="n">Mass</span> <span class="p">(</span><span class="n">array</span><span class="p">)</span>
         <span class="o">|--</span> <span class="n">H1</span> <span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -548,7 +541,7 @@ sum to one, like Material.comp. This method is deprecated.</p>
 materials.  It consists of a table which stores the material
 information and an array that stores the nuclides (id) which index
 the comp array:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">file</span><span class="o">.</span><span class="n">h5</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">file</span><span class="o">.</span><span class="n">h5</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="o">|--</span> <span class="n">material</span> <span class="p">(</span><span class="n">table</span><span class="p">)</span>
         <span class="o">|--</span> <span class="n">mass</span> <span class="p">(</span><span class="n">double</span> <span class="n">col</span><span class="p">)</span>
         <span class="o">|--</span> <span class="n">density</span> <span class="p">(</span><span class="n">double</span> <span class="n">col</span><span class="p">)</span>
@@ -563,9 +556,9 @@ the path to the nuclide array inside this HDF5 file.  The same nucpath
 may be used for multiple material tables.  The length of the nucpath
 must match the length of the comp arrays.</p>
 <p class="rubric">Examples</p>
-<p>This method loads data into a pre-existing <a class="reference internal" href="#pyne.material.Material" title="pyne.material.Material"><code class="xref py py-class docutils literal"><span class="pre">Material</span></code></a>.
+<p>This method loads data into a pre-existing <a class="reference internal" href="#pyne.material.Material" title="pyne.material.Material"><code class="xref py py-class docutils literal notranslate"><span class="pre">Material</span></code></a>.
 Initialization is therefore a two-step process:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
 <span class="n">mat</span><span class="o">.</span><span class="n">from_hdf5</span><span class="p">(</span><span class="s2">&quot;afile.h5&quot;</span><span class="p">,</span> <span class="s2">&quot;/foo/bar/mat&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -609,7 +602,7 @@ Initialization is therefore a two-step process:</p>
 <p>The text representation of Materials are nuclide identifiers in the
 first column and mass or weight values in the second column.  For
 example, for natural uranium:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">922340</span>  <span class="mf">0.000055</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">922340</span>  <span class="mf">0.000055</span>
 <span class="n">U235</span>    <span class="mf">0.00720</span>
 <span class="mi">92238</span>   <span class="mf">0.992745</span>
 </pre></div>
@@ -617,7 +610,7 @@ example, for natural uranium:</p>
 <p>Data in this file must be whitespace separated.  Any valid nuclide
 naming scheme may be used for the nuclide identifiers.  Moreover,
 material metadata may be optionally supplied:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Name</span>    <span class="n">NatU</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Name</span>    <span class="n">NatU</span>
 <span class="n">Mass</span>    <span class="mf">42.0</span>
 <span class="n">APerM</span>   <span class="mi">1</span>
 <span class="mi">922340</span>  <span class="mf">0.000055</span>
@@ -628,7 +621,7 @@ material metadata may be optionally supplied:</p>
 <p class="rubric">Examples</p>
 <p>This method loads data into a pre-existing Material.
 Initialization is therefore a two-step process:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
 <span class="n">mat</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="s2">&quot;natu.txt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1273,7 +1266,7 @@ relevant if a new table is being created.</p>
 <p class="rubric">Examples</p>
 <p>The following writes out ten low-enriched uranium materials to a new
 table:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">4.2</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">4.2</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="n">leu</span><span class="o">.</span><span class="n">write_hdf5</span><span class="p">(</span><span class="s1">&#39;proto1.h5&#39;</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
@@ -1303,7 +1296,7 @@ exists, it will be overwritten.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>The following writes out a low-enriched uranium material to a new file:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="n">leu</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="s1">&#39;leu.json&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1352,7 +1345,7 @@ exists, it will be overwritten.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>The following writes out a low-enriched uranium material to a new file:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="n">leu</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s1">&#39;leu.txt&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1433,18 +1426,18 @@ arbitrary metadata about the material.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#pyne.material.Material.from_atom_frac" title="pyne.material.Material.from_atom_frac"><code class="xref py py-obj docutils literal"><span class="pre">Material.from_atom_frac</span></code></a></dt>
+<dt><a class="reference internal" href="#pyne.material.Material.from_atom_frac" title="pyne.material.Material.from_atom_frac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_atom_frac</span></code></a></dt>
 <dd>Underlying method class method.</dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
 <p>To get a material from water, based on atom fractions:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 <span class="n">mat</span> <span class="o">=</span> <span class="n">from_atom_frac</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or for Uranium-Oxide, based on an initial fuel vector:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Define initial heavy metal</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define initial heavy metal</span>
 <span class="n">ihm</span> <span class="o">=</span> <span class="n">from_atom_frac</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
 
 <span class="c1"># Define Uranium-Oxide</span>
@@ -1498,13 +1491,13 @@ the HDF5 file.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#pyne.material.Material.from_hdf5" title="pyne.material.Material.from_hdf5"><code class="xref py py-obj docutils literal"><span class="pre">Material.from_hdf5</span></code></a></dt>
+<dt><a class="reference internal" href="#pyne.material.Material.from_hdf5" title="pyne.material.Material.from_hdf5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_hdf5</span></code></a></dt>
 <dd>Underlying method class method.</dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
 <p>This method loads data into a new material:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">from_hdf5</span><span class="p">(</span><span class="s2">&quot;afile.h5&quot;</span><span class="p">,</span> <span class="s2">&quot;/foo/bar/mat&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">from_hdf5</span><span class="p">(</span><span class="s2">&quot;afile.h5&quot;</span><span class="p">,</span> <span class="s2">&quot;/foo/bar/mat&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1554,13 +1547,13 @@ arbitrary metadata about the material.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#pyne.material.Material.from_text" title="pyne.material.Material.from_text"><code class="xref py py-obj docutils literal"><span class="pre">Material.from_text</span></code></a></dt>
+<dt><a class="reference internal" href="#pyne.material.Material.from_text" title="pyne.material.Material.from_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_text</span></code></a></dt>
 <dd>Underlying method class method.</dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
 <p>This method loads data into a new Material:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">from_text</span><span class="p">(</span><span class="s2">&quot;natu.txt&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">from_text</span><span class="p">(</span><span class="s2">&quot;natu.txt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1749,7 +1742,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
         </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Materials – <code class="docutils literal"><span class="pre">pyne.material</span></code></a><ul>
+<li><a class="reference internal" href="#">Materials – <code class="docutils literal notranslate"><span class="pre">pyne.material</span></code></a><ul>
 <li><a class="reference internal" href="#material-class">Material Class</a></li>
 <li><a class="reference internal" href="#material-generation-functions">Material Generation Functions</a></li>
 <li><a class="reference internal" href="#material-library">Material Library</a></li>
@@ -1758,49 +1751,18 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 </ul>
 
   </div>
-  <div class="sphinxlocaltoc">
-  <h3>Getting Started</h3>
-  <ul>
-    <li><a href="../install/index.html">Install</a></li>
-    <li><a href="../tutorial/index.html">Tutorial</a></li>
-    <li><a href="../examples/index.html">Examples</a></li>
-  </ul>
-  <h3>Using PyNE</h3>
-  <ul>
-    <li><a href="../usersguide/index.html">User's Guide</a></li>
-    <li><a href="index.html">Python API Documentation</a></li>
-    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
-    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
-  </ul>
-  <h3>Contribute</h3>
-  <ul>
-    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
-    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
-        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
-    <li><a href="../dev_team.html">The PyNE Team</a></li>
-  </ul>
-  <h3>Learn More</h3>
-  <ul>
-    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
-    <li><a href="../pubs.html">Publications</a></li>
-    <li><a href="../previous/index.html">Release Notes</a></li>
-    <li><a href="../gsoc/index.html">Project Ideas</a></li>
-  </ul>
-  </div>
-  
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
     
@@ -1844,7 +1806,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Dec 03, 2017.
+      Last updated on Mar 01, 2018.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

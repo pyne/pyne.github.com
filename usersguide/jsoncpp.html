@@ -6,21 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>JsonCpp: Python bindings for JsonCpp &#8212; PyNE 0.5.10</title>
+    <title>JsonCpp: Python bindings for JsonCpp &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.5.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -45,8 +37,7 @@ if(ga_enabled){
   })();
 }
 </script>
-  </head>
-  <body>
+  </head><body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -80,7 +71,7 @@ This module is mirror at the <a class="reference external" href="https://github.
 <p>The Value object is the main interface for
 Values may be converted to and from regular Python types.  These have the
 normal behavior for their type.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyne.jsoncpp</span> <span class="kn">import</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Reader</span><span class="p">,</span> <span class="n">FastWriter</span><span class="p">,</span> <span class="n">StyledWriter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyne.jsoncpp</span> <span class="kn">import</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Reader</span><span class="p">,</span> <span class="n">FastWriter</span><span class="p">,</span> <span class="n">StyledWriter</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Value</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Terry Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mf">42.0</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;quest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;To find the grail.&quot;</span>
@@ -104,7 +95,7 @@ normal behavior for their type.</p>
 <p>The Python Value class provides a view into the underlying C++ class.
 This allows you to create several views into the same data.  For example,
 start with the following nested dictionary:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># make a nested dict and a view into a top-level item</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># make a nested dict and a view into a top-level item</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="n">Value</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}})</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">view_a</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">view_a</span>
@@ -124,7 +115,7 @@ start with the following nested dictionary:</p>
 Value instances.  There are also two writer classes, FastWriter and StyledWriter,
 for converting Value instances into compact and human-readable strings respectively.
 For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Value</span><span class="p">({</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Value</span><span class="p">({</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="n">FastWriter</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 <span class="go">&#39;{&quot;hello&quot;:1}\n&#39;</span>
@@ -162,49 +153,18 @@ For example:</p>
 </ul>
 
   </div>
-  <div class="sphinxlocaltoc">
-  <h3>Getting Started</h3>
-  <ul>
-    <li><a href="../install/index.html">Install</a></li>
-    <li><a href="../tutorial/index.html">Tutorial</a></li>
-    <li><a href="../examples/index.html">Examples</a></li>
-  </ul>
-  <h3>Using PyNE</h3>
-  <ul>
-    <li><a href="index.html">User's Guide</a></li>
-    <li><a href="../pyapi/index.html">Python API Documentation</a></li>
-    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
-    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
-  </ul>
-  <h3>Contribute</h3>
-  <ul>
-    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
-    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
-        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
-    <li><a href="../dev_team.html">The PyNE Team</a></li>
-  </ul>
-  <h3>Learn More</h3>
-  <ul>
-    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
-    <li><a href="../pubs.html">Publications</a></li>
-    <li><a href="../previous/index.html">Release Notes</a></li>
-    <li><a href="../gsoc/index.html">Project Ideas</a></li>
-  </ul>
-  </div>
-  
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
     
@@ -248,7 +208,7 @@ For example:</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Dec 03, 2017.
+      Last updated on Mar 01, 2018.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

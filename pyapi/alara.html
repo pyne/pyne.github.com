@@ -6,21 +6,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.10</title>
+    <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.5.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -45,8 +37,7 @@ if(ga_enabled){
   })();
 }
 </script>
-  </head>
-  <body>
+  </head><body>
     <div class="relbar-top">
         
     <div class="related" role="navigation" aria-label="related navigation">
@@ -71,10 +62,10 @@ if(ga_enabled){
           <div class="body" role="main">
             
   <div class="section" id="alara-input-and-output-interfaces-pyne-alara">
-<span id="pyne-alara"></span><h1>ALARA Input and Output Interfaces – <a class="reference internal" href="#module-pyne.alara" title="pyne.alara"><code class="xref py py-mod docutils literal"><span class="pre">pyne.alara</span></code></a><a class="headerlink" href="#alara-input-and-output-interfaces-pyne-alara" title="Permalink to this headline">¶</a></h1>
+<span id="pyne-alara"></span><h1>ALARA Input and Output Interfaces – <a class="reference internal" href="#module-pyne.alara" title="pyne.alara"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.alara</span></code></a><a class="headerlink" href="#alara-input-and-output-interfaces-pyne-alara" title="Permalink to this headline">¶</a></h1>
 <p>This is a module for reading and writing ALARA input to and from PyNE Mesh
 objects. The functionality of the module can be obtained by importing as such:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">alara</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">alara</span>
 </pre></div>
 </div>
 <div class="section" id="module-pyne.alara">
@@ -319,7 +310,7 @@ from stdout, call split(‘</p>
 
 <dl class="function">
 <dt id="pyne.alara.photon_source_hdf5_to_mesh">
-<code class="descclassname">pyne.alara.</code><code class="descname">photon_source_hdf5_to_mesh</code><span class="sig-paren">(</span><em>mesh</em>, <em>filename</em>, <em>tags</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#photon_source_hdf5_to_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.photon_source_hdf5_to_mesh" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.alara.</code><code class="descname">photon_source_hdf5_to_mesh</code><span class="sig-paren">(</span><em>mesh</em>, <em>filename</em>, <em>tags</em>, <em>sub_voxel=False</em>, <em>cell_mats=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/alara.html#photon_source_hdf5_to_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.alara.photon_source_hdf5_to_mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function reads in an hdf5 file produced by photon_source_to_hdf5
 and tags the requested data to the mesh of a PyNE Mesh object. Any
 combinations of nuclides and decay times are allowed. The photon source
@@ -337,7 +328,7 @@ file is assumed to be in mesh.__iter__() order</p>
 <div><p>The path of the hdf5 version of the photon source file.</p>
 </div></blockquote>
 <p><strong>tags: dict</strong></p>
-<blockquote class="last">
+<blockquote>
 <div><p>A dictionary were the keys are tuples with two values. The first is a
 string denoting an nuclide in any form that is understood by
 pyne.nucname (e.g. ‘1001’, ‘U-235’, ‘242Am’) or ‘TOTAL’ for all
@@ -348,6 +339,16 @@ and decay time. For example if one wanted tags for the photon source
 densities from U235 at shutdown and from all nuclides at 1 hour, the
 dictionary could be:</p>
 <p>tags = {(‘U-235’, ‘shutdown’) : ‘tag1’, (‘TOTAL’, ‘1 h’) : ‘tag2’}</p>
+</div></blockquote>
+<p><strong>sub_voxel: bool, optional</strong></p>
+<blockquote>
+<div><p>If the sub_voxel is True, then the sub-voxel r2s will be used.
+Then the photon_source will be interpreted as sub-voxel photon source.</p>
+</div></blockquote>
+<p><strong>cell_mats</strong> : dict, optional</p>
+<blockquote class="last">
+<div><p>cell_mats is required when sub_voxel is True.
+Maps geometry cell numbers to PyNE Material objects.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -410,9 +411,7 @@ photon_source block.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>e_bounds</strong> : list of floats</p>
-<blockquote class="last">
-<div><p>The lower and upper energy bounds for the photon_source discretization.</p>
-</div></blockquote>
+<p class="last">The lower and upper energy bounds for the photon_source discretization. Unit: eV.</p>
 </td>
 </tr>
 </tbody>
@@ -438,7 +437,6 @@ equal up to &lt;sig_figs&gt; digits to be the same mixture within ALARA.</p>
 </div></blockquote>
 <p><strong>cell_fracs</strong> : structured array</p>
 <blockquote>
-<div><blockquote>
 <div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
 <blockquote>
@@ -462,12 +460,10 @@ The relative error associated with the volume fraction.</td>
 </table>
 </div></blockquote>
 </div></blockquote>
-<dl class="docutils">
-<dt>cell_mats <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Maps geometry cell numbers to PyNE Material objects. Each PyNE material
+<p><strong>cell_mats</strong> : dict</p>
+<blockquote>
+<div><p>Maps geometry cell numbers to PyNE Material objects. Each PyNE material
 object must have ‘name’ specified in Material.metadata.</p>
-</dd>
-</dl>
 </div></blockquote>
 <p><strong>geom_file</strong> : str</p>
 <blockquote>
@@ -506,56 +502,25 @@ to be treated as the same mixture within ALARA.</p>
         </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">ALARA Input and Output Interfaces – <code class="docutils literal"><span class="pre">pyne.alara</span></code></a><ul>
+<li><a class="reference internal" href="#">ALARA Input and Output Interfaces – <code class="docutils literal notranslate"><span class="pre">pyne.alara</span></code></a><ul>
 <li><a class="reference internal" href="#module-pyne.alara">ALARA API</a></li>
 </ul>
 </li>
 </ul>
 
   </div>
-  <div class="sphinxlocaltoc">
-  <h3>Getting Started</h3>
-  <ul>
-    <li><a href="../install/index.html">Install</a></li>
-    <li><a href="../tutorial/index.html">Tutorial</a></li>
-    <li><a href="../examples/index.html">Examples</a></li>
-  </ul>
-  <h3>Using PyNE</h3>
-  <ul>
-    <li><a href="../usersguide/index.html">User's Guide</a></li>
-    <li><a href="index.html">Python API Documentation</a></li>
-    <li><a href="../cppapi/index.html">C++ & Fortran API Documentation</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank"> Users</a> mailing list.
-    <li><a href="https://github.com/pyne/pyne/issues">Report an Issue</a></li>
-  </ul>
-  <h3>Contribute</h3>
-  <ul>
-    <li><a href="../devsguide/index.html">Developer's Guide</a></li>
-    <li><a href="http://github.com/pyne/pyne">Source Code</a></li>
-    <li><a href="mailto:pyne-users+subscribe@googlegroups.com?subject=Subscribe&body=Send this message to subscribe to the list">Join</a> the
-        <a href="https://groups.google.com/forum/#!forum/pyne-users" target="_blank">Developers</a> mailing list.
-    <li><a href="../dev_team.html">The PyNE Team</a></li>
-  </ul>
-  <h3>Learn More</h3>
-  <ul>
-    <li><a href="../theorymanual/index.html">Theory Manual</a></li>
-    <li><a href="../pubs.html">Publications</a></li>
-    <li><a href="../previous/index.html">Release Notes</a></li>
-    <li><a href="../gsoc/index.html">Project Ideas</a></li>
-  </ul>
-  </div>
-  
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-
         </div>
       </div>
     
@@ -599,7 +564,7 @@ to be treated as the same mixture within ALARA.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Dec 03, 2017.
+      Last updated on Mar 01, 2018.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
