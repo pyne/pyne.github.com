@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['xd_5fcomplex_5ft',['xd_complex_t',['../structxd__complex__t.html',1,'']]]
+  ['wimsdfpy',['wimsdfpy',['../structpyne_1_1wimsdfpy.html',1,'pyne']]]
 ];

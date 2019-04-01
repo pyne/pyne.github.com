@@ -11,11 +11,14 @@
     <title>ENSDF File Support – pyne.ensdf &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -75,7 +78,7 @@ be accessed via the <code class="docutils literal notranslate"><span class="pre"
 <span id="ensdf-api"></span><h2>ENSDF API<a class="headerlink" href="#module-pyne.ensdf" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="pyne.ensdf.decays">
-<code class="descclassname">pyne.ensdf.</code><code class="descname">decays</code><span class="sig-paren">(</span><em>filename</em>, <em>decaylist=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/ensdf.html#decays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ensdf.decays" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.ensdf.</code><code class="descname">decays</code><span class="sig-paren">(</span><em>filename</em>, <em>decaylist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.ensdf.decays" title="Permalink to this definition">¶</a></dt>
 <dd><p>This splits an ENSDF file into datasets. It then passes the dataset to the
 appropriate parser. Currently only a subset of decay datasets are
 supported. The output is a list of objects containing information
@@ -84,68 +87,57 @@ pertaining to a particular decay.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str or file</p>
-<blockquote>
-<div><p>Name of ENSDF formatted file or a file-like object containing ENSDF
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or file</span></dt>
+<dd><p class="first last">Name of ENSDF formatted file or a file-like object containing ENSDF
 formatted data</p>
-</div></blockquote>
-<p><strong>decaylist</strong> : list of tuples</p>
-<blockquote>
-<div><p>This is a list object which all newly processed decays will be added
+</dd>
+<dt><strong>decaylist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of tuples</span></dt>
+<dd><p class="first last">This is a list object which all newly processed decays will be added
 to. If it’s None a new one will be created.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>decaylist</strong> : list of tuples</p>
-<blockquote>
-<div><p>list of objects containing information pertaining to a particular
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>decaylist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of tuples</span></dt>
+<dd><p class="first last">list of objects containing information pertaining to a particular
 decay. This information is in the following format:</p>
-</div></blockquote>
-<p>int</p>
-<blockquote>
-<div><p>nuc_id of the parent</p>
-</div></blockquote>
-<p>int</p>
-<blockquote>
-<div><p>nuc_id of the daughter</p>
-</div></blockquote>
-<p>int</p>
-<blockquote>
-<div><p>PyNE reaction id</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>half-life in seconds</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>half-life error in seconds</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>branching ratio (percent)</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>Conversion factor for gamma intensity to photons per 100 decays of the
+</dd>
+<dt><strong>int</strong></dt>
+<dd><p class="first last">nuc_id of the parent</p>
+</dd>
+<dt><strong>int</strong></dt>
+<dd><p class="first last">nuc_id of the daughter</p>
+</dd>
+<dt><strong>int</strong></dt>
+<dd><p class="first last">PyNE reaction id</p>
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">half-life in seconds</p>
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">half-life error in seconds</p>
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">branching ratio (percent)</p>
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">Conversion factor for gamma intensity to photons per 100 decays of the
 parent</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>Error in conversion factor for gamma intensity</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>Conversion factor for electron capture/beta intensity to electron
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">Error in conversion factor for gamma intensity</p>
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">Conversion factor for electron capture/beta intensity to electron
 captures/betas per 100 decays of the parent</p>
-</div></blockquote>
-<p>float</p>
-<blockquote>
-<div><p>Error in conversion factor for electron capture/beta intensity</p>
-</div></blockquote>
-<p>list</p>
-<blockquote>
-<div><dl class="docutils">
+</dd>
+<dt><strong>float</strong></dt>
+<dd><p class="first last">Error in conversion factor for electron capture/beta intensity</p>
+</dd>
+<dt><strong>list</strong></dt>
+<dd><dl class="first last docutils">
 <dt>a list containing information about each gamma ray:</dt>
 <dd><ul class="first last simple">
 <li>starting level of gamma transition in stats_id form</li>
@@ -165,10 +157,9 @@ captures/betas per 100 decays of the parent</p>
 </ul>
 </dd>
 </dl>
-</div></blockquote>
-<p>list</p>
-<blockquote>
-<div><dl class="docutils">
+</dd>
+<dt><strong>list</strong></dt>
+<dd><dl class="first last docutils">
 <dt>a list containing information about each alpha:</dt>
 <dd><ul class="first last simple">
 <li>parent nuclide id in state_id form</li>
@@ -178,12 +169,11 @@ captures/betas per 100 decays of the parent</p>
 </ul>
 </dd>
 </dl>
-</div></blockquote>
-<p>list</p>
-<blockquote>
-<div><p>a list containing information about each beta minus from the parent
+</dd>
+<dt><strong>list</strong></dt>
+<dd><p class="first">a list containing information about each beta minus from the parent
 decay:</p>
-<blockquote>
+<blockquote class="last">
 <div><ul class="simple">
 <li>parent nuclide id in state_id form</li>
 <li>child nuclide id in state_id form</li>
@@ -192,12 +182,11 @@ decay:</p>
 <li>beta intensity (multiply by conversion factor for percentage)</li>
 </ul>
 </div></blockquote>
-</div></blockquote>
-<p>list</p>
-<blockquote class="last">
-<div><p>a list containing information about each beta plus and electron capture
+</dd>
+<dt><strong>list</strong></dt>
+<dd><p class="first">a list containing information about each beta plus and electron capture
 from the parent decay:</p>
-<blockquote>
+<blockquote class="last">
 <div><ul class="simple">
 <li>parent nuclide id in state_id form</li>
 <li>child nuclide id in state_id form</li>
@@ -211,7 +200,8 @@ percentage)</li>
 <li>m electron conversion intensity</li>
 </ul>
 </div></blockquote>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -220,7 +210,7 @@ percentage)</li>
 
 <dl class="function">
 <dt id="pyne.ensdf.levels">
-<code class="descclassname">pyne.ensdf.</code><code class="descname">levels</code><span class="sig-paren">(</span><em>filename</em>, <em>levellist=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/ensdf.html#levels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.ensdf.levels" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.ensdf.</code><code class="descname">levels</code><span class="sig-paren">(</span><em>filename</em>, <em>levellist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.ensdf.levels" title="Permalink to this definition">¶</a></dt>
 <dd><p>This takes an ENSDF filename or file object and parses the ADOPTED LEVELS
 records to assign level numbers by energy. It also parses the different
 reported decay types and branching ratios.</p>
@@ -228,28 +218,28 @@ reported decay types and branching ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str or file</p>
-<blockquote>
-<div><p>Name of ENSDF formatted file or a file-like object containing ENSDF
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or file</span></dt>
+<dd><p class="first last">Name of ENSDF formatted file or a file-like object containing ENSDF
 formatted data</p>
-</div></blockquote>
-<p><strong>levellist</strong> : list of tuples</p>
-<blockquote>
-<div><p>This is a list object which all newly processed levels will be added
+</dd>
+<dt><strong>levellist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of tuples</span></dt>
+<dd><p class="first last">This is a list object which all newly processed levels will be added
 to. If it’s None a new one will be created.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>levellist</strong> : list of tuples</p>
-<blockquote class="last">
-<div><p>This is a list of all the level data. Each level has base entry with a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>levellist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of tuples</span></dt>
+<dd><p class="first">This is a list of all the level data. Each level has base entry with a
 reaction id of 0 and additional entries for any listed decays. The
 format of each row is:
 nuc_id : int</p>
 <blockquote>
 <div><p>The state_id of the level</p>
 </div></blockquote>
-<dl class="docutils">
+<dl class="last docutils">
 <dt>rx_id <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">The id of the decay “reaction” in PyNE reaction id form.</p>
 </dd>
@@ -270,7 +260,8 @@ nuc_id : int</p>
 state</p>
 </dd>
 </dl>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -352,8 +343,8 @@ state</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

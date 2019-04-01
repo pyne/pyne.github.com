@@ -11,11 +11,14 @@
     <title>pyne.dbgen.kaeri &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -127,8 +130,8 @@ if(ga_enabled){
             <span class="n">hdl</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
 
     <span class="c1"># Write out to the file    </span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></div>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">kaeri_html</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">kaeri_html</span><span class="p">)</span></div>
 
 <span class="n">nat_iso_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;.*?/cgi-bin/nuclide[?]nuc=([A-Za-z]{1,2}\d{1,3}).*?[(].*?[)]&#39;</span><span class="p">)</span>
 
@@ -139,8 +142,8 @@ if(ga_enabled){
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">nat_iso_regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">nat_isos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span></div>
-    <span class="k">return</span> <span class="n">nat_isos</span>
+                <span class="n">nat_isos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">nat_isos</span></div>
 
 
 <span class="n">all_iso_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;.*?/cgi-bin/nuclide[?]nuc=([A-Za-z]{1,2}\d{1,3})&#39;</span><span class="p">)</span>
@@ -152,8 +155,8 @@ if(ga_enabled){
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">all_iso_regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">isos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span></div>
-    <span class="k">return</span> <span class="n">isos</span>
+                <span class="n">isos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">isos</span></div>
 
 </pre></div>
 
@@ -220,8 +223,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

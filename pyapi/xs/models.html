@@ -11,11 +11,14 @@
     <title>Cross Section Models – pyne.xs.models &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -95,26 +98,27 @@ in the same direction as <strong>E_g</strong>.</li>
 <dd><p>The minimum possible exiting enegy of a neuron after a scattering collision. 
 This is based on the incident energy and the mass of the target.
 For a proof, use the conservation of energy and momentum.</p>
-<div class="math">
-<p><span class="math">\mbox{min}(E^\prime) = \left(\frac{M_A - m_n}{M_A + m_n}\right)^2 E</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\mbox{min}(E^\prime) = \left(\frac{M_A - m_n}{M_A + m_n}\right)^2 E\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : float (or array)</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>M_A</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Atomic mass of the target nucleus [amu].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to scattering event [MeV].</p>
+</dd>
+<dt><strong>M_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Atomic mass of the target nucleus [amu].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>min_E_prime</strong> : float (or array)</p>
-<blockquote class="last">
-<div><p>Minimum exiting energy.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>min_E_prime</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">Minimum exiting energy.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -125,38 +129,36 @@ For a proof, use the conservation of energy and momentum.</p>
 <dt id="pyne.xs.models.alpha">
 <code class="descclassname">pyne.xs.models.</code><code class="descname">alpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scattering kernel alpha value.</p>
-<div class="math">
-<p><span class="math">\alpha = \frac{E^\prime + E - 2\sqrt{E^\prime E}\cos\theta}{\frac{M_A}{m_n}kT}</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\alpha = \frac{E^\prime + E - 2\sqrt{E^\prime E}\cos\theta}{\frac{M_A}{m_n}kT}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
-<blockquote>
-<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>E</strong> : float (or array)</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>theta</strong> : float (or array)</p>
-<blockquote>
-<div><p>Scattering angle in [radians].</p>
-</div></blockquote>
-<p><strong>M_A</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Atomic mass of the target nucleus [amu].</p>
-</div></blockquote>
-<p><strong>T</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Tempurature of the target material [kelvin].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_prime</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The exiting energy of the neutron after scattering event [MeV].</p>
+</dd>
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to scattering event [MeV].</p>
+</dd>
+<dt><strong>theta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">Scattering angle in [radians].</p>
+</dd>
+<dt><strong>M_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Atomic mass of the target nucleus [amu].</p>
+</dd>
+<dt><strong>T</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Tempurature of the target material [kelvin].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : float (or array)</p>
-<blockquote class="last">
-<div><p>alpha value</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>a</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">alpha value</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -167,34 +169,33 @@ For a proof, use the conservation of energy and momentum.</p>
 <dt id="pyne.xs.models.alpha_at_theta_0">
 <code class="descclassname">pyne.xs.models.</code><code class="descname">alpha_at_theta_0</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.alpha_at_theta_0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scattering kernel alpha value at the lower bound of the scattering angle.</p>
-<div class="math">
-<p><span class="math">\alpha_{\theta=0} = \frac{E^\prime + E - 2\sqrt{E^\prime E}}{\frac{M_A}{m_n}kT}</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\alpha_{\theta=0} = \frac{E^\prime + E - 2\sqrt{E^\prime E}}{\frac{M_A}{m_n}kT}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
-<blockquote>
-<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>E</strong> : float (or array)</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>M_A</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Atomic mass of the target nucleus [amu].</p>
-</div></blockquote>
-<p><strong>T</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Tempurature of the target material [kelvin].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_prime</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The exiting energy of the neutron after scattering event [MeV].</p>
+</dd>
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to scattering event [MeV].</p>
+</dd>
+<dt><strong>M_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Atomic mass of the target nucleus [amu].</p>
+</dd>
+<dt><strong>T</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Tempurature of the target material [kelvin].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : float (or array)</p>
-<blockquote class="last">
-<div><p>alpha value with theta = 0.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>a</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">alpha value with theta = 0.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -205,34 +206,33 @@ For a proof, use the conservation of energy and momentum.</p>
 <dt id="pyne.xs.models.alpha_at_theta_pi">
 <code class="descclassname">pyne.xs.models.</code><code class="descname">alpha_at_theta_pi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.alpha_at_theta_pi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scattering kernel alpha value at the upper bound of the scattering angle.</p>
-<div class="math">
-<p><span class="math">\alpha_{\theta=\pi} = \frac{E^\prime + E + 2\sqrt{E^\prime E}}{\frac{M_A}{m_n}kT}</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\alpha_{\theta=\pi} = \frac{E^\prime + E + 2\sqrt{E^\prime E}}{\frac{M_A}{m_n}kT}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
-<blockquote>
-<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>E</strong> : float (or array)</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>M_A</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Atomic mass of the target nucleus [amu].</p>
-</div></blockquote>
-<p><strong>T</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Tempurature of the target material [kelvin].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_prime</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The exiting energy of the neutron after scattering event [MeV].</p>
+</dd>
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to scattering event [MeV].</p>
+</dd>
+<dt><strong>M_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Atomic mass of the target nucleus [amu].</p>
+</dd>
+<dt><strong>T</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Tempurature of the target material [kelvin].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a</strong> : float (or array)</p>
-<blockquote class="last">
-<div><p>alpha value with theta = pi.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>a</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">alpha value with theta = pi.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -243,30 +243,30 @@ For a proof, use the conservation of energy and momentum.</p>
 <dt id="pyne.xs.models.beta">
 <code class="descclassname">pyne.xs.models.</code><code class="descname">beta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.beta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scattering kernel beta value.</p>
-<div class="math">
-<p><span class="math">\beta = \frac{E^\prime - E}{kT}</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\beta = \frac{E^\prime - E}{kT}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_prime</strong> : float (or array)</p>
-<blockquote>
-<div><p>The exiting energy of the neutron after scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>E</strong> : float (or array)</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>T</strong> : float (or array), optional</p>
-<blockquote>
-<div><p>Tempurature of the target material [kelvin].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_prime</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The exiting energy of the neutron after scattering event [MeV].</p>
+</dd>
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to scattering event [MeV].</p>
+</dd>
+<dt><strong>T</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array), optional</span></dt>
+<dd><p class="first last">Tempurature of the target material [kelvin].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>beta value.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>b</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">beta value.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -305,10 +305,11 @@ from high energy to low energy.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>phi</strong> : array</p>
-<blockquote class="last">
-<div><p>flux values for the reactor</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>phi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">flux values for the reactor</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -330,41 +331,38 @@ partial_energies keyword arguments.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sigma_n</strong> : array-like of floats)</p>
-<blockquote>
-<div><p>A high-fidelity cross-section.</p>
-</div></blockquote>
-<p><strong>phi_n</strong> : array-like of floats</p>
-<blockquote>
-<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>sigma_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats)</span></dt>
+<dd><p class="first last">A high-fidelity cross-section.</p>
+</dd>
+<dt><strong>phi_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats</span></dt>
+<dd><p class="first last">The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section 
 over (length N).</p>
-</div></blockquote>
-<p><strong>phi_g</strong> : array-like of floats, optional</p>
-<blockquote>
-<div><p>The low-fidelity flux [n/cm^2/s] to collapse the fission cross-section 
+</dd>
+<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
+<dd><p class="first last">The low-fidelity flux [n/cm^2/s] to collapse the fission cross-section 
 down to (length G).  If present, partial_energies is needed as well.</p>
-</div></blockquote>
-<p><strong>partial_energies</strong> : 2D array-like of floats, optional</p>
-<blockquote>
-<div><p>A partial energy matrix as provided by a previous call to the function
+</dd>
+<dt><strong>partial_energies</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2D array-like of floats, optional</span></dt>
+<dd><p class="first last">A partial energy matrix as provided by a previous call to the function
 partial_energy_matrix().  If present, phi_g is needed as well.</p>
-</div></blockquote>
-<p><strong>E_g</strong> : array-like of floats, optional</p>
-<blockquote>
-<div><p>Lower resolution energy group structure [MeV] that is of length G+1.
+</dd>
+<dt><strong>E_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
+<dd><p class="first last">Lower resolution energy group structure [MeV] that is of length G+1.
 If present, E_n is needed as well.</p>
-</div></blockquote>
-<p><strong>E_n</strong> : array-like of floats, optional</p>
-<blockquote>
-<div><p>Higher resolution energy group structure [MeV] that is of length N+1. 
+</dd>
+<dt><strong>E_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
+<dd><p class="first last">Higher resolution energy group structure [MeV] that is of length N+1. 
 If present, E_g is needed as well.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sigma_g</strong> : ndarray</p>
-<blockquote class="last">
-<div><p>An array of the collapsed fission cross-section.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sigma_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">An array of the collapsed fission cross-section.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -376,22 +374,24 @@ If present, E_g is needed as well.</p>
 <code class="descclassname">pyne.xs.models.</code><code class="descname">one_over_gamma_squared</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.one_over_gamma_squared" title="Permalink to this definition">¶</a></dt>
 <dd><p>The inverse of the Lorentz factor sqared. Sometimes used as 
 a realitivistic correction factor for the bound scattering length.</p>
-<div class="math">
-<p><span class="math">\frac{1}{\gamma^2} = \left( 1 - \frac{2E}{931.46 \cdot m_n} \right)</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\frac{1}{\gamma^2} = \left( 1 - \frac{2E}{931.46 \cdot m_n} \right)\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : float (or array)</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to scattering event [MeV].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to scattering event [MeV].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>inv_g2</strong> : float (or array)</p>
-<blockquote class="last">
-<div><p>Inverse of gamma squared.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>inv_g2</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">Inverse of gamma squared.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -408,21 +408,22 @@ The group structures must have the same monotonicity. This is useful for perform
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_g</strong> : sequence of floats</p>
-<blockquote>
-<div><p>Lower resolution energy group structure [MeV] that is of length G+1.</p>
-</div></blockquote>
-<p><strong>E_n</strong> : sequence of floats</p>
-<blockquote>
-<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence of floats</span></dt>
+<dd><p class="first last">Lower resolution energy group structure [MeV] that is of length G+1.</p>
+</dd>
+<dt><strong>E_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence of floats</span></dt>
+<dd><p class="first last">Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pem</strong> : 2d numpy float array of fractions</p>
-<blockquote class="last">
-<div><p>This is a GxN sized matrix that when dotted with a high-resolution 
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pem</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2d numpy float array of fractions</span></dt>
+<dd><p class="first last">This is a GxN sized matrix that when dotted with a high-resolution 
 flux (or cross section) produces a low-resolution flux (or cross section).</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -439,29 +440,29 @@ Here, both of the energy arrays must be monotonic. This is useful for performing
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_g</strong> : 1d numpy float array</p>
-<blockquote>
-<div><p>Lower resolution energy group structure [MeV] that is of length G+1. 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1d numpy float array</span></dt>
+<dd><p class="first last">Lower resolution energy group structure [MeV] that is of length G+1. 
 Ordered based on slope.</p>
-</div></blockquote>
-<p><strong>E_n</strong> : 1d numpy float array</p>
-<blockquote>
-<div><p>Higher resolution energy group structure [MeV] that is of length N+1. 
+</dd>
+<dt><strong>E_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1d numpy float array</span></dt>
+<dd><p class="first last">Higher resolution energy group structure [MeV] that is of length N+1. 
 Ordered based on slope.</p>
-</div></blockquote>
-<p><strong>slope</strong> : int, optional</p>
-<blockquote>
-<div><p>Gives the monotonicity of E_g and E_n.  If positive, then they are 
+</dd>
+<dt><strong>slope</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Gives the monotonicity of E_g and E_n.  If positive, then they are 
 monotonicly increasing (lowest-to-highest).  If negative, they are
 monotonicly decreasing (highest-to-lowest).</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pem</strong> : 2d numpy float array of fractions</p>
-<blockquote class="last">
-<div><p>This is a GxN sized matrix that when dotted with a high-resolution 
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pem</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2d numpy float array of fractions</span></dt>
+<dd><p class="first last">This is a GxN sized matrix that when dotted with a high-resolution 
 flux (or cross section) produces a low-resolution flux (or cross section).</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -477,24 +478,24 @@ a higher resolution groups E_n, and a higher resolution flux phi_n.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E_g</strong> : sequence of floats</p>
-<blockquote>
-<div><p>Lower resolution energy group structure [MeV] that is of length G+1.</p>
-</div></blockquote>
-<p><strong>E_n</strong> : sequence of floats</p>
-<blockquote>
-<div><p>Higher resolution energy group structure [MeV] that is of length N+1.</p>
-</div></blockquote>
-<p><strong>phi_n</strong> : sequence of floats</p>
-<blockquote>
-<div><p>The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over (length N).</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence of floats</span></dt>
+<dd><p class="first last">Lower resolution energy group structure [MeV] that is of length G+1.</p>
+</dd>
+<dt><strong>E_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence of floats</span></dt>
+<dd><p class="first last">Higher resolution energy group structure [MeV] that is of length N+1.</p>
+</dd>
+<dt><strong>phi_n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence of floats</span></dt>
+<dd><p class="first last">The high-fidelity flux [n/cm^2/s] to collapse the fission cross-section over (length N).</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>phi_g</strong> : numpy array of floats</p>
-<blockquote class="last">
-<div><p>The flux collapsed to G energy groups.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy array of floats</span></dt>
+<dd><p class="first last">The flux collapsed to G energy groups.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -508,36 +509,35 @@ a higher resolution groups E_n, and a higher resolution flux phi_n.</p>
 accounts for both one-over-v dependence and relativistic effects and the 
 bound scattering length provided.  This model does not include resonances.
 This function works on both float and array values for the energy.</p>
-<div class="math">
-<p><span class="math">\sigma_s(E) = 4 \pi b^2 \cdot \left( 1 - \frac{2E}{931.46 \cdot m_n} \right) \cdot
+<div class="math notranslate nohighlight">
+\[\sigma_s(E) = 4 \pi b^2 \cdot \left( 1 - \frac{2E}{931.46 \cdot m_n} \right) \cdot
               \left( 1 + \frac{m_n}{M_A} \frac{kT}{E} \cdot e^{-\frac{M_A}{m_n}\frac{E}{kT}} \right) 
-              \cdot \left( 1 - \mbox{Exp}\left[-\sqrt{\frac{0.1}{E}}\right] \right)</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+              \cdot \left( 1 - \mbox{Exp}\left[-\sqrt{\frac{0.1}{E}}\right] \right)\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : float or array-like</p>
-<blockquote>
-<div><p>The incident energy of the neutron prior to the scattering event [MeV].</p>
-</div></blockquote>
-<p><strong>b</strong> : float, optional</p>
-<blockquote>
-<div><p>The bound scattering length of the target nucleus [cm].</p>
-</div></blockquote>
-<p><strong>M_A</strong> : float, optional</p>
-<blockquote>
-<div><p>Atomic mass of the target nucleus [amu].</p>
-</div></blockquote>
-<p><strong>T</strong> : float, optional</p>
-<blockquote>
-<div><p>Tempurature of the target material [kelvin].</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or array-like</span></dt>
+<dd><p class="first last">The incident energy of the neutron prior to the scattering event [MeV].</p>
+</dd>
+<dt><strong>b</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The bound scattering length of the target nucleus [cm].</p>
+</dd>
+<dt><strong>M_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Atomic mass of the target nucleus [amu].</p>
+</dd>
+<dt><strong>T</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Tempurature of the target material [kelvin].</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sig_s</strong> : float or ndarray</p>
-<blockquote class="last">
-<div><p>The scattering cross section evaluated at the given energy.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sig_s</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or ndarray</span></dt>
+<dd><p class="first last">The scattering cross section evaluated at the given energy.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -558,22 +558,24 @@ This function works on both float and array values for the energy.</p>
 <code class="descclassname">pyne.xs.models.</code><code class="descname">sigma_s_const</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.xs.models.sigma_s_const" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the constant scattering cross-section based on the 
 scattering length.</p>
-<div class="math">
-<p><span class="math">\sigma_s = 4 \pi b^2</span></p>
-</div><table class="docutils field-list" frame="void" rules="none">
+<div class="math notranslate nohighlight">
+\[\sigma_s = 4 \pi b^2\]</div>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>b</strong> : float (or array)</p>
-<blockquote>
-<div><p>The bound scattering length [cm] of the target nucleus.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>b</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The bound scattering length [cm] of the target nucleus.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sig_s</strong> : float (or array)</p>
-<blockquote class="last">
-<div><p>The micorscopic scattering cross-section [barns].</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sig_s</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (or array)</span></dt>
+<dd><p class="first last">The micorscopic scattering cross-section [barns].</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -608,10 +610,11 @@ from high energy to low energy.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>phi</strong> : array</p>
-<blockquote class="last">
-<div><p>flux values for the reactor</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>phi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">flux values for the reactor</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -693,8 +696,8 @@ from high energy to low energy.</dd>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

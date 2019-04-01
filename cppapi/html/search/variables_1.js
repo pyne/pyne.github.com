@@ -7,7 +7,7 @@ var searchData=
   ['alpha',['alpha',['../classpyne_1_1enrichment_1_1_cascade.html#a5dee52c73a4da9bb13bab8e83583412e',1,'pyne::enrichment::Cascade']]],
   ['alpha_5fdata',['alpha_data',['../namespacepyne.html#a535b6ec192f55087092c07ee478bc11d',1,'pyne']]],
   ['altnames',['altnames',['../namespacepyne_1_1particle.html#a848d7127667430bd7fa3896ea4145639',1,'pyne::particle::altnames()'],['../namespacepyne_1_1rxname.html#a7109ca2a2a6aea74d372262172e3a203',1,'pyne::rxname::altnames()']]],
-  ['atomic_5fmass_5ferror_5fmap',['atomic_mass_error_map',['../namespacepyne.html#a0b5e8bedb1b53fcfac588b21d76ccf58',1,'pyne']]],
+  ['atomic_5fmass_5ferror_5fmap',['atomic_mass_error_map',['../namespacepyne.html#a70711189f1078e2ebc132db9ce7ab0a7',1,'pyne']]],
   ['atomic_5fmass_5fmap',['atomic_mass_map',['../namespacepyne.html#ad57b70e4dd814b1efc458ff58641bcef',1,'pyne']]],
   ['atoms_5fper_5fmol',['atoms_per_mol',['../structpyne_1_1material__data.html#a135b69d35e0bc6c49a025a24cb153798',1,'pyne::material_data']]],
   ['atoms_5fper_5fmolecule',['atoms_per_molecule',['../classpyne_1_1_material.html#a7ddff1aaebc94bcda22d3422c093a756',1,'pyne::Material']]],

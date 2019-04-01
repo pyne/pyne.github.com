@@ -11,11 +11,14 @@
     <title>pyne.cli.tape9 &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -95,8 +98,8 @@ if(ga_enabled){
         <span class="n">decays</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">decs</span><span class="p">)</span>
         <span class="n">branches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">brs</span><span class="p">)</span>
     <span class="n">decays</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">decays</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
-    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">branches</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-    <span class="k">return</span> <span class="n">decays</span><span class="p">,</span> <span class="n">branches</span>
+    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">branches</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">decays</span><span class="p">,</span> <span class="n">branches</span></div>
 
 <span class="k">def</span> <span class="nf">_is_metastable_beta_decay_0</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">metastable_cutoff</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">metastable_cutoff</span><span class="p">)</span> <span class="ow">and</span> \
@@ -241,8 +244,8 @@ if(ga_enabled){
         <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">nucs</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hl</span><span class="p">:</span>
-                <span class="n">hl</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">half_life</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">t9</span>
+                <span class="n">hl</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">half_life</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t9</span></div>
 
 
 <div class="viewcode-block" id="main_gen"><a class="viewcode-back" href="../../../pyapi/cli/tape9.html#pyne.cli.tape9.main_gen">[docs]</a><span class="k">def</span> <span class="nf">main_gen</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
@@ -262,8 +265,8 @@ if(ga_enabled){
                                        <span class="n">NullDataSource</span><span class="p">])</span>
     <span class="n">xsc</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
     <span class="n">t9xsfpy</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">xslibs</span><span class="p">(</span><span class="n">xscache</span><span class="o">=</span><span class="n">xsc</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">t9</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">merge_tape9</span><span class="p">([</span><span class="n">t9decay</span><span class="p">,</span> <span class="n">t9xsfpy</span><span class="p">])</span></div>
-    <span class="n">origen22</span><span class="o">.</span><span class="n">write_tape9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">t9</span> <span class="o">=</span> <span class="n">origen22</span><span class="o">.</span><span class="n">merge_tape9</span><span class="p">([</span><span class="n">t9decay</span><span class="p">,</span> <span class="n">t9xsfpy</span><span class="p">])</span>
+    <span class="n">origen22</span><span class="o">.</span><span class="n">write_tape9</span><span class="p">(</span><span class="n">t9</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
 
 <span class="n">_cmd_mains</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;gen&#39;</span><span class="p">:</span> <span class="n">main_gen</span><span class="p">,</span>
@@ -357,8 +360,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wimsdfpy_5fdata',['wimsdfpy_data',['../namespacepyne.html#a2512ebcde5e39e49cd6ed25bb09ff374',1,'pyne']]]
+  ['version',['VERSION',['../namespacepyne.html#a462bdf434637e275c203175076b85c36',1,'pyne']]]
 ];

@@ -11,11 +11,14 @@
     <title>pyne.utils &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -73,8 +76,8 @@ if(ga_enabled){
                         <span class="n">use_warnings</span><span class="p">,</span> <span class="n">fromendl_tok</span>
 
 
-<div class="viewcode-block" id="QAWarning"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.QAWarning">[docs]</a><span class="k">class</span> <span class="nc">QAWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span></div>
-    <span class="k">pass</span>
+<div class="viewcode-block" id="QAWarning"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.QAWarning">[docs]</a><span class="k">class</span> <span class="nc">QAWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 <span class="n">time_conv_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;as&#39;</span><span class="p">:</span> <span class="mf">1e-18</span><span class="p">,</span>
                   <span class="s1">&#39;attosec&#39;</span><span class="p">:</span> <span class="mf">1e-18</span><span class="p">,</span>
@@ -114,9 +117,15 @@ if(ga_enabled){
                   <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
                   <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
                   <span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="p">,</span>
+                  <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">7.0</span><span class="p">,</span>
+                  <span class="s1">&#39;week&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">7.0</span><span class="p">,</span>
+                  <span class="s1">&#39;weeks&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">7.0</span><span class="p">,</span>
                   <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
                   <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
                   <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="p">,</span>
+                  <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
+                  <span class="s1">&#39;century&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
+                  <span class="s1">&#39;centuries&#39;</span><span class="p">:</span> <span class="mf">86400.0</span><span class="o">*</span><span class="mf">365.25</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
                   <span class="p">}</span>
 
 
@@ -136,9 +145,12 @@ if(ga_enabled){
 <span class="sd">        Time value in [sec].</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sec_time</span> <span class="o">=</span> <span class="n">input_time</span> <span class="o">*</span> <span class="n">time_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span></div>
-    <span class="k">return</span> <span class="n">sec_time</span>
-
+    <span class="n">conv</span> <span class="o">=</span> <span class="n">time_conv_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">conv</span><span class="p">:</span>
+        <span class="n">sec_time</span> <span class="o">=</span> <span class="n">input_time</span> <span class="o">*</span> <span class="n">conv</span>
+        <span class="k">return</span> <span class="n">sec_time</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid units: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">units</span><span class="p">))</span></div>
 
 <span class="n">barn_conv_dict</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;mb&#39;</span><span class="p">:</span> <span class="mf">1E-3</span><span class="p">,</span>
@@ -169,8 +181,8 @@ if(ga_enabled){
 <span class="sd">    barn_xs :</span>
 <span class="sd">        Cross section value in [barns].</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">xs</span> <span class="o">*</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">xs</span> <span class="o">*</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span></div>
 
 
 <div class="viewcode-block" id="from_barns"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.from_barns">[docs]</a><span class="k">def</span> <span class="nf">from_barns</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
@@ -188,8 +200,8 @@ if(ga_enabled){
 <span class="sd">    unit_xs :</span>
 <span class="sd">        Cross section value in [units].</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">xs</span> <span class="o">/</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">xs</span> <span class="o">/</span> <span class="n">barn_conv_dict</span><span class="p">[</span><span class="n">units</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span></div>
 
 
 <span class="c1">#########################</span>
@@ -206,8 +218,8 @@ if(ga_enabled){
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;32m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;*** MESSAGE ***: &quot;</span>
     <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span></div>
-    <span class="k">return</span> <span class="n">msg</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
 
 
 <div class="viewcode-block" id="failure"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.failure">[docs]</a><span class="k">def</span> <span class="nf">failure</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -217,8 +229,8 @@ if(ga_enabled){
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;31m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;*** FAILURE ***: &quot;</span>
     <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span></div>
-    <span class="k">return</span> <span class="n">msg</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
 
 
 <div class="viewcode-block" id="warning"><a class="viewcode-back" href="../../pyapi/utils.html#pyne.utils.warning">[docs]</a><span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -227,8 +239,8 @@ if(ga_enabled){
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1;33m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;*** WARNING ***: &quot;</span>
     <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span> <span class="k">if</span> <span class="n">USE_COLOR</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span></div>
-    <span class="k">return</span> <span class="n">msg</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
 
 <span class="c1">##################################</span>
 <span class="c1">### Path manipulation routines ###</span>
@@ -244,8 +256,8 @@ if(ga_enabled){
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="n">remove_tree</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span></div>
-        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span></div>
 </pre></div>
 
           </div>
@@ -311,8 +323,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

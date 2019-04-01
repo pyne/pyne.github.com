@@ -11,11 +11,14 @@
     <title>ENDF File Support – pyne.endf &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -82,55 +85,48 @@ the ENDF-6 format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="25%" />
-<col width="75%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>spin</strong></td>
-<td>(float) Spin of the target nucleus</td>
-</tr>
-<tr class="row-even"><td><strong>scattering_radius_ind</strong></td>
-<td>(float) Scattering radius in units of 10^-12 cm</td>
-</tr>
-<tr class="row-odd"><td><strong>LI</strong></td>
-<td>(float) Flag indicating the kind of parameters</td>
-</tr>
-<tr class="row-even"><td><strong>AT, BT</strong></td>
-<td>(ndarray) Background constants for the total cross section</td>
-</tr>
-<tr class="row-odd"><td><strong>AC, BC</strong></td>
-<td>(ndarray) Background constants for the radiative cross section</td>
-</tr>
-<tr class="row-even"><td><strong>AF, BF</strong></td>
-<td>(ndarray) Background constants for the fission cross section</td>
-</tr>
-<tr class="row-odd"><td><strong>resonances</strong></td>
-<td>(list of AdlerResonance) List of resonances defined by Adler-Adler parameters</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>spin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Spin of the target nucleus</p>
+</dd>
+<dt><strong>scattering_radius_ind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Scattering radius in units of 10^-12 cm</p>
+</dd>
+<dt><strong>LI</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Flag indicating the kind of parameters</p>
+</dd>
+<dt><strong>AT, BT</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Background constants for the total cross section</p>
+</dd>
+<dt><strong>AC, BC</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Background constants for the radiative cross section</p>
+</dd>
+<dt><strong>AF, BF</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Background constants for the fission cross section</p>
+</dd>
+<dt><strong>resonances</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of AdlerResonance</span></dt>
+<dd><p class="first last">List of resonances defined by Adler-Adler parameters</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -142,11 +138,12 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
-<blockquote class="last">
-<div><p>ENDF evaluation positioned at the start of a resonance range
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ev</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Evaluation</span></dt>
+<dd><p class="first last">ENDF evaluation positioned at the start of a resonance range
 subsection</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -159,20 +156,21 @@ subsection</p>
 <dt id="pyne.endf.ArbitraryTabulated">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">ArbitraryTabulated</code><a class="headerlink" href="#pyne.endf.ArbitraryTabulated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arbitrary tabulated function given in ENDF MF=5, LF=1 represented as</p>
-<div class="math">
-<p><span class="math">f(E \rightarrow E') = g(E \rightarrow E')</span></p>
-</div><p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="11%" />
-<col width="89%" />
-</colgroup>
+<div class="math notranslate nohighlight">
+\[f(E \rightarrow E') = g(E \rightarrow E')\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>energy</strong></td>
-<td>(ndarray) Array of incident neutron energies</td>
-</tr>
-<tr class="row-even"><td><strong>pdf</strong></td>
-<td>(list of Tab1) Tabulated outgoing energy distribution probability density functions</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>energy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first last">Array of incident neutron energies</p>
+</dd>
+<dt><strong>pdf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of Tab1</span></dt>
+<dd><p class="first last">Tabulated outgoing energy distribution probability density functions</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -182,15 +180,16 @@ subsection</p>
 <dt id="pyne.endf.EnergyDistribution">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">EnergyDistribution</code><a class="headerlink" href="#pyne.endf.EnergyDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy distribution from ENDF MF=5.</p>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="13%" />
-<col width="88%" />
-</colgroup>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>lf</strong></td>
-<td>(int) Flag specifying energy distribution.</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>lf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag specifying energy distribution.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -463,45 +462,55 @@ parsing capabilities is as follows:</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="7%" />
-<col width="93%" />
-</colgroup>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>atomic_relaxation</strong></td>
-<td>(dict) Dictionary containing atomic relaxation data from MF=28, MT=533. If the evaluation is not an atomic relaxation sublibrary, the dictionary is empty.</td>
-</tr>
-<tr class="row-even"><td><strong>decay</strong></td>
-<td>(dict) Dictionary containing decay data from MF=8. If the evaluation is not from a decay sublibrary, the dictionary is empty.</td>
-</tr>
-<tr class="row-odd"><td><strong>fission</strong></td>
-<td>(dict) Dictionary containing fission-related data, such as neutrons release from fission (MF=1, MT=452,455,456), components of energy release (MF=1, MT=458), delayed photons from fission (MF=1, MT=460), and cumulative/independent fission yields (MF=8, MT=454,459).</td>
-</tr>
-<tr class="row-even"><td><strong>info</strong></td>
-<td>(dict) Miscallaneous information about the evaluation.</td>
-</tr>
-<tr class="row-odd"><td><strong>target</strong></td>
-<td>(dict) Information about the target material, such as its mass, isomeric state, whether it’s stable, and whether it’s fissionable.</td>
-</tr>
-<tr class="row-even"><td><strong>projectile</strong></td>
-<td>(dict) Information about the projectile such as its mass.</td>
-</tr>
-<tr class="row-odd"><td><strong>reaction_list</strong></td>
-<td>(list of 4-tuples) List of sections in the evaluation. The entries of the tuples are the file (MF), section (MT), number of records (NC), and modification indicator (MOD).</td>
-</tr>
-<tr class="row-even"><td><strong>reactions</strong></td>
-<td>(collections.OrderedDict) Dictionary whose keys are MT numbers and values are Reaction instances.</td>
-</tr>
-<tr class="row-odd"><td><strong>resonances</strong></td>
-<td>(dict) Resolved resonance data from MF=2, MT=151.</td>
-</tr>
-<tr class="row-even"><td><strong>thermal_elastic</strong></td>
-<td>(dict) Coherent and/or incoherent thermal elastic data from MF=7, MT=2.</td>
-</tr>
-<tr class="row-odd"><td><strong>thermal_inelastic</strong></td>
-<td>(dict) Incoherent thermal inelastic data from MF=7, MT=4.</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>atomic_relaxation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary containing atomic relaxation data from MF=28, MT=533. If the
+evaluation is not an atomic relaxation sublibrary, the dictionary is
+empty.</p>
+</dd>
+<dt><strong>decay</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary containing decay data from MF=8. If the evaluation is not
+from a decay sublibrary, the dictionary is empty.</p>
+</dd>
+<dt><strong>fission</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary containing fission-related data, such as neutrons release
+from fission (MF=1, MT=452,455,456), components of energy release (MF=1,
+MT=458), delayed photons from fission (MF=1, MT=460), and
+cumulative/independent fission yields (MF=8, MT=454,459).</p>
+</dd>
+<dt><strong>info</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Miscallaneous information about the evaluation.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Information about the target material, such as its mass, isomeric state,
+whether it’s stable, and whether it’s fissionable.</p>
+</dd>
+<dt><strong>projectile</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Information about the projectile such as its mass.</p>
+</dd>
+<dt><strong>reaction_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of 4-tuples</span></dt>
+<dd><p class="first last">List of sections in the evaluation. The entries of the tuples are the
+file (MF), section (MT), number of records (NC), and modification
+indicator (MOD).</p>
+</dd>
+<dt><strong>reactions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">collections.OrderedDict</span></dt>
+<dd><p class="first last">Dictionary whose keys are MT numbers and values are Reaction instances.</p>
+</dd>
+<dt><strong>resonances</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Resolved resonance data from MF=2, MT=151.</p>
+</dd>
+<dt><strong>thermal_elastic</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Coherent and/or incoherent thermal elastic data from MF=7, MT=2.</p>
+</dd>
+<dt><strong>thermal_inelastic</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Incoherent thermal inelastic data from MF=7, MT=4.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -515,18 +524,17 @@ file. A single reaction can be read if provided.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>reactions</strong> : tuple or list of tuple, optional</p>
-<blockquote>
-<div><p>A single reaction in the following format: (MF, MT)</p>
-</div></blockquote>
-<p><strong>skip_mf</strong> : list of int, optional</p>
-<blockquote>
-<div><p>Files (MF) which should not be read</p>
-</div></blockquote>
-<p><strong>skip_mt</strong> : list of int, optional</p>
-<blockquote class="last">
-<div><p>Reactions (MT) which should not be read</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>reactions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple or list of tuple, optional</span></dt>
+<dd><p class="first last">A single reaction in the following format: (MF, MT)</p>
+</dd>
+<dt><strong>skip_mf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of int, optional</span></dt>
+<dd><p class="first last">Files (MF) which should not be read</p>
+</dd>
+<dt><strong>skip_mt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of int, optional</span></dt>
+<dd><p class="first last">Reactions (MT) which should not be read</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -539,20 +547,22 @@ file. A single reaction can be read if provided.</p>
 <dt id="pyne.endf.Evaporation">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Evaporation</code><a class="headerlink" href="#pyne.endf.Evaporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaporation spectrum given in ENDF MF=5, LF=9 represented as</p>
-<div class="math">
-<p><span class="math">f(E \rightarrow E') = \frac{E'}{I} e^{-E'/\theta(E)}</span></p>
-</div><p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="7%" />
-<col width="93%" />
-</colgroup>
+<div class="math notranslate nohighlight">
+\[f(E \rightarrow E') = \frac{E'}{I} e^{-E'/\theta(E)}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>theta</strong></td>
-<td>(Tab1) Tabulated function of incident neutron energy</td>
-</tr>
-<tr class="row-even"><td><strong>u</strong></td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <span class="math">0 \le E' \le E - U</span></td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>theta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Tabulated function of incident neutron energy</p>
+</dd>
+<dt><strong>u</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Constant introduced to define the proper upper limit for the final
+particle energy such that <span class="math notranslate nohighlight">\(0 \le E' \le E - U\)</span></p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -562,23 +572,25 @@ file. A single reaction can be read if provided.</p>
 <dt id="pyne.endf.GeneralEvaporation">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">GeneralEvaporation</code><a class="headerlink" href="#pyne.endf.GeneralEvaporation" title="Permalink to this definition">¶</a></dt>
 <dd><p>General evaporation spectrum given in ENDF MF=5, LF=5 represented as</p>
-<div class="math">
-<p><span class="math">f(E \rightarrow E') = g(E'/\theta(E))</span></p>
-</div><p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="7%" />
-<col width="93%" />
-</colgroup>
+<div class="math notranslate nohighlight">
+\[f(E \rightarrow E') = g(E'/\theta(E))\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>theta</strong></td>
-<td>(Tab1) Tabulated function of incident neutron energy <span class="math">E</span></td>
-</tr>
-<tr class="row-even"><td><strong>g</strong></td>
-<td>(Tab1) Tabulated function of <span class="math">x = E'/\theta(E)</span></td>
-</tr>
-<tr class="row-odd"><td><strong>u</strong></td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <span class="math">0 \le E' \le E - U</span></td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>theta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Tabulated function of incident neutron energy <span class="math notranslate nohighlight">\(E\)</span></p>
+</dd>
+<dt><strong>g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Tabulated function of <span class="math notranslate nohighlight">\(x = E'/\theta(E)\)</span></p>
+</dd>
+<dt><strong>u</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Constant introduced to define the proper upper limit for the final
+particle energy such that <span class="math notranslate nohighlight">\(0 \le E' \le E - U\)</span></p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -596,29 +608,28 @@ file. A single reaction can be read if provided.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc</strong> : int</p>
-<blockquote>
-<div><p>id form of material to read from.</p>
-</div></blockquote>
-<p><strong>mf</strong> : int</p>
-<blockquote>
-<div><p>ENDF file number (MF).</p>
-</div></blockquote>
-<p><strong>mt</strong> : int</p>
-<blockquote>
-<div><p>ENDF reaction number (MT).</p>
-</div></blockquote>
-<p><strong>lines</strong> : int</p>
-<blockquote>
-<div><p>Number of lines to read from this reaction, starting from the top.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">id form of material to read from.</p>
+</dd>
+<dt><strong>mf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">ENDF file number (MF).</p>
+</dd>
+<dt><strong>mt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">ENDF reaction number (MT).</p>
+</dd>
+<dt><strong>lines</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of lines to read from this reaction, starting from the top.
 Default value is 0, which reads in the entire reaction.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : NumPy array</p>
-<blockquote class="last">
-<div><p>Contains the reaction data in an Nx6 array.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">NumPy array</span></dt>
+<dd><p class="first last">Contains the reaction data in an Nx6 array.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -633,24 +644,24 @@ Default value is 0, which reads in the entire reaction.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc: int</strong></p>
-<blockquote>
-<div><p>id of nuclide to read.</p>
-</div></blockquote>
-<p><strong>mt: int</strong></p>
-<blockquote>
-<div><p>ENDF reaction number to read.</p>
-</div></blockquote>
-<p><strong>nuc_i: int</strong></p>
-<blockquote>
-<div><p>id of isotope to read. Defaults to nuc.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nuc: int</strong></dt>
+<dd><p class="first last">id of nuclide to read.</p>
+</dd>
+<dt><strong>mt: int</strong></dt>
+<dd><p class="first last">ENDF reaction number to read.</p>
+</dd>
+<dt><strong>nuc_i: int</strong></dt>
+<dd><p class="first last">id of isotope to read. Defaults to nuc.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">tuple</p>
-<blockquote class="last">
-<div><p>Returns a tuple with xs data in tuple[0] and flags in tuple[1].</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>tuple</strong></dt>
+<dd><p class="first last">Returns a tuple with xs data in tuple[0] and flags in tuple[1].</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -665,28 +676,27 @@ Default value is 0, which reads in the entire reaction.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>intscheme</strong> : int or float</p>
-<blockquote>
-<div><p>The interpolation scheme used in this range.</p>
-</div></blockquote>
-<p><strong>e_int</strong> : array</p>
-<blockquote>
-<div><p>The energies at which we have xs data.</p>
-</div></blockquote>
-<p><strong>xs</strong> : array</p>
-<blockquote>
-<div><p>The xs data corresponding to e_int.</p>
-</div></blockquote>
-<p><strong>low, high</strong> : float</p>
-<blockquote>
-<div><p>Lower and upper bounds within the tabulation range to start/stop at.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>intscheme</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or float</span></dt>
+<dd><p class="first last">The interpolation scheme used in this range.</p>
+</dd>
+<dt><strong>e_int</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">The energies at which we have xs data.</p>
+</dd>
+<dt><strong>xs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">The xs data corresponding to e_int.</p>
+</dd>
+<dt><strong>low, high</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Lower and upper bounds within the tabulation range to start/stop at.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sigma_g</strong> : float</p>
-<blockquote class="last">
-<div><p>The group xs.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sigma_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The group xs.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -701,10 +711,11 @@ Default value is 0, which reads in the entire reaction.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : np.array, 1d, float64</p>
-<blockquote class="last">
-<div><p>Returns a 1d float64 NumPy array.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">np.array, 1d, float64</span></dt>
+<dd><p class="first last">Returns a 1d float64 NumPy array.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -718,27 +729,29 @@ Default value is 0, which reads in the entire reaction.</p>
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">MadlandNix</code><a class="headerlink" href="#pyne.endf.MadlandNix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy-dependent fission neutron spectrum (Madland and Nix) given in
 ENDF MF=5, LF=12 represented as</p>
-<div class="math">
-<p><span class="math">f(E \rightarrow E') = \frac{1}{2} [ g(E', E_F(L)) + g(E', E_F(H))]</span></p>
-</div><p>where</p>
-<div class="math">
-<p><span class="math">g(E',E_F) = \frac{1}{3\sqrt{E_F T_M}} \left [ u_2^{3/2} E_1 (u_2) -
+<div class="math notranslate nohighlight">
+\[f(E \rightarrow E') = \frac{1}{2} [ g(E', E_F(L)) + g(E', E_F(H))]\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}g(E',E_F) = \frac{1}{3\sqrt{E_F T_M}} \left [ u_2^{3/2} E_1 (u_2) -
 u_1^{3/2} E_1 (u_1) + \gamma \left ( \frac{3}{2}, u_2 \right ) - \gamma
 \left ( \frac{3}{2}, u_1 \right ) \right ] \\ u_1 = \left ( \sqrt{E'} -
 \sqrt{E_F} \right )^2 / T_M \\ u_2 = \left ( \sqrt{E'} + \sqrt{E_F}
-\right )^2 / T_M.</span></p>
-</div><p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="9%" />
-<col width="91%" />
-</colgroup>
+\right )^2 / T_M.\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>efl, efh</strong></td>
-<td>(float) Constants which represent the average kinetic energy per nucleon of the fission fragment (efl = light, efh = heavy)</td>
-</tr>
-<tr class="row-even"><td><strong>tm</strong></td>
-<td>(Tab1) Parameter tabulated as a function of incident neutron energy</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>efl, efh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Constants which represent the average kinetic energy per nucleon of the
+fission fragment (efl = light, efh = heavy)</p>
+</dd>
+<dt><strong>tm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Parameter tabulated as a function of incident neutron energy</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -749,20 +762,22 @@ u_1^{3/2} E_1 (u_1) + \gamma \left ( \frac{3}{2}, u_2 \right ) - \gamma
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Maxwellian</code><a class="headerlink" href="#pyne.endf.Maxwellian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple Maxwellian fission spectrum given in ENDF MF=5, LF=7 represented
 as</p>
-<div class="math">
-<p><span class="math">f(E \rightarrow E') = \frac{\sqrt{E'}}{I} e^{-E'/\theta(E)}</span></p>
-</div><p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="7%" />
-<col width="93%" />
-</colgroup>
+<div class="math notranslate nohighlight">
+\[f(E \rightarrow E') = \frac{\sqrt{E'}}{I} e^{-E'/\theta(E)}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>theta</strong></td>
-<td>(Tab1) Tabulated function of incident neutron energy</td>
-</tr>
-<tr class="row-even"><td><strong>u</strong></td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <span class="math">0 \le E' \le E - U</span></td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>theta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Tabulated function of incident neutron energy</p>
+</dd>
+<dt><strong>u</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Constant introduced to define the proper upper limit for the final
+particle energy such that <span class="math notranslate nohighlight">\(0 \le E' \le E - U\)</span></p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -777,52 +792,47 @@ identified by LRF=2 in the ENDF-6 format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="12%" />
-<col width="88%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>spin</strong></td>
-<td>(float) Spin of the target nucleus</td>
-</tr>
-<tr class="row-even"><td><strong>scattering_radius_ind</strong></td>
-<td>(float) Scattering radius in units of 10^-12 cm</td>
-</tr>
-<tr class="row-odd"><td><strong>resonances</strong></td>
-<td>(list of Resonance) List of resolved resonances</td>
-</tr>
-<tr class="row-even"><td><strong>l_values</strong></td>
-<td>(ndarray of int) Neutron orbital angular momentum values</td>
-</tr>
-<tr class="row-odd"><td><strong>q</strong></td>
-<td>(ndarray of float) Q-value to be added to incident particle’s center-of-mass energy to determine the channel energy for use in the penetrability factor. Given as a function of the l-value.</td>
-</tr>
-<tr class="row-even"><td><strong>competitive</strong></td>
-<td>(ndarray of bool) Whether a competitive width is given for each l-value.</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>spin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Spin of the target nucleus</p>
+</dd>
+<dt><strong>scattering_radius_ind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Scattering radius in units of 10^-12 cm</p>
+</dd>
+<dt><strong>resonances</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of Resonance</span></dt>
+<dd><p class="first last">List of resolved resonances</p>
+</dd>
+<dt><strong>l_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of int</span></dt>
+<dd><p class="first last">Neutron orbital angular momentum values</p>
+</dd>
+<dt><strong>q</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of float</span></dt>
+<dd><p class="first last">Q-value to be added to incident particle’s center-of-mass energy to
+determine the channel energy for use in the penetrability factor. Given
+as a function of the l-value.</p>
+</dd>
+<dt><strong>competitive</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of bool</span></dt>
+<dd><p class="first last">Whether a competitive width is given for each l-value.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -834,11 +844,12 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
-<blockquote class="last">
-<div><p>ENDF evaluation positioned at the start of a resonance range
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ev</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Evaluation</span></dt>
+<dd><p class="first last">ENDF evaluation positioned at the start of a resonance range
 subsection</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -856,46 +867,43 @@ LRF=7 in the ENDF-6 format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="8%" />
-<col width="92%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>IFG</strong></td>
-<td>(int) Flag indicating whether channel widths in eV or reduced-width amplitudes in eV^1/2 are given</td>
-</tr>
-<tr class="row-even"><td><strong>KRM</strong></td>
-<td>(int) Flag to specify which formulae for the R-matrix are to be used</td>
-</tr>
-<tr class="row-odd"><td><strong>particle_pairs</strong></td>
-<td>(list of dict) List of particle pairs. Each particle pair is represented by a dictionary that contains the mass, atomic number, spin, and parity of each particle as well as other characteristics.</td>
-</tr>
-<tr class="row-even"><td><strong>spin_groups</strong></td>
-<td>(list of dict) List of spin groups. Each spin group is characterized by channels, resonance energies, and resonance widths.</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>IFG</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag indicating whether channel widths in eV or reduced-width amplitudes
+in eV^1/2 are given</p>
+</dd>
+<dt><strong>KRM</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag to specify which formulae for the R-matrix are to be used</p>
+</dd>
+<dt><strong>particle_pairs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of dict</span></dt>
+<dd><p class="first last">List of particle pairs. Each particle pair is represented by a
+dictionary that contains the mass, atomic number, spin, and parity of
+each particle as well as other characteristics.</p>
+</dd>
+<dt><strong>spin_groups</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of dict</span></dt>
+<dd><p class="first last">List of spin groups. Each spin group is characterized by channels,
+resonance energies, and resonance widths.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -907,11 +915,12 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
-<blockquote class="last">
-<div><p>ENDF evaluation positioned at the start of a resonance range
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ev</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Evaluation</span></dt>
+<dd><p class="first last">ENDF evaluation positioned at the start of a resonance range
 subsection</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -929,77 +938,82 @@ angle/energy distribution.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mt</strong> : int</p>
-<blockquote class="last">
-<div><p>The MT number from the ENDF file.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>mt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The MT number from the ENDF file.</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="15%" />
-<col width="85%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>angular_distribution</strong></td>
-<td>(AngularDistribution) Angular distribution represented as a tabulated function or as moments of a Legendre polynomial expansion from MF=4.</td>
-</tr>
-<tr class="row-even"><td><strong>complex_breakup_flag</strong></td>
-<td>(int) Complex breakup flag.</td>
-</tr>
-<tr class="row-odd"><td><strong>xs</strong></td>
-<td>(Tab1) Tabulated cross section as a function of incident energy from MF=3.</td>
-</tr>
-<tr class="row-even"><td><strong>energy_distribution</strong></td>
-<td>(list of EnergyDistribution) List of partial energy distributions for the reaction from MF=5.</td>
-</tr>
-<tr class="row-odd"><td><strong>files</strong></td>
-<td>(list of int) List of files (MF) that have been read for this reaction</td>
-</tr>
-<tr class="row-even"><td><strong>MT</strong></td>
-<td>(int) The MT number from the ENDF file.</td>
-</tr>
-<tr class="row-odd"><td><strong>multiplicities</strong></td>
-<td>(dict) Multiplicities for production of radioactive nuclides as given in MF=9.</td>
-</tr>
-<tr class="row-even"><td><strong>product_distribution</strong></td>
-<td>(list of dict) Secondary energy or correlated energy-angle distribution from MF=6.</td>
-</tr>
-<tr class="row-odd"><td><strong>production</strong></td>
-<td>(dict) Cross sections for production of radioactive nuclides as given in MF=10.</td>
-</tr>
-<tr class="row-even"><td><strong>Q_mass_difference</strong></td>
-<td>(float) Mass difference Q value in eV</td>
-</tr>
-<tr class="row-odd"><td><strong>Q_reaction</strong></td>
-<td>(float) Reaction Q value in eV</td>
-</tr>
-<tr class="row-even"><td><strong>radionuclide_production</strong></td>
-<td>(list of dict) List of radioactive nuclides produced as given in MF=8.</td>
-</tr>
-<tr class="row-odd"><td><strong>reference_frame</strong></td>
-<td>({‘laboratory’, ‘center-of-mass’, ‘light-heavy’}) Indicates what reference frame is used for outgoing energies and angles. Only relevant for product energy-angle distributions read in MF=6.</td>
-</tr>
-<tr class="row-even"><td><strong>subshell_binding_energy</strong></td>
-<td>(float) Subshell binding energy in eV as given in MF=23. Only relevant for photoelectric subshell ionization reactions in a photo-atomic sublibrary.</td>
-</tr>
-<tr class="row-odd"><td><strong>fluorescence_yield</strong></td>
-<td>(float) Fluorescence yield (eV/photoionization) as given in MF=23. Only relevant for photoelectric subshell ionization reactions in a photo-atomic sublibrary.</td>
-</tr>
-<tr class="row-even"><td><strong>products</strong></td>
-<td>(list of dict) Secondary photon and electron distributions for electro-atomic reactions as given in MF=26.</td>
-</tr>
-<tr class="row-odd"><td><strong>scattering_factor</strong></td>
-<td>(Tab1) Coherent or incoherent form factor as given in MF=27.</td>
-</tr>
-<tr class="row-even"><td><strong>anomalous_scattering_imaginary</strong></td>
-<td>(Tab1) Imaginary component of the anomalous scattering factor as given in MF=27.</td>
-</tr>
-<tr class="row-odd"><td><strong>anomalous_scattering_real</strong></td>
-<td>(Tab1) Real component of the anomalous scattering factor as given in MF=27.</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>angular_distribution</strong> <span class="classifier-delimiter">:</span> <span class="classifier">AngularDistribution</span></dt>
+<dd><p class="first last">Angular distribution represented as a tabulated function or as moments
+of a Legendre polynomial expansion from MF=4.</p>
+</dd>
+<dt><strong>complex_breakup_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Complex breakup flag.</p>
+</dd>
+<dt><strong>xs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Tabulated cross section as a function of incident energy from MF=3.</p>
+</dd>
+<dt><strong>energy_distribution</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of EnergyDistribution</span></dt>
+<dd><p class="first last">List of partial energy distributions for the reaction from MF=5.</p>
+</dd>
+<dt><strong>files</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of int</span></dt>
+<dd><p class="first last">List of files (MF) that have been read for this reaction</p>
+</dd>
+<dt><strong>MT</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The MT number from the ENDF file.</p>
+</dd>
+<dt><strong>multiplicities</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Multiplicities for production of radioactive nuclides as given in MF=9.</p>
+</dd>
+<dt><strong>product_distribution</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of dict</span></dt>
+<dd><p class="first last">Secondary energy or correlated energy-angle distribution from MF=6.</p>
+</dd>
+<dt><strong>production</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Cross sections for production of radioactive nuclides as given in MF=10.</p>
+</dd>
+<dt><strong>Q_mass_difference</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Mass difference Q value in eV</p>
+</dd>
+<dt><strong>Q_reaction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Reaction Q value in eV</p>
+</dd>
+<dt><strong>radionuclide_production</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of dict</span></dt>
+<dd><p class="first last">List of radioactive nuclides produced as given in MF=8.</p>
+</dd>
+<dt><strong>reference_frame</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘laboratory’, ‘center-of-mass’, ‘light-heavy’}</span></dt>
+<dd><p class="first last">Indicates what reference frame is used for outgoing energies and
+angles. Only relevant for product energy-angle distributions read in
+MF=6.</p>
+</dd>
+<dt><strong>subshell_binding_energy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Subshell binding energy in eV as given in MF=23. Only relevant for
+photoelectric subshell ionization reactions in a photo-atomic
+sublibrary.</p>
+</dd>
+<dt><strong>fluorescence_yield</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Fluorescence yield (eV/photoionization) as given in MF=23. Only relevant
+for photoelectric subshell ionization reactions in a photo-atomic
+sublibrary.</p>
+</dd>
+<dt><strong>products</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of dict</span></dt>
+<dd><p class="first last">Secondary photon and electron distributions for electro-atomic
+reactions as given in MF=26.</p>
+</dd>
+<dt><strong>scattering_factor</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Coherent or incoherent form factor as given in MF=27.</p>
+</dd>
+<dt><strong>anomalous_scattering_imaginary</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Imaginary component of the anomalous scattering factor as given in
+MF=27.</p>
+</dd>
+<dt><strong>anomalous_scattering_real</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Real component of the anomalous scattering factor as given in MF=27.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1014,58 +1028,52 @@ the ENDF-6 format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="19%" />
-<col width="81%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>resonances</strong></td>
-<td>(dict) Dictionary whose keys are (l, J) pairs and values are instances are lists of Resonance instances.</td>
-</tr>
-<tr class="row-even"><td><strong>spin</strong></td>
-<td>(float) Spin of the target nucleus</td>
-</tr>
-<tr class="row-odd"><td><strong>scattering_radius_ind</strong></td>
-<td>(float) Energy-independent scattering radius in units of 10^-12 cm</td>
-</tr>
-<tr class="row-even"><td><strong>scattering_radius</strong></td>
-<td>(Tab1) Scattering radius in units of 10^-12 cm as a function of energy</td>
-</tr>
-<tr class="row-odd"><td><strong>LAD</strong></td>
-<td>(int) Indicate whether parameters can be used to compute angular distributions</td>
-</tr>
-<tr class="row-even"><td><strong>NLSC</strong></td>
-<td>(int) Number of l-values which must be used to converge the calculation</td>
-</tr>
-<tr class="row-odd"><td><strong>apl</strong></td>
-<td>(ndarray of float) l-dependent scattering radius</td>
-</tr>
-<tr class="row-even"><td><strong>l_values</strong></td>
-<td>(ndarray of int) Neutron orbital angular momentum values</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>resonances</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary whose keys are (l, J) pairs and values are instances are
+lists of Resonance instances.</p>
+</dd>
+<dt><strong>spin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Spin of the target nucleus</p>
+</dd>
+<dt><strong>scattering_radius_ind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Energy-independent scattering radius in units of 10^-12 cm</p>
+</dd>
+<dt><strong>scattering_radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Scattering radius in units of 10^-12 cm as a function of energy</p>
+</dd>
+<dt><strong>LAD</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Indicate whether parameters can be used to compute angular distributions</p>
+</dd>
+<dt><strong>NLSC</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of l-values which must be used to converge the calculation</p>
+</dd>
+<dt><strong>apl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of float</span></dt>
+<dd><p class="first last">l-dependent scattering radius</p>
+</dd>
+<dt><strong>l_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of int</span></dt>
+<dd><p class="first last">Neutron orbital angular momentum values</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1077,11 +1085,12 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
-<blockquote class="last">
-<div><p>ENDF evaluation positioned at the start of a resonance range
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ev</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Evaluation</span></dt>
+<dd><p class="first last">ENDF evaluation positioned at the start of a resonance range
 subsection</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1098,46 +1107,41 @@ subsection</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="8%" />
-<col width="92%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>energy_min</strong></td>
-<td>(float) Minimum energy of the resolved resonance range in eV</td>
-</tr>
-<tr class="row-even"><td><strong>energy_max</strong></td>
-<td>(float) Maximum energy of the resolved resonance range in eV</td>
-</tr>
-<tr class="row-odd"><td><strong>nro</strong></td>
-<td>(int) Flag designating energy-dependence of scattering radius (NRO). A value of 0 indicates it is energy-independent, a value of 1 indicates it is energy-dependent.</td>
-</tr>
-<tr class="row-even"><td><strong>naps</strong></td>
-<td>(int) Flag controlling use of the channel and scattering radius (NAPS)</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>energy_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>energy_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
+of 0 indicates it is energy-independent, a value of 1 indicates it is
+energy-dependent.</p>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1151,24 +1155,22 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1184,24 +1186,22 @@ identified by LRF=1 in the ENDF-6 format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the resolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the resolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1216,39 +1216,38 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : array_like</p>
-<blockquote>
-<div><p>Independent variable</p>
-</div></blockquote>
-<p><strong>y</strong> : array_like</p>
-<blockquote>
-<div><p>Dependent variable</p>
-</div></blockquote>
-<p><strong>nbt</strong> : array_like of int</p>
-<blockquote>
-<div><p>Breakpoints for interpolation regions</p>
-</div></blockquote>
-<p><strong>interp</strong> : array_like of int</p>
-<blockquote class="last">
-<div><p>Interpolation scheme identification number, e.g., 3 means y is linear in
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Independent variable</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd><p class="first last">Dependent variable</p>
+</dd>
+<dt><strong>nbt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like of int</span></dt>
+<dd><p class="first last">Breakpoints for interpolation regions</p>
+</dd>
+<dt><strong>interp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like of int</span></dt>
+<dd><p class="first last">Interpolation scheme identification number, e.g., 3 means y is linear in
 ln(x).</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="classmethod">
 <dt id="pyne.endf.Tab1.from_file">
-<em class="property">classmethod </em><code class="descname">from_file</code><span class="sig-paren">(</span><em>fh</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Tab1.from_file" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">from_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.endf.Tab1.from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create Tab1 object using open file handle.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fh</strong> : file</p>
-<blockquote class="last">
-<div><p>File open and positioned to the start of a TAB1 record.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>fh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file</span></dt>
+<dd><p class="first last">File open and positioned to the start of a TAB1 record.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1263,11 +1262,12 @@ ln(x).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">ndarray</p>
-<blockquote class="last">
-<div><p>Array of same length as the tabulated data that represents partial
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ndarray</strong></dt>
+<dd><p class="first last">Array of same length as the tabulated data that represents partial
 integrals from the bottom of the range to each tabulated point.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1284,49 +1284,43 @@ integrals from the bottom of the range to each tabulated point.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>emin</strong> : float</p>
-<blockquote>
-<div><p>Minimum energy of the unresolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>emax</strong> : float</p>
-<blockquote>
-<div><p>Maximum energy of the unresolved resonance range in eV</p>
-</div></blockquote>
-<p><strong>nro</strong> : int</p>
-<blockquote>
-<div><p>Flag designating energy-dependence of scattering radius (NRO). A value
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>emin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Minimum energy of the unresolved resonance range in eV</p>
+</dd>
+<dt><strong>emax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum energy of the unresolved resonance range in eV</p>
+</dd>
+<dt><strong>nro</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag designating energy-dependence of scattering radius (NRO). A value
 of 0 indicates it is energy-independent, a value of 1 indicates it is
 energy-dependent.</p>
-</div></blockquote>
-<p><strong>naps</strong> : int</p>
-<blockquote class="last">
-<div><p>Flag controlling use of the channel and scattering radius (NAPS)</p>
-</div></blockquote>
+</dd>
+<dt><strong>naps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag controlling use of the channel and scattering radius (NAPS)</p>
+</dd>
+</dl>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="14%" />
-<col width="86%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>scattering_radius</strong></td>
-<td>(float) Scattering radius in units of 10^-12 cm</td>
-</tr>
-<tr class="row-even"><td><strong>LSSF</strong></td>
-<td>(int) Flag governing interpretation of file 3 cross sections</td>
-</tr>
-<tr class="row-odd"><td><strong>spin</strong></td>
-<td>(float) Spin of the target nucleus</td>
-</tr>
-<tr class="row-even"><td><strong>l_values</strong></td>
-<td>(ndarray of int) Neutron orbital angular momentum values</td>
-</tr>
-<tr class="row-odd"><td><strong>parameters</strong></td>
-<td>(dict of dict) Dictionary whose keys are l-values and whose values are dictionaries containing unresolved resonance parameters</td>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>scattering_radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Scattering radius in units of 10^-12 cm</p>
+</dd>
+<dt><strong>LSSF</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Flag governing interpretation of file 3 cross sections</p>
+</dd>
+<dt><strong>spin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Spin of the target nucleus</p>
+</dd>
+<dt><strong>l_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray of int</span></dt>
+<dd><p class="first last">Neutron orbital angular momentum values</p>
+</dd>
+<dt><strong>parameters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dict</span></dt>
+<dd><p class="first last">Dictionary whose keys are l-values and whose values are dictionaries
+containing unresolved resonance parameters</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1338,11 +1332,12 @@ energy-dependent.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ev</strong> : Evaluation</p>
-<blockquote class="last">
-<div><p>ENDF evaluation positioned at the start of a resonance range
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ev</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Evaluation</span></dt>
+<dd><p class="first last">ENDF evaluation positioned at the start of a resonance range
 subsection</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1355,21 +1350,24 @@ subsection</p>
 <dt id="pyne.endf.Watt">
 <em class="property">class </em><code class="descclassname">pyne.endf.</code><code class="descname">Watt</code><a class="headerlink" href="#pyne.endf.Watt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy-dependent Watt spectrum given in ENDF MF=5, LF=11 represented as</p>
-<div class="math">
-<p><span class="math">f(E \rightarrow E') = \frac{e^{-E'/a}}{I} \sinh \left ( \sqrt{bE'}
-\right )</span></p>
-</div><p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="6%" />
-<col width="94%" />
-</colgroup>
+<div class="math notranslate nohighlight">
+\[f(E \rightarrow E') = \frac{e^{-E'/a}}{I} \sinh \left ( \sqrt{bE'}
+\right )\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>a, b</strong></td>
-<td>(Tab1) Energy-dependent parameters tabulated as function of incident neutron energy</td>
-</tr>
-<tr class="row-even"><td><strong>u</strong></td>
-<td>(float) Constant introduced to define the proper upper limit for the final particle energy such that <span class="math">0 \le E' \le E - U</span></td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>a, b</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tab1</span></dt>
+<dd><p class="first last">Energy-dependent parameters tabulated as function of incident neutron
+energy</p>
+</dd>
+<dt><strong>u</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Constant introduced to define the proper upper limit for the final
+particle energy such that <span class="math notranslate nohighlight">\(0 \le E' \le E - U\)</span></p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1383,16 +1381,18 @@ subsection</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
-<blockquote>
-<div><p>File to check</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>f</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file_like</span></dt>
+<dd><p class="first last">File to check</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">bool</p>
-<blockquote class="last">
-<div><p>Whether the file is at the end of the ENDF tape</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>bool</strong></dt>
+<dd><p class="first last">Whether the file is at the end of the ENDF tape</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1407,10 +1407,11 @@ subsection</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
-<blockquote class="last">
-<div><p>File to position</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>f</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file_like</span></dt>
+<dd><p class="first last">File to position</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1425,10 +1426,11 @@ subsection</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
-<blockquote class="last">
-<div><p>File to position</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>f</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file_like</span></dt>
+<dd><p class="first last">File to position</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1443,10 +1445,11 @@ subsection</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : file_like</p>
-<blockquote class="last">
-<div><p>File to position</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>f</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file_like</span></dt>
+<dd><p class="first last">File to position</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1518,8 +1521,8 @@ subsection</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

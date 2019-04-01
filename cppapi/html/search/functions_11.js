@@ -1,7 +1,7 @@
 var searchData=
 [
   ['sample_5fpdf',['sample_pdf',['../classpyne_1_1_alias_table.html#ab59ea369654d8304d27e1abcfa74eef4',1,'pyne::AliasTable']]],
-  ['sampler',['Sampler',['../classpyne_1_1_sampler.html#a57e096205922e6a221f2185a9849c5ed',1,'pyne::Sampler::Sampler(std::string filename, std::string src_tag_name, std::vector&lt; double &gt; e_bounds, bool uniform)'],['../classpyne_1_1_sampler.html#a058411845da467ff7421956ba076ac31',1,'pyne::Sampler::Sampler(std::string filename, std::string src_tag_name, std::vector&lt; double &gt; e_bounds, std::string bias_tag_name)']]],
+  ['sampler',['Sampler',['../classpyne_1_1_sampler.html#a57e096205922e6a221f2185a9849c5ed',1,'pyne::Sampler::Sampler(std::string filename, std::string src_tag_name, std::vector&lt; double &gt; e_bounds, bool uniform)'],['../classpyne_1_1_sampler.html#a058411845da467ff7421956ba076ac31',1,'pyne::Sampler::Sampler(std::string filename, std::string src_tag_name, std::vector&lt; double &gt; e_bounds, std::string bias_tag_name)'],['../classpyne_1_1_sampler.html#aa4b5811e49b8ac278e2e936d29500eb5',1,'pyne::Sampler::Sampler(std::string filename, std::map&lt; std::string, std::string &gt; tag_names, std::vector&lt; double &gt; e_bounds, int mode)']]],
   ['sampling_5fsetup_5f',['sampling_setup_',['../namespacepyne.html#a4b568e0d7793942733d5403116ddc00f',1,'pyne']]],
   ['set_5fmat',['set_mat',['../classpyne_1_1_material.html#a17530f493ed5ba0d7f6e9e46c3a49744',1,'pyne::Material::set_mat(std::set&lt; int &gt; nucset, double value)'],['../classpyne_1_1_material.html#a878002d7dfce0dd5a2ed518c6afc6b10',1,'pyne::Material::set_mat(std::set&lt; std::string &gt; nucset, double value)']]],
   ['set_5frange',['set_range',['../classpyne_1_1_material.html#af81eb0e8c7f65792bc699c4aec82bb7e',1,'pyne::Material']]],
@@ -11,6 +11,7 @@ var searchData=
   ['solve_5fline',['solve_line',['../namespacepyne.html#a943fe41cf25ff550684aabffe5971e1e',1,'pyne']]],
   ['solve_5fnumeric',['solve_numeric',['../namespacepyne_1_1enrichment.html#a589bcb5f70049e07f791cf0d029bcb4e',1,'pyne::enrichment']]],
   ['solve_5fsymbolic',['solve_symbolic',['../namespacepyne_1_1enrichment.html#aeec6c2b30a2450e191104069d83a24c9',1,'pyne::enrichment']]],
+  ['sourceparticle',['SourceParticle',['../classpyne_1_1_source_particle.html#a854ff31d32d2f59fe477563830dc90dc',1,'pyne::SourceParticle']]],
   ['state_5fenergy',['state_energy',['../namespacepyne.html#ada1a23281a3a62267fbd355bd48da2e6',1,'pyne::state_energy(int nuc)'],['../namespacepyne.html#afbe96cec07719bac2b5fe3ad299b1dd1',1,'pyne::state_energy(char *nuc)'],['../namespacepyne.html#a1e1a4d494979a9aedce584c054474ae0',1,'pyne::state_energy(std::string nuc)']]],
   ['sub_5fact',['sub_act',['../classpyne_1_1_material.html#addb8d9eb230f9782ebf2f5381c35ccde',1,'pyne::Material']]],
   ['sub_5felem',['sub_elem',['../classpyne_1_1_material.html#aa38cb12439e08391849d41f803f03495',1,'pyne::Material']]],

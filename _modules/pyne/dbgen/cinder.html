@@ -11,11 +11,14 @@
     <title>pyne.dbgen.cinder &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -115,8 +118,8 @@ if(ga_enabled){
         <span class="n">rtn</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;cinder.dat file not found in DATAPATH dir - skipping.&quot;</span><span class="p">))</span>
-        <span class="n">rtn</span> <span class="o">=</span> <span class="kc">False</span></div>
-    <span class="k">return</span> <span class="n">rtn</span>
+        <span class="n">rtn</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">rtn</span></div>
 
 <span class="c1"># These read in cinder.dat</span>
 <span class="n">cinder_float</span> <span class="o">=</span> <span class="s2">&quot;[\d.+-Ee]+&quot;</span>
@@ -191,8 +194,8 @@ if(ga_enabled){
     <span class="n">G_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">G_p</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
     <span class="n">G_g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-</div>
-    <span class="k">return</span> <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span>
+
+    <span class="k">return</span> <span class="n">nuclides</span><span class="p">,</span> <span class="n">G_n</span><span class="p">,</span> <span class="n">G_p</span><span class="p">,</span> <span class="n">G_g</span></div>
 
 
 <div class="viewcode-block" id="safe_decode"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.safe_decode">[docs]</a><span class="k">def</span> <span class="nf">safe_decode</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">encs</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="s1">&#39;latin-1&#39;</span><span class="p">)):</span>
@@ -203,8 +206,8 @@ if(ga_enabled){
     <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">encs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">encs</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">s</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">safe_decode</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">encs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="make_mg_group_structure"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_mg_group_structure">[docs]</a><span class="k">def</span> <span class="nf">make_mg_group_structure</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -246,8 +249,8 @@ if(ga_enabled){
     <span class="n">g_E_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/photon/cinder_source&#39;</span><span class="p">,</span> <span class="s1">&#39;E_g&#39;</span><span class="p">,</span> <span class="n">g_E_g</span><span class="p">,</span> <span class="s1">&#39;Photon energy group bounds [MeV]&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="c1"># Helpful patterns</span>
@@ -337,8 +340,8 @@ if(ga_enabled){
         <span class="c1"># Flush this from nuc</span>
         <span class="n">absorption_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="n">fission_base</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">([\s\d]+),([\s\d]+),([\s\d]+)=\(n,f\) yield sets\. If &gt; 0,[\s\d]</span><span class="si">{4}</span><span class="s2">-gp fisn CX follows\..*?</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -426,8 +429,8 @@ if(ga_enabled){
         <span class="n">frow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
         <span class="n">fission_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="n">gamma_decay_base</span> <span class="o">=</span> <span class="s2">&quot;gamma spectra from .</span><span class="si">{3}</span><span class="s2"> multiplied by\s+(&quot;</span> <span class="o">+</span> <span class="n">cinder_float</span> <span class="o">+</span> <span class="s2">&quot;)\s+to agree w/ Eg=\s*(&quot;</span> <span class="o">+</span>\
@@ -513,8 +516,8 @@ if(ga_enabled){
         <span class="n">gdrow</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
         <span class="n">gamma_decay_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_fp_sizes"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.get_fp_sizes">[docs]</a><span class="k">def</span> <span class="nf">get_fp_sizes</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
@@ -541,8 +544,8 @@ if(ga_enabled){
     <span class="n">N_g_pattern</span> <span class="o">=</span> <span class="s2">&quot;Photofission Yield Data.*?</span><span class="se">\n</span><span class="s2">\s*(\d+)\s+yield sets&quot;</span>
     <span class="n">m_g</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">N_g_pattern</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
     <span class="n">N_g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_g</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-</div>
-    <span class="k">return</span> <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span>
+
+    <span class="k">return</span> <span class="n">N_n</span><span class="p">,</span> <span class="n">N_g</span></div>
 
 
 <span class="n">fp_info_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
@@ -613,8 +616,8 @@ if(ga_enabled){
         <span class="n">info_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_row</span><span class="p">)</span>
 
     <span class="n">info_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">info_table</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">info_table</span>
+
+    <span class="k">return</span> <span class="n">info_table</span></div>
 
 
 <div class="viewcode-block" id="make_neutron_fp_info"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_neutron_fp_info">[docs]</a><span class="k">def</span> <span class="nf">make_neutron_fp_info</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -650,8 +653,8 @@ if(ga_enabled){
     <span class="c1"># Append Rows</span>
     <span class="n">nfp_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_table</span><span class="p">)</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="n">gfp_info_pattern</span> <span class="o">=</span> <span class="s2">&quot;Photofission Yield Data.*?fission products&quot;</span>
@@ -705,8 +708,8 @@ if(ga_enabled){
         <span class="n">info_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_row</span><span class="p">)</span>
 
     <span class="n">info_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">info_table</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fp_info_dtype</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">info_table</span>
+
+    <span class="k">return</span> <span class="n">info_table</span></div>
 
 
 <div class="viewcode-block" id="make_photon_fp_info"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_photon_fp_info">[docs]</a><span class="k">def</span> <span class="nf">make_photon_fp_info</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -740,8 +743,8 @@ if(ga_enabled){
                                <span class="s1">&#39;CINDER Photofission Product Yield Information&#39;</span><span class="p">)</span>
     <span class="n">gfp_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_table</span><span class="p">)</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="n">fp_yields_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
@@ -822,8 +825,8 @@ if(ga_enabled){
         <span class="c1"># Write the table</span>
         <span class="n">nfp_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="n">gfp_yields_pattern</span> <span class="o">=</span> <span class="s2">&quot;Photofission Yield Data.*&quot;</span>
@@ -893,8 +896,8 @@ if(ga_enabled){
         <span class="c1"># Write the table</span>
         <span class="n">gfp_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="make_cinder"><a class="viewcode-back" href="../../../pyapi/dbgen/cinder.html#pyne.dbgen.cinder.make_cinder">[docs]</a><span class="k">def</span> <span class="nf">make_cinder</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -943,8 +946,8 @@ if(ga_enabled){
     <span class="c1"># Add neutron yield table</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  photofission product yields.&quot;</span><span class="p">)</span>
     <span class="n">make_photon_fp_yields</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
-</div>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...finished with cinder.&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...finished with cinder.&quot;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -1010,8 +1013,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

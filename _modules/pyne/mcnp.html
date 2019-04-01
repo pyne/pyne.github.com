@@ -11,11 +11,14 @@
     <title>pyne.mcnp &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -72,11 +75,12 @@ if(ga_enabled){
 <span class="sd">Mctal and Runtpe classes still need work. Also should add Meshtal and Outp</span>
 <span class="sd">classes.</span>
 
-<span class="sd">If PyTAPS is not installed, then Wwinp, Meshtal, and Meshtally will not be</span>
+<span class="sd">If PyMOAB is not installed, then Wwinp, Meshtal, and Meshtally will not be</span>
 <span class="sd">available to use.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">HAVE_PYMOAB</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">math</span>
@@ -97,20 +101,18 @@ if(ga_enabled){
 <span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
 
 <span class="c1"># Mesh specific imports</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span>
-    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
-                  <span class="s2">&quot;Some aspects of the mcnp module may be incomplete.&quot;</span><span class="p">,</span>
-                  <span class="n">QAWarning</span><span class="p">)</span>
-    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">IMeshTag</span>
+<span class="k">if</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">NativeMeshTag</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
+         <span class="s2">&quot;Some aspects of the mcnp module may be incomplete.&quot;</span><span class="p">,</span>
+         <span class="n">QAWarning</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">Mctal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -281,8 +283,8 @@ if(ga_enabled){
                 <span class="n">header_string</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">surf_params</span><span class="p">)</span>
             <span class="n">header_string</span> <span class="o">+=</span> <span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">header_string</span> <span class="o">+=</span> <span class="s2">&quot;Summary Table: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_table</span><span class="p">)</span>
-</div>
-        <span class="k">return</span> <span class="n">header_string</span>
+
+        <span class="k">return</span> <span class="n">header_string</span></div>
 
 <div class="viewcode-block" id="SurfSrc.print_tracklist"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.print_tracklist">[docs]</a>    <span class="k">def</span> <span class="nf">print_tracklist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_tracks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns tracklists in SurfSrc as a string.</span>
@@ -316,8 +318,8 @@ if(ga_enabled){
                 <span class="n">j</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="n">cnt</span> <span class="o">&gt;</span> <span class="n">max_tracks</span><span class="p">:</span>
                 <span class="k">break</span>
-</div>
-        <span class="k">return</span> <span class="n">track_data</span>
+
+        <span class="k">return</span> <span class="n">track_data</span></div>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">rtn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cmp__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -426,9 +428,10 @@ if(ga_enabled){
                 <span class="bp">self</span><span class="o">.</span><span class="n">np1</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_long</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># hist used to gen. src</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nrss</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_long</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># #tracks to surf src</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">ncrd</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># #values in surf src record</span>
-                                                   <span class="c1"># 6 for a spherical source</span>
-                                                   <span class="c1"># 11 otherwise</span>
+	    <span class="c1"># values in surf src record</span>
+            <span class="c1"># 6 for a spherical source</span>
+            <span class="c1"># 11 otherwise</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ncrd</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">njsw</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># number of surfaces</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">niss</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># #histories to surf src</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table1extra</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -510,8 +513,8 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">summary_table</span> <span class="o">=</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span>
             <span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">mipts</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">njsw</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">niwr</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">summary_extra</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">while</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">num_bytes</span> <span class="o">&gt;</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">pos</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">summary_extra</span> <span class="o">+=</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">get_int</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">num_bytes</span> <span class="o">&gt;</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">pos</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">summary_extra</span> <span class="o">+=</span> <span class="n">summary_info</span><span class="o">.</span><span class="n">get_int</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SurfSrc.read_tracklist"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.read_tracklist">[docs]</a>    <span class="k">def</span> <span class="nf">read_tracklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads in track records for individual particles.&quot;&quot;&quot;</span>
@@ -537,8 +540,8 @@ if(ga_enabled){
                           <span class="n">track_data</span><span class="o">.</span><span class="n">v</span><span class="o">*</span><span class="n">track_data</span><span class="o">.</span><span class="n">v</span><span class="p">),</span> <span class="n">track_data</span><span class="o">.</span><span class="n">bitarray</span><span class="p">)</span>
             <span class="c1"># track_data.bitarray = abs(track_data.bitarray)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_data</span><span class="p">)</span></div>
-        <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_data</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.put_header"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.put_header">[docs]</a>    <span class="k">def</span> <span class="nf">put_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the header part of the header to the surface source file&quot;&quot;&quot;</span>
@@ -559,8 +562,8 @@ if(ga_enabled){
             <span class="n">joinrec</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
             <span class="n">newrecord</span> <span class="o">=</span> <span class="n">_FortranRecord</span><span class="p">(</span><span class="n">joinrec</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">joinrec</span><span class="p">))</span>
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">knod</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span></div>
-        <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.put_table_1"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.put_table_1">[docs]</a>    <span class="k">def</span> <span class="nf">put_table_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the table1 part of the header to the surface source file&quot;&quot;&quot;</span>
@@ -577,8 +580,8 @@ if(ga_enabled){
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">njsw</span><span class="p">])</span>
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">niss</span><span class="p">])</span>  <span class="c1"># MCNP needs &#39;int&#39;, could be &#39;long&#39; ?</span>
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table1extra</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span></div>
-        <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.put_table_2"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.put_table_2">[docs]</a>    <span class="k">def</span> <span class="nf">put_table_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the table2 part of the header to the surface source file&quot;&quot;&quot;</span>
@@ -587,8 +590,8 @@ if(ga_enabled){
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mipts</span><span class="p">])</span>
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">kjaq</span><span class="p">])</span>
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table2extra</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span></div>
-        <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.put_surface_info"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.put_surface_info">[docs]</a>    <span class="k">def</span> <span class="nf">put_surface_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the record for each surface to the surface source file&quot;&quot;&quot;</span>
@@ -604,16 +607,16 @@ if(ga_enabled){
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">num_params</span><span class="p">)</span>
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_double</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">surf_params</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span></div>
-        <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.put_summary"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.put_summary">[docs]</a>    <span class="k">def</span> <span class="nf">put_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the summary part of the header to the surface source file&quot;&quot;&quot;</span>
         <span class="n">newrecord</span> <span class="o">=</span> <span class="n">_FortranRecord</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_table</span><span class="p">))</span>
         <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_extra</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span></div>
-        <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.write_header"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.write_header">[docs]</a>    <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the first part of the MCNP surface source file. The header content</span>
@@ -622,8 +625,8 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">put_header</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">put_table_1</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">put_table_2</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">put_surface_info</span><span class="p">()</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">put_summary</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put_surface_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put_summary</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SurfSrc.write_tracklist"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.write_tracklist">[docs]</a>    <span class="k">def</span> <span class="nf">write_tracklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write track records for individual particles. Second part of the MCNP</span>
@@ -644,8 +647,8 @@ if(ga_enabled){
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">cs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span></div>
-        <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_fortran_record</span><span class="p">(</span><span class="n">newrecord</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="SurfSrc.update_tracklist"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.update_tracklist">[docs]</a>    <span class="k">def</span> <span class="nf">update_tracklist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surf_src</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Update tracklist from another surface source.</span>
@@ -676,12 +679,12 @@ if(ga_enabled){
         <span class="k">elif</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">surf_src</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Tracklist cannot be updated with itself&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span> <span class="o">=</span> <span class="n">surf_src</span><span class="o">.</span><span class="n">tracklist</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nrss</span> <span class="o">=</span> <span class="n">surf_src</span><span class="o">.</span><span class="n">nrss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span> <span class="o">=</span> <span class="n">surf_src</span><span class="o">.</span><span class="n">tracklist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nrss</span> <span class="o">=</span> <span class="n">surf_src</span><span class="o">.</span><span class="n">nrss</span></div>
 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Destructor. The only thing to do is close the file.&quot;&quot;&quot;</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;Destructor. The only thing to do is close the file.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Srctp"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Srctp">[docs]</a><span class="k">class</span> <span class="nc">Srctp</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
@@ -732,8 +735,8 @@ if(ga_enabled){
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">index</span><span class="p">:</span> <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_run</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-        <span class="k">return</span> <span class="s2">&quot;&lt;Srctp: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Srctp: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">SourceSite</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -771,8 +774,8 @@ if(ga_enabled){
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_tables</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-        <span class="k">return</span> <span class="s2">&quot;&lt;Runtpe: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Runtpe: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Xsdir"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Xsdir">[docs]</a><span class="k">class</span> <span class="nc">Xsdir</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -881,8 +884,8 @@ if(ga_enabled){
                 <span class="n">table</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">:</span>
                 <span class="n">table</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span></div>
-                <span class="n">table</span><span class="o">.</span><span class="n">ptable</span> <span class="o">=</span> <span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ptable&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">ptable</span> <span class="o">=</span> <span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ptable&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Xsdir.find_table"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Xsdir.find_table">[docs]</a>    <span class="k">def</span> <span class="nf">find_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find all tables for a given ZIAD.</span>
@@ -900,8 +903,8 @@ if(ga_enabled){
         <span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">tables</span>
+                <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tables</span></div>
 
 <div class="viewcode-block" id="Xsdir.to_xsdata"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Xsdir.to_xsdata">[docs]</a>    <span class="k">def</span> <span class="nf">to_xsdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Writes a Serpent xsdata file for all continuous energy xs tables.</span>
@@ -915,8 +918,8 @@ if(ga_enabled){
         <span class="n">xsdata</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">serpent_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">xsdata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">to_serpent</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
-        <span class="n">xsdata</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">xsdata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">to_serpent</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">xsdata</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
@@ -933,8 +936,8 @@ if(ga_enabled){
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">valid_nucs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
                          <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="k">if</span>
-                         <span class="n">nucname</span><span class="o">.</span><span class="n">isnuclide</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span></div></div>
-        <span class="k">return</span> <span class="n">valid_nucs</span>
+                         <span class="n">nucname</span><span class="o">.</span><span class="n">isnuclide</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">valid_nucs</span></div></div>
 
 
 <div class="viewcode-block" id="XsdirTable"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.XsdirTable">[docs]</a><span class="k">class</span> <span class="nc">XsdirTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1053,11 +1056,11 @@ if(ga_enabled){
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> </span><span class="si">{3}</span><span class="s2"> </span><span class="si">{4}</span><span class="s2"> </span><span class="si">{5:.11e}</span><span class="s2"> </span><span class="si">{6}</span><span class="s2"> </span><span class="si">{7}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">serpent_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zaid</span><span class="p">,</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metastable</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">awr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mf">8.6173423e-11</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetype</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span></div>
-            <span class="n">directory</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">awr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mf">8.6173423e-11</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetype</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">directory</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-        <span class="k">return</span> <span class="s2">&quot;&lt;XsDirTable: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;XsDirTable: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">PtracEvent</span><span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">IsDescription</span><span class="p">):</span>
@@ -1145,8 +1148,8 @@ if(ga_enabled){
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span>
 
-        <span class="c1"># discard the next 8 bytes (the value -1 und another 4)</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="c1"># discard the next 8 bytes (the value -1 und another 4)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PtracReader.read_next"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.read_next">[docs]</a>    <span class="k">def</span> <span class="nf">read_next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">auto</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">raw_format</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Helper method for reading records from the Ptrac file.</span>
@@ -1186,7 +1189,7 @@ if(ga_enabled){
 
             <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
-                                <span class="p">(</span><span class="nb">format</span><span class="o">*</span><span class="n">number</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s1">&#39;i&#39;</span><span class="p">]),</span> <span class="n">b</span><span class="p">)</span>
+                                          <span class="p">(</span><span class="nb">format</span><span class="o">*</span><span class="n">number</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s1">&#39;i&#39;</span><span class="p">]),</span> <span class="n">b</span><span class="p">)</span>
             <span class="n">length2</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1215,8 +1218,8 @@ if(ga_enabled){
             <span class="c1"># just return the number and not a tuple containing just the number</span>
             <span class="k">return</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># convert tuple to list</span></div>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+            <span class="c1"># convert tuple to list</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PtracReader.read_headers"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.read_headers">[docs]</a>    <span class="k">def</span> <span class="nf">read_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read and save the MCNP version and problem description from the</span>
@@ -1254,8 +1257,8 @@ if(ga_enabled){
             <span class="k">if</span> <span class="n">current_variable</span> <span class="o">&lt;</span> <span class="n">num_variables</span> <span class="ow">and</span> <span class="p">(</span><span class="n">current_pos</span> <span class="o">+</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> \
                     <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-            <span class="n">current_pos</span> <span class="o">+=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span></div>
-            <span class="n">current_variable</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">current_pos</span> <span class="o">+=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">current_variable</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="PtracReader.read_variable_ids"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.read_variable_ids">[docs]</a>    <span class="k">def</span> <span class="nf">read_variable_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read the list of variable IDs that each record type in the Ptrac</span>
@@ -1295,14 +1298,14 @@ if(ga_enabled){
             <span class="n">variable_ids</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_var_ids</span><span class="p">[:</span><span class="n">variable_nums</span><span class="p">[</span><span class="n">l</span><span class="p">]]</span>
             <span class="n">all_var_ids</span> <span class="o">=</span> <span class="n">all_var_ids</span><span class="p">[</span><span class="n">variable_nums</span><span class="p">[</span><span class="n">l</span><span class="p">]:]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">variable_nums</span> <span class="o">=</span> <span class="n">variable_nums</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span> <span class="o">=</span> <span class="n">variable_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_nums</span> <span class="o">=</span> <span class="n">variable_nums</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span> <span class="o">=</span> <span class="n">variable_ids</span></div>
 
 <div class="viewcode-block" id="PtracReader.read_nps_line"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.read_nps_line">[docs]</a>    <span class="k">def</span> <span class="nf">read_nps_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read an NPS record and save the type of the next event.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">nps_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_nums</span><span class="p">[</span><span class="s2">&quot;nps&quot;</span><span class="p">])</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">next_event</span> <span class="o">=</span> <span class="n">nps_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">nps_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_nums</span><span class="p">[</span><span class="s2">&quot;nps&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_event</span> <span class="o">=</span> <span class="n">nps_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="PtracReader.read_event_line"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.read_event_line">[docs]</a>    <span class="k">def</span> <span class="nf">read_event_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptrac_event</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read an event record and save it to a given PtracParticle instance.</span>
@@ -1331,8 +1334,8 @@ if(ga_enabled){
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">[</span><span class="n">e</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_mappings</span><span class="p">:</span>
                 <span class="n">ptrac_event</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_mappings</span><span class="p">[</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">[</span><span class="n">e</span><span class="p">][</span><span class="n">i</span><span class="p">]]]</span> <span class="o">=</span> \
-                    <span class="n">evt_line</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
-        <span class="n">ptrac_event</span><span class="p">[</span><span class="s2">&quot;event_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_type</span>
+                    <span class="n">evt_line</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">ptrac_event</span><span class="p">[</span><span class="s2">&quot;event_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_type</span></div>
 
 <div class="viewcode-block" id="PtracReader.write_to_hdf5_table"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.write_to_hdf5_table">[docs]</a>    <span class="k">def</span> <span class="nf">write_to_hdf5_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hdf5_table</span><span class="p">,</span> <span class="n">print_progress</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Writes the events contained in this Ptrac file to a given HDF5</span>
@@ -1356,8 +1359,9 @@ if(ga_enabled){
                 <span class="n">ptrac_event</span><span class="o">.</span><span class="n">append</span><span class="p">()</span>
 
                 <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">print_progress</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">counter</span> <span class="o">%</span> <span class="n">print_progress</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></div></div>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing event </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">print_progress</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">counter</span> <span class="o">%</span> <span class="n">print_progress</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing event </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span></div></div>
+
 
 <span class="k">def</span> <span class="nf">_is_cell_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="n">is_cell</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1367,8 +1371,9 @@ if(ga_enabled){
            <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span> <span class="ow">and</span> \
            <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;     &#39;</span> <span class="ow">and</span> \
            <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
-               <span class="n">is_cell</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">is_cell</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">is_cell</span>
+
 
 <div class="viewcode-block" id="mats_from_inp"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.mats_from_inp">[docs]</a><span class="k">def</span> <span class="nf">mats_from_inp</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function reads an MCNP inp file and returns a mapping of material</span>
@@ -1382,9 +1387,9 @@ if(ga_enabled){
 <span class="sd">    Returns</span>
 <span class="sd">    --------</span>
 <span class="sd">    materials : dict</span>
-<span class="sd">       Keys are MCNP material numbers and values are PyNE material objects (for </span>
-<span class="sd">       single density materials) and MultiMaterial objects (for multiple density </span>
-<span class="sd">       materials). </span>
+<span class="sd">       Keys are MCNP material numbers and values are PyNE material objects (for</span>
+<span class="sd">       single density materials) and MultiMaterial objects (for multiple density</span>
+<span class="sd">       materials).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">mat_lines</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># line of lines that begin material cards</span>
@@ -1401,20 +1406,20 @@ if(ga_enabled){
         <span class="c1"># information is stored in a dictionary where:</span>
         <span class="c1"># key = material number, value = list of densities</span>
         <span class="k">if</span> <span class="n">_is_cell_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-           <span class="n">mat_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
-           <span class="n">den</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">mat_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">den</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
 
-           <span class="k">if</span> <span class="n">mat_num</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">densities</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-               <span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">den</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">mat_num</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">densities</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">den</span><span class="p">]</span>
 
-           <span class="k">else</span><span class="p">:</span>
-               <span class="n">same_bool</span> <span class="o">=</span> <span class="kc">False</span>
-               <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">])):</span>
-                   <span class="k">if</span> <span class="nb">abs</span><span class="p">((</span><span class="n">den</span> <span class="o">-</span> <span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">den</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1E-4</span><span class="p">:</span>
-                       <span class="n">same_bool</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">same_bool</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">])):</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">((</span><span class="n">den</span> <span class="o">-</span> <span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">][</span><span class="n">j</span><span class="p">])</span><span class="o">/</span><span class="n">den</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1E-4</span><span class="p">:</span>
+                        <span class="n">same_bool</span> <span class="o">=</span> <span class="kc">True</span>
 
-               <span class="k">if</span> <span class="n">same_bool</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                   <span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">same_bool</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">densities</span><span class="p">[</span><span class="n">mat_num</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>
 
         <span class="c1"># check line to see if it contain a material card, in the form</span>
         <span class="c1"># m* where * is a digit. If so store the line num. and material number</span>
@@ -1430,17 +1435,17 @@ if(ga_enabled){
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mat_nums</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">mat_nums</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">densities</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">materials</span><span class="p">[</span><span class="n">mat_nums</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mat_from_inp_line</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">mat_lines</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                   <span class="n">densities</span><span class="p">[</span><span class="n">mat_nums</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                                                       <span class="n">densities</span><span class="p">[</span><span class="n">mat_nums</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">materials</span><span class="p">[</span><span class="n">mat_nums</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mat_from_inp_line</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">mat_lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
-    <span class="k">return</span> <span class="n">materials</span>
+            <span class="n">materials</span><span class="p">[</span><span class="n">mat_nums</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mat_from_inp_line</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">mat_lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">materials</span></div>
 
 
 <div class="viewcode-block" id="mat_from_inp_line"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.mat_from_inp_line">[docs]</a><span class="k">def</span> <span class="nf">mat_from_inp_line</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mat_line</span><span class="p">,</span> <span class="n">densities</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This function reads an MCNP material card from a file and returns a</span>
 <span class="sd">    Material or Multimaterial object for the material described by the card.</span>
 <span class="sd">    This function is used by :func:`mats_from_inp`.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str</span>
@@ -1469,7 +1474,7 @@ if(ga_enabled){
             <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">linecache</span><span class="o">.</span><span class="n">getline</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mat_line</span> <span class="o">+</span> <span class="n">line_index</span><span class="p">)</span>
         <span class="c1"># otherwise this not a line we care about, move on and</span>
-        <span class="c1"># skip lines that start with c or C                                                                                                                  </span>
+        <span class="c1"># skip lines that start with c or C</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">linecache</span><span class="o">.</span><span class="n">getline</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mat_line</span> <span class="o">+</span> <span class="n">line_index</span><span class="p">)</span>
@@ -1482,7 +1487,7 @@ if(ga_enabled){
             <span class="n">zzzaaam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span>
                 <span class="n">nucname</span><span class="o">.</span><span class="n">mcnp_to_id</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
 
-            <span class="c1"># this allows us to read nuclides that are repeated                                                                                              </span>
+            <span class="c1"># this allows us to read nuclides that are repeated</span>
             <span class="k">if</span> <span class="n">zzzaaam</span> <span class="ow">in</span> <span class="n">nucvec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">nucvec</span><span class="p">[</span><span class="n">zzzaaam</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1582,8 +1587,8 @@ if(ga_enabled){
             <span class="n">finished_mat</span> <span class="o">=</span> <span class="n">MultiMaterial</span><span class="p">(</span><span class="n">mat_dict</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">finished_mat</span> <span class="o">=</span> <span class="n">mat</span>
-</div>
-    <span class="k">return</span> <span class="n">finished_mat</span>
+
+    <span class="k">return</span> <span class="n">finished_mat</span></div>
 
 
 <div class="viewcode-block" id="Wwinp"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Wwinp">[docs]</a><span class="k">class</span> <span class="nc">Wwinp</span><span class="p">(</span><span class="n">Mesh</span><span class="p">):</span>
@@ -1637,8 +1642,8 @@ if(ga_enabled){
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
                                <span class="s2">&quot;unable to create Wwinp Mesh.&quot;</span><span class="p">)</span>
         <span class="k">pass</span>
 
@@ -1647,8 +1652,8 @@ if(ga_enabled){
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_block1</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_read_block2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_read_block3</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_block2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_block3</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_read_block1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="c1"># Retrieves all of the information from block 1 of a wwinp file.</span>
@@ -1717,7 +1722,7 @@ if(ga_enabled){
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_wwlb</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
             <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
@@ -1733,7 +1738,7 @@ if(ga_enabled){
         <span class="c1"># preexisting mesh.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;mesh&#39;</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">Wwinp</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structured_coords</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                                           <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
                                         <span class="n">structured</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">volume_elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structured_iterate_hex</span><span class="p">(</span><span class="s1">&#39;zyx&#39;</span><span class="p">))</span>
@@ -1756,26 +1761,30 @@ if(ga_enabled){
             <span class="n">ww_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ww_row</span>
 
         <span class="c1"># create vector tags for data</span>
-        <span class="n">tag_ww</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span>
-            <span class="s2">&quot;ww_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">[</span><span class="n">particle_index</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="n">ww_tag_name</span> <span class="o">=</span> <span class="s2">&quot;ww_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">ww_tag_name</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">[</span><span class="n">particle_index</span><span class="p">],</span>
+                 <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">)</span>
+        <span class="n">tag_ww</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="n">ww_tag_name</span><span class="p">)</span>
 
         <span class="c1"># tag vector data to mesh</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">volume_element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">volume_elements</span><span class="p">):</span>
             <span class="n">tag_ww</span><span class="p">[</span><span class="n">volume_element</span><span class="p">]</span> <span class="o">=</span> <span class="n">ww_data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># Save energy upper bounds to rootset.</span>
-        <span class="n">tag_e_bounds</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">_e_upper_bounds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="p">),</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]),</span> <span class="nb">float</span><span class="p">)</span>
-        <span class="n">tag_e_bounds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">rootSet</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]</span>
+        <span class="n">e_bounds_tag_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">_e_upper_bounds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">e_bounds_tag_name</span><span class="p">,</span>
+                 <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]),</span>
+                 <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">)</span>
+        <span class="n">tag_e_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="n">e_bounds_tag_name</span><span class="p">)</span>
+        <span class="n">tag_e_bounds</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Wwinp.write_wwinp"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Wwinp.write_wwinp">[docs]</a>    <span class="k">def</span> <span class="nf">write_wwinp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This method writes a complete WWINP file to &lt;filename&gt;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_block1</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write_block2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write_block3</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_block2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_block3</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_write_block1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="c1"># Writes the all block 1 data to WWINP file</span>
@@ -1875,8 +1884,8 @@ if(ga_enabled){
         <span class="n">ww_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nft</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]))</span>
         <span class="n">volume_elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structured_iterate_hex</span><span class="p">(</span><span class="s1">&#39;zyx&#39;</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">volume_element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">volume_elements</span><span class="p">):</span>
-            <span class="n">ww_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span>
-                <span class="s2">&quot;ww_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="p">))[</span><span class="n">volume_element</span><span class="p">]</span>
+            <span class="n">ww_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s2">&quot;ww_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">particle</span><span class="p">))[</span>
+                <span class="n">volume_element</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]):</span>
             <span class="c1"># Append ww_data to block3 string.</span>
@@ -1910,11 +1919,10 @@ if(ga_enabled){
         <span class="c1"># Set energy related attributes.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">e</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ne</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">all_tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getAllTags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">rootSet</span><span class="p">)]</span>
+        <span class="n">all_tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_tags</span><span class="p">()]</span>
 
         <span class="k">if</span> <span class="s1">&#39;n_e_upper_bounds&#39;</span> <span class="ow">in</span> <span class="n">all_tags</span><span class="p">:</span>
-            <span class="n">n_e_upper_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span>
-                <span class="s1">&#39;n_e_upper_bounds&#39;</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">rootSet</span><span class="p">]</span>
+            <span class="n">n_e_upper_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_e_upper_bounds</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
             <span class="c1"># In the single energy group case, the &quot;E_upper_bounds&quot; tag</span>
             <span class="c1"># returns a non-iterable float. If this is the case, put this</span>
             <span class="c1"># float into an array so that it can be iterated over</span>
@@ -1929,8 +1937,7 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">ne</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s1">&#39;p_e_upper_bounds&#39;</span> <span class="ow">in</span> <span class="n">all_tags</span><span class="p">:</span>
-            <span class="n">p_e_upper_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span>
-                <span class="s1">&#39;p_e_upper_bounds&#39;</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">rootSet</span><span class="p">]</span>
+            <span class="n">p_e_upper_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_e_upper_bounds</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p_e_upper_bounds</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
                 <span class="n">p_e_upper_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">p_e_upper_bounds</span><span class="p">]</span>
 
@@ -1970,8 +1977,8 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span></div></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="Meshtal"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Meshtal">[docs]</a><span class="k">class</span> <span class="nc">Meshtal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -2020,8 +2027,8 @@ if(ga_enabled){
 <span class="sd">             material objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
                                <span class="s2">&quot;unable to create Meshtal.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tally</span> <span class="o">=</span> <span class="p">{}</span>
@@ -2061,12 +2068,12 @@ if(ga_enabled){
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tally_num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">MeshTally</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tally_num</span><span class="p">,</span>
                                                       <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tally_num</span><span class="p">],</span>
-                                          <span class="n">mesh_has_mats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_meshes_have_mats</span><span class="p">)</span>
+                                                      <span class="n">mesh_has_mats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_meshes_have_mats</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">MeshTally</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tally_num</span><span class="p">,</span>
-                                          <span class="n">mesh_has_mats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_meshes_have_mats</span><span class="p">)</span>
-</div>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                                                      <span class="n">mesh_has_mats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_meshes_have_mats</span><span class="p">)</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MeshTally"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.MeshTally">[docs]</a><span class="k">class</span> <span class="nc">MeshTally</span><span class="p">(</span><span class="n">StatMesh</span><span class="p">):</span>
@@ -2094,7 +2101,7 @@ if(ga_enabled){
 <span class="sd">    e_bounds : list of floats</span>
 <span class="sd">        The minimum and maximum bounds for energy bins</span>
 <span class="sd">    mesh :</span>
-<span class="sd">        An iMesh instance tagged with all results and</span>
+<span class="sd">        An PyMOAB core instance tagged with all results and</span>
 <span class="sd">        relative errors</span>
 <span class="sd">    tag_names : iterable</span>
 <span class="sd">        Four strs that specify the tag names for the results, relative errors,</span>
@@ -2127,8 +2134,8 @@ if(ga_enabled){
 <span class="sd">             objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
                                <span class="s2">&quot;unable to create Meshtally Mesh.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tally_number</span> <span class="o">=</span> <span class="n">tally_number</span>
@@ -2190,13 +2197,13 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">column_names</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_names</span><span class="p">))))</span>
 
     <span class="k">def</span> <span class="nf">_create_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">mesh_has_mats</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate a Mesh object and tag the iMesh instance</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate a Mesh object and tag the PyMOAB core instance</span>
 <span class="sd">           with results and relative errors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mats</span> <span class="o">=</span> <span class="p">()</span> <span class="k">if</span> <span class="n">mesh_has_mats</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MeshTally</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structured_coords</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">,</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
+                                                           <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
                                         <span class="n">structured</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mats</span><span class="o">=</span><span class="n">mats</span><span class="p">)</span>
 
         <span class="n">num_vol_elements</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>\
@@ -2219,10 +2226,13 @@ if(ga_enabled){
             <span class="n">rel_error</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_error_row</span>
 
         <span class="c1"># Tag results and error vector to mesh</span>
-        <span class="n">res_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                           <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">rel_err_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                               <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">,</span>
+                 <span class="n">size</span><span class="o">=</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">res_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">,</span>
+                 <span class="n">size</span><span class="o">=</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">rel_err_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
         <span class="k">if</span> <span class="n">num_e_groups</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">res_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">rel_err_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">rel_error</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -2241,11 +2251,16 @@ if(ga_enabled){
                 <span class="n">rel_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span><span class="p">[</span><span class="s2">&quot;Rel_Error&quot;</span><span class="p">]]))</span>
 
-            <span class="n">res_tot_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">rel_err_tot_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                       <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-            <span class="n">res_tot_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">result</span></div>
-            <span class="n">rel_err_tot_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">rel_error</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                     <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">)</span>
+            <span class="n">res_tot_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                     <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">)</span>
+            <span class="n">rel_err_tot_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+            <span class="n">res_tot_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="n">rel_err_tot_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">rel_error</span></div>
 
 
 <div class="viewcode-block" id="mesh_to_geom"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.mesh_to_geom">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">frac_type</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="n">title_card</span><span class="o">=</span><span class="s2">&quot;Generated from PyNE Mesh&quot;</span><span class="p">):</span>
@@ -2280,8 +2295,8 @@ if(ga_enabled){
     <span class="n">surf_cards</span> <span class="o">=</span> <span class="n">_mesh_to_surf_cards</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">divs</span><span class="p">)</span>
     <span class="n">mat_cards</span> <span class="o">=</span> <span class="n">_mesh_to_mat_cards</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">divs</span><span class="p">,</span> <span class="n">frac_type</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="se">\n</span><span class="si">{1}</span><span class="se">\n</span><span class="si">{2}</span><span class="se">\n</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_card</span><span class="p">,</span> <span class="n">cell_cards</span><span class="p">,</span></div>
-                                       <span class="n">surf_cards</span><span class="p">,</span> <span class="n">mat_cards</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="se">\n</span><span class="si">{1}</span><span class="se">\n</span><span class="si">{2}</span><span class="se">\n</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_card</span><span class="p">,</span> <span class="n">cell_cards</span><span class="p">,</span>
+                                       <span class="n">surf_cards</span><span class="p">,</span> <span class="n">mat_cards</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_mesh_to_cell_cards</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">divs</span><span class="p">):</span>
@@ -2403,8 +2418,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

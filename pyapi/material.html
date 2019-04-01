@@ -11,11 +11,14 @@
     <title>Materials – pyne.material &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -82,15 +85,15 @@ have two main attributes which define them.</p>
 <h2>Material Class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pyne.material.Material">
-<em class="property">class </em><code class="descclassname">pyne.material.</code><code class="descname">Material</code><span class="sig-paren">(</span><em>comp</em>, <em>mass=-1.0</em>, <em>atoms_per_mol=-1.0</em>, <em>attrs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyne.material.</code><code class="descname">Material</code><a class="headerlink" href="#pyne.material.Material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Material composed of nuclides.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>comp</strong> : dict or str</p>
-<blockquote>
-<div><p>This is the input nuclide component dictionary.  This dictionary need
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>comp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict or str</span></dt>
+<dd><p class="first last">This is the input nuclide component dictionary.  This dictionary need
 not be normalized; Material initialization will automatically
 renormalize the stream.  Thus the comp simply is a dictionary of
 relative mass.  The keys of comp must be integers representing
@@ -99,36 +102,32 @@ mass fraction. If a string is provided instead of a dictionary, then
 Material will read in the comp vector from a file at the string’s
 location.  This either plaintext or hdf5 files. If no comp is provided,
 an empty Material object is constructed.</p>
-</div></blockquote>
-<p><strong>mass</strong> : float, optional</p>
-<blockquote>
-<div><p>This is the mass of the new stream. If the mass provided is negative
+</dd>
+<dt><strong>mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
 sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
-</div></blockquote>
-<p><strong>density</strong> : float, optional</p>
-<blockquote>
-<div><p>This is the density of the material.</p>
-</div></blockquote>
-<p><strong>atoms_per_molecule</strong> : float, optional</p>
-<blockquote>
-<div><p>Number of atoms to per molecule of material.  Needed to obtain proper
+</dd>
+<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">This is the density of the material.</p>
+</dd>
+<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Number of atoms to per molecule of material.  Needed to obtain proper
 scaling of molecular mass.  For example, this value for water is
 3.0.</p>
-</div></blockquote>
-<p><strong>metadata</strong> : JSON-convertable Python object, optional</p>
-<blockquote>
-<div><p>Initial attributes to build the material with.  At the top-level this is
+</dd>
+<dt><strong>metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">JSON-convertable Python object, optional</span></dt>
+<dd><p class="first last">Initial attributes to build the material with.  At the top-level this is
 usually a dictionary with string keys.  This container is used to store
 arbitrary metadata about the material.</p>
-</div></blockquote>
-<p><strong>free_mat</strong> : bool, optional</p>
-<blockquote class="last">
-<div><p>Flag for whether this wrapper ‘owns’ this underlying C++ pyne::Material
+</dd>
+<dt><strong>free_mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Flag for whether this wrapper ‘owns’ this underlying C++ pyne::Material
 object, and thus determines whether or not to deallocate it on wrapper
 destruction.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -141,10 +140,11 @@ destruction.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nucvec</strong> : dict</p>
-<blockquote class="last">
-<div><p>For a Material mat</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">For a Material mat</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -160,10 +160,11 @@ attributes as ALARA valid comments.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>s</strong> : str</p>
-<blockquote class="last">
-<div><p>The MCNP material card.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>s</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The MCNP material card.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -184,10 +185,19 @@ the set nucset. This function returns a copy of the material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newmat</strong> : Material</p>
-<blockquote class="last">
-<div><p>A copied and collapsed material.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nucset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set, optional</span></dt>
+<dd><p class="first last">A set of integers representing nucids which should not
+be collapsed.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>newmat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A copied and collapsed material.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -202,17 +212,20 @@ the set nucset. This function returns a copy of the material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>A</strong> : 1D array-like</p>
-<blockquote>
-<div><p>The transmutation matrix [unitless]</p>
-</div></blockquote>
-<p><strong>order</strong> : int, optional</p>
-<blockquote>
-<div><p>The CRAM approximation order (default 14).</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array-like</span></dt>
+<dd><p class="first last">The transmutation matrix [unitless]</p>
+</dd>
+<dt><strong>order</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The CRAM approximation order (default 14).</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A new material which has been transmuted.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>A new material which has been transmuted.</strong></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -235,10 +248,11 @@ and returns decay heat in units of [MW].</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nucvec</strong> : dict</p>
-<blockquote class="last">
-<div><p>For a Material mat</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">For a Material mat</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -254,18 +268,20 @@ comprised of only the non-specified nuclides.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc_sequence</strong> : sequence</p>
-<blockquote>
-<div><p>Nuclides to be taken out of the current material.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nuc_sequence</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
+<dd><p class="first last">Nuclides to be taken out of the current material.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new material object that only has the members not given in
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new material object that only has the members not given in
 nuc_sequence.  The mass of the submaterial is calculated based on
 the mass fraction composition and mass of the original material.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -285,21 +301,22 @@ returns a submaterial.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lower</strong> : nuclide-name, optional</p>
-<blockquote>
-<div><p>Lower bound on nuclide range.</p>
-</div></blockquote>
-<p><strong>upper</strong> : nuclide-name, optional</p>
-<blockquote>
-<div><p>Upper bound on nuclide range.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
+<dd><p class="first last">Lower bound on nuclide range.</p>
+</dd>
+<dt><strong>upper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
+<dd><p class="first last">Upper bound on nuclide range.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that does not contain nuclides on the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that does not contain nuclides on the
 given range.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -314,25 +331,26 @@ given range.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dose_type</strong> : string</p>
-<blockquote>
-<div><p>One of: ext_air, ext_soil, ingest, inhale</p>
-</div></blockquote>
-<p><strong>source</strong> : int</p>
-<blockquote>
-<div><p>optional; default is EPA
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dose_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">One of: ext_air, ext_soil, ingest, inhale</p>
+</dd>
+<dt><strong>source</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">optional; default is EPA
 0 for EPA, 1 for DOE, 2 for GENII</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nucvec</strong> : dict</p>
-<blockquote class="last">
-<div><p>For a Material mat:
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">For a Material mat:
 ext_air_dose returns mrem/h per g per m^3
 ext_soil_dose returns mrem/h per g per m^2
 ingest_dose returns mrem per g
 inhale_dose returns mrem per g</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -347,10 +365,11 @@ inhale_dose returns mrem per g</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>val</strong> : jsoncpp.Value</p>
-<blockquote class="last">
-<div><p>An object-type JSON value.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>val</strong> <span class="classifier-delimiter">:</span> <span class="classifier">jsoncpp.Value</span></dt>
+<dd><p class="first last">An object-type JSON value.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -360,16 +379,27 @@ inhale_dose returns mrem per g</p>
 <dl class="method">
 <dt id="pyne.material.Material.expand_elements">
 <code class="descname">expand_elements</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.expand_elements" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exapnds the elements (‘U’, ‘C’, etc) in the material by replacing them
-with their natural isotopic distributions.  This function returns a copy.</p>
+<dd><p>Expands the elements (‘U’, ‘C’, etc) in the material by
+replacing them with their natural isotopic distributions with
+the exception of the ids in nucset. This function returns a
+copy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newmat</strong> : Material</p>
-<blockquote class="last">
-<div><p>A copied and expanded material.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nucset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set, optional</span></dt>
+<dd><p class="first last">A set of integers representing nucids which should not
+be expanded.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>newmat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A copied and expanded material.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -449,12 +479,13 @@ Parameters
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>atom_fracs</strong> : dict</p>
-<blockquote class="last">
-<div><p>Dictionary that maps nuclides or materials to atom fractions for
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>atom_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary that maps nuclides or materials to atom fractions for
 the material.  The keys may be intergers, strings, or materials.
 The values must be castable to floats.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -489,27 +520,25 @@ This is possible because Materials are hashable.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>Path to HDF5 file that contains the data to read in.</p>
-</div></blockquote>
-<p><strong>datapath</strong> : str</p>
-<blockquote>
-<div><p>Path to HDF5 table or group that represents the data.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to HDF5 file that contains the data to read in.</p>
+</dd>
+<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to HDF5 table or group that represents the data.
 In the example below, datapath = “/material”.</p>
-</div></blockquote>
-<p><strong>row</strong> : int, optional</p>
-<blockquote>
-<div><p>The index of the arrays from which to read the data.  This
+</dd>
+<dt><strong>row</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The index of the arrays from which to read the data.  This
 ranges from 0 to N-1.  Defaults to the last element of the array.
 Negative indexing is allowed (row[-N] = row[0]).</p>
-</div></blockquote>
-<p><strong>protocol</strong> : int, optional</p>
-<blockquote class="last">
-<div><p>Specifies the protocol to use to read in the data.  Different
+</dd>
+<dt><strong>protocol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Specifies the protocol to use to read in the data.  Different
 protocols are used to represent different internal structures in
 the HDF5 file.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -572,10 +601,11 @@ Initialization is therefore a two-step process:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>Path to text file that contains the data to read in.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to text file that contains the data to read in.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -590,10 +620,11 @@ Initialization is therefore a two-step process:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>Path to text file that contains the data to read in.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to text file that contains the data to read in.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -636,10 +667,11 @@ Initialization is therefore a two-step process:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>gammas</strong> : a vector of pairs of gamma-rays and intensities. The</p>
-<blockquote class="last">
-<div><p>intensities are in decays/s/atom material</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>gammas</strong> <span class="classifier-delimiter">:</span> <span class="classifier">a vector of pairs of gamma-rays and intensities. The</span></dt>
+<dd><p class="first last">intensities are in decays/s/atom material</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -653,12 +685,27 @@ Initialization is therefore a two-step process:</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.items">
-<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's items<a class="headerlink" href="#pyne.material.Material.items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D's (key, value) pairs, as 2-tuples<a class="headerlink" href="#pyne.material.Material.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.Material.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the (key, value) items of D<a class="headerlink" href="#pyne.material.Material.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.Material.iterkeys">
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the keys of D<a class="headerlink" href="#pyne.material.Material.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.Material.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the values of D<a class="headerlink" href="#pyne.material.Material.itervalues" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.Material.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="headerlink" href="#pyne.material.Material.keys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D's keys<a class="headerlink" href="#pyne.material.Material.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -669,10 +716,11 @@ Initialization is therefore a two-step process:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>json</strong> : jsoncpp.Value</p>
-<blockquote class="last">
-<div><p>An object-type JSON value.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>json</strong> <span class="classifier-delimiter">:</span> <span class="classifier">jsoncpp.Value</span></dt>
+<dd><p class="first last">An object-type JSON value.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -689,22 +737,23 @@ current value of the density attribute.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>num_dens</strong> : float, optional</p>
-<blockquote>
-<div><p>The number density from which to compute the mass density in units
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>num_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The number density from which to compute the mass density in units
 of [1/cc].</p>
-</div></blockquote>
-<p><strong>atoms_per_molecule</strong> : float, optional</p>
-<blockquote>
-<div><p>Number of atoms to per molecule of material. For example, this value
+</dd>
+<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Number of atoms to per molecule of material. For example, this value
 for water is 3.0.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>density</strong> : float</p>
-<blockquote class="last">
-<div><p>The density attr [g/cc].</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The density attr [g/cc].</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -730,17 +779,19 @@ material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>atoms_per_molecule</strong> : double, optional</p>
-<blockquote>
-<div><p>Number of atoms to per molecule of material.  Needed to obtain
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">double, optional</span></dt>
+<dd><p class="first last">Number of atoms to per molecule of material.  Needed to obtain
 proper scaling.  For example, this value for water is 3.0.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mol_mass</strong> : float</p>
-<blockquote class="last">
-<div><p>Molecular mass in [amu].</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mol_mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Molecular mass in [amu].</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -756,12 +807,13 @@ nuctopic vector.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nucvec</strong> : dict</p>
-<blockquote class="last">
-<div><p>For a Material mat,</p>
-<div class="math">
-<p><span class="math">\mbox{nucvec[nuc]} = \mbox{mat.comp[nuc]} \times \mbox{mat.mass}</span></p>
-</div></div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first">For a Material mat,</p>
+<div class="last math notranslate nohighlight">
+\[\mbox{nucvec[nuc]} = \mbox{mat.comp[nuc]} \times \mbox{mat.mass}\]</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -802,26 +854,33 @@ density is computed using the current value of the density attribute.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mass_dens</strong> : float, optional</p>
-<blockquote>
-<div><p>The mass density from which to compute the number density in units
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>mass_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The mass density from which to compute the number density in units
 of [g/cc].</p>
-</div></blockquote>
-<p><strong>atoms_per_molecule</strong> : float, optional</p>
-<blockquote>
-<div><p>Number of atoms to per molecule of material. For example, this value
+</dd>
+<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Number of atoms to per molecule of material. For example, this value
 for water is 3.0.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>num_dens</strong> : float</p>
-<blockquote class="last">
-<div><p>The number density [1/cc] of the material.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>num_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The number density [1/cc] of the material.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.Material.openmc">
+<code class="descname">openmc</code><span class="sig-paren">(</span><em>frac_type</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.openmc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an openmc xml element for the material</p>
 </dd></dl>
 
 <dl class="method">
@@ -834,17 +893,19 @@ decay of the material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>norm</strong> : boolean</p>
-<blockquote>
-<div><p>Whether or not to normalize the returned data if True then
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">Whether or not to normalize the returned data if True then
 intensities</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>photons</strong> : a vector of pairs of photon energies and intensities. The</p>
-<blockquote class="last">
-<div><p>intensities are in decays/s/atom material</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>photons</strong> <span class="classifier-delimiter">:</span> <span class="classifier">a vector of pairs of photon energies and intensities. The</span></dt>
+<dd><p class="first last">intensities are in decays/s/atom material</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -872,25 +933,26 @@ material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc_sequence</strong> : sequence</p>
-<blockquote>
-<div><p>Nuctopes –OR– elements to be taken from current stream.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nuc_sequence</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
+<dd><p class="first last">Nuctopes –OR– elements to be taken from current stream.
 Members of this list must be integers.  For example, [922350, 942390]
 would take U-235 and Pu-239.</p>
-</div></blockquote>
-<p><strong>value</strong> : float</p>
-<blockquote>
-<div><p>Mass value to set all nuclides in sequence to on the material.</p>
-</div></blockquote>
+</dd>
+<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Mass value to set all nuclides in sequence to on the material.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new material object whose members in nuc_sequence have the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new material object whose members in nuc_sequence have the
 cooresponding mass value.  The mass of the submaterial is
 calculated based on the mass fraction composition and mass of the
 original material.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -906,24 +968,24 @@ a new mass weight value.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lower</strong> : nuclide-name, optional</p>
-<blockquote>
-<div><p>Lower bound on nuclide range.</p>
-</div></blockquote>
-<p><strong>upper</strong> : nuclide-name, optional</p>
-<blockquote>
-<div><p>Upper bound on nuclide range.</p>
-</div></blockquote>
-<p><strong>value</strong> : float</p>
-<blockquote>
-<div><p>Mass value to set all nuclides on the range to on the material.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
+<dd><p class="first last">Lower bound on nuclide range.</p>
+</dd>
+<dt><strong>upper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
+<dd><p class="first last">Upper bound on nuclide range.</p>
+</dd>
+<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Mass value to set all nuclides on the range to on the material.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has nuclides on the given range.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has nuclides on the given range.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -943,10 +1005,11 @@ a new mass weight value.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Actinide members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Actinide members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -962,10 +1025,11 @@ only the nuclides of the specified element.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has members of the given element.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has members of the given element.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -981,10 +1045,11 @@ stream.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Fission Product members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Fission Product members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -999,10 +1064,11 @@ stream.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Lanthanide members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Lanthanide members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1018,10 +1084,11 @@ stream.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Minor Actinide members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Minor Actinide members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1037,21 +1104,23 @@ of only the specified nuclides.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nuc_sequence</strong> : sequence</p>
-<blockquote>
-<div><p>Nuctopes –OR– elements to be taken from current stream.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nuc_sequence</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
+<dd><p class="first last">Nuctopes –OR– elements to be taken from current stream.
 Members of this list must be integers.  For example, [922350, 942390]
 would take U-235 and Pu-239.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only
 has the members given in nuc_sequence.  The mass of the submaterial
 is calculated based on the mass fraction composition and mass
 of the original mass stream.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1070,10 +1139,11 @@ original material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Plutonium members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Plutonium members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1089,20 +1159,21 @@ of values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lower</strong> : nuclide-name, optional</p>
-<blockquote>
-<div><p>Lower bound on nuclide range.</p>
-</div></blockquote>
-<p><strong>upper</strong> : nuclide-name, optional</p>
-<blockquote>
-<div><p>Upper bound on nuclide range.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
+<dd><p class="first last">Lower bound on nuclide range.</p>
+</dd>
+<dt><strong>upper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
+<dd><p class="first last">Upper bound on nuclide range.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has nuclides on the given range.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has nuclides on the given range.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1118,10 +1189,11 @@ stream.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Transuranic members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Transuranic members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1136,10 +1208,11 @@ stream.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>submaterial</strong> : Material</p>
-<blockquote class="last">
-<div><p>A new mass stream object that only has Uranium members.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A new mass stream object that only has Uranium members.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1154,11 +1227,12 @@ stream.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>atom_dens</strong> : mapping</p>
-<blockquote class="last">
-<div><p>Dictionary-like object that maps nuclides to atom densites in the
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>atom_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">mapping</span></dt>
+<dd><p class="first last">Dictionary-like object that maps nuclides to atom densites in the
 material.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1173,11 +1247,12 @@ material.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>atom_fracs</strong> : mapping</p>
-<blockquote class="last">
-<div><p>Dictionary-like object that maps nuclides to atom fractions in the
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>atom_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">mapping</span></dt>
+<dd><p class="first last">Dictionary-like object that maps nuclides to atom fractions in the
 material.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1194,7 +1269,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 
 <dl class="method">
 <dt id="pyne.material.Material.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="headerlink" href="#pyne.material.Material.values" title="Permalink to this definition">¶</a></dt>
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D's values<a class="headerlink" href="#pyne.material.Material.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1206,10 +1281,11 @@ to the file with the supplied filename.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>The file to append the material definition to.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The file to append the material definition to.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1225,40 +1301,37 @@ from_hdf5() method).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>Path to HDF5 file to write the data out to.  If the file does not
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to HDF5 file to write the data out to.  If the file does not
 exist, it will be created.</p>
-</div></blockquote>
-<p><strong>datapath</strong> : str, optional</p>
-<blockquote>
-<div><p>Path to HDF5 table that represents the data.  If the table does not
+</dd>
+<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Path to HDF5 table that represents the data.  If the table does not
 exist, it will be created.</p>
-</div></blockquote>
-<p><strong>nucpath</strong> : str, optional</p>
-<blockquote>
-<div><p>Path to id array of nuclides to write out.  If this array does
+</dd>
+<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Path to id array of nuclides to write out.  If this array does
 not exist, it is created with the nuclides present in this
 material. Nuclides present in this material but not in nucpath will
 not be written out.</p>
-</div></blockquote>
-<p><strong>row</strong> : float, optional</p>
-<blockquote>
-<div><p>The row index of the HDF5 table to write this material to.  This
+</dd>
+<dt><strong>row</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The row index of the HDF5 table to write this material to.  This
 ranges from 0 to N.  Negative indexing is allowed (row[-N] =
 row[0]).  Defaults to the appending this material to the table
 (row[N] = row[-0.0]).  This value must be a float since in integer
 repesentation 0 <strong>is</strong> -0, but in float representation 0.0 <strong>is
 not</strong> -0.0.</p>
-</div></blockquote>
-<p><strong>chunksize</strong> : int, optional</p>
-<blockquote class="last">
-<div><p>In Protocol 1, materials are stored in an HDF5 table which is an
+</dd>
+<dt><strong>chunksize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">In Protocol 1, materials are stored in an HDF5 table which is an
 extensible data type. The chunksize determines the number of rows
 per chunk.  For better performance, this number should be as close
 as possible to the final table size.  This parameter is only
 relevant if a new table is being created.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1285,11 +1358,12 @@ table:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>Path to text file to write the data to.  If the file already
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to text file to write the data to.  If the file already
 exists, it will be overwritten.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1311,15 +1385,39 @@ attributes to the file with the supplied filename.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>The file to append the material definition to.</p>
-</div></blockquote>
-<p><strong>frac_type</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The file to append the material definition to.</p>
+</dd>
+<dt><strong>frac_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
 are used to describe material composition.</p>
-</div></blockquote>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.Material.write_openmc">
+<code class="descname">write_openmc</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>frac_type='mass'</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_openmc" title="Permalink to this definition">¶</a></dt>
+<dd><p>The method appends an OpenMC mass fraction definition, with
+attributes to the file with the supplied filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The file to append the material definition to.</p>
+</dd>
+<dt><strong>frac_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
+are used to describe material composition.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1334,11 +1432,12 @@ are used to describe material composition.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote class="last">
-<div><p>Path to text file to write the data to.  If the file already
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to text file to write the data to.  If the file already
 exists, it will be overwritten.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1360,10 +1459,11 @@ Includes only X rays from internal conversion and electron capture</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x-rays</strong> : a vector of pairs of X-rays and intensities. The</p>
-<blockquote class="last">
-<div><p>intensities are in decays/s/atom material</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>x-rays</strong> <span class="classifier-delimiter">:</span> <span class="classifier">a vector of pairs of X-rays and intensities. The</span></dt>
+<dd><p class="first last">intensities are in decays/s/atom material</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1384,41 +1484,39 @@ Includes only X rays from internal conversion and electron capture</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>atom_fracs</strong> : dict</p>
-<blockquote>
-<div><p>Dictionary that maps nuclides or materials to atom fractions for the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>atom_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary that maps nuclides or materials to atom fractions for the
 material.  The keys may be intergers, strings, or materials. The values
 must be castable to floats.</p>
-</div></blockquote>
-<p><strong>mass</strong> : float, optional</p>
-<blockquote>
-<div><p>This is the mass of the new stream. If the mass provided is negative
+</dd>
+<dt><strong>mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
 sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
-</div></blockquote>
-<p><strong>density</strong> : float, optional</p>
-<blockquote>
-<div><p>This is the density of the material.</p>
-</div></blockquote>
-<p><strong>atoms_per_molecule</strong> : float, optional</p>
-<blockquote>
-<div><p>Number of atoms per molecule of material.  Needed to obtain proper
+</dd>
+<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">This is the density of the material.</p>
+</dd>
+<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Number of atoms per molecule of material.  Needed to obtain proper
 scaling of molecular mass.  For example, this value for water is
 3.0.</p>
-</div></blockquote>
-<p><strong>metadata</strong> : JSON-convertable Python object, optional</p>
-<blockquote>
-<div><p>Initial attributes to build the material with.  At the top-level this is
+</dd>
+<dt><strong>metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">JSON-convertable Python object, optional</span></dt>
+<dd><p class="first last">Initial attributes to build the material with.  At the top-level this is
 usually a dictionary with string keys.  This container is used to store
 arbitrary metadata about the material.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mat</strong> : Material</p>
-<blockquote class="last">
-<div><p>A material generated from atom fractions.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A material generated from atom fractions.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1458,32 +1556,31 @@ This is possible because Materials are hashable.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>Path to HDF5 file that contains the data to read in.</p>
-</div></blockquote>
-<p><strong>datapath</strong> : str</p>
-<blockquote>
-<div><p>Path to HDF5 table or group that represents the data.</p>
-</div></blockquote>
-<p><strong>row</strong> : int, optional</p>
-<blockquote>
-<div><p>The index of the arrays from which to read the data.  This
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to HDF5 file that contains the data to read in.</p>
+</dd>
+<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to HDF5 table or group that represents the data.</p>
+</dd>
+<dt><strong>row</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The index of the arrays from which to read the data.  This
 ranges from 0 to N-1.  Defaults to the last element of the array.
 Negative indexing is allowed (row[-N] = row[0]).</p>
-</div></blockquote>
-<p><strong>protocol</strong> : int, optional</p>
-<blockquote>
-<div><p>Specifies the protocol to use to read in the data.  Different
+</dd>
+<dt><strong>protocol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Specifies the protocol to use to read in the data.  Different
 protocols are used to represent different internal structures in
 the HDF5 file.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mat</strong> : Material</p>
-<blockquote class="last">
-<div><p>A material found in the HDF5 file.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A material found in the HDF5 file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1511,35 +1608,34 @@ the HDF5 file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>Path to text file that contains the data to read in.</p>
-</div></blockquote>
-<p><strong>mass</strong> : float, optional</p>
-<blockquote>
-<div><p>This is the mass of the new stream. If the mass provided is negative
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to text file that contains the data to read in.</p>
+</dd>
+<dt><strong>mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
 sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
-</div></blockquote>
-<p><strong>atoms_per_molecule</strong> : float, optional</p>
-<blockquote>
-<div><p>Number of atoms to per molecule of material.  Needed to obtain proper
+</dd>
+<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Number of atoms to per molecule of material.  Needed to obtain proper
 scaling of molecular mass.  For example, this value for water is
 3.0.</p>
-</div></blockquote>
-<p><strong>metadata</strong> : JSON-convertable Python object, optional</p>
-<blockquote>
-<div><p>Initial attributes to build the material with.  At the top-level this is
+</dd>
+<dt><strong>metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">JSON-convertable Python object, optional</span></dt>
+<dd><p class="first last">Initial attributes to build the material with.  At the top-level this is
 usually a dictionary with string keys.  This container is used to store
 arbitrary metadata about the material.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mat</strong> : Material</p>
-<blockquote class="last">
-<div><p>A material found in the HDF5 file.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">A material found in the HDF5 file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1571,19 +1667,18 @@ prefernces between several sources (multiple libraries).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lib</strong> : dict-like, str, or None, optional</p>
-<blockquote>
-<div><p>The data to intialize the material library with.  If this is a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>lib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict-like, str, or None, optional</span></dt>
+<dd><p class="first last">The data to intialize the material library with.  If this is a
 string, it is interpreted as a path to a file.</p>
-</div></blockquote>
-<p><strong>datapath</strong> : str, optional</p>
-<blockquote>
-<div><p>The path in the heirarchy to the data table in an HDF5 file.</p>
-</div></blockquote>
-<p><strong>nucpath</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</div></blockquote>
+</dd>
+<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The path in the heirarchy to the data table in an HDF5 file.</p>
+</dd>
+<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The path in the heirarchy to the nuclide array in an HDF5 file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1601,18 +1696,17 @@ string, it is interpreted as a path to a file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>file</strong> : str</p>
-<blockquote>
-<div><p>A path to an HDF5 file.</p>
-</div></blockquote>
-<p><strong>datapath</strong> : str, optional</p>
-<blockquote>
-<div><p>The path in the heirarchy to the data table in an HDF5 file.</p>
-</div></blockquote>
-<p><strong>nucpath</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">A path to an HDF5 file.</p>
+</dd>
+<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The path in the heirarchy to the data table in an HDF5 file.</p>
+</dd>
+<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The path in the heirarchy to the nuclide array in an HDF5 file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1627,10 +1721,11 @@ string, it is interpreted as a path to a file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>file</strong> : str</p>
-<blockquote class="last">
-<div><p>A path to a JSON file.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">A path to a JSON file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1644,12 +1739,27 @@ string, it is interpreted as a path to a file.</p>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.items">
-<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's items<a class="headerlink" href="#pyne.material.MaterialLibrary.items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D's (key, value) pairs, as 2-tuples<a class="headerlink" href="#pyne.material.MaterialLibrary.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.MaterialLibrary.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the (key, value) items of D<a class="headerlink" href="#pyne.material.MaterialLibrary.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.MaterialLibrary.iterkeys">
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the keys of D<a class="headerlink" href="#pyne.material.MaterialLibrary.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyne.material.MaterialLibrary.itervalues">
+<code class="descname">itervalues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an iterator over the values of D<a class="headerlink" href="#pyne.material.MaterialLibrary.itervalues" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="headerlink" href="#pyne.material.MaterialLibrary.keys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D's keys<a class="headerlink" href="#pyne.material.MaterialLibrary.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1679,7 +1789,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 
 <dl class="method">
 <dt id="pyne.material.MaterialLibrary.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="headerlink" href="#pyne.material.MaterialLibrary.values" title="Permalink to this definition">¶</a></dt>
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list of D's values<a class="headerlink" href="#pyne.material.MaterialLibrary.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1690,18 +1800,17 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>A path to an HDF5 file.</p>
-</div></blockquote>
-<p><strong>datapath</strong> : str, optional</p>
-<blockquote>
-<div><p>The path in the heirarchy to the data table in an HDF5 file.</p>
-</div></blockquote>
-<p><strong>nucpath</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">A path to an HDF5 file.</p>
+</dd>
+<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The path in the heirarchy to the data table in an HDF5 file.</p>
+</dd>
+<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The path in the heirarchy to the nuclide array in an HDF5 file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1716,10 +1825,11 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>file</strong> : str</p>
-<blockquote class="last">
-<div><p>A path to a JSON file.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">A path to a JSON file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1805,8 +1915,8 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

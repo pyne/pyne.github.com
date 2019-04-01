@@ -11,11 +11,14 @@
     <title>pyne.alara &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -66,11 +69,16 @@ if(ga_enabled){
 <span></span><span class="sd">&quot;&quot;&quot;This module contains functions relevant to the ALARA activation code and the Chebyshev Rational Approximation Method</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.data_source</span> <span class="k">import</span> <span class="n">SimpleDataSource</span>
+<span class="kn">from</span> <span class="nn">pyne.data</span> <span class="k">import</span> <span class="n">N_A</span><span class="p">,</span> <span class="n">decay_const</span><span class="p">,</span> <span class="n">decay_children</span><span class="p">,</span> <span class="n">branch_ratio</span>
+<span class="kn">from</span> <span class="nn">pyne.nucname</span> <span class="k">import</span> <span class="n">serpent</span><span class="p">,</span> <span class="n">alara</span><span class="p">,</span> <span class="n">znum</span><span class="p">,</span> <span class="n">anum</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">from_atom_frac</span>
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">HAVE_PYMOAB</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
-
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span><span class="p">,</span> <span class="n">to_sec</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
 
@@ -81,19 +89,12 @@ if(ga_enabled){
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
     <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span><span class="p">,</span> <span class="n">iBase</span><span class="p">,</span> <span class="n">iMeshExtensions</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
-                  <span class="s2">&quot;Some aspects of the alara module may be incomplete.&quot;</span><span class="p">,</span>
-                  <span class="n">QAWarning</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">MeshError</span>
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">from_atom_frac</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
-<span class="kn">from</span> <span class="nn">pyne.nucname</span> <span class="k">import</span> <span class="n">serpent</span><span class="p">,</span> <span class="n">alara</span><span class="p">,</span> <span class="n">znum</span><span class="p">,</span> <span class="n">anum</span>
-<span class="kn">from</span> <span class="nn">pyne.data</span> <span class="k">import</span> <span class="n">N_A</span><span class="p">,</span> <span class="n">decay_const</span><span class="p">,</span> <span class="n">decay_children</span><span class="p">,</span> <span class="n">branch_ratio</span>
-<span class="kn">from</span> <span class="nn">pyne.xs.data_source</span> <span class="k">import</span> <span class="n">SimpleDataSource</span>
+<span class="k">if</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">mesh_iterate</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
+         <span class="s2">&quot;Some aspects of the mesh module may be incomplete.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="mesh_to_fluxin"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.mesh_to_fluxin">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_fluxin</span><span class="p">(</span><span class="n">flux_mesh</span><span class="p">,</span> <span class="n">flux_tag</span><span class="p">,</span> <span class="n">fluxin</span><span class="o">=</span><span class="s2">&quot;fluxin.out&quot;</span><span class="p">,</span>
@@ -139,12 +140,10 @@ if(ga_enabled){
 <span class="sd">        If sub_voxel=False, neither cell_fracs nor cell_mats will be used.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tag_flux</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">flux_tag</span><span class="p">)</span>
+    <span class="n">tag_flux</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="n">flux_tag</span><span class="p">)</span>
 
     <span class="c1"># find number of e_groups</span>
-    <span class="n">e_groups</span> <span class="o">=</span> <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">flux_tag</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span>
-        <span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
-                               <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">))[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">e_groups</span> <span class="o">=</span> <span class="n">tag_flux</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">mesh_iterate</span><span class="p">(</span><span class="n">flux_mesh</span><span class="o">.</span><span class="n">mesh</span><span class="p">))[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">e_groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">e_groups</span><span class="p">)</span>
     <span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">e_groups</span><span class="p">)</span>
 
@@ -171,8 +170,8 @@ if(ga_enabled){
                 <span class="n">output</span> <span class="o">=</span> <span class="n">_output_flux</span><span class="p">(</span><span class="n">ves</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]],</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span>
                                       <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fluxin</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></div>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fluxin</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="photon_source_to_hdf5"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.photon_source_to_hdf5">[docs]</a><span class="k">def</span> <span class="nf">photon_source_to_hdf5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">chunkshape</span><span class="o">=</span><span class="p">(</span><span class="mi">10000</span><span class="p">,)):</span>
@@ -185,7 +184,7 @@ if(ga_enabled){
 <span class="sd">        idx : int</span>
 <span class="sd">            The volume element index assuming the volume elements appear in xyz</span>
 <span class="sd">            order (z changing fastest) within the photon source file in the case of</span>
-<span class="sd">            a structured mesh or imesh.iterate() order for an unstructured mesh.</span>
+<span class="sd">            a structured mesh or mesh.mesh_iterate() order for an unstructured mesh.</span>
 <span class="sd">        nuc : str</span>
 <span class="sd">            The nuclide name as it appears in the photon source file.</span>
 <span class="sd">        time : str</span>
@@ -211,7 +210,7 @@ if(ga_enabled){
         <span class="p">(</span><span class="s1">&#39;nuc&#39;</span><span class="p">,</span> <span class="s1">&#39;S6&#39;</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;S20&#39;</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;phtn_src&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">G</span><span class="p">),</span>
-        <span class="p">])</span>
+    <span class="p">])</span>
 
     <span class="n">filters</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">complevel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">complib</span><span class="o">=</span><span class="s1">&#39;zlib&#39;</span><span class="p">)</span>
     <span class="n">h5f</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
@@ -242,8 +241,8 @@ if(ga_enabled){
     <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">chunksize</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rows</span><span class="p">[:</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="n">h5f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">h5f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="photon_source_hdf5_to_mesh"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.photon_source_hdf5_to_mesh">[docs]</a><span class="k">def</span> <span class="nf">photon_source_hdf5_to_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">sub_voxel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -256,7 +255,7 @@ if(ga_enabled){
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    mesh : PyNE Mesh</span>
-<span class="sd">       The object containing the imesh instance to be tagged.</span>
+<span class="sd">       The object containing the PyMOAB instance to be tagged.</span>
 <span class="sd">    filename : str</span>
 <span class="sd">        The path of the hdf5 version of the photon source file.</span>
 <span class="sd">    tags: dict</span>
@@ -282,22 +281,23 @@ if(ga_enabled){
     <span class="c1"># find number of energy groups</span>
     <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
         <span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">h5f</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
-    <span class="n">max_num_cells</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">max_num_cells</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">ve0</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">iter_ve</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">sub_voxel</span><span class="p">:</span>
         <span class="n">num_vol_elements</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
         <span class="n">subvoxel_array</span> <span class="o">=</span> <span class="n">_get_subvoxel_array</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">)</span>
-        <span class="n">max_num_cells</span> <span class="o">=</span> \
-                <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="s1">&#39;cell_number&#39;</span><span class="p">)[</span><span class="n">ve0</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">max_num_cells</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># get max_num_cells</span>
+        <span class="n">max_num_cells</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_number</span><span class="p">[</span><span class="n">ve0</span><span class="p">]))</span>
 
     <span class="c1"># create a dict of tag handles for all keys of the tags dict</span>
     <span class="n">tag_handles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">tag_size</span> <span class="o">=</span> <span class="n">num_e_groups</span> <span class="o">*</span> <span class="n">max_num_cells</span>
     <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">tag_handles</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">createTag</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">num_e_groups</span> <span class="o">*</span> <span class="n">max_num_cells</span><span class="p">,</span>
-                                    <span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">mesh</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">tag_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span> <span class="s1">&#39;nat_mesh&#39;</span><span class="p">,</span>
+                 <span class="n">size</span><span class="o">=</span><span class="n">tag_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">tag_handles</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="n">tag_name</span><span class="p">)</span>
+
     <span class="c1"># creat a list of decay times (strings) in the source file</span>
     <span class="n">phtn_src_dc</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
@@ -336,11 +336,12 @@ if(ga_enabled){
                 <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
             <span class="n">temp_mesh_data</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">sve</span><span class="p">,</span> <span class="n">subvoxel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subvoxel_array</span><span class="p">):</span>
-                <span class="n">temp_mesh_data</span><span class="p">[</span><span class="n">subvoxel</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">],</span><span class="n">subvoxel</span><span class="p">[</span><span class="s1">&#39;scid&#39;</span><span class="p">],:]</span> <span class="o">=</span> \
+                <span class="n">temp_mesh_data</span><span class="p">[</span><span class="n">subvoxel</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">],</span> <span class="n">subvoxel</span><span class="p">[</span><span class="s1">&#39;scid&#39;</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> \
                     <span class="n">matched_data</span><span class="p">[</span><span class="n">sve</span><span class="p">][</span><span class="mi">3</span><span class="p">][:]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
-                <span class="n">tag_handles</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="n">cond</span><span class="p">]][</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> \</div>
-                    <span class="n">temp_mesh_data</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">max_num_cells</span> <span class="o">*</span> <span class="n">num_e_groups</span><span class="p">)</span>
+                <span class="n">tag_handles</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="n">cond</span><span class="p">]][</span><span class="n">ve</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">temp_mesh_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">max_num_cells</span> <span class="o">*</span> <span class="n">num_e_groups</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="record_to_geom"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.record_to_geom">[docs]</a><span class="k">def</span> <span class="nf">record_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">cell_fracs</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">,</span> <span class="n">geom_file</span><span class="p">,</span> <span class="n">matlib_file</span><span class="p">,</span>
                    <span class="n">sig_figs</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">sub_voxel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -388,9 +389,9 @@ if(ga_enabled){
 
     <span class="c1"># Create three strings in order to create all ALARA input blocks in a</span>
     <span class="c1"># single mesh iteration.</span>
-    <span class="n">volume</span> <span class="o">=</span> <span class="s1">&#39;volume</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># volume input block</span>
-    <span class="n">mat_loading</span> <span class="o">=</span> <span class="s1">&#39;mat_loading</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># material loading input block</span>
-    <span class="n">mixture</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># mixture blocks</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="s1">&#39;volume</span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># volume input block</span>
+    <span class="n">mat_loading</span> <span class="o">=</span> <span class="s1">&#39;mat_loading</span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># material loading input block</span>
+    <span class="n">mixture</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># mixture blocks</span>
 
     <span class="n">unique_mixtures</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_voxel</span><span class="p">:</span>
@@ -412,21 +413,21 @@ if(ga_enabled){
             <span class="k">if</span> <span class="n">ve_mixture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_mixtures</span><span class="p">:</span>
                 <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">)</span>
                 <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;mixture mix_</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                            <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+                    <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ve_mixture</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;    material </span><span class="si">{0}</span><span class="s1"> 1 </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
                 <span class="n">mixture</span> <span class="o">+=</span> <span class="s1">&#39;end</span><span class="se">\n\n</span><span class="s1">&#39;</span>
 
             <span class="n">mat_loading</span> <span class="o">+=</span> <span class="s1">&#39;    zone_</span><span class="si">{0}</span><span class="s1">    mix_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span>
-                            <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
+                                                              <span class="n">unique_mixtures</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ve_mixture</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">iter_ve</span><span class="p">())</span>
         <span class="n">sve_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">comp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">volume</span> <span class="o">+=</span> <span class="s1">&#39;    </span><span class="si">{0: 1.6E}</span><span class="s1">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ves</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]])</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sve_count</span><span class="p">)</span>
+                    <span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ves</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]])</span> <span class="o">*</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">],</span> <span class="n">sve_count</span><span class="p">)</span>
                 <span class="n">cell_mat</span> <span class="o">=</span> <span class="n">cell_mats</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]]</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="n">cell_mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_mixtures</span><span class="p">:</span>
@@ -444,7 +445,7 @@ if(ga_enabled){
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">geom_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geometry</span> <span class="o">+</span> <span class="n">volume</span> <span class="o">+</span> <span class="n">mat_loading</span> <span class="o">+</span> <span class="n">mixture</span><span class="p">)</span>
 
-    <span class="n">matlib</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># ALARA material library string</span>
+    <span class="n">matlib</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># ALARA material library string</span>
 
     <span class="n">printed_mats</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">print_void</span> <span class="o">=</span> <span class="kc">False</span>
@@ -459,14 +460,15 @@ if(ga_enabled){
                                                          <span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">comp</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">mat</span><span class="o">.</span><span class="n">comp</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">    </span><span class="si">{1: 1.6E}</span><span class="s1">    </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alara</span><span class="p">(</span><span class="n">nuc</span><span class="p">),</span>
-                                                      <span class="n">comp</span><span class="o">*</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">znum</span><span class="p">(</span><span class="n">nuc</span><span class="p">))</span>
+                                                             <span class="n">comp</span><span class="o">*</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">znum</span><span class="p">(</span><span class="n">nuc</span><span class="p">))</span>
             <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
     <span class="k">if</span> <span class="n">print_void</span><span class="p">:</span>
-       <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;# void material</span><span class="se">\n</span><span class="s1">mat_void 0.0 1</span><span class="se">\n</span><span class="s1">he 1 2</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">matlib</span> <span class="o">+=</span> <span class="s1">&#39;# void material</span><span class="se">\n</span><span class="s1">mat_void 0.0 1</span><span class="se">\n</span><span class="s1">he 1 2</span><span class="se">\n</span><span class="s1">&#39;</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">matlib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></div>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">matlib</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">matlib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">matlib</span><span class="p">)</span></div>
+
 
 <span class="k">def</span> <span class="nf">_is_void</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Private function for determining if a material name specifies void.</span>
@@ -474,11 +476,12 @@ if(ga_enabled){
     <span class="n">lname</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">return</span> <span class="s1">&#39;vacuum&#39;</span> <span class="ow">in</span> <span class="n">lname</span> <span class="ow">or</span> <span class="s1">&#39;void&#39;</span> <span class="ow">in</span> <span class="n">lname</span> <span class="ow">or</span> <span class="s1">&#39;graveyard&#39;</span> <span class="ow">in</span> <span class="n">lname</span>
 
+
 <div class="viewcode-block" id="mesh_to_geom"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.mesh_to_geom">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">geom_file</span><span class="p">,</span> <span class="n">matlib_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function reads the materials of a PyNE mesh object and prints the</span>
 <span class="sd">    geometry and materials portion of an ALARA input file, as well as a</span>
 <span class="sd">    corresponding matlib file. If the mesh is structured, xyz ordering is used</span>
-<span class="sd">    (z changing fastest). If the mesh is unstructured iMesh.iterate order is</span>
+<span class="sd">    (z changing fastest). If the mesh is unstructured the mesh_iterate order is</span>
 <span class="sd">    used.</span>
 
 <span class="sd">    Parameters</span>
@@ -497,10 +500,10 @@ if(ga_enabled){
 
     <span class="c1"># Create three strings in order to create all ALARA input blocks in a</span>
     <span class="c1"># single mesh iteration.</span>
-    <span class="n">volume</span> <span class="o">=</span> <span class="s2">&quot;volume</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="c1"># volume input block</span>
-    <span class="n">mat_loading</span> <span class="o">=</span> <span class="s2">&quot;mat_loading</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="c1"># material loading input block</span>
-    <span class="n">mixture</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># mixture blocks</span>
-    <span class="n">matlib</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># ALARA material library string</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="s2">&quot;volume</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="c1"># volume input block</span>
+    <span class="n">mat_loading</span> <span class="o">=</span> <span class="s2">&quot;mat_loading</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="c1"># material loading input block</span>
+    <span class="n">mixture</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># mixture blocks</span>
+    <span class="n">matlib</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># ALARA material library string</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
         <span class="n">volume</span> <span class="o">+=</span> <span class="s2">&quot;    </span><span class="si">{0: 1.6E}</span><span class="s2">    zone_</span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">elem_volume</span><span class="p">(</span><span class="n">ve</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span>
@@ -521,8 +524,9 @@ if(ga_enabled){
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">geom_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geometry</span> <span class="o">+</span> <span class="n">volume</span> <span class="o">+</span> <span class="n">mat_loading</span> <span class="o">+</span> <span class="n">mixture</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">matlib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></div>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">matlib</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">matlib_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">matlib</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="num_density_to_mesh"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.num_density_to_mesh">[docs]</a><span class="k">def</span> <span class="nf">num_density_to_mesh</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;num_density_to_mesh(lines, time, m)</span>
@@ -567,7 +571,7 @@ if(ga_enabled){
     <span class="c1"># Read through file until enough material objects are create to fill mesh.</span>
     <span class="k">while</span> <span class="n">count</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
         <span class="c1"># Pop lines to the start of the next material.</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;=&#39;</span><span class="p">:</span>
             <span class="k">pass</span>
 
         <span class="c1"># Create a new material object and add to mats dict.</span>
@@ -586,14 +590,14 @@ if(ga_enabled){
         <span class="n">mat</span> <span class="o">=</span> <span class="n">from_atom_frac</span><span class="p">(</span><span class="n">nucvec</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">mats</span><span class="p">[</span><span class="n">count</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat</span>
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-</div>
-    <span class="n">m</span><span class="o">.</span><span class="n">mats</span> <span class="o">=</span> <span class="n">mats</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">mats</span> <span class="o">=</span> <span class="n">mats</span></div>
 
 
 <div class="viewcode-block" id="irradiation_blocks"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.irradiation_blocks">[docs]</a><span class="k">def</span> <span class="nf">irradiation_blocks</span><span class="p">(</span><span class="n">material_lib</span><span class="p">,</span> <span class="n">element_lib</span><span class="p">,</span> <span class="n">data_library</span><span class="p">,</span> <span class="n">cooling</span><span class="p">,</span>
-                       <span class="n">flux_file</span><span class="p">,</span> <span class="n">irr_time</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;number_density&quot;</span><span class="p">,</span>
-                       <span class="n">truncation</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span> <span class="n">impurity</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5E-6</span><span class="p">,</span> <span class="mf">1E-3</span><span class="p">),</span>
-                       <span class="n">dump_file</span> <span class="o">=</span> <span class="s2">&quot;dump_file&quot;</span><span class="p">):</span>
+                       <span class="n">flux_file</span><span class="p">,</span> <span class="n">irr_time</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;number_density&quot;</span><span class="p">,</span>
+                       <span class="n">truncation</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span> <span class="n">impurity</span><span class="o">=</span><span class="p">(</span><span class="mf">5E-6</span><span class="p">,</span> <span class="mf">1E-3</span><span class="p">),</span>
+                       <span class="n">dump_file</span><span class="o">=</span><span class="s2">&quot;dump_file&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;irradiation_blocks(material_lib, element_lib, data_library, cooling,</span>
 <span class="sd">                       flux_file, irr_time, output = &quot;number_density&quot;,</span>
 <span class="sd">                       truncation=1E-12, impurity = (5E-6, 1E-3),</span>
@@ -661,7 +665,7 @@ if(ga_enabled){
 
     <span class="c1"># Flux schedule</span>
     <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;schedule simple_schedule</span><span class="se">\n</span><span class="s2">&quot;</span>
-         <span class="s2">&quot;    </span><span class="si">{0}</span><span class="s2"> flux_1 pulse_once 0 s</span><span class="se">\n</span><span class="s2">end</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">irr_time</span><span class="p">))</span>
+          <span class="s2">&quot;    </span><span class="si">{0}</span><span class="s2"> flux_1 pulse_once 0 s</span><span class="se">\n</span><span class="s2">end</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">irr_time</span><span class="p">))</span>
 
     <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;pulsehistory pulse_once</span><span class="se">\n</span><span class="s2">    1 0.0 s</span><span class="se">\n</span><span class="s2">end</span><span class="se">\n\n</span><span class="s2">&quot;</span>
 
@@ -679,8 +683,9 @@ if(ga_enabled){
     <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;truncation </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">truncation</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;impurity </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">impurity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">impurity</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;dump_file </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_file</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">return</span> <span class="n">s</span></div>
+
 
 <div class="viewcode-block" id="phtn_src_energy_bounds"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.phtn_src_energy_bounds">[docs]</a><span class="k">def</span> <span class="nf">phtn_src_energy_bounds</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reads an ALARA input file and extracts the energy bounds from the</span>
@@ -705,9 +710,10 @@ if(ga_enabled){
         <span class="n">upper_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">4</span><span class="p">:]]</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">upper_bounds</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_groups</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="n">upper_bounds</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-    <span class="n">e_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">+</span> <span class="n">upper_bounds</span></div>
-    <span class="k">return</span> <span class="n">e_bounds</span>
+            <span class="n">upper_bounds</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
+                             <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+    <span class="n">e_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">+</span> <span class="n">upper_bounds</span>
+    <span class="k">return</span> <span class="n">e_bounds</span></div>
 
 
 <span class="k">def</span> <span class="nf">_build_matrix</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
@@ -737,6 +743,7 @@ if(ga_enabled){
                 <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">branch_ratio</span><span class="p">(</span><span class="n">N_id</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">N_id</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">decay_const</span><span class="p">(</span><span class="n">N_id</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">A</span>
 
+
 <span class="k">def</span> <span class="nf">_rat_apprx_14</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; CRAM of order 14</span>
 
@@ -750,21 +757,21 @@ if(ga_enabled){
 <span class="sd">        Inital composition vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="o">-</span><span class="mf">8.8977731864688888199</span> <span class="o">+</span> <span class="mf">16.630982619902085304</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-</span><span class="mf">3.7032750494234480603</span> <span class="o">+</span> <span class="mf">13.656371871483268171</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-.</span><span class="mi">2087586382501301251</span> <span class="o">+</span> <span class="mf">10.991260561901260913</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">3.9933697105785685194</span> <span class="o">+</span> <span class="mf">6.0048316422350373178</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">5.0893450605806245066</span> <span class="o">+</span> <span class="mf">3.5888240290270065102</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">5.6231425727459771248</span> <span class="o">+</span> <span class="mf">1.1940690463439669766</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">2.2697838292311127097</span> <span class="o">+</span> <span class="mf">8.4617379730402214019</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">8.8977731864688888199</span> <span class="o">+</span> <span class="mf">16.630982619902085304</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">3.7032750494234480603</span> <span class="o">+</span> <span class="mf">13.656371871483268171</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-.</span><span class="mi">2087586382501301251</span> <span class="o">+</span> <span class="mf">10.991260561901260913</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">3.9933697105785685194</span> <span class="o">+</span> <span class="mf">6.0048316422350373178</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">5.0893450605806245066</span> <span class="o">+</span> <span class="mf">3.5888240290270065102</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">5.6231425727459771248</span> <span class="o">+</span> <span class="mf">1.1940690463439669766</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">2.2697838292311127097</span> <span class="o">+</span> <span class="mf">8.4617379730402214019</span><span class="n">j</span><span class="p">])</span>
 
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-.</span><span class="mi">000071542880635890672853</span> <span class="o">+</span> <span class="o">.</span><span class="mi">00014361043349541300111</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">.</span><span class="mi">0094390253107361688779</span> <span class="o">-</span> <span class="o">.</span><span class="mi">01784791958483017511</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-.</span><span class="mi">37636003878226968717</span> <span class="o">+</span> <span class="o">.</span><span class="mi">33518347029450104214</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-</span><span class="mf">23.498232091082701191</span> <span class="o">-</span> <span class="mf">5.8083591297142074004</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">46.933274488831293047</span> <span class="o">+</span> <span class="mf">45.643649768827760791</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-</span><span class="mf">27.875161940145646468</span> <span class="o">-</span> <span class="mf">102.14733999056451434</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">4.8071120988325088907</span> <span class="o">-</span> <span class="mf">1.3209793837428723881</span><span class="n">j</span><span class="p">])</span>
+                      <span class="o">.</span><span class="mi">0094390253107361688779</span> <span class="o">-</span> <span class="o">.</span><span class="mi">01784791958483017511</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-.</span><span class="mi">37636003878226968717</span> <span class="o">+</span> <span class="o">.</span><span class="mi">33518347029450104214</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">23.498232091082701191</span> <span class="o">-</span> <span class="mf">5.8083591297142074004</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">46.933274488831293047</span> <span class="o">+</span> <span class="mf">45.643649768827760791</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">27.875161940145646468</span> <span class="o">-</span> <span class="mf">102.14733999056451434</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">4.8071120988325088907</span> <span class="o">-</span> <span class="mf">1.3209793837428723881</span><span class="n">j</span><span class="p">])</span>
 
     <span class="n">alpha_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.8321743782540412751e-14</span><span class="p">])</span>
 
@@ -773,12 +780,14 @@ if(ga_enabled){
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="o">*</span><span class="n">n_0</span>
 
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">n_0</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">n_0</span><span class="p">)</span>
 
     <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">.</span><span class="n">real</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">alpha_0</span><span class="o">*</span><span class="n">n_0</span>
 
     <span class="k">return</span> <span class="n">n</span>
+
 
 <span class="k">def</span> <span class="nf">_rat_apprx_16</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; CRAM of order 16</span>
@@ -792,16 +801,16 @@ if(ga_enabled){
 <span class="sd">    n_0: numpy array</span>
 <span class="sd">        Inital composition vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="o">-</span><span class="mf">10.843917078696988026</span> <span class="o">+</span> <span class="mf">19.277446167181652284</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-</span><span class="mf">5.2649713434426468895</span> <span class="o">+</span> <span class="mf">16.220221473167927305</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">5.9481522689511774808</span> <span class="o">+</span> <span class="mf">3.5874573620183222829</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">3.5091036084149180974</span> <span class="o">+</span> <span class="mf">8.4361989858843750826</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">6.4161776990994341923</span> <span class="o">+</span> <span class="mf">1.1941223933701386874</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">1.4193758971856659786</span> <span class="o">+</span> <span class="mf">10.925363484496722585</span><span class="n">j</span><span class="p">,</span>
-                   <span class="mf">4.9931747377179963991</span> <span class="o">+</span> <span class="mf">5.9968817136039422260</span><span class="n">j</span><span class="p">,</span>
-                   <span class="o">-</span><span class="mf">1.4139284624888862114</span> <span class="o">+</span> <span class="mf">13.497725698892745389</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">10.843917078696988026</span> <span class="o">+</span> <span class="mf">19.277446167181652284</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">5.2649713434426468895</span> <span class="o">+</span> <span class="mf">16.220221473167927305</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">5.9481522689511774808</span> <span class="o">+</span> <span class="mf">3.5874573620183222829</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">3.5091036084149180974</span> <span class="o">+</span> <span class="mf">8.4361989858843750826</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">6.4161776990994341923</span> <span class="o">+</span> <span class="mf">1.1941223933701386874</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">1.4193758971856659786</span> <span class="o">+</span> <span class="mf">10.925363484496722585</span><span class="n">j</span><span class="p">,</span>
+                      <span class="mf">4.9931747377179963991</span> <span class="o">+</span> <span class="mf">5.9968817136039422260</span><span class="n">j</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mf">1.4139284624888862114</span> <span class="o">+</span> <span class="mf">13.497725698892745389</span><span class="n">j</span><span class="p">])</span>
 
-    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="o">-.</span><span class="mi">0000005090152186522491565</span> <span class="o">-</span> <span class="o">.</span><span class="mi">00002422001765285228797</span><span class="n">j</span><span class="p">,</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-.</span><span class="mi">0000005090152186522491565</span> <span class="o">-</span> <span class="o">.</span><span class="mi">00002422001765285228797</span><span class="n">j</span><span class="p">,</span>
                       <span class="o">.</span><span class="mi">00021151742182466030907</span> <span class="o">+</span> <span class="o">.</span><span class="mi">0043892969647380673918</span><span class="n">j</span><span class="p">,</span>
                       <span class="mf">113.39775178483930527</span> <span class="o">+</span> <span class="mf">101.9472170421585645</span><span class="n">j</span><span class="p">,</span>
                       <span class="mf">15.059585270023467528</span> <span class="o">-</span> <span class="mf">5.7514052776421819979</span><span class="n">j</span><span class="p">,</span>
@@ -812,17 +821,18 @@ if(ga_enabled){
 
     <span class="n">alpha_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.1248537104952237488e-16</span><span class="p">])</span>
 
-
     <span class="n">s</span> <span class="o">=</span> <span class="mi">8</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">*</span><span class="n">t</span>
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="o">*</span><span class="n">n_0</span>
 
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">n_0</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">theta</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">alpha</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">n_0</span><span class="p">)</span>
 
     <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">.</span><span class="n">real</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">alpha_0</span><span class="o">*</span><span class="n">n_0</span>
     <span class="k">return</span> <span class="n">n</span>
+
 
 <div class="viewcode-block" id="cram"><a class="viewcode-back" href="../../pyapi/alara.html#pyne.alara.cram">[docs]</a><span class="k">def</span> <span class="nf">cram</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This function returns matrix exponential solution n using CRAM14 or CRAM16</span>
@@ -849,10 +859,12 @@ if(ga_enabled){
         <span class="k">return</span> <span class="n">_rat_apprx_16</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">n_0</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Rational approximation of degree </span><span class="si">{0}</span><span class="s1"> is not supported.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">)</span></div>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Rational approximation of degree </span><span class="si">{0}</span><span class="s1"> is not supported.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">order</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
-<span class="k">def</span> <span class="nf">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span><span class="n">output</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">direction</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">_output_flux</span><span class="p">(</span><span class="n">ve</span><span class="p">,</span> <span class="n">tag_flux</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is used to get neutron flux for fluxin</span>
 
@@ -879,6 +891,7 @@ if(ga_enabled){
     <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">output</span>
 
+
 <span class="k">def</span> <span class="nf">_get_subvoxel_array</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">cell_mats</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function returns an array of subvoxels.</span>
@@ -899,7 +912,7 @@ if(ga_enabled){
 <span class="sd">                The cell index of the cell in that voxel</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cell_number_tag</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="s1">&#39;cell_number&#39;</span><span class="p">)</span>
+    <span class="n">cell_number_tag</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_number</span>
     <span class="n">subvoxel_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="sa">b</span><span class="s1">&#39;svid&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
                                         <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;idx&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
                                         <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;scid&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)])</span>
@@ -909,37 +922,21 @@ if(ga_enabled){
     <span class="c1"># calculate the total number of non-void sub-voxel</span>
     <span class="n">non_void_sv_num</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="n">mesh</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_number_tag</span><span class="p">[</span><span class="n">ve</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">cell</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">comp</span><span class="p">):</span> <span class="c1">#non-void cell</span>
+        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">cell_number_tag</span><span class="p">[</span><span class="n">ve</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="n">cell</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_mats</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">comp</span><span class="p">):</span>  <span class="c1"># non-void cell</span>
                 <span class="n">temp_subvoxel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">non_void_sv_num</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
                 <span class="n">subvoxel_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subvoxel_array</span><span class="p">,</span> <span class="n">temp_subvoxel</span><span class="p">)</span>
                 <span class="n">non_void_sv_num</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">return</span> <span class="n">subvoxel_array</span>
 
-<span class="n">_TO_SEC</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span><span class="p">,</span>
-    <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span><span class="p">,</span>
-    <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span><span class="p">,</span>
-    <span class="s1">&#39;week&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span><span class="p">,</span>
-    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mf">365.25</span><span class="p">,</span>
-    <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mf">365.25</span><span class="p">,</span>
-    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mf">365.25</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="s1">&#39;century&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mf">365.25</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
-<span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">_convert_unit_to_s</span><span class="p">(</span><span class="n">dc</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function return a float number represent a time in unit of s.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dc : string. Contain a num and an unit. </span>
+<span class="sd">    dc : string. Contain a num and an unit.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -947,37 +944,46 @@ if(ga_enabled){
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get num and unit</span>
     <span class="n">num</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="n">conv</span> <span class="o">=</span> <span class="n">_TO_SEC</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">conv</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">*</span> <span class="n">conv</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid unit: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">to_sec</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">_find_phsrc_dc</span><span class="p">(</span><span class="n">idc</span><span class="p">,</span> <span class="n">phtn_src_dc</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This function return a string representing a time in phsrc_dc.</span>
+<span class="sd">    This function returns a string representing a time in phsrc_dc.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    idc : string. Represent a time, input decay time</span>
-<span class="sd">    phtn_src_dc : list of string. Decay times in phtn_src file.</span>
+<span class="sd">    idc : string</span>
+<span class="sd">        Represents a time, input decay time</span>
+<span class="sd">    phtn_src_dc : list of strings</span>
+<span class="sd">        Decay times in phtn_src file</span>
 
-<span class="sd">    return : odc, string. output mathched decay time.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    string from phtn_src_dc list that mathches idc</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check the existence of idc in phtn_src_dc list.</span>
     <span class="k">if</span> <span class="n">idc</span> <span class="ow">in</span> <span class="n">phtn_src_dc</span><span class="p">:</span>
-        <span class="c1"># if idc exist in phtn_src_dc, directly return idc</span>
         <span class="k">return</span> <span class="n">idc</span>
+    <span class="c1"># Direct matching cannot be found. Convert units to [s] and compare.</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># the idc doesn&#39;t exist in phtn_src_dc, convert the unit to `s`,</span>
+        <span class="c1"># convert idc to [s]</span>
         <span class="n">idc_s</span> <span class="o">=</span> <span class="n">_convert_unit_to_s</span><span class="p">(</span><span class="n">idc</span><span class="p">)</span>
-        <span class="n">phtn_src_dc_s</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phtn_src_dc</span><span class="p">):</span>
+        <span class="c1"># Loop over decay times in phtn_src_dc list and compare to idc_s.</span>
+        <span class="k">for</span> <span class="n">dc</span> <span class="ow">in</span> <span class="n">phtn_src_dc</span><span class="p">:</span>
+            <span class="c1"># Skip &quot;shutdown&quot; string in list.</span>
+            <span class="k">if</span> <span class="n">dc</span> <span class="o">==</span> <span class="s1">&#39;shutdown&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># Convert to [s].</span>
             <span class="n">dc_s</span> <span class="o">=</span> <span class="n">_convert_unit_to_s</span><span class="p">(</span><span class="n">dc</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">idc_s</span> <span class="o">-</span> <span class="n">dc_s</span><span class="p">)</span><span class="o">/</span><span class="n">dc_s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">phtn_src_dc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Decay time </span><span class="si">{0}</span><span class="s1"> not found in phtn_src file&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idc</span><span class="p">))</span> 
-
-
-
+            <span class="k">if</span> <span class="n">idc_s</span> <span class="o">==</span> <span class="n">dc_s</span><span class="p">:</span>
+                <span class="c1"># idc_s matches dc_s. return original string, dc.</span>
+                <span class="k">return</span> <span class="n">dc</span>
+            <span class="k">elif</span> <span class="n">dc_s</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">idc_s</span> <span class="o">-</span> <span class="n">dc_s</span><span class="p">)</span><span class="o">/</span><span class="n">dc_s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dc</span>
+        <span class="c1"># if idc doesn&#39;t match any string in phtn_src_dc list, raise an error.</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Decay time </span><span class="si">{0}</span><span class="s1"> not found in phtn_src file&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idc</span><span class="p">))</span>
 </pre></div>
 
           </div>
@@ -1043,8 +1049,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Apr 01, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
