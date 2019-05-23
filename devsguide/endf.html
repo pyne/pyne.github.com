@@ -11,11 +11,14 @@
     <title>ENDF Tokenization &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -226,64 +229,64 @@ described in the ENDF Manual, pp. 23-24.</p>
 are slightly more complicated.</p>
 <p>In the case where y is a linear function of ln(x), we integrate over the region
 like this:</p>
-<div class="math">
-<p><span class="math">y=A\ln{x}+B \\
+<div class="math notranslate nohighlight">
+\[\begin{split}y=A\ln{x}+B \\
 y_1=A\ln{x_1}+B \\
-y_2=A\ln{x_2}+B</span></p>
-</div><p>With some algebra, we get:</p>
-<div class="math">
-<p><span class="math">A(\ln{x_1}-\ln{x_2})=y_1-y_2 \\
+y_2=A\ln{x_2}+B\end{split}\]</div>
+<p>With some algebra, we get:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A(\ln{x_1}-\ln{x_2})=y_1-y_2 \\
 A=\frac{y_1-y_2}{\ln{(x_1/x_2)}} \\
-B=y_1-A\ln{x_1}=y_1-\frac{y_1-y_2}{\ln{(x_1/x_2)}}\ln{x_1}</span></p>
-</div><p>Then we can take the integral and plug in A and B:</p>
-<div class="math">
-<p><span class="math">\int_{x_1}^{x_2}A\ln{x}+B\mathrm{d}x = A(x\ln{x}-x)|_{x_1}^{x_2}+Bx|_{x_1}^{x_2} = A(x_2\ln{x_2}-x_1\ln{x_1}-x_2+x_1)+B(x_2-x_1)\\
-\int_{x_1}^{x_2}y(x)\mathrm{d}x = \frac{y_1-y_2}{\ln{(x_1/x_2)}}(x_2\ln{x_2}-x_1\ln{x_1}-x_2+x_1) + (y_1-\frac{y_1-y_2}{\ln{(x_1/x_2)}} \ln{x_1})(x_2-x_1) \\</span></p>
-</div><p>When x is linear in ln(y), we have:</p>
-<div class="math">
-<p><span class="math">x=A\ln{y}+B</span></p>
-</div><p>Since A and B are arbitrary constants, we can express this relation as:</p>
-<div class="math">
-<p><span class="math">\ln{y}=Ax+B\\
+B=y_1-A\ln{x_1}=y_1-\frac{y_1-y_2}{\ln{(x_1/x_2)}}\ln{x_1}\end{split}\]</div>
+<p>Then we can take the integral and plug in A and B:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{x_1}^{x_2}A\ln{x}+B\mathrm{d}x = A(x\ln{x}-x)|_{x_1}^{x_2}+Bx|_{x_1}^{x_2} = A(x_2\ln{x_2}-x_1\ln{x_1}-x_2+x_1)+B(x_2-x_1)\\
+\int_{x_1}^{x_2}y(x)\mathrm{d}x = \frac{y_1-y_2}{\ln{(x_1/x_2)}}(x_2\ln{x_2}-x_1\ln{x_1}-x_2+x_1) + (y_1-\frac{y_1-y_2}{\ln{(x_1/x_2)}} \ln{x_1})(x_2-x_1) \\\end{split}\]</div>
+<p>When x is linear in ln(y), we have:</p>
+<div class="math notranslate nohighlight">
+\[x=A\ln{y}+B\]</div>
+<p>Since A and B are arbitrary constants, we can express this relation as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\ln{y}=Ax+B\\
 y = e^{Ax+B}\\
 y_1 = e^{Ax_1+B}\\
-y_2 = e^{Ax_2+B}</span></p>
-</div><p>So now we can solve for A:</p>
-<div class="math">
-<p><span class="math">\frac{y_1}{y_2} = e^{Ax_1+B-Ax_2-B} = e^{A(x_1-x_2)}\\
+y_2 = e^{Ax_2+B}\end{split}\]</div>
+<p>So now we can solve for A:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{y_1}{y_2} = e^{Ax_1+B-Ax_2-B} = e^{A(x_1-x_2)}\\
 ln{\frac{y_1}{y_2}} = A(x_1-x_2)\\
-A = \frac{\ln{(y_1/y_2)}}{x_1-x_2}</span></p>
-</div><p>Plug this in to the original relation to solve for B:</p>
-<div class="math">
-<p><span class="math">\ln{y_1} = Ax_1+B\\
+A = \frac{\ln{(y_1/y_2)}}{x_1-x_2}\end{split}\]</div>
+<p>Plug this in to the original relation to solve for B:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\ln{y_1} = Ax_1+B\\
 B = \ln{y_1}-Ax_1\\
-B = \ln{y_1}-\frac{\ln{(y_1/y_2)}}{x_1-x_2}x_1</span></p>
-</div><p>Now we integrate <span class="math">e^{Ax+B}</span>. We all know this one!</p>
-<div class="math">
-<p><span class="math">\int_{x_1}^{x_2} e^{Ax+B} \mathrm{d}x = \frac{1}{A}e^{Ax+B}|_{x_1}^{x_2} = \frac{e^B}{A}(e^{Ax_2}-e^{Ax_1})</span></p>
-</div><p>Factor stuff out and you get:</p>
-<div class="math">
-<p><span class="math">\int_{x_1}^{x_2} e^{Ax+B} \mathrm{d}x = \frac{1}{A}(y_2-y_1)</span></p>
-</div><p>When ln(y) is linear in ln(x) we have:</p>
-<div class="math">
-<p><span class="math">\ln{y} = A\ln{x}+B</span></p>
-</div><p>Taking e to the power of both sides gives us:</p>
-<div class="math">
-<p><span class="math">y = e^Bx^A \\
+B = \ln{y_1}-\frac{\ln{(y_1/y_2)}}{x_1-x_2}x_1\end{split}\]</div>
+<p>Now we integrate <span class="math notranslate nohighlight">\(e^{Ax+B}\)</span>. We all know this one!</p>
+<div class="math notranslate nohighlight">
+\[\int_{x_1}^{x_2} e^{Ax+B} \mathrm{d}x = \frac{1}{A}e^{Ax+B}|_{x_1}^{x_2} = \frac{e^B}{A}(e^{Ax_2}-e^{Ax_1})\]</div>
+<p>Factor stuff out and you get:</p>
+<div class="math notranslate nohighlight">
+\[\int_{x_1}^{x_2} e^{Ax+B} \mathrm{d}x = \frac{1}{A}(y_2-y_1)\]</div>
+<p>When ln(y) is linear in ln(x) we have:</p>
+<div class="math notranslate nohighlight">
+\[\ln{y} = A\ln{x}+B\]</div>
+<p>Taking e to the power of both sides gives us:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}y = e^Bx^A \\
 y_1 = e^Bx_1^A \\
-y_2 = e^Bx_2^A</span></p>
-</div><p>With some algebra we get:</p>
-<div class="math">
-<p><span class="math">A = - \frac{\ln{y_2}-\ln{y_1}}{\ln{x_1}-\ln{x_2}} \\
-B = - \frac{\ln{y_1}\ln{x_2} - \ln{y_2}\ln{x_1}}{\ln{x_1}-\ln{x_2}}</span></p>
-</div><p>And finally we can plug A and B into the integral:</p>
-<div class="math">
-<p><span class="math">\int_{x_1}^{x_2}e^Bx^A\mathrm{d}x = e^B (\frac{x^{A+1}}{A+1})|_{x_1}^{x_2}</span></p>
-</div><p>The ENDF Manual also mentions a sixth one-dimensional interpolation
+y_2 = e^Bx_2^A\end{split}\]</div>
+<p>With some algebra we get:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = - \frac{\ln{y_2}-\ln{y_1}}{\ln{x_1}-\ln{x_2}} \\
+B = - \frac{\ln{y_1}\ln{x_2} - \ln{y_2}\ln{x_1}}{\ln{x_1}-\ln{x_2}}\end{split}\]</div>
+<p>And finally we can plug A and B into the integral:</p>
+<div class="math notranslate nohighlight">
+\[\int_{x_1}^{x_2}e^Bx^A\mathrm{d}x = e^B (\frac{x^{A+1}}{A+1})|_{x_1}^{x_2}\]</div>
+<p>The ENDF Manual also mentions a sixth one-dimensional interpolation
 law, described in detail on pp. 23-24. From this, I quote:</p>
-<div class="math">
-<p><span class="math">\sigma = \frac{A}{E} e^{-\frac{B}{\sqrt{E-T}}}</span></p>
-</div><p>Where T = 0 for exothermic reactions with Q greater than 0 and equal
+<div class="math notranslate nohighlight">
+\[\sigma = \frac{A}{E} e^{-\frac{B}{\sqrt{E-T}}}\]</div>
+<p>Where T = 0 for exothermic reactions with Q greater than 0 and equal
 to kinematic threshold energy for endothermic reactions with Q less
 than or equal to 0.</p>
 <p>The ENDF Manual also states that this is “for charged-particle cross
@@ -363,8 +366,8 @@ not implement this (yet).</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

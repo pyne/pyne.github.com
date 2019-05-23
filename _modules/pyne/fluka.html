@@ -11,11 +11,14 @@
     <title>pyne.fluka &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -73,7 +76,7 @@ if(ga_enabled){
 
 <span class="sd">Currently, only usrbin output files can be read.</span>
 
-<span class="sd">If PyTAPS is not installed, then Usrbin and UsrbinTally will not be</span>
+<span class="sd">If PyMOAB is not installed, then Usrbin and UsrbinTally will not be</span>
 <span class="sd">available to use.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -82,16 +85,14 @@ if(ga_enabled){
 <span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
 
 <span class="c1"># Mesh specific imports</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span>
-    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
-                  <span class="s2">&quot;Some aspects of the mcnp module may be incomplete.&quot;</span><span class="p">,</span>
-                  <span class="n">QAWarning</span><span class="p">)</span>
-    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">HAVE_PYMOAB</span>
 
-<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">IMeshTag</span>
+<span class="k">if</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">NativeMeshTag</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
+         <span class="s2">&quot;Some aspects of the fluka module may be incomplete.&quot;</span><span class="p">,</span>
+         <span class="n">QAWarning</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Usrbin"><a class="viewcode-back" href="../../pyapi/fluka.html#pyne.fluka.Usrbin">[docs]</a><span class="k">class</span> <span class="nc">Usrbin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -116,8 +117,8 @@ if(ga_enabled){
 <span class="sd">            FLUKA USRBIN file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
                                <span class="s2">&quot;unable to create Meshtal.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tally</span> <span class="o">=</span> <span class="p">{}</span>
@@ -132,8 +133,8 @@ if(ga_enabled){
 
         <span class="k">while</span> <span class="p">(</span><span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">):</span>
             <span class="n">new_tally</span> <span class="o">=</span> <span class="n">UsrbinTally</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">new_tally</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_tally</span></div>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">new_tally</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_tally</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="UsrbinTally"><a class="viewcode-back" href="../../pyapi/fluka.html#pyne.fluka.UsrbinTally">[docs]</a><span class="k">class</span> <span class="nc">UsrbinTally</span><span class="p">(</span><span class="n">Mesh</span><span class="p">):</span>
@@ -172,8 +173,8 @@ if(ga_enabled){
 <span class="sd">            An open usrbin file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyTAPS is not available, &quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
                                <span class="s2">&quot;unable to create Meshtal.&quot;</span><span class="p">)</span>
 
         <span class="n">part_data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -190,7 +191,8 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coord_sys</span> <span class="o">!=</span> <span class="s1">&#39;Cartesian&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only cartesian coordinate system currently supported&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Only cartesian coordinate system currently supported&quot;</span><span class="p">)</span>
 
         <span class="p">[</span><span class="n">x_info</span><span class="p">,</span> <span class="n">y_info</span><span class="p">,</span> <span class="n">z_info</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_usrbin_head</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
 
@@ -249,7 +251,7 @@ if(ga_enabled){
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">7</span><span class="p">]),</span> \
-               <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_generate_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim_info</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This takes in the dimension information (min, max, bins, and width)</span>
@@ -267,16 +269,16 @@ if(ga_enabled){
 <span class="sd">        the error_data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">UsrbinTally</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structured_coords</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
+                                                             <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
                                           <span class="n">structured</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                           <span class="n">structured_ordering</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">,</span>
                                           <span class="n">mats</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">part_data_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;part_data_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_data_tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;error_data_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">part_data_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">part_data</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_data_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">error_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part_data_tag</span> <span class="o">=</span> <span class="n">NativeMeshTag</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                           <span class="n">name</span><span class="o">=</span><span class="s2">&quot;part_data_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_data_tag</span> <span class="o">=</span> <span class="n">NativeMeshTag</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;error_data_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">part_data_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">part_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_data_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">error_data</span></div>
 </pre></div>
 
           </div>
@@ -342,8 +344,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

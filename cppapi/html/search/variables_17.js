@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['yield_5f14mev',['yield_14MeV',['../structpyne_1_1ndsfpy.html#a5e67e99b97b5ca511ca39c6dcd4b186e',1,'pyne::ndsfpy::yield_14MeV()'],['../structpyne_1_1ndsfpysub.html#afb3737be03fedddc6f54fa3a0e59f0e8',1,'pyne::ndsfpysub::yield_14MeV()']]],
-  ['yield_5f14mev_5ferr',['yield_14MeV_err',['../structpyne_1_1ndsfpy.html#a1d24f4162fe242108b8032f76171d7e5',1,'pyne::ndsfpy::yield_14MeV_err()'],['../structpyne_1_1ndsfpysub.html#a7bc2487245689a3f6a095f2254e66e99',1,'pyne::ndsfpysub::yield_14MeV_err()']]],
-  ['yield_5ffast',['yield_fast',['../structpyne_1_1ndsfpy.html#ae890b10d182d771d0837b24818040a25',1,'pyne::ndsfpy::yield_fast()'],['../structpyne_1_1ndsfpysub.html#acc33c1cd93f9133c15024fa8d4b066dd',1,'pyne::ndsfpysub::yield_fast()']]],
-  ['yield_5ffast_5ferr',['yield_fast_err',['../structpyne_1_1ndsfpy.html#a0e2478bc6cbf2317861727a88cb8370b',1,'pyne::ndsfpy::yield_fast_err()'],['../structpyne_1_1ndsfpysub.html#aa7143b625fe8932ff159b3d9e0030b38',1,'pyne::ndsfpysub::yield_fast_err()']]],
-  ['yield_5fthermal',['yield_thermal',['../structpyne_1_1ndsfpy.html#a802ebba1436e6e7ca9595e77698310e8',1,'pyne::ndsfpy::yield_thermal()'],['../structpyne_1_1ndsfpysub.html#a83cf4a8733bb234e41c947a21a515cf0',1,'pyne::ndsfpysub::yield_thermal()']]],
-  ['yield_5fthermal_5ferr',['yield_thermal_err',['../structpyne_1_1ndsfpy.html#affaf73e5d64d7e9e94f63c6807b7b17e',1,'pyne::ndsfpy::yield_thermal_err()'],['../structpyne_1_1ndsfpysub.html#a8a95ca96e3cee6ef8a16dcbaf17ca6d3',1,'pyne::ndsfpysub::yield_thermal_err()']]],
-  ['yields',['yields',['../structpyne_1_1wimsdfpy.html#a1c20eef7a02f2f62dba113cbf24d8bf2',1,'pyne::wimsdfpy']]]
+  ['x_5ffeed_5fj',['x_feed_j',['../classpyne_1_1enrichment_1_1_cascade.html#a40bd847719e323d5a1fbab988aa9ed51',1,'pyne::enrichment::Cascade']]],
+  ['x_5fprod_5fj',['x_prod_j',['../classpyne_1_1enrichment_1_1_cascade.html#ae1247279b655305c5878ed79c956da3d',1,'pyne::enrichment::Cascade']]],
+  ['x_5ftail_5fj',['x_tail_j',['../classpyne_1_1enrichment_1_1_cascade.html#a448b12f981c8c76ca2e7f9c2dcce6b59',1,'pyne::enrichment::Cascade']]],
+  ['xs',['xs',['../structpyne_1_1scattering__lengths.html#aaaab6ef13d13f4058b263f0d28da9ac3',1,'pyne::scattering_lengths']]],
+  ['xs_5fcoherent',['xs_coherent',['../structpyne_1_1scattering__lengths.html#aa7104d8f7ac817884b66f1d799c7da33',1,'pyne::scattering_lengths']]],
+  ['xs_5fincoherent',['xs_incoherent',['../structpyne_1_1scattering__lengths.html#ad56455b52a7e795b5a0db5a6351971b0',1,'pyne::scattering_lengths']]]
 ];

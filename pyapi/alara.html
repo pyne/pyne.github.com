@@ -11,11 +11,14 @@
     <title>ALARA Input and Output Interfaces – pyne.alara &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -79,22 +82,20 @@ objects. The functionality of the module can be obtained by importing as such:</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>N</strong> : list or array</p>
-<blockquote>
-<div><p>Array of nuclides under consideration</p>
-</div></blockquote>
-<p><strong>t</strong> : float</p>
-<blockquote>
-<div><p>Time step</p>
-</div></blockquote>
-<p><strong>n_0</strong> : list or array</p>
-<blockquote>
-<div><p>Nuclide concentration vector</p>
-</div></blockquote>
-<p><strong>order</strong> : int</p>
-<blockquote class="last">
-<div><p>Order of method. Only 14 and 16 are supported.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>N</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or array</span></dt>
+<dd><p class="first last">Array of nuclides under consideration</p>
+</dd>
+<dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Time step</p>
+</dd>
+<dt><strong>n_0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or array</span></dt>
+<dd><p class="first last">Nuclide concentration vector</p>
+</dd>
+<dt><strong>order</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Order of method. Only 14 and 16 are supported.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -115,54 +116,47 @@ with the ALARA users’ guide, found at:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>material_lib</strong> : str</p>
-<blockquote>
-<div><p>Path to material library.</p>
-</div></blockquote>
-<p><strong>element_lib</strong> : str</p>
-<blockquote>
-<div><p>Path to element library.</p>
-</div></blockquote>
-<p><strong>data_library</strong> : str</p>
-<blockquote>
-<div><p>The data_library card (see ALARA user’s guide).</p>
-</div></blockquote>
-<p><strong>cooling</strong> : str or iterable of str</p>
-<blockquote>
-<div><p>Cooling times for which output is requested. Given in ALARA form (e.g.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>material_lib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to material library.</p>
+</dd>
+<dt><strong>element_lib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to element library.</p>
+</dd>
+<dt><strong>data_library</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The data_library card (see ALARA user’s guide).</p>
+</dd>
+<dt><strong>cooling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or iterable of str</span></dt>
+<dd><p class="first last">Cooling times for which output is requested. Given in ALARA form (e.g.
 “1 h”, “0.5 y”). Note that “shutdown” is always implicitly included.</p>
-</div></blockquote>
-<p><strong>flux_file</strong> : str</p>
-<blockquote>
-<div><p>Path to the “fluxin” file.</p>
-</div></blockquote>
-<p><strong>irr_time</strong> : str</p>
-<blockquote>
-<div><p>The duration of the single pulse irradiation. Given in the ALARA form
+</dd>
+<dt><strong>flux_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Path to the “fluxin” file.</p>
+</dd>
+<dt><strong>irr_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The duration of the single pulse irradiation. Given in the ALARA form
 (e.g. “1 h”, “0.5 y”).</p>
-</div></blockquote>
-<p><strong>output</strong> : str or iterable of str, optional.</p>
-<blockquote>
-<div><p>The requested output blocks (see ALARA users’ guide).</p>
-</div></blockquote>
-<p><strong>truncation</strong> : float, optional</p>
-<blockquote>
-<div><p>The chain truncation value (see ALARA users’ guide).</p>
-</div></blockquote>
-<p><strong>impurity</strong> : tuple of two floats, optional</p>
-<blockquote>
-<div><p>The impurity parameters (see ALARA users’ guide).</p>
-</div></blockquote>
-<p><strong>dump_file: str, optional</strong></p>
-<blockquote>
-<div><p>Path to the dump file.</p>
-</div></blockquote>
+</dd>
+<dt><strong>output</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or iterable of str, optional.</span></dt>
+<dd><p class="first last">The requested output blocks (see ALARA users’ guide).</p>
+</dd>
+<dt><strong>truncation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The chain truncation value (see ALARA users’ guide).</p>
+</dd>
+<dt><strong>impurity</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple of two floats, optional</span></dt>
+<dd><p class="first last">The impurity parameters (see ALARA users’ guide).</p>
+</dd>
+<dt><strong>dump_file: str, optional</strong></dt>
+<dd><p class="first last">Path to the dump file.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>s</strong> : str</p>
-<blockquote class="last">
-<div><p>Irradition-related ALARA input blocks.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>s</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Irradition-related ALARA input blocks.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -178,32 +172,27 @@ Mesh object. Fluxes are printed in the order of the flux_mesh.__iter__().</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>flux_mesh</strong> : PyNE Mesh object</p>
-<blockquote>
-<div><p>Contains the mesh with fluxes tagged on each volume element.</p>
-</div></blockquote>
-<p><strong>flux_tag</strong> : string</p>
-<blockquote>
-<div><p>The name of the tag of the flux mesh. Flux values for different energy
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>flux_mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh object</span></dt>
+<dd><p class="first last">Contains the mesh with fluxes tagged on each volume element.</p>
+</dd>
+<dt><strong>flux_tag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The name of the tag of the flux mesh. Flux values for different energy
 groups are assumed to be represented as vector tags.</p>
-</div></blockquote>
-<p><strong>fluxin</strong> : string</p>
-<blockquote>
-<div><p>The name of the ALARA fluxin file to be output.</p>
-</div></blockquote>
-<p><strong>reverse</strong> : bool</p>
-<blockquote>
-<div><p>If true, fluxes will be printed in the reverse order as they appear in
+</dd>
+<dt><strong>fluxin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The name of the ALARA fluxin file to be output.</p>
+</dd>
+<dt><strong>reverse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If true, fluxes will be printed in the reverse order as they appear in
 the flux vector tagged on the mesh.</p>
-</div></blockquote>
-<p><strong>sub_voxel: bool, optional</strong></p>
-<blockquote>
-<div><p>If true, sub-voxel r2s work flow will be sued. Flux of a voxel will
+</dd>
+<dt><strong>sub_voxel: bool, optional</strong></dt>
+<dd><p class="first last">If true, sub-voxel r2s work flow will be sued. Flux of a voxel will
 be duplicated c times. Where c is the cell numbers of that voxel.</p>
-</div></blockquote>
-<p><strong>cell_fracs</strong> : structured array, optional</p>
-<blockquote>
-<div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
+</dd>
+<dt><strong>cell_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">structured array, optional</span></dt>
+<dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
 <blockquote>
 <div><table class="docutils field-list" frame="void" rules="none">
@@ -225,15 +214,15 @@ The relative error associated with the volume fraction.</td>
 </tbody>
 </table>
 </div></blockquote>
-<p>The array must be sorted with respect to both idx and cell, with
+<p class="last">The array must be sorted with respect to both idx and cell, with
 cell changing fastest.</p>
-</div></blockquote>
-<p><strong>cell_mats</strong> : dict, optional</p>
-<blockquote class="last">
-<div><p>Maps geometry cell numbers to PyNE Material objects.</p>
-<p>The cell_fracs and cell_mats are used only when sub_voxel=True.
+</dd>
+<dt><strong>cell_mats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first">Maps geometry cell numbers to PyNE Material objects.</p>
+<p class="last">The cell_fracs and cell_mats are used only when sub_voxel=True.
 If sub_voxel=False, neither cell_fracs nor cell_mats will be used.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -246,24 +235,23 @@ If sub_voxel=False, neither cell_fracs nor cell_mats will be used.</p>
 <dd><p>This function reads the materials of a PyNE mesh object and prints the
 geometry and materials portion of an ALARA input file, as well as a
 corresponding matlib file. If the mesh is structured, xyz ordering is used
-(z changing fastest). If the mesh is unstructured iMesh.iterate order is
+(z changing fastest). If the mesh is unstructured the mesh_iterate order is
 used.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : PyNE Mesh object</p>
-<blockquote>
-<div><p>The Mesh object containing the materials to be printed.</p>
-</div></blockquote>
-<p><strong>geom_file</strong> : str</p>
-<blockquote>
-<div><p>The name of the file to print the geometry and material blocks.</p>
-</div></blockquote>
-<p><strong>matlib_file</strong> : str</p>
-<blockquote class="last">
-<div><p>The name of the file to print the matlib.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh object</span></dt>
+<dd><p class="first last">The Mesh object containing the materials to be printed.</p>
+</dd>
+<dt><strong>geom_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the file to print the geometry and material blocks.</p>
+</dd>
+<dt><strong>matlib_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the file to print the matlib.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -283,16 +271,15 @@ idx on the Mesh object.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lines</strong> : list or str</p>
-<blockquote>
-<div><p>ALARA output from ALARA run with ‘number_density’ in the ‘output’ block
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>lines</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or str</span></dt>
+<dd><p class="first last">ALARA output from ALARA run with ‘number_density’ in the ‘output’ block
 of the input file. Lines can either be a filename or the equivalent to
 calling readlines() on an ALARA output file. If reading in ALARA output
 from stdout, call split(‘</p>
-</div></blockquote>
-<p><strong>‘) before passing it in as the lines parameter.</strong></p>
-<blockquote class="last">
-<div><dl class="docutils">
+</dd>
+<dt><strong>‘) before passing it in as the lines parameter.</strong></dt>
+<dd><dl class="first last docutils">
 <dt>time <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The decay time for which number densities are requested (e.g. ‘1 h’,
 ‘shutdown’, etc.)</p>
@@ -301,7 +288,8 @@ from stdout, call split(‘</p>
 <dd><p class="first last">Mesh object for which mats will be applied to.</p>
 </dd>
 </dl>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -319,17 +307,15 @@ file is assumed to be in mesh.__iter__() order</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : PyNE Mesh</p>
-<blockquote>
-<div><p>The object containing the imesh instance to be tagged.</p>
-</div></blockquote>
-<p><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>The path of the hdf5 version of the photon source file.</p>
-</div></blockquote>
-<p><strong>tags: dict</strong></p>
-<blockquote>
-<div><p>A dictionary were the keys are tuples with two values. The first is a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh</span></dt>
+<dd><p class="first last">The object containing the PyMOAB instance to be tagged.</p>
+</dd>
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The path of the hdf5 version of the photon source file.</p>
+</dd>
+<dt><strong>tags: dict</strong></dt>
+<dd><p class="first">A dictionary were the keys are tuples with two values. The first is a
 string denoting an nuclide in any form that is understood by
 pyne.nucname (e.g. ‘1001’, ‘U-235’, ‘242Am’) or ‘TOTAL’ for all
 nuclides. The second is a string denoting the decay time as it appears
@@ -338,18 +324,17 @@ dictionary are the requested tag names for the combination of nuclide
 and decay time. For example if one wanted tags for the photon source
 densities from U235 at shutdown and from all nuclides at 1 hour, the
 dictionary could be:</p>
-<p>tags = {(‘U-235’, ‘shutdown’) : ‘tag1’, (‘TOTAL’, ‘1 h’) : ‘tag2’}</p>
-</div></blockquote>
-<p><strong>sub_voxel: bool, optional</strong></p>
-<blockquote>
-<div><p>If the sub_voxel is True, then the sub-voxel r2s will be used.
+<p class="last">tags = {(‘U-235’, ‘shutdown’) : ‘tag1’, (‘TOTAL’, ‘1 h’) : ‘tag2’}</p>
+</dd>
+<dt><strong>sub_voxel: bool, optional</strong></dt>
+<dd><p class="first last">If the sub_voxel is True, then the sub-voxel r2s will be used.
 Then the photon_source will be interpreted as sub-voxel photon source.</p>
-</div></blockquote>
-<p><strong>cell_mats</strong> : dict, optional</p>
-<blockquote class="last">
-<div><p>cell_mats is required when sub_voxel is True.
+</dd>
+<dt><strong>cell_mats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">cell_mats is required when sub_voxel is True.
 Maps geometry cell numbers to PyNE Material objects.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -368,7 +353,7 @@ table headings:</p>
 <dt>idx <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd>The volume element index assuming the volume elements appear in xyz
 order (z changing fastest) within the photon source file in the case of
-a structured mesh or imesh.iterate() order for an unstructured mesh.</dd>
+a structured mesh or mesh.mesh_iterate() order for an unstructured mesh.</dd>
 <dt>nuc <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd>The nuclide name as it appears in the photon source file.</dd>
 <dt>time <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -381,14 +366,14 @@ a structured mesh or imesh.iterate() order for an unstructured mesh.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
-<blockquote>
-<div><p>The path to the file</p>
-</div></blockquote>
-<p><strong>chunkshape</strong> : tuple of int</p>
-<blockquote class="last">
-<div><p>A 1D tuple of the HDF5 chunkshape.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The path to the file</p>
+</dd>
+<dt><strong>chunkshape</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple of int</span></dt>
+<dd><p class="first last">A 1D tuple of the HDF5 chunkshape.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -404,14 +389,19 @@ photon_source block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>input_file</strong> : str</p>
-<blockquote>
-<div><p>The ALARA input file name, which must contain a photon_source block.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>input_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The ALARA input file name, which must contain a photon_source block.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>e_bounds</strong> : list of floats</p>
-<p class="last">The lower and upper energy bounds for the photon_source discretization. Unit: eV.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>e_bounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd></dd>
+<dt>The lower and upper energy bounds for the photon_source discretization. Unit: eV.</dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -431,15 +421,14 @@ equal up to &lt;sig_figs&gt; digits to be the same mixture within ALARA.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : PyNE Mesh object</p>
-<blockquote>
-<div><p>The Mesh object for which the geometry is discretized.</p>
-</div></blockquote>
-<p><strong>cell_fracs</strong> : structured array</p>
-<blockquote>
-<div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh object</span></dt>
+<dd><p class="first last">The Mesh object for which the geometry is discretized.</p>
+</dd>
+<dt><strong>cell_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">structured array</span></dt>
+<dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
-<blockquote>
+<blockquote class="last">
 <div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -459,29 +448,25 @@ The relative error associated with the volume fraction.</td>
 </tbody>
 </table>
 </div></blockquote>
-</div></blockquote>
-<p><strong>cell_mats</strong> : dict</p>
-<blockquote>
-<div><p>Maps geometry cell numbers to PyNE Material objects. Each PyNE material
+</dd>
+<dt><strong>cell_mats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Maps geometry cell numbers to PyNE Material objects. Each PyNE material
 object must have ‘name’ specified in Material.metadata.</p>
-</div></blockquote>
-<p><strong>geom_file</strong> : str</p>
-<blockquote>
-<div><p>The name of the file to print the geometry and material blocks.</p>
-</div></blockquote>
-<p><strong>matlib_file</strong> : str</p>
-<blockquote>
-<div><p>The name of the file to print the matlib.</p>
-</div></blockquote>
-<p><strong>sig_figs</strong> : int</p>
-<blockquote>
-<div><p>The number of significant figures that two mixtures must have in common
+</dd>
+<dt><strong>geom_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the file to print the geometry and material blocks.</p>
+</dd>
+<dt><strong>matlib_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the file to print the matlib.</p>
+</dd>
+<dt><strong>sig_figs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The number of significant figures that two mixtures must have in common
 to be treated as the same mixture within ALARA.</p>
-</div></blockquote>
-<p><strong>sub_voxel</strong> : bool</p>
-<blockquote class="last">
-<div><p>If sub_voxel is True, the sub-voxel r2s will be used.</p>
-</div></blockquote>
+</dd>
+<dt><strong>sub_voxel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If sub_voxel is True, the sub-voxel r2s will be used.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -563,8 +548,8 @@ to be treated as the same mixture within ALARA.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

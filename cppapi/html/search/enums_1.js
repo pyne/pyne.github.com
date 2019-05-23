@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mode',['Mode',['../namespacepyne.html#ab5c57d4e8555c544fc8ba056028fb42c',1,'pyne']]]
+  ['commentplacement',['CommentPlacement',['../namespace_json.html#a4fc417c23905b2ae9e2c47d197a45351',1,'Json']]]
 ];

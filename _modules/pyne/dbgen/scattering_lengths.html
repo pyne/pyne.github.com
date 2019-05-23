@@ -11,11 +11,14 @@
     <title>pyne.dbgen.scattering_lengths &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -98,8 +101,8 @@ if(ga_enabled){
         <span class="k">return</span> 
 
     <span class="n">nist</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;http://www.ncnr.nist.gov/resources/n-lengths/list.html&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">build_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></div>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nist</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">build_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nist</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
 
 
 
@@ -127,8 +130,8 @@ if(ga_enabled){
         <span class="n">nd</span> <span class="o">=</span> <span class="s2">&quot;0.0&quot;</span>
 
     <span class="n">nd</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;i&gt;i&lt;/i&gt;&quot;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">nd</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">d</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">nd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span></div>
 
 
 <span class="n">sl_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
@@ -167,8 +170,8 @@ if(ga_enabled){
 
         <span class="n">sl_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slrow</span><span class="p">)</span>
 
-    <span class="n">sl_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sl_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">sl_dtype</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">sl_array</span>
+    <span class="n">sl_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sl_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">sl_dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sl_array</span></div>
 
 
 
@@ -202,8 +205,8 @@ if(ga_enabled){
     <span class="c1"># Write the table</span>
     <span class="n">sl_table</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="c1"># Close the hdf5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the hdf5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 
@@ -222,8 +225,8 @@ if(ga_enabled){
     <span class="n">grab_scattering_lengths</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span>
 
     <span class="c1"># Make scatering table once we have the data</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making neutron scattering length table.&quot;</span><span class="p">)</span></div>
-    <span class="n">make_scattering_lengths_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making neutron scattering length table.&quot;</span><span class="p">)</span>
+    <span class="n">make_scattering_lengths_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_dir</span><span class="p">)</span></div>
 
 </pre></div>
 
@@ -290,8 +293,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

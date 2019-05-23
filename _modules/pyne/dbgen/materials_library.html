@@ -11,11 +11,14 @@
     <title>pyne.dbgen.materials_library &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -105,8 +108,8 @@ if(ga_enabled){
     <span class="c1"># filter out 111, 113, 115, 117, 118 - the ones with no names</span>
     <span class="n">elts</span> <span class="o">=</span> <span class="p">(</span><span class="n">Material</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">abunds</span><span class="p">),</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">zz</span><span class="p">)})</span>
             <span class="k">for</span> <span class="n">zz</span><span class="p">,</span> <span class="n">abunds</span> <span class="ow">in</span> <span class="n">grouped_abunds</span> <span class="k">if</span> <span class="n">zz</span> <span class="ow">in</span> <span class="n">nucname</span><span class="o">.</span><span class="n">zz_name</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="n">eltsdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">elt</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">elt</span><span class="p">)</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">elts</span><span class="p">))</span></div>
-    <span class="k">return</span> <span class="n">eltsdict</span>
+    <span class="n">eltsdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">elt</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">elt</span><span class="p">)</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">elts</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">eltsdict</span></div>
 
 
 <span class="c1"># Parses data from .csv</span>
@@ -131,8 +134,8 @@ if(ga_enabled){
     <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">is_comp_matname_or_density</span><span class="p">,</span> <span class="n">reader</span><span class="p">))</span>
     <span class="n">mats</span> <span class="o">=</span> <span class="n">parse_materials</span><span class="p">({},</span> <span class="n">lines</span><span class="p">)</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-    <span class="k">return</span> <span class="n">mats</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">mats</span></div>
 
 
 <span class="n">comp_matname_or_density_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+. +$|[A-Za-z]{1,2}-?(\d{1,3})?$&#39;</span><span class="p">)</span>
@@ -157,8 +160,8 @@ if(ga_enabled){
     <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Density (g/cm3) =&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">comp_matname_or_density_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
-    <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="n">first_line_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\d+. +&quot;</span><span class="p">)</span>
@@ -186,15 +189,15 @@ if(ga_enabled){
     <span class="n">mat</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
     <span class="n">mat</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">expand_elements</span><span class="p">()</span>
     <span class="n">mat</span><span class="o">.</span><span class="n">comp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">frac</span> <span class="k">for</span> <span class="n">frac</span> <span class="ow">in</span> <span class="n">mat</span><span class="o">.</span><span class="n">comp</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">frac</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span>
-    <span class="n">mats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">mat</span><span class="p">})</span></div>
-    <span class="k">return</span> <span class="n">parse_materials</span><span class="p">(</span><span class="n">mats</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="n">material_length</span><span class="p">:])</span>
+    <span class="n">mats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">mat</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">parse_materials</span><span class="p">(</span><span class="n">mats</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="n">material_length</span><span class="p">:])</span></div>
 
 
 <span class="c1"># Writes to file</span>
 <div class="viewcode-block" id="make_materials_compendium"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_materials_compendium">[docs]</a><span class="k">def</span> <span class="nf">make_materials_compendium</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">matslib</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adds materials compendium to nuc_data.h5.&quot;&quot;&quot;</span>
-    <span class="n">matslib</span><span class="o">.</span><span class="n">write_hdf5</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="s2">&quot;/material_library/materials&quot;</span><span class="p">,</span></div>
-                       <span class="n">nucpath</span><span class="o">=</span><span class="s2">&quot;/material_library/nucid&quot;</span><span class="p">)</span>
+    <span class="n">matslib</span><span class="o">.</span><span class="n">write_hdf5</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="s2">&quot;/material_library/materials&quot;</span><span class="p">,</span>
+                       <span class="n">nucpath</span><span class="o">=</span><span class="s2">&quot;/material_library/nucid&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="make_matslib"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_matslib">[docs]</a><span class="k">def</span> <span class="nf">make_matslib</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
@@ -213,8 +216,8 @@ if(ga_enabled){
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">matslib</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">make_elements</span><span class="p">())</span>
     <span class="n">matsdict</span> <span class="o">=</span> <span class="n">grab_materials_compendium</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-    <span class="n">matslib</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">matsdict</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">matslib</span>
+    <span class="n">matslib</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">matsdict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">matslib</span></div>
 
 
 <div class="viewcode-block" id="make_materials_library"><a class="viewcode-back" href="../../../pyapi/dbgen/materials_library.html#pyne.dbgen.materials_library.make_materials_library">[docs]</a><span class="k">def</span> <span class="nf">make_materials_library</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -228,8 +231,8 @@ if(ga_enabled){
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making materials library...&quot;</span><span class="p">)</span>
     <span class="n">matslib</span> <span class="o">=</span> <span class="n">make_matslib</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                                        <span class="s1">&#39;materials_compendium.csv&#39;</span><span class="p">))</span></div>
-    <span class="n">make_materials_compendium</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">matslib</span><span class="p">)</span>
+                                        <span class="s1">&#39;materials_compendium.csv&#39;</span><span class="p">))</span>
+    <span class="n">make_materials_compendium</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">matslib</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -295,8 +298,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

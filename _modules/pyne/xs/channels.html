@@ -11,11 +11,14 @@
     <title>pyne.xs.channels &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -163,8 +166,8 @@ if(ga_enabled){
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_atom_mass_channel</span><span class="p">(</span><span class="n">sigma_f</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="n">xs_cache</span><span class="p">)</span>
     <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;fission&#39;</span><span class="p">),</span> <span class="n">temp</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;fission&#39;</span><span class="p">),</span> <span class="n">temp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="sigma_s_gh"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.sigma_s_gh">[docs]</a><span class="k">def</span> <span class="nf">sigma_s_gh</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -248,8 +251,8 @@ if(ga_enabled){
     <span class="n">sig_s</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">sigma_s</span><span class="p">(</span><span class="n">E_g_centers</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">aw</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
     <span class="n">sig_s_gh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sig_s</span><span class="p">)</span>
 
-    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_s_gh</span></div>
-    <span class="k">return</span> <span class="n">sig_s_gh</span>
+    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_s_gh</span>
+    <span class="k">return</span> <span class="n">sig_s_gh</span></div>
 
 
 <div class="viewcode-block" id="sigma_s"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.sigma_s">[docs]</a><span class="k">def</span> <span class="nf">sigma_s</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -299,8 +302,8 @@ if(ga_enabled){
     <span class="n">sig_s_g</span> <span class="o">=</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_gh</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Put this value back into the cache, with the appropriate label</span>
-    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_g</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_s_g</span></div>
-    <span class="k">return</span> <span class="n">sig_s_g</span>
+    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_g</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_s_g</span>
+    <span class="k">return</span> <span class="n">sig_s_g</span></div>
 
 
 <div class="viewcode-block" id="sigma_a_reaction"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.sigma_a_reaction">[docs]</a><span class="k">def</span> <span class="nf">sigma_a_reaction</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -345,8 +348,8 @@ if(ga_enabled){
         <span class="k">return</span> <span class="n">_atom_mass_channel</span><span class="p">(</span><span class="n">sigma_a_reaction</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span> 
                                     <span class="n">xs_cache</span><span class="o">=</span><span class="n">xs_cache</span><span class="p">)</span>
     <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
-    <span class="n">key</span><span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">key</span><span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="metastable_ratio"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.metastable_ratio">[docs]</a><span class="k">def</span> <span class="nf">metastable_ratio</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
@@ -408,8 +411,8 @@ if(ga_enabled){
     <span class="n">ratio_rx_g</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ratio_rx_g</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ratio_rx_g</span></div>
-    <span class="k">return</span> <span class="n">ratio_rx_g</span>
+        <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ratio_rx_g</span>
+    <span class="k">return</span> <span class="n">ratio_rx_g</span></div>
 
 
 <div class="viewcode-block" id="sigma_a"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.sigma_a">[docs]</a><span class="k">def</span> <span class="nf">sigma_a</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -445,8 +448,8 @@ if(ga_enabled){
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_atom_mass_channel</span><span class="p">(</span><span class="n">sigma_a</span><span class="p">,</span> <span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="n">xs_cache</span><span class="p">)</span>
     <span class="n">nuc</span> <span class="o">=</span> <span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">nuc</span><span class="p">)</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;absorption&#39;</span><span class="p">),</span> <span class="n">temp</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;absorption&#39;</span><span class="p">),</span> <span class="n">temp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="chi"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.chi">[docs]</a><span class="k">def</span> <span class="nf">chi</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eres</span><span class="o">=</span><span class="mi">101</span><span class="p">):</span>
@@ -516,8 +519,8 @@ if(ga_enabled){
         <span class="c1"># renormalize chi</span>
         <span class="n">chi_g</span> <span class="o">=</span> <span class="n">chi_g</span> <span class="o">/</span> <span class="n">chi_g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="c1"># Put this value back into the cache, with the appropriate label</span>
-    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_g</span></div>
-    <span class="k">return</span> <span class="n">chi_g</span>
+    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_g</span>
+    <span class="k">return</span> <span class="n">chi_g</span></div>
 
 
 <div class="viewcode-block" id="sigma_t"><a class="viewcode-back" href="../../../pyapi/xs/channels.html#pyne.xs.channels.sigma_t">[docs]</a><span class="k">def</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span> <span class="n">group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xs_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -566,8 +569,8 @@ if(ga_enabled){
     <span class="k">if</span> <span class="n">key_s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">xs_cache</span><span class="p">:</span>
         <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_s</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma_s</span><span class="p">(</span><span class="n">nuc</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">group_struct</span><span class="p">,</span> <span class="n">phi_g</span><span class="p">,</span> <span class="n">xs_cache</span><span class="p">)</span>
     <span class="n">sig_t_g</span> <span class="o">=</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_a</span><span class="p">]</span> <span class="o">+</span> <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_s</span><span class="p">]</span>
-    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_t_g</span></div>
-    <span class="k">return</span> <span class="n">sig_t_g</span>
+    <span class="n">xs_cache</span><span class="p">[</span><span class="n">key_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_t_g</span>
+    <span class="k">return</span> <span class="n">sig_t_g</span></div>
 
 
 </pre></div>
@@ -635,8 +638,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

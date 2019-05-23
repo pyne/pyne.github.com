@@ -11,11 +11,14 @@
     <title>Mesh-based Rigourous 2-Step Activation – pyne.r2s &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -77,87 +80,76 @@ Fusion Engineering and Design, 63-64, 107–114 (2002).</p>
 <span id="rigorous-2-step-activation-api"></span><h2>Rigorous 2-Step Activation API<a class="headerlink" href="#module-pyne.r2s" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="pyne.r2s.irradiation_setup">
-<code class="descclassname">pyne.r2s.</code><code class="descname">irradiation_setup</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>cell_mats</em>, <em>alara_params</em>, <em>tally_num=4</em>, <em>geom=None</em>, <em>num_rays=10</em>, <em>grid=False</em>, <em>flux_tag='n_flux'</em>, <em>fluxin='alara_fluxin'</em>, <em>reverse=False</em>, <em>alara_inp='alara_geom'</em>, <em>alara_matlib='alara_matlib'</em>, <em>output_mesh='r2s_step1.h5m'</em>, <em>output_material=False</em>, <em>sub_voxel=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#irradiation_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.irradiation_setup" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.r2s.</code><code class="descname">irradiation_setup</code><span class="sig-paren">(</span><em>flux_mesh</em>, <em>cell_mats</em>, <em>cell_fracs</em>, <em>alara_params</em>, <em>tally_num=4</em>, <em>num_rays=10</em>, <em>grid=False</em>, <em>flux_tag='n_flux'</em>, <em>fluxin='alara_fluxin'</em>, <em>reverse=False</em>, <em>alara_inp='alara_inp'</em>, <em>alara_matlib='alara_matlib'</em>, <em>output_mesh='r2s_step1.h5m'</em>, <em>output_material=False</em>, <em>decay_times=None</em>, <em>sub_voxel=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#irradiation_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.irradiation_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is used to setup the irradiation inputs after the first
 R2S transport step.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>flux_mesh</strong> : PyNE Meshtal object, Mesh object, or str</p>
-<blockquote>
-<div><p>The source of the neutron flux information. This can be a PyNE Meshtal
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>flux_mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Meshtal object, Mesh object, or str</span></dt>
+<dd><p class="first last">The source of the neutron flux information. This can be a PyNE Meshtal
 object, a pyne Mesh object, or the filename an MCNP meshtal file, or
 the filename of an unstructured mesh tagged with fluxes.</p>
-</div></blockquote>
-<p><strong>tally_num</strong> : int</p>
-<blockquote>
-<div><p>The MCNP FMESH4 tally number of the neutron flux tally within the
-meshtal file.</p>
-</div></blockquote>
-<p><strong>cell_mats</strong> : dict</p>
-<blockquote>
-<div><p>Maps geometry cell numbers to PyNE Material objects.</p>
-</div></blockquote>
-<p><strong>alara_params</strong> : str</p>
-<blockquote>
-<div><p>The ALARA input blocks specifying everything except the geometry
+</dd>
+<dt><strong>cell_mats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Maps geometry cell numbers to PyNE Material objects.</p>
+</dd>
+<dt><strong>cell_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">record array</span></dt>
+<dd><p class="first last">The output of dagmc.discretize_geom().</p>
+</dd>
+<dt><strong>alara_params</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The ALARA input blocks specifying everything except the geometry
 and materials. This can either be passed as string or as a file name.</p>
-</div></blockquote>
-<p><strong>geom</strong> : str, optional</p>
-<blockquote>
-<div><p>The file name of a DAGMC-loadable faceted geometry. This is only
-necessary if the geometry is not already loaded into memory.</p>
-</div></blockquote>
-<p><strong>num_rays</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of rays to fire down a mesh row for geometry discretization.
+</dd>
+<dt><strong>tally_num</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The MCNP FMESH4 tally number of the neutron flux tally within the
+meshtal file.</p>
+</dd>
+<dt><strong>num_rays</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of rays to fire down a mesh row for geometry discretization.
 This number must be a perfect square if grid=True.</p>
-</div></blockquote>
-<p><strong>grid</strong> : bool, optional</p>
-<blockquote>
-<div><p>The if False, geometry discretization will be done with randomly fired
+</dd>
+<dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">The if False, geometry discretization will be done with randomly fired
 rays. If true, a grid of sqrt(num_rays) x sqrt(num_rays) rays is used
 for each mesh row.</p>
-</div></blockquote>
-<p><strong>flux_tag</strong> : str, optional</p>
-<blockquote>
-<div><p>The iMesh tag for the neutron flux.</p>
-</div></blockquote>
-<p><strong>fluxin</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the ALARA fluxin file to be created.</p>
-</div></blockquote>
-<p><strong>reverse</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True the fluxes in the fluxin file will be printed in the reverse
+</dd>
+<dt><strong>flux_tag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The mesh tag for the neutron flux.</p>
+</dd>
+<dt><strong>fluxin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the ALARA fluxin file to be created.</p>
+</dd>
+<dt><strong>reverse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True the fluxes in the fluxin file will be printed in the reverse
 order of how they appear within the flux vector tag. Since MCNP and
 the Meshtal class order fluxes from low energy to high energy, this
 option should only be true if the transmutation data being used is
 ordered from high energy to low energy.</p>
-</div></blockquote>
-<p><strong>alara_inp</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the ALARA input file to be created.</p>
-</div></blockquote>
-<p><strong>alara_matlib</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the alara_matlib file to be created.</p>
-</div></blockquote>
-<p><strong>output_mesh</strong> : str, optional</p>
-<blockquote>
-<div><p>A mesh containing all the fluxes and materials used for irradiation
+</dd>
+<dt><strong>alara_inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the ALARA input file to be created.</p>
+</dd>
+<dt><strong>alara_matlib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the alara_matlib file to be created.</p>
+</dd>
+<dt><strong>output_mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">A mesh containing all the fluxes and materials used for irradiation
 setup.</p>
-</div></blockquote>
-<p><strong>output_material</strong> : bool, optional</p>
-<blockquote>
-<div><p>If true, output mesh will have materials as determined by
+</dd>
+<dt><strong>output_material</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, output mesh will have materials as determined by
 dagmc.discretize_geom()</p>
-</div></blockquote>
-<p><strong>sub_voxel</strong> : bool, optional</p>
-<blockquote class="last">
-<div><p>If true, sub-voxel r2s work flow  will be used.</p>
-</div></blockquote>
+</dd>
+<dt><strong>decay_times: list</strong></dt>
+<dd><p class="first last">List of the decay times. If no decay times given, use ‘1 s’.</p>
+</dd>
+<dt><strong>sub_voxel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, sub-voxel r2s work flow  will be used.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -174,17 +166,15 @@ step.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : PyNE Mesh</p>
-<blockquote>
-<div><p>The object containing the iMesh instance to be tagged.</p>
-</div></blockquote>
-<p><strong>phtn_src</strong> : str</p>
-<blockquote>
-<div><p>The path of the ALARA phtn_file.</p>
-</div></blockquote>
-<p><strong>tags: dict</strong></p>
-<blockquote class="last">
-<div><p>A dictionary were the keys are tuples with two values. The first is a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh</span></dt>
+<dd><p class="first last">The object containing the mesh instance to be tagged.</p>
+</dd>
+<dt><strong>phtn_src</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The path of the ALARA phtn_file.</p>
+</dd>
+<dt><strong>tags: dict</strong></dt>
+<dd><p class="first">A dictionary were the keys are tuples with two values. The first is a
 string denoting an nuclide in any form that is understood by
 pyne.nucname (e.g. ‘1001’, ‘U-235’, ‘242Am’) or ‘TOTAL’ for all
 nuclides. The second is a string denoting the decay time as it appears
@@ -192,8 +182,55 @@ in the phtn_src file (e.g. ‘shutdown’, ‘1 h’ ‘3 d’). The values of t
 dictionary are the requested tag names for the combination of nuclide
 and decay time. These tag names should be the tag names that are read
 by the sampling subroutine. For example:</p>
-<p>tags = {(‘U-235’, ‘shutdown’): ‘tag1’, (‘TOTAL’, ‘1 h’): ‘tag2’}</p>
+<p class="last">tags = {(‘U-235’, ‘shutdown’): ‘tag1’, (‘TOTAL’, ‘1 h’): ‘tag2’}</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyne.r2s.resolve_mesh">
+<code class="descclassname">pyne.r2s.</code><code class="descname">resolve_mesh</code><span class="sig-paren">(</span><em>mesh_reference</em>, <em>tally_num=None</em>, <em>flux_tag='n_flux'</em>, <em>output_material=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#resolve_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.resolve_mesh" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>This function creates a method that will consume many mesh-like objects</dt>
+<dd>(e.g. mesh, an h5m file, a meshtal file, etc) and returns a robust PyNE
+mesh object accordingly.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>mesh_reference</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh object, unstructured mesh file, Meshtal, meshtal</span></dt>
+<dd><blockquote class="first">
+<div><p>file, or PyNE Meshtal object.</p>
 </div></blockquote>
+<p class="last">The source of the neutron flux information. This can be a PyNE Meshtal
+object, a pyne Mesh object, or the filename an MCNP meshtal file, or
+the filename of an unstructured mesh tagged with fluxes.</p>
+</dd>
+<dt><strong>tally_num</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The MCNP FMESH4 tally number of the neutron flux tally within the
+meshtal file.</p>
+</dd>
+<dt><strong>flux_tag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The tag name for the neutron flux.</p>
+</dd>
+<dt><strong>output_material</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, output mesh will have materials as determined by
+dagmc.discretize_geom().</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>m</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE mesh object</span></dt>
+<dd><p class="first last">The PyNE mesh object of the flux data.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -202,27 +239,32 @@ by the sampling subroutine. For example:</p>
 
 <dl class="function">
 <dt id="pyne.r2s.total_photon_source_intensity">
-<code class="descclassname">pyne.r2s.</code><code class="descname">total_photon_source_intensity</code><span class="sig-paren">(</span><em>m</em>, <em>tag_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#total_photon_source_intensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.total_photon_source_intensity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyne.r2s.</code><code class="descname">total_photon_source_intensity</code><span class="sig-paren">(</span><em>m</em>, <em>tag_name</em>, <em>sub_voxel=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/r2s.html#total_photon_source_intensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.r2s.total_photon_source_intensity" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function reads mesh tagged with photon source densities and returns
 the total photon emission desinty.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>m</strong> : PyNE Mesh</p>
-<blockquote>
-<div><p>The mesh-based photon emission density distribution in p/cm3/s.</p>
-</div></blockquote>
-<p><strong>tag_name</strong> : str</p>
-<blockquote>
-<div><p>The name of the tag on the mesh with the photon emission density information.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>m</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE Mesh</span></dt>
+<dd><p class="first last">The mesh-based photon emission density distribution in p/cm3/s.</p>
+</dd>
+<dt><strong>tag_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the tag on the mesh with the photon emission density
+information.</p>
+</dd>
+<dt><strong>sub_voxel: bool, optional</strong></dt>
+<dd><p class="first last">If true, sub-voxel r2s work flow will be used.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intensity</strong> : float</p>
-<blockquote class="last">
-<div><p>The total photon emission density across the entire mesh (p/s).</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>intensity</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The total photon emission density across the entire mesh (p/s).</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -304,8 +346,8 @@ the total photon emission desinty.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

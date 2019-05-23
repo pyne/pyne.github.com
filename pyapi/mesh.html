@@ -11,11 +11,14 @@
     <title>PyNE Mesh – pyne.mesh &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -97,83 +100,24 @@ the desired functions each session.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : callable object</p>
-<blockquote>
-<div><p>The function that performs the computation.</p>
-</div></blockquote>
-<p><strong>mesh</strong> : Mesh, optional</p>
-<blockquote>
-<div><p>The PyNE mesh to tag.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the tag.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Documentation string for the tag.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>f</strong> <span class="classifier-delimiter">:</span> <span class="classifier">callable object</span></dt>
+<dd><p class="first last">The function that performs the computation.</p>
+</dd>
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh, optional</span></dt>
+<dd><p class="first last">The PyNE mesh to tag.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the tag.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Documentation string for the tag.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="class">
-<dt id="pyne.mesh.IMeshTag">
-<em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">IMeshTag</code><span class="sig-paren">(</span><em>size=1</em>, <em>dtype='f8'</em>, <em>default=0.0</em>, <em>mesh=None</em>, <em>name=None</em>, <em>doc=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#IMeshTag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.IMeshTag" title="Permalink to this definition">¶</a></dt>
-<dd><p>A mesh tag which looks itself up as a tag on the iMesh.Mesh instance.
-This makes the following expressions equivalent for a given iMesh.Mesh tag
-name:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">getTagHandle</span><span class="p">(</span><span class="n">name</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span>
-                        <span class="n">iBase</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">iMesh</span><span class="o">.</span><span class="n">Topology</span><span class="o">.</span><span class="n">all</span><span class="p">))[</span><span class="n">i</span><span class="p">]]</span>
-</pre></div>
-</div>
-<p>It also adds slicing, fancy indexing, boolean masking, and broadcasting
-features to this process.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>size</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of elements of type dtype that this tag stores.</p>
-</div></blockquote>
-<p><strong>dtype</strong> : np.dtype or similar, optional</p>
-<blockquote>
-<div><p>The data type of this tag from int, float, and byte. See PyTAPS
-tags for more details.</p>
-</div></blockquote>
-<p><strong>default</strong> : dtype or None, optional</p>
-<blockquote>
-<div><p>The default value to fill this tag with upon creation. If None,
-then the tag is created empty.</p>
-</div></blockquote>
-<p><strong>mesh</strong> : Mesh, optional</p>
-<blockquote>
-<div><p>The PyNE mesh to tag.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the tag.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Documentation string for the tag.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="pyne.mesh.IMeshTag.expand">
-<code class="descname">expand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#IMeshTag.expand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.IMeshTag.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function creates a group of scalar tags from a vector tag. For
-a vector tag named &lt;tag_name&gt; of length N, scalar tags in the form:</p>
-<p>&lt;tag_name&gt;_000, &lt;tag_name&gt;_001, &lt;tag_name&gt;_002… &lt;tag_name&gt;_N</p>
-<p>are created and the data is tagged accordingly.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -191,18 +135,17 @@ features to this process.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : Mesh, optional</p>
-<blockquote>
-<div><p>The PyNE mesh to tag.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the tag.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Documentation string for the tag.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh, optional</span></dt>
+<dd><p class="first last">The PyNE mesh to tag.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the tag.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Documentation string for the tag.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -224,18 +167,17 @@ features to this process.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : Mesh, optional</p>
-<blockquote>
-<div><p>The PyNE mesh to tag.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the tag.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Documentation string for the tag.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh, optional</span></dt>
+<dd><p class="first last">The PyNE mesh to tag.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the tag.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Documentation string for the tag.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -245,26 +187,28 @@ features to this process.</p>
 <dl class="class">
 <dt id="pyne.mesh.Mesh">
 <em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">Mesh</code><span class="sig-paren">(</span><em>mesh=None</em>, <em>structured=False</em>, <em>structured_coords=None</em>, <em>structured_set=None</em>, <em>structured_ordering='xyz'</em>, <em>mats=()</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class houses an iMesh instance and contains methods for various mesh
-operations. Special methods exploit the properties of structured mesh.</p>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="15%" />
-<col width="85%" />
-</colgroup>
+<dd><p>This class houses a PyMOAB core instance and contains methods for various
+mesh operations. Special methods exploit the properties of structured mesh.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>mesh</strong></td>
-<td>(iMesh instance)</td>
-</tr>
-<tr class="row-even"><td><strong>structured</strong></td>
-<td>(bool) True for structured mesh.</td>
-</tr>
-<tr class="row-odd"><td><strong>structured_coords</strong></td>
-<td>(list of lists) A list containing lists of x_points, y_points and z_points that make up a structured mesh.</td>
-</tr>
-<tr class="row-even"><td><strong>structured_ordering</strong></td>
-<td>(str) A three character string denoting the iteration order of the mesh (e.g. ‘xyz’, meaning z changest fastest, then y, then x.)</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyMOAB core instance</span></dt>
+<dd></dd>
+<dt><strong>structured</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True for structured mesh.</p>
+</dd>
+<dt><strong>structured_coords</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of lists</span></dt>
+<dd><p class="first last">A list containing lists of x_points, y_points and z_points that make up
+a structured mesh.</p>
+</dd>
+<dt><strong>structured_ordering</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">A three character string denoting the iteration order of the mesh (e.g.
+‘xyz’, meaning z changest fastest, then y, then x.)</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -272,69 +216,64 @@ operations. Special methods exploit the properties of structured mesh.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : iMesh instance or str, optional</p>
-<blockquote>
-<div><p>Either an iMesh instance or a file name of file containing an
-iMesh instance.</p>
-</div></blockquote>
-<p><strong>structured</strong> : bool, optional</p>
-<blockquote>
-<div><p>True for structured mesh.</p>
-</div></blockquote>
-<p><strong>structured_coords</strong> : list of lists, optional</p>
-<blockquote>
-<div><p>A list containing lists of x_points, y_points and z_points
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyMOAB core instance or str, optional</span></dt>
+<dd><p class="first last">Either a PyMOAB core instance or a file name of a PyMOAB mesh file.</p>
+</dd>
+<dt><strong>structured</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True for structured mesh.</p>
+</dd>
+<dt><strong>structured_coords</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of lists, optional</span></dt>
+<dd><p class="first last">A list containing lists of x_points, y_points and z_points
 that make up a structured mesh.</p>
-</div></blockquote>
-<p><strong>structured_set</strong> : iMesh entity set handle, optional</p>
-<blockquote>
-<div><p>A preexisting structured entity set on an iMesh instance with a
-“BOX_DIMS” tag.</p>
-</div></blockquote>
-<p><strong>structured_ordering</strong> : str, optional</p>
-<blockquote>
-<div><p>A three character string denoting the iteration order of the mesh
+</dd>
+<dt><strong>structured_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyMOAB entity set handle, optional</span></dt>
+<dd><p class="first last">A preexisting structured entity set on an PyMOAB core instance with
+a “BOX_DIMS” tag.</p>
+</dd>
+<dt><strong>structured_ordering</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">A three character string denoting the iteration order of the mesh
 (e.g. ‘xyz’, meaning z changest fastest, then y, then x.)</p>
-</div></blockquote>
-<p><strong>mats</strong> : MaterialLibrary or dict or Materials or None, optional</p>
-<blockquote class="last">
-<div><p>This is a mapping of volume element handles to Material objects.
+</dd>
+<dt><strong>mats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">MaterialLibrary or dict or Materials or None, optional</span></dt>
+<dd><p class="first">This is a mapping of volume element handles to Material objects.
 If mats is None, then no empty materials are created for the mesh.</p>
 <dl class="docutils">
 <dt>Unstructured mesh instantiation:</dt>
 <dd><ul class="first last simple">
-<li>From iMesh instance by specifying: &lt;mesh&gt;</li>
+<li>From PyMOAB core instance by specifying: &lt;mesh&gt;</li>
 <li>From mesh file by specifying: &lt;mesh_file&gt;</li>
 </ul>
 </dd>
 <dt>Structured mesh instantiation:</dt>
 <dd><ul class="first last simple">
-<li>From iMesh instance with exactly 1 entity set (with BOX_DIMS
-tag) by specifying &lt;mesh&gt; and structured = True.</li>
+<li>From PyMOAB core instance with exactly 1 entity set
+(with BOX_DIMS tag) by specifying &lt;mesh&gt; and structured = True.</li>
 <li>From mesh file with exactly 1 entity set (with BOX_DIMS tag)
 by specifying &lt;mesh_file&gt; and structured = True.</li>
-<li>From an imesh instance with multiple entity sets by
+<li>From a PyMOAB instance with multiple entity sets by
 specifying &lt;mesh&gt;, &lt;structured_set&gt;, structured=True.</li>
 <li>From coordinates by specifying &lt;structured_coords&gt;,
-structured=True, and optional preexisting iMesh instance
-&lt;mesh&gt;</li>
+structured=True, and optional pre-existing PyMOAB core
+instance &lt;mesh&gt;</li>
 </ul>
 </dd>
 </dl>
-<p>The “BOX_DIMS” tag on iMesh instances containing structured mesh is
-a vector of floats it the following form:
+<p class="last">The “BOX_DIMS” tag on PyMOAB core instances containing structured
+mesh is a vector of floats in the following form:
 [i_min, j_min, k_min, i_max, j_max, k_max]
 where each value is a volume element index number. Typically volume
 elements should be indexed from 0. The “BOX_DIMS” information is
 stored in self.dims.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="pyne.mesh.Mesh.cell_fracs_to_mats">
-<code class="descname">cell_fracs_to_mats</code><span class="sig-paren">(</span><em>cell_fracs</em>, <em>cell_mats</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.cell_fracs_to_mats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.cell_fracs_to_mats" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cell_fracs_to_mats</code><span class="sig-paren">(</span><em>self</em>, <em>cell_fracs</em>, <em>cell_mats</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.cell_fracs_to_mats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.cell_fracs_to_mats" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function uses the output from dagmc.discretize_geom() and
 a mapping of geometry cells to Materials to assign materials
 to each mesh volume element.</p>
@@ -342,9 +281,9 @@ to each mesh volume element.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>cell_fracs</strong> : structured array</p>
-<blockquote>
-<div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cell_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">structured array</span></dt>
+<dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
 <blockquote>
 <div><table class="docutils field-list" frame="void" rules="none">
@@ -366,14 +305,14 @@ The relative error associated with the volume fraction.</td>
 </tbody>
 </table>
 </div></blockquote>
-<p>The array must be sorted with respect to both idx and cell, with
+<p class="last">The array must be sorted with respect to both idx and cell, with
 cell changing fastest.</p>
-</div></blockquote>
-<p><strong>cell_mats</strong> : dict</p>
-<blockquote class="last">
-<div><p>Maps geometry cell numbers to Material objects that represent what
+</dd>
+<dt><strong>cell_mats</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Maps geometry cell numbers to Material objects that represent what
 material each cell is made of.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -382,29 +321,31 @@ material each cell is made of.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.common_ve_tags">
-<code class="descname">common_ve_tags</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.common_ve_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.common_ve_tags" title="Permalink to this definition">¶</a></dt>
+<code class="descname">common_ve_tags</code><span class="sig-paren">(</span><em>self</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.common_ve_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.common_ve_tags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the volume element tags in common between self and other.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.elem_volume">
-<code class="descname">elem_volume</code><span class="sig-paren">(</span><em>ve</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.elem_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.elem_volume" title="Permalink to this definition">¶</a></dt>
+<code class="descname">elem_volume</code><span class="sig-paren">(</span><em>self</em>, <em>ve</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.elem_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.elem_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the volume of a hexahedral or tetrahedral volume element</p>
 <p>Approaches are adapted from MOAB’s measure.cpp.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ve</strong> : iMesh.Mesh.EntitySet</p>
-<blockquote>
-<div><p>A volume element</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>ve</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyMOAB EntitySet handle</span></dt>
+<dd><p class="first last">A volume element</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>..</strong> : float</p>
-<blockquote class="last">
-<div><p>Element’s volume. Returns None if volume is not a hex or tet.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>..</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Element’s volume. Returns None if volume is not a hex or tet.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -413,7 +354,7 @@ material each cell is made of.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.iter_structured_idx">
-<code class="descname">iter_structured_idx</code><span class="sig-paren">(</span><em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.iter_structured_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.iter_structured_idx" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_structured_idx</code><span class="sig-paren">(</span><em>self</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.iter_structured_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.iter_structured_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterater object of volume element indexes (idx) for any
 iteration order. Note that idx is assigned upon instantiation in the
 order of the structured_ordering attribute. This method is meant to be
@@ -423,10 +364,11 @@ When they are the same, the iterator (0, 1, 2, … N-1) is returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>order</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The requested iteration order (e.g. ‘zyx’).</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>order</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The requested iteration order (e.g. ‘zyx’).</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -435,13 +377,13 @@ When they are the same, the iterator (0, 1, 2, … N-1) is returned.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.iter_ve">
-<code class="descname">iter_ve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.iter_ve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.iter_ve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_ve</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.iter_ve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.iter_ve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an iterator that yields on the volume elements.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_get_divisions">
-<code class="descname">structured_get_divisions</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_divisions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_divisions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_get_divisions</code><span class="sig-paren">(</span><em>self</em>, <em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_divisions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_divisions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the mesh divisions on a given dimension</p>
 <p>Given a dimension “x”, “y”, or “z”, return a list of the mesh vertices
 along that dimension.</p>
@@ -449,25 +391,25 @@ along that dimension.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_get_hex">
-<code class="descname">structured_get_hex</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_hex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_get_hex</code><span class="sig-paren">(</span><em>self</em>, <em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the handle for the (i,j,k)’th hexahedron in the mesh</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_get_vertex">
-<code class="descname">structured_get_vertex</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_vertex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_get_vertex</code><span class="sig-paren">(</span><em>self</em>, <em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_get_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_get_vertex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the handle for (i,j,k)’th vertex in the mesh</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_hex_volume">
-<code class="descname">structured_hex_volume</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_hex_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_hex_volume" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_hex_volume</code><span class="sig-paren">(</span><em>self</em>, <em>i</em>, <em>j</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_hex_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_hex_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the volume of the (i,j,k)’th hexahedron in the mesh</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_iterate_hex">
-<code class="descname">structured_iterate_hex</code><span class="sig-paren">(</span><em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_iterate_hex</code><span class="sig-paren">(</span><em>self</em>, <em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator over the hexahedra of the mesh</p>
 <p>The order argument specifies the iteration order.  It must be a string
 of 1-3 letters from the set (x,y,z).  The rightmost letter is the axis
@@ -487,7 +429,7 @@ plane of the structured mesh with the smallest k coordinate.</p>
 </pre></div>
 </div>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">structured_iterate_hex</span><span class="p">():</span> <span class="n">equivalent</span> <span class="n">to</span> <span class="n">iMesh</span> <span class="n">iterator</span> <span class="n">over</span> <span class="n">hexes</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">structured_iterate_hex</span><span class="p">():</span> <span class="n">equivalent</span> <span class="n">to</span> <span class="n">mehset_iterator</span> <span class="n">over</span> <span class="n">hexes</span>
                           <span class="ow">in</span> <span class="n">mesh</span>
 <span class="n">structured_iterate_hex</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">):</span> <span class="n">iterate</span> <span class="n">over</span> <span class="n">entire</span> <span class="n">mesh</span><span class="p">,</span> <span class="k">with</span>
                                <span class="n">k</span><span class="o">-</span><span class="n">coordinates</span> <span class="n">changing</span> <span class="n">fastest</span><span class="p">,</span>
@@ -507,7 +449,7 @@ plane of the structured mesh with the smallest k coordinate.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_iterate_hex_volumes">
-<code class="descname">structured_iterate_hex_volumes</code><span class="sig-paren">(</span><em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex_volumes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_iterate_hex_volumes</code><span class="sig-paren">(</span><em>self</em>, <em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_hex_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_hex_volumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator over the volumes of the mesh hexahedra</p>
 <p>See structured_iterate_hex() for an explanation of the order argument
 and the available keyword arguments.</p>
@@ -515,7 +457,7 @@ and the available keyword arguments.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.structured_iterate_vertex">
-<code class="descname">structured_iterate_vertex</code><span class="sig-paren">(</span><em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_vertex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">structured_iterate_vertex</code><span class="sig-paren">(</span><em>self</em>, <em>order='zyx'</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.structured_iterate_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.structured_iterate_vertex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an iterator over the vertices of the mesh</p>
 <p>See structured_iterate_hex() for an explanation of the order argument
 and the available keyword arguments.</p>
@@ -523,40 +465,36 @@ and the available keyword arguments.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.tag">
-<code class="descname">tag</code><span class="sig-paren">(</span><em>name</em>, <em>value=None</em>, <em>tagtype=None</em>, <em>doc=None</em>, <em>size=None</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.tag" title="Permalink to this definition">¶</a></dt>
+<code class="descname">tag</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value=None</em>, <em>tagtype=None</em>, <em>doc=None</em>, <em>size=None</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new tag to the mesh, guessing the approriate place to store
 the data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> : str</p>
-<blockquote>
-<div><p>The tag name</p>
-</div></blockquote>
-<p><strong>value</strong> : optional</p>
-<blockquote>
-<div><p>The value to initialize the tag with, skipped if None.</p>
-</div></blockquote>
-<p><strong>tagtype</strong> : Tag or str, optional</p>
-<blockquote>
-<div><p>The type of tag this should be any of the following classes or
-strings are accepted: IMeshTag, MetadataTag, ComputedTag, ‘imesh’,
-‘metadata’, or ‘computed’.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote>
-<div><p>The tag documentation string.</p>
-</div></blockquote>
-<p><strong>size</strong> : int, optional</p>
-<blockquote>
-<div><p>The size of the tag. This only applies to IMeshTags.</p>
-</div></blockquote>
-<p><strong>dtype</strong> : numpy dtype, optional</p>
-<blockquote class="last">
-<div><p>The data type of the tag. This only applies to IMeshTags. See PyTAPS
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The tag name</p>
+</dd>
+<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">optional</span></dt>
+<dd><p class="first last">The value to initialize the tag with, skipped if None.</p>
+</dd>
+<dt><strong>tagtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Tag or str, optional</span></dt>
+<dd><p class="first last">The type of tag this should be any of the following classes or
+strings are accepted: NativeMeshTag, MetadataTag, ComputedTag,
+‘nat_mesh’, ‘metadata’, or ‘computed’.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The tag documentation string.</p>
+</dd>
+<dt><strong>size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The size of the tag. This only applies to NativeMeshTags.</p>
+</dd>
+<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy dtype, optional</span></dt>
+<dd><p class="first last">The data type of the tag. This only applies to NativeMeshTags. See PyMOAB
 for more details.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -565,16 +503,16 @@ for more details.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.tag_cell_fracs">
-<code class="descname">tag_cell_fracs</code><span class="sig-paren">(</span><em>cell_fracs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.tag_cell_fracs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.tag_cell_fracs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">tag_cell_fracs</code><span class="sig-paren">(</span><em>self</em>, <em>cell_fracs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.tag_cell_fracs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.tag_cell_fracs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function uses the output from dagmc.discretize_geom() and
 a mapping of geometry cells to set the cell_fracs_tag.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>cell_fracs</strong> : structured array</p>
-<blockquote class="last">
-<div><p>The output from dagmc.discretize_geom(). A sorted, one dimensional
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cell_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">structured array</span></dt>
+<dd><p class="first">The output from dagmc.discretize_geom(). A sorted, one dimensional
 array, each entry containing the following fields:</p>
 <blockquote>
 <div><table class="docutils field-list" frame="void" rules="none">
@@ -596,9 +534,10 @@ The relative error associated with the volume fraction.</td>
 </tbody>
 </table>
 </div></blockquote>
-<p>The array must be sorted with respect to both idx and cell, with
+<p class="last">The array must be sorted with respect to both idx and cell, with
 cell changing fastest.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -607,23 +546,25 @@ cell changing fastest.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.ve_center">
-<code class="descname">ve_center</code><span class="sig-paren">(</span><em>ve</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.ve_center"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.ve_center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ve_center</code><span class="sig-paren">(</span><em>self</em>, <em>ve</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.ve_center"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.ve_center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the point at the center of any tetrahedral or hexahedral mesh
 volume element.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ve</strong> : iMesh entity handle</p>
-<blockquote>
-<div><p>Any mesh volume element.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>ve</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyMOAB EntitySet handle</span></dt>
+<dd><p class="first last">Any mesh volume element.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> : tuple</p>
-<blockquote class="last">
-<div><p>The (x, y, z) coordinates of the center of the mesh volume element.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>center</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd><p class="first last">The (x, y, z) coordinates of the center of the mesh volume element.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -632,7 +573,7 @@ volume element.</p>
 
 <dl class="method">
 <dt id="pyne.mesh.Mesh.write_hdf5">
-<code class="descname">write_hdf5</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.write_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.write_hdf5" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write_hdf5</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>write_mats=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Mesh.write_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Mesh.write_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the mesh to an hdf5 file.</p>
 </dd></dl>
 
@@ -655,18 +596,17 @@ features to this process.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : Mesh, optional</p>
-<blockquote>
-<div><p>The PyNE mesh to tag.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the tag.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Documentation string for the tag.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh, optional</span></dt>
+<dd><p class="first last">The PyNE mesh to tag.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the tag.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Documentation string for the tag.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -674,32 +614,95 @@ features to this process.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pyne.mesh.NativeMeshTag">
+<em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">NativeMeshTag</code><span class="sig-paren">(</span><em>size=1</em>, <em>dtype='f8'</em>, <em>default=0.0</em>, <em>mesh=None</em>, <em>name=None</em>, <em>doc=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#NativeMeshTag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.NativeMeshTag" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mesh tag which looks itself up as a tag on a PyMOAB core instance.
+This makes the following expressions equivalent for a given PyNE/PyNE Mesh
+tag name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_data</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_handle</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+                                       <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_entities_by_type</span><span class="p">(</span>
+                                       <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_root_set</span><span class="p">(),</span>
+                                       <span class="n">types</span><span class="o">.</span><span class="n">MBHEX</span><span class="p">))[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>It also adds slicing, fancy indexing, boolean masking, and broadcasting
+features to this process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of elements of type dtype that this tag stores.</p>
+</dd>
+<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">np.dtype or similar, optional</span></dt>
+<dd><p class="first last">The data type of this tag from int, float, and byte. See PyMOAB
+tags for more details.</p>
+</dd>
+<dt><strong>default</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dtype or None, optional</span></dt>
+<dd><p class="first last">The default value to fill this tag with upon creation. If None,
+then the tag is created empty.</p>
+</dd>
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh, optional</span></dt>
+<dd><p class="first last">The PyNE mesh to tag.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the tag.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Documentation string for the tag.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyne.mesh.NativeMeshTag.expand">
+<code class="descname">expand</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#NativeMeshTag.expand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.NativeMeshTag.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a group of scalar tags from a vector tag. For
+a vector tag named &lt;tag_name&gt; of length N, scalar tags in the form:</p>
+<p>&lt;tag_name&gt;_000, &lt;tag_name&gt;_001, &lt;tag_name&gt;_002… &lt;tag_name&gt;_N</p>
+<p>are created and the data is tagged accordingly.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pyne.mesh.StatMesh">
 <em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">StatMesh</code><span class="sig-paren">(</span><em>mesh=None</em>, <em>structured=False</em>, <em>structured_coords=None</em>, <em>structured_set=None</em>, <em>mats=()</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#StatMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.StatMesh" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This class extends the basic Mesh class by modifying the standard
+mathematical operations that are performed on multiple meshes.</p>
+<p>A StatMesh assumes that each value being operated upon also has a
+statistical error associaed with it, and forces operations on the
+statistical error as well.  For any tag with name <cite>tag_name</cite> the StatMesh
+assumes that there is also a tag with name <cite>tag_name_rel_error</cite>.</p>
+<p>For example, when to quantities are added together, c = a + b, the
+statistical error of c is found by combining the statistical errors of a
+and b.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="pyne.mesh.Tag">
 <em class="property">class </em><code class="descclassname">pyne.mesh.</code><code class="descname">Tag</code><span class="sig-paren">(</span><em>mesh=None</em>, <em>name=None</em>, <em>doc=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/mesh.html#Tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.mesh.Tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>A mesh tag, which acts as a descriptor on the mesh.  This dispatches
-access to intrinsic material properties, the iMesh.Mesh tags, and material
+access to intrinsic material properties, PyMOAB tags, and material
 metadata attributes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : Mesh, optional</p>
-<blockquote>
-<div><p>The PyNE mesh to tag.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the tag.</p>
-</div></blockquote>
-<p><strong>doc</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>Documentation string for the tag.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Mesh, optional</span></dt>
+<dd><p class="first last">The PyNE mesh to tag.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the tag.</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Documentation string for the tag.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -771,8 +774,8 @@ metadata attributes.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

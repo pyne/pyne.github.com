@@ -2,8 +2,7 @@ var searchData=
 [
   ['capitalize',['capitalize',['../namespacepyne.html#a8855d064ba8f0c3ab7b85aa9788c9673',1,'pyne']]],
   ['cartvect',['CartVect',['../class_cart_vect.html',1,'']]],
-  ['cascade',['Cascade',['../classpyne_1_1enrichment_1_1_cascade.html',1,'pyne::enrichment']]],
-  ['cascade',['Cascade',['../classpyne_1_1enrichment_1_1_cascade.html#a981ffad71f94952d56879f45d35226e0',1,'pyne::enrichment::Cascade']]],
+  ['cascade',['Cascade',['../classpyne_1_1enrichment_1_1_cascade.html',1,'pyne::enrichment::Cascade'],['../classpyne_1_1enrichment_1_1_cascade.html#a981ffad71f94952d56879f45d35226e0',1,'pyne::enrichment::Cascade::Cascade()']]],
   ['child',['child',['../structpyne_1_1decay.html#a945a2d85e13b6457072dcbc3f53b1d68',1,'pyne::decay']]],
   ['child_5fnuc',['child_nuc',['../structpyne_1_1gamma.html#a99fcb3ccd78db851f7104ff3ab59048d',1,'pyne::gamma']]],
   ['ci_5fper_5fbq',['Ci_per_Bq',['../namespacepyne.html#af67330218cc9e0d1b6fd2d8eca3f8cf8',1,'pyne']]],
@@ -20,5 +19,6 @@ var searchData=
   ['conv_5fintensity',['conv_intensity',['../structpyne_1_1gamma.html#a6d347a0a5cfcf0765476d618b2faa71f',1,'pyne::gamma']]],
   ['conv_5fintensity_5ferr',['conv_intensity_err',['../structpyne_1_1gamma.html#a48c4d772b76640e6cd77805278241657',1,'pyne::gamma']]],
   ['coth',['coth',['../namespacepyne.html#a03cad3093b97f2f6a5dcb5cdc4cb562e',1,'pyne']]],
+  ['cram',['cram',['../classpyne_1_1_material.html#a1276332d8cc094d3cd51f9c933a70a5f',1,'pyne::Material']]],
   ['create_5fdataspace',['create_dataspace',['../classpyne_1_1_tally.html#a5a0f19d9948855a18c2e8d10ddb96882',1,'pyne::Tally']]]
 ];

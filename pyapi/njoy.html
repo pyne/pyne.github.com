@@ -11,11 +11,14 @@
     <title>NJOY Automation – pyne.njoy &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -101,14 +104,14 @@ version 2.1 of the License, or (at your option) any later version</div></blockqu
 <dd><p>The NJOY99 wrapper class.</p>
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.acer">
-<code class="descname">acer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.acer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.acer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">acer</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.acer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.acer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate ACE-format cross section libraries using the MODER, RECONR,
 BROADR, PURR (if dilutions present), THERMR, and ACER modules.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.burnup">
-<code class="descname">burnup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.burnup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.burnup" title="Permalink to this definition">¶</a></dt>
+<code class="descname">burnup</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.burnup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.burnup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process burnup data for the complete library. This requires a file
 whose name starts with chain, e.g. chaincandu, that contains information
 about the energy from all isotopes generated using single DRAGR
@@ -117,18 +120,19 @@ runs. The ‘chain’ file is generated automatically.</p>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.draglib">
-<code class="descname">draglib</code><span class="sig-paren">(</span><em>fp=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.draglib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.draglib" title="Permalink to this definition">¶</a></dt>
+<code class="descname">draglib</code><span class="sig-paren">(</span><em>self</em>, <em>fp=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.draglib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.draglib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a DRAGLIB file using the MODER and DRAGR modules and
 add/update the new isotopic data in the DRAGLIB file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fp</strong> : int</p>
-<blockquote class="last">
-<div><p>If fp is 1, the scattering information are stored as diagonal
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>fp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">If fp is 1, the scattering information are stored as diagonal
 matrices in the DRAGLIB.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -137,25 +141,26 @@ matrices in the DRAGLIB.</p>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.gamma">
-<code class="descname">gamma</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.gamma" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gamma</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate photo-atomic (gamma) group ENDF file using the MODER,
 RECONR, and GAMINR modules.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.gendf">
-<code class="descname">gendf</code><span class="sig-paren">(</span><em>eaf=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.gendf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.gendf" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gendf</code><span class="sig-paren">(</span><em>self</em>, <em>eaf=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.gendf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.gendf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a multigroup GENDF file using the MODER and GROUPR
 modules. This requires that the pendf() method has already been called.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>eaf</strong> : int</p>
-<blockquote class="last">
-<div><p>If eaf is 1, simplified processing is performed to be compatible
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>eaf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">If eaf is 1, simplified processing is performed to be compatible
 with the EAF nuclear library.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -164,18 +169,19 @@ with the EAF nuclear library.</p>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.makefp">
-<code class="descname">makefp</code><span class="sig-paren">(</span><em>eaf=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.makefp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.makefp" title="Permalink to this definition">¶</a></dt>
+<code class="descname">makefp</code><span class="sig-paren">(</span><em>self</em>, <em>eaf=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.makefp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.makefp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a PENDF, GENDF, and DRAGLIB file for a single fission
 product.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>eaf</strong> : int</p>
-<blockquote class="last">
-<div><p>If eaf is 1, simplified processing is performed to be compatible
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>eaf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">If eaf is 1, simplified processing is performed to be compatible
 with the EAF nuclear library.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -184,13 +190,13 @@ with the EAF nuclear library.</p>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.matxs">
-<code class="descname">matxs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.matxs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.matxs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">matxs</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.matxs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.matxs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate an ASCII MATXS file using the MODER and MATXSR modules.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyne.njoy.Njoy99.pendf">
-<code class="descname">pendf</code><span class="sig-paren">(</span><em>eaf=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.pendf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.pendf" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pendf</code><span class="sig-paren">(</span><em>self</em>, <em>eaf=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/njoy.html#Njoy99.pendf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.njoy.Njoy99.pendf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a pointwise PENDF file from the ENDF raw data using the
 MODER, RECONR, BROADR, PURR (if dilutions present), and THERMR
 modules. This is the starting point for all other datatype generations
@@ -199,11 +205,12 @@ including DRAGLIB, ACE, WIMSD, etc.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>eaf</strong> : int</p>
-<blockquote class="last">
-<div><p>If eaf is 1, simplified processing is performed to be compatible
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>eaf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">If eaf is 1, simplified processing is performed to be compatible
 with the EAF nuclear library.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -287,8 +294,8 @@ with the EAF nuclear library.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

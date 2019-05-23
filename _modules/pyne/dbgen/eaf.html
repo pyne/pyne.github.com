@@ -11,11 +11,14 @@
     <title>pyne.dbgen.eaf &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../../_static/cloud.js"></script>
@@ -138,8 +141,8 @@ if(ga_enabled){
                 <span class="n">fw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;us-ascii&quot;</span><span class="p">))</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">gf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        </div>
-    <span class="k">return</span> <span class="kc">True</span>
+        
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <span class="c1"># numpy array row storage information for EAF data</span>
@@ -207,8 +210,8 @@ if(ga_enabled){
     <span class="n">eaf_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">eaf_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">eaf_dtype</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Read in </span><span class="si">{0}</span><span class="s2"> sets of EAF data.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">eaf_array</span><span class="p">)))</span>
-</div>
-    <span class="k">return</span> <span class="n">eaf_array</span>
+
+    <span class="k">return</span> <span class="n">eaf_array</span></div>
 
 
 <div class="viewcode-block" id="make_eaf_table"><a class="viewcode-back" href="../../../pyapi/dbgen/eaf.html#pyne.dbgen.eaf.make_eaf_table">[docs]</a><span class="k">def</span> <span class="nf">make_eaf_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -254,8 +257,8 @@ if(ga_enabled){
     <span class="n">db</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="s1">&#39;/neutron/eaf_xs&#39;</span><span class="p">,</span> <span class="s1">&#39;E_g&#39;</span><span class="p">,</span> <span class="n">_get_eaf_groups</span><span class="p">(),</span> \
             <span class="s1">&#39;Neutron energy group bounds [MeV]&#39;</span><span class="p">)</span>
     
-    <span class="c1"># Close the HDF5 file</span></div>
-    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Close the HDF5 file</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="k">def</span> <span class="nf">_get_eaf_groups</span><span class="p">():</span>
@@ -342,8 +345,8 @@ if(ga_enabled){
         <span class="k">return</span>
 
     <span class="c1">#</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making EAF activation data table.&quot;</span><span class="p">)</span></div>
-    <span class="n">make_eaf_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making EAF activation data table.&quot;</span><span class="p">)</span>
+    <span class="n">make_eaf_table</span><span class="p">(</span><span class="n">nuc_data</span><span class="p">,</span> <span class="n">build_path</span><span class="p">)</span></div>
 
 </pre></div>
 
@@ -410,8 +413,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

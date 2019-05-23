@@ -2,11 +2,9 @@ var searchData=
 [
   ['tail_5fper_5ffeed',['tail_per_feed',['../namespacepyne_1_1enrichment.html#a86ccc9aa699994c1bfc44ba2b6104acb',1,'pyne::enrichment']]],
   ['tail_5fper_5fprod',['tail_per_prod',['../namespacepyne_1_1enrichment.html#a34832108a2dfff7dafd33e85ca4eeded',1,'pyne::enrichment']]],
-  ['tally',['Tally',['../classpyne_1_1_tally.html#ad4ad9718cbb925a293dd3450ab3245b0',1,'pyne::Tally::Tally()'],['../classpyne_1_1_tally.html#a882081e3a6f1628d1b7941003d5ccfad',1,'pyne::Tally::Tally(std::string type, std::string particle_name, int entity, std::string entity_type, std::string entity_name, std::string tally_name=&quot;&quot;, double entity_size=0.0, double normalization=1.0)']]],
-  ['tally',['Tally',['../classpyne_1_1_tally.html',1,'pyne']]],
+  ['tally',['Tally',['../classpyne_1_1_tally.html',1,'pyne::Tally'],['../classpyne_1_1_tally.html#ad4ad9718cbb925a293dd3450ab3245b0',1,'pyne::Tally::Tally()'],['../classpyne_1_1_tally.html#a882081e3a6f1628d1b7941003d5ccfad',1,'pyne::Tally::Tally(std::string type, std::string particle_name, int entity, std::string entity_type, std::string entity_name, std::string tally_name=&quot;&quot;, double entity_size=0.0, double normalization=1.0)']]],
   ['tally_5fname',['tally_name',['../classpyne_1_1_tally.html#af5e75c809e337a06d26636020d3f1809',1,'pyne::Tally']]],
-  ['tally_5fstruct',['tally_struct',['../structpyne_1_1tally__struct.html',1,'pyne']]],
-  ['tally_5fstruct',['tally_struct',['../namespacepyne.html#a50f65e8f1e109c362c1cd737d0627941',1,'pyne']]],
+  ['tally_5fstruct',['tally_struct',['../structpyne_1_1tally__struct.html',1,'pyne::tally_struct'],['../namespacepyne.html#a50f65e8f1e109c362c1cd737d0627941',1,'pyne::tally_struct()']]],
   ['tally_5ftype',['tally_type',['../classpyne_1_1_tally.html#ae5944106656a49e0f7f525e75acaa4b2',1,'pyne::Tally']]],
   ['tanh',['tanh',['../namespacepyne.html#a598ae3065c54502a23495eaf06865d1d',1,'pyne']]],
   ['ternary_5fge',['ternary_ge',['../namespacepyne.html#a5bf23fa851054a44f872c65f5592db8c',1,'pyne']]],
@@ -22,6 +20,6 @@ var searchData=
   ['total_5fintensity_5ferr',['total_intensity_err',['../structpyne_1_1gamma.html#a8c626cfbe36afddfadf664f2aff19f2f',1,'pyne::gamma']]],
   ['trackingunitsc',['trackingunitsc',['../structtracking__data__structures_1_1trackingunitsc.html',1,'tracking_data_structures']]],
   ['trackingunitsp_5fr',['trackingunitsp_r',['../structtracking__data__structures_1_1trackingunitsp__r.html',1,'tracking_data_structures']]],
-  ['tru',['tru',['../namespacepyne_1_1nucname.html#af6669ddbefba8098a45e4fc27edc5c68',1,'pyne::nucname::tru()'],['../namespacepyne_1_1nucname.html#adfc1f43df3ea014a500e2c79e0c2f053',1,'pyne::nucname::TRU()']]],
+  ['tru',['TRU',['../namespacepyne_1_1nucname.html#adfc1f43df3ea014a500e2c79e0c2f053',1,'pyne::nucname::TRU()'],['../namespacepyne_1_1nucname.html#af6669ddbefba8098a45e4fc27edc5c68',1,'pyne::nucname::tru()']]],
   ['tru_5farray',['TRU_array',['../namespacepyne_1_1nucname.html#ab148461391c413fb7a7176821d65d2e6',1,'pyne::nucname']]]
 ];

@@ -16,7 +16,9 @@ Mesh based Monte Carlo source sampling.
 \item 
 \hyperlink{classpyne_1_1_sampler_a058411845da467ff7421956ba076ac31}{Sampler} (std\+::string filename, std\+::string src\+\_\+tag\+\_\+name, std\+::vector$<$ double $>$ e\+\_\+bounds, std\+::string bias\+\_\+tag\+\_\+name)
 \item 
-std\+::vector$<$ double $>$ \hyperlink{classpyne_1_1_sampler_aa5d177ee74199617fc08e4a7a7686e8f}{particle\+\_\+birth} (std\+::vector$<$ double $>$ rands)
+\hyperlink{classpyne_1_1_sampler_aa4b5811e49b8ac278e2e936d29500eb5}{Sampler} (std\+::string filename, std\+::map$<$ std\+::string, std\+::string $>$ tag\+\_\+names, std\+::vector$<$ double $>$ e\+\_\+bounds, int mode)
+\item 
+\hyperlink{classpyne_1_1_source_particle}{pyne\+::\+Source\+Particle} \hyperlink{classpyne_1_1_sampler_a2e5d98ef0f98a3093c32936ce6cc8cd2}{particle\+\_\+birth} (std\+::vector$<$ double $>$ rands)
 \end{DoxyCompactItemize}
 
 
@@ -24,16 +26,12 @@ std\+::vector$<$ double $>$ \hyperlink{classpyne_1_1_sampler_aa5d177ee74199617fc
 Mesh based Monte Carlo source sampling. 
 
 \subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classpyne_1_1_sampler_a57e096205922e6a221f2185a9849c5ed}\label{classpyne_1_1_sampler_a57e096205922e6a221f2185a9849c5ed}} 
 \index{pyne\+::\+Sampler@{pyne\+::\+Sampler}!Sampler@{Sampler}}
 \index{Sampler@{Sampler}!pyne\+::\+Sampler@{pyne\+::\+Sampler}}
-\subsubsection[{\texorpdfstring{Sampler(std\+::string filename, std\+::string src\+\_\+tag\+\_\+name, std\+::vector$<$ double $>$ e\+\_\+bounds, bool uniform)}{Sampler(std::string filename, std::string src_tag_name, std::vector< double > e_bounds, bool uniform)}}]{\setlength{\rightskip}{0pt plus 5cm}pyne\+::\+Sampler\+::\+Sampler (
-\begin{DoxyParamCaption}
-\item[{std\+::string}]{filename, }
-\item[{std\+::string}]{src\+\_\+tag\+\_\+name, }
-\item[{std\+::vector$<$ double $>$}]{e\+\_\+bounds, }
-\item[{bool}]{uniform}
-\end{DoxyParamCaption}
-)}\hypertarget{classpyne_1_1_sampler_a57e096205922e6a221f2185a9849c5ed}{}\label{classpyne_1_1_sampler_a57e096205922e6a221f2185a9849c5ed}
+\subsubsection{\texorpdfstring{Sampler()}{Sampler()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily pyne\+::\+Sampler\+::\+Sampler (\begin{DoxyParamCaption}\item[{std\+::string}]{filename,  }\item[{std\+::string}]{src\+\_\+tag\+\_\+name,  }\item[{std\+::vector$<$ double $>$}]{e\+\_\+bounds,  }\item[{bool}]{uniform }\end{DoxyParamCaption})}
+
 Constuctor for analog and uniform sampling 
 \begin{DoxyParams}{Parameters}
 {\em filename} & The path to the M\+O\+AB mesh (.h5m) file \\
@@ -45,16 +43,12 @@ Constuctor for analog and uniform sampling
 {\em uniform} & If false, analog sampling is used. If true, uniform sampling is used. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_sampler_a058411845da467ff7421956ba076ac31}\label{classpyne_1_1_sampler_a058411845da467ff7421956ba076ac31}} 
 \index{pyne\+::\+Sampler@{pyne\+::\+Sampler}!Sampler@{Sampler}}
 \index{Sampler@{Sampler}!pyne\+::\+Sampler@{pyne\+::\+Sampler}}
-\subsubsection[{\texorpdfstring{Sampler(std\+::string filename, std\+::string src\+\_\+tag\+\_\+name, std\+::vector$<$ double $>$ e\+\_\+bounds, std\+::string bias\+\_\+tag\+\_\+name)}{Sampler(std::string filename, std::string src_tag_name, std::vector< double > e_bounds, std::string bias_tag_name)}}]{\setlength{\rightskip}{0pt plus 5cm}pyne\+::\+Sampler\+::\+Sampler (
-\begin{DoxyParamCaption}
-\item[{std\+::string}]{filename, }
-\item[{std\+::string}]{src\+\_\+tag\+\_\+name, }
-\item[{std\+::vector$<$ double $>$}]{e\+\_\+bounds, }
-\item[{std\+::string}]{bias\+\_\+tag\+\_\+name}
-\end{DoxyParamCaption}
-)}\hypertarget{classpyne_1_1_sampler_a058411845da467ff7421956ba076ac31}{}\label{classpyne_1_1_sampler_a058411845da467ff7421956ba076ac31}
+\subsubsection{\texorpdfstring{Sampler()}{Sampler()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily pyne\+::\+Sampler\+::\+Sampler (\begin{DoxyParamCaption}\item[{std\+::string}]{filename,  }\item[{std\+::string}]{src\+\_\+tag\+\_\+name,  }\item[{std\+::vector$<$ double $>$}]{e\+\_\+bounds,  }\item[{std\+::string}]{bias\+\_\+tag\+\_\+name }\end{DoxyParamCaption})}
+
 Constuctor for analog and uniform sampling 
 \begin{DoxyParams}{Parameters}
 {\em filename} & The path to the M\+O\+AB mesh (.h5m) file \\
@@ -66,27 +60,43 @@ Constuctor for analog and uniform sampling
 {\em bias\+\_\+tag\+\_\+name} & The name of the tag describing the biased source density distribution. The tag must have the same number of energy groups as $<$src\+\_\+tag\+\_\+name$>$ or 1. If 1 (i.\+e. spatial biasing only), all energy groups within a mesh volume element are sampled equally. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_sampler_aa4b5811e49b8ac278e2e936d29500eb5}\label{classpyne_1_1_sampler_aa4b5811e49b8ac278e2e936d29500eb5}} 
+\index{pyne\+::\+Sampler@{pyne\+::\+Sampler}!Sampler@{Sampler}}
+\index{Sampler@{Sampler}!pyne\+::\+Sampler@{pyne\+::\+Sampler}}
+\subsubsection{\texorpdfstring{Sampler()}{Sampler()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily pyne\+::\+Sampler\+::\+Sampler (\begin{DoxyParamCaption}\item[{std\+::string}]{filename,  }\item[{std\+::map$<$ std\+::string, std\+::string $>$}]{tag\+\_\+names,  }\item[{std\+::vector$<$ double $>$}]{e\+\_\+bounds,  }\item[{int}]{mode }\end{DoxyParamCaption})}
+
+Constuctor for overall sampler 
+\begin{DoxyParams}{Parameters}
+{\em filename} & The filename of the h5m file \\
+\hline
+{\em tag\+\_\+names} & The map of src\+\_\+tag\+\_\+name and bias\+\_\+tag\+\_\+name \\
+\hline
+{\em e\+\_\+bounds} & The energy boundaries, note there are N + 1 energy bounds for N energy groups \\
+\hline
+{\em mode} & The mode number, 0, 1, 2, 3, 4 or 5 \\
+\hline
+\end{DoxyParams}
 
 
 \subsection{Member Function Documentation}
+\mbox{\Hypertarget{classpyne_1_1_sampler_a2e5d98ef0f98a3093c32936ce6cc8cd2}\label{classpyne_1_1_sampler_a2e5d98ef0f98a3093c32936ce6cc8cd2}} 
 \index{pyne\+::\+Sampler@{pyne\+::\+Sampler}!particle\+\_\+birth@{particle\+\_\+birth}}
 \index{particle\+\_\+birth@{particle\+\_\+birth}!pyne\+::\+Sampler@{pyne\+::\+Sampler}}
-\subsubsection[{\texorpdfstring{particle\+\_\+birth(std\+::vector$<$ double $>$ rands)}{particle_birth(std::vector< double > rands)}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::vector$<$ double $>$ pyne\+::\+Sampler\+::particle\+\_\+birth (
-\begin{DoxyParamCaption}
-\item[{std\+::vector$<$ double $>$}]{rands}
-\end{DoxyParamCaption}
-)}\hypertarget{classpyne_1_1_sampler_aa5d177ee74199617fc08e4a7a7686e8f}{}\label{classpyne_1_1_sampler_aa5d177ee74199617fc08e4a7a7686e8f}
+\subsubsection{\texorpdfstring{particle\+\_\+birth()}{particle\_birth()}}
+{\footnotesize\ttfamily \hyperlink{classpyne_1_1_source_particle}{pyne\+::\+Source\+Particle} pyne\+::\+Sampler\+::particle\+\_\+birth (\begin{DoxyParamCaption}\item[{std\+::vector$<$ double $>$}]{rands }\end{DoxyParamCaption})}
+
 Samples particle birth parameters 
 \begin{DoxyParams}{Parameters}
 {\em rands} & Six pseudo-\/random numbers in range \mbox{[}0, 1\mbox{]}. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A vector containing the x position, y, position, z, point, energy and weight of a particle (in that order). 
+A \hyperlink{classpyne_1_1_source_particle}{Source\+Particle} object containing the x position, y, position, z, position, e, energy and w, weight of a particle. 
 \end{DoxyReturn}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-/home/ubuntu/\+Documents/pyne.\+github.\+com/src/\hyperlink{source__sampling_8h}{source\+\_\+sampling.\+h}\item 
-/home/ubuntu/\+Documents/pyne.\+github.\+com/src/source\+\_\+sampling.\+cpp\end{DoxyCompactItemize}
+/root/repo/src/\hyperlink{source__sampling_8h}{source\+\_\+sampling.\+h}\item 
+/root/repo/src/source\+\_\+sampling.\+cpp\end{DoxyCompactItemize}

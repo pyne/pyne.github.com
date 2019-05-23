@@ -11,11 +11,14 @@
     <title>Binning &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -70,33 +73,33 @@ with physics.</p>
 <div class="section" id="pointwise-linear-collapse">
 <h2>Pointwise Linear Collapse<a class="headerlink" href="#pointwise-linear-collapse" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">pointwise_linear_collapse()</span></code> function takes an array of pointwise
-data <span class="math">y</span> that has the independent variable <span class="math">x</span> and collapses this into
-<span class="math">G</span> groups as defined by the bin boundaries <span class="math">x_g</span> where <span class="math">g</span>
-indexes <span class="math">G</span>. Both <span class="math">x</span> and <span class="math">x_g</span> must be monotonic and in the
-same direction.  Say that there are <span class="math">N</span> points in <span class="math">x</span> and <span class="math">y</span>.
-Let <span class="math">n</span> index <span class="math">N</span>. Then for all points internal to a group, the
-collapsed value <span class="math">y_g</span> is:</p>
-<div class="math">
-<p><span class="math">y_g = \frac{1}{x_{g+1} - x_g} \sum_{n|x_g \le x_n}^{x_n \le x_{g+1}}
-    \frac{y_{n+1} + y_n}{2} * (x_{n+1} - x_n)</span></p>
-</div><p>The term <span class="math">(y_{n+1} + y_n)/2</span> is the center (average) value of a linear
-interpolation between the two points.  Therefore, <span class="math">y_g</span> is the
-<span class="math">x</span>-weighted average of <span class="math">y</span> over the entire group.</p>
-<p>In the event that the line between <span class="math">y_n</span> and <span class="math">y_{n+1}</span> crosses
+data <span class="math notranslate nohighlight">\(y\)</span> that has the independent variable <span class="math notranslate nohighlight">\(x\)</span> and collapses this into
+<span class="math notranslate nohighlight">\(G\)</span> groups as defined by the bin boundaries <span class="math notranslate nohighlight">\(x_g\)</span> where <span class="math notranslate nohighlight">\(g\)</span>
+indexes <span class="math notranslate nohighlight">\(G\)</span>. Both <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(x_g\)</span> must be monotonic and in the
+same direction.  Say that there are <span class="math notranslate nohighlight">\(N\)</span> points in <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>.
+Let <span class="math notranslate nohighlight">\(n\)</span> index <span class="math notranslate nohighlight">\(N\)</span>. Then for all points internal to a group, the
+collapsed value <span class="math notranslate nohighlight">\(y_g\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[y_g = \frac{1}{x_{g+1} - x_g} \sum_{n|x_g \le x_n}^{x_n \le x_{g+1}}
+    \frac{y_{n+1} + y_n}{2} * (x_{n+1} - x_n)\]</div>
+<p>The term <span class="math notranslate nohighlight">\((y_{n+1} + y_n)/2\)</span> is the center (average) value of a linear
+interpolation between the two points.  Therefore, <span class="math notranslate nohighlight">\(y_g\)</span> is the
+<span class="math notranslate nohighlight">\(x\)</span>-weighted average of <span class="math notranslate nohighlight">\(y\)</span> over the entire group.</p>
+<p>In the event that the line between <span class="math notranslate nohighlight">\(y_n\)</span> and <span class="math notranslate nohighlight">\(y_{n+1}\)</span> crosses
 either the lower or upper bin boundary (or both) then their values are
 adjusted via a linear interpolation to the value at the bin boundary.</p>
 <p>For a lower boundary crossing, the following substitutions are made to the
 equation above:</p>
-<div class="math">
-<p><span class="math">x_n \to x_g</span></p>
-</div><div class="math">
-<p><span class="math">y_n \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_g - x_n) + y_n</span></p>
-</div><p>For an upper boundary crossing:</p>
-<div class="math">
-<p><span class="math">x_{n+1} \to x_{g+1}</span></p>
-</div><div class="math">
-<p><span class="math">y_{n+1} \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_{g+1} - x_n) + y_n</span></p>
-</div></div>
+<div class="math notranslate nohighlight">
+\[x_n \to x_g\]</div>
+<div class="math notranslate nohighlight">
+\[y_n \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_g - x_n) + y_n\]</div>
+<p>For an upper boundary crossing:</p>
+<div class="math notranslate nohighlight">
+\[x_{n+1} \to x_{g+1}\]</div>
+<div class="math notranslate nohighlight">
+\[y_{n+1} \to \frac{y_{n+1} - y_n}{x_{n+1} - x_n} (x_{g+1} - x_n) + y_n\]</div>
+</div>
 </div>
 
 
@@ -171,8 +174,8 @@ equation above:</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

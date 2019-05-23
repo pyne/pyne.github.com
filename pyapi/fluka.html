@@ -11,11 +11,14 @@
     <title>Fluka Output Interfaces – pyne.fluka &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -77,7 +80,7 @@ design, cosmic ray studies, dosimetry, medical physics and radio-biology.
 Further information on FLUKA can be obtained from
 <a class="reference external" href="http://www.fluka.org/fluka.php">http://www.fluka.org/fluka.php</a></p>
 <p>Currently, only usrbin output files can be read.</p>
-<p>If PyTAPS is not installed, then Usrbin and UsrbinTally will not be
+<p>If PyMOAB is not installed, then Usrbin and UsrbinTally will not be
 available to use.</p>
 <dl class="class">
 <dt id="pyne.fluka.Usrbin">
@@ -86,18 +89,20 @@ available to use.</p>
 all information for a single file that contains one or more usrbin
 tallies. The “tally” attribute provides key/value access to individual
 UsrbinTally objects.</p>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="11%" />
-<col width="89%" />
-</colgroup>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>filename</strong></td>
-<td>(string) Path to Fluka usrbin file</td>
-</tr>
-<tr class="row-even"><td><strong>tally</strong></td>
-<td>(dict) A dictionary with user-specified tally names as keys and UsrbinTally objects as values.</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path to Fluka usrbin file</p>
+</dd>
+<dt><strong>tally</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">A dictionary with user-specified tally names as keys and UsrbinTally
+objects as values.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -105,10 +110,11 @@ UsrbinTally objects.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
-<blockquote class="last">
-<div><p>FLUKA USRBIN file</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">FLUKA USRBIN file</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -119,36 +125,41 @@ UsrbinTally objects.</p>
 <dt id="pyne.fluka.UsrbinTally">
 <em class="property">class </em><code class="descclassname">pyne.fluka.</code><code class="descname">UsrbinTally</code><span class="sig-paren">(</span><em>fh</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/fluka.html#UsrbinTally"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.fluka.UsrbinTally" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class reads a single FLUKA USRBIN tally from a USRBIN file.</p>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="11%" />
-<col width="89%" />
-</colgroup>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><strong>coord_sys</strong></td>
-<td>(string) The coordinate system used. Either “Cartesian”, “R-Z”, “R-Phi-Z”, or user-defined. Only “Cartesian” is supported.</td>
-</tr>
-<tr class="row-even"><td><strong>name</strong></td>
-<td>(string) The user-defined name for the tally</td>
-</tr>
-<tr class="row-odd"><td><strong>particle</strong></td>
-<td>(string) The number code corresponding to the particle tracked in tally. For complete list visit <a class="reference external" href="http://www.fluka.org/fluka.php?id=man_onl&amp;sub=7">http://www.fluka.org/fluka.php?id=man_onl&amp;sub=7</a></td>
-</tr>
-<tr class="row-even"><td><strong>x_bounds</strong></td>
-<td>(list of floats) The locations of mesh vertices in the x direction</td>
-</tr>
-<tr class="row-odd"><td><strong>y_bounds</strong></td>
-<td>(list of floats) The locations of mesh vertices in the y direction</td>
-</tr>
-<tr class="row-even"><td><strong>z_bounds</strong></td>
-<td>(list of floats) The locations of mesh vertices in the z direction</td>
-</tr>
-<tr class="row-odd"><td><strong>part_data_tag</strong></td>
-<td>(string) The name of the tag for the track-length tally data. Follows form “part_data_X” where X is the number of the particle</td>
-</tr>
-<tr class="row-even"><td><strong>error_data_tag</strong></td>
-<td>(string) The name of the tag for the error data. Follows form “error_data_X” where X is the number of the particle</td>
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>coord_sys</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The coordinate system used. Either “Cartesian”, “R-Z”, “R-Phi-Z”, or
+user-defined. Only “Cartesian” is supported.</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The user-defined name for the tally</p>
+</dd>
+<dt><strong>particle</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The number code corresponding to the particle tracked in tally.
+For complete list visit <a class="reference external" href="http://www.fluka.org/fluka.php?id=man_onl&amp;sub=7">http://www.fluka.org/fluka.php?id=man_onl&amp;sub=7</a></p>
+</dd>
+<dt><strong>x_bounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The locations of mesh vertices in the x direction</p>
+</dd>
+<dt><strong>y_bounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The locations of mesh vertices in the y direction</p>
+</dd>
+<dt><strong>z_bounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of floats</span></dt>
+<dd><p class="first last">The locations of mesh vertices in the z direction</p>
+</dd>
+<dt><strong>part_data_tag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The name of the tag for the track-length tally data.
+Follows form “part_data_X” where X is the number of the particle</p>
+</dd>
+<dt><strong>error_data_tag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The name of the tag for the error data.
+Follows form “error_data_X” where X is the number of the particle</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
@@ -157,10 +168,11 @@ UsrbinTally objects.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fh</strong> : filehandle</p>
-<blockquote class="last">
-<div><p>An open usrbin file</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>fh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">filehandle</span></dt>
+<dd><p class="first last">An open usrbin file</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -242,8 +254,8 @@ UsrbinTally objects.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

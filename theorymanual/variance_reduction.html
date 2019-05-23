@@ -11,11 +11,14 @@
     <title>Variance Reduction &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -80,19 +83,19 @@ that optimize a Monte Carlo simulation relative to a detector response
 function. One major feature of the scheme is “consistency”, that is, weight
 windows are chosen such that particles are always born within them.</p>
 <p>In the CADIS method the response is defined as:</p>
-<div class="math">
-<p><span class="math">R = \int \, q(P) \, \Psi^+(P) \, dP,</span></p>
-</div><p>where <span class="math">q</span> is the probability distribution function describing the source
-strength as a function of the phase space variable <span class="math">P</span> (which may
-represent any combination of space, energy, and direction). <span class="math">\Phi^+(P)</span>
+<div class="math notranslate nohighlight">
+\[R = \int \, q(P) \, \Psi^+(P) \, dP,\]</div>
+<p>where <span class="math notranslate nohighlight">\(q\)</span> is the probability distribution function describing the source
+strength as a function of the phase space variable <span class="math notranslate nohighlight">\(P\)</span> (which may
+represent any combination of space, energy, and direction). <span class="math notranslate nohighlight">\(\Phi^+(P)\)</span>
 is the adjoint flux relative to the detector response function being
 optimized. The CADIS method defines the biased source distribution as:</p>
-<div class="math">
-<p><span class="math">\hat{q}(P) = \frac{q(P) \, \Psi^+(P)}{R}.</span></p>
-</div><p>The corresponding weight window lower bounds are defined by:</p>
-<div class="math">
-<p><span class="math">ww(P) = \frac{R}{\Psi^+(P) \, \frac{\beta + 1}{2}},</span></p>
-</div><p>where <span class="math">\beta</span> is the ratio of the weight window upper bound to the weight
+<div class="math notranslate nohighlight">
+\[\hat{q}(P) = \frac{q(P) \, \Psi^+(P)}{R}.\]</div>
+<p>The corresponding weight window lower bounds are defined by:</p>
+<div class="math notranslate nohighlight">
+\[ww(P) = \frac{R}{\Psi^+(P) \, \frac{\beta + 1}{2}},\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta\)</span> is the ratio of the weight window upper bound to the weight
 window lower bound (default of 5 in MCNP5).</p>
 <div class="section" id="pyne-implementation">
 <h3>PyNE implementation<a class="headerlink" href="#pyne-implementation" title="Permalink to this headline">¶</a></h3>
@@ -101,37 +104,37 @@ is designed to be used in conjunction with the mesh-based source sampling
 capabilities in the source_sampling module. This means that the above method, which
 is continuous in phase space must be adapted for discretization of space (mesh
 volume elements) and energy (in energy bins).</p>
-<p>Source density (<span class="math">q'</span>, units: <span class="math">time^{-1}length^{-3}</span>) is the
+<p>Source density (<span class="math notranslate nohighlight">\(q'\)</span>, units: <span class="math notranslate nohighlight">\(time^{-1}length^{-3}\)</span>) is the
 canonical quantity for representing a mesh-based source within PyNE. This
-means that the first step of the CADIS method within PyNE is to create a <span class="math">q</span>
-PDF from a source density mesh. The total source strength <span class="math">q_tot</span> is
-first found by integrating the source density over space (<span class="math">i</span>) and energy
-(<span class="math">j</span>):</p>
-<div class="math">
-<p><span class="math">q_{tot} = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j},</span></p>
-</div><p>The <span class="math">q</span> PDF can then be defined by:</p>
-<div class="math">
-<p><span class="math">q_{i,j } = \frac{V_i \, q'_{i, j}}{q_tot} \, for i \in I, j \in J</span></p>
-</div><p>The response can then be calculated by integrating the product of <span class="math">q</span> and the adjoint flux over all phase space:</p>
-<div class="math">
-<p><span class="math">R = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}}</span></p>
-</div><p>The weight window lower bound is then:</p>
-<div class="math">
-<p><span class="math">ww_{i, j} = \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}}.</span></p>
-</div><p>These values are tagged to the weight window output mesh and can be printed out as
+means that the first step of the CADIS method within PyNE is to create a <span class="math notranslate nohighlight">\(q\)</span>
+PDF from a source density mesh. The total source strength <span class="math notranslate nohighlight">\(q_tot\)</span> is
+first found by integrating the source density over space (<span class="math notranslate nohighlight">\(i\)</span>) and energy
+(<span class="math notranslate nohighlight">\(j\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[q_{tot} = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j},\]</div>
+<p>The <span class="math notranslate nohighlight">\(q\)</span> PDF can then be defined by:</p>
+<div class="math notranslate nohighlight">
+\[q_{i,j } = \frac{V_i \, q'_{i, j}}{q_tot} \, for i \in I, j \in J\]</div>
+<p>The response can then be calculated by integrating the product of <span class="math notranslate nohighlight">\(q\)</span> and the adjoint flux over all phase space:</p>
+<div class="math notranslate nohighlight">
+\[R = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}}\]</div>
+<p>The weight window lower bound is then:</p>
+<div class="math notranslate nohighlight">
+\[ww_{i, j} = \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}}.\]</div>
+<p>These values are tagged to the weight window output mesh and can be printed out as
 an MCNP5 WWINP file. In the event that the adjoint flux is 0 for some
-<span class="math">(i, j)</span>, the <span class="math">ww_{i, j}</span> value is replaced with 0. MCNP5 will not
+<span class="math notranslate nohighlight">\((i, j)\)</span>, the <span class="math notranslate nohighlight">\(ww_{i, j}\)</span> value is replaced with 0. MCNP5 will not
 play the weight window game when a particle enters a region of phase space
 where the weight window lower bound is 0.</p>
 <p>The biased source strength is:</p>
-<div class="math">
-<p><span class="math">\hat{q}_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j} \, V_i}{R \, q_{tot}}</span></p>
-</div><p>However, the biased source strength is not the quantity of interest, because
+<div class="math notranslate nohighlight">
+\[\hat{q}_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j} \, V_i}{R \, q_{tot}}\]</div>
+<p>However, the biased source strength is not the quantity of interest, because
 the source_sampling module is expecting biased source densities. The biased
 source densities that are tagged to the output mesh are:</p>
-<div class="math">
-<p><span class="math">\hat{q}'_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}}.</span></p>
-</div></div>
+<div class="math notranslate nohighlight">
+\[\hat{q}'_{i, j} = \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}}.\]</div>
+</div>
 <div class="section" id="assumptions">
 <h3>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h3>
 <p>The source density mesh and adjoint flux mesh must have the spatial bounds.</p>
@@ -147,58 +150,58 @@ following properties.</p>
 <col width="50%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><p class="first"><span class="math">q' = [2.6, 2.5]</span></p>
-<p><span class="math">\Phi = [1.3, 1.4]</span></p>
-<p class="last"><span class="math">V = 2</span></p>
+<tr class="row-odd"><td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.6, 2.5]\)</span></p>
+<p><span class="math notranslate nohighlight">\(\Phi = [1.3, 1.4]\)</span></p>
+<p class="last"><span class="math notranslate nohighlight">\(V = 2\)</span></p>
 </td>
-<td><p class="first"><span class="math">q' = [2.9, 0]</span></p>
-<p><span class="math">\Phi = [1.7, 1.9]</span></p>
-<p class="last"><span class="math">V = 2</span></p>
+<td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.9, 0]\)</span></p>
+<p><span class="math notranslate nohighlight">\(\Phi = [1.7, 1.9]\)</span></p>
+<p class="last"><span class="math notranslate nohighlight">\(V = 2\)</span></p>
 </td>
 </tr>
-<tr class="row-even"><td><p class="first"><span class="math">q' = [2.9, 2.8]</span></p>
-<p><span class="math">\Phi = [1.1, 1.2]</span></p>
-<p class="last"><span class="math">V = 8</span></p>
+<tr class="row-even"><td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.9, 2.8]\)</span></p>
+<p><span class="math notranslate nohighlight">\(\Phi = [1.1, 1.2]\)</span></p>
+<p class="last"><span class="math notranslate nohighlight">\(V = 8\)</span></p>
 </td>
-<td><p class="first"><span class="math">q' = [2.4, 2.2]</span></p>
-<p><span class="math">\Phi = [0, 1.6]</span></p>
-<p class="last"><span class="math">V = 8</span></p>
+<td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.4, 2.2]\)</span></p>
+<p><span class="math notranslate nohighlight">\(\Phi = [0, 1.6]\)</span></p>
+<p class="last"><span class="math notranslate nohighlight">\(V = 8\)</span></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p>Here, the vector quantities represent values at two energy groups. First
-calculate <span class="math">q_{tot}</span> and <span class="math">R</span>:</p>
-<div class="math">
-<p><span class="math">q_{tot} &amp; = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j} \\
+calculate <span class="math notranslate nohighlight">\(q_{tot}\)</span> and <span class="math notranslate nohighlight">\(R\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}q_{tot} &amp; = \sum_{i \in I} \, \sum_{j \in J} V_i \, q'_{i, j} \\
         &amp; = 8 \cdot 2.9 + 8 \cdot 2.8 + 2 \cdot 2.6 + 2 \cdot 2.5 \\
         &amp;   + 8 \cdot 2.4 + 8 \cdot 2.2 + 2 \cdot 2.9 + 2 \cdot 0  \\
-        &amp; = 98.4</span></p>
-</div><div class="math">
-<p><span class="math">R &amp; = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}} \\
+        &amp; = 98.4\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}R &amp; = \sum_{i \in I} \, \sum_{j \in J} \Psi_{i, j}^{+} \, \frac{V_i \, q'_{i, j}}{q_{tot}} \\
   &amp; = \frac{1}{98.4} (
            1.1 \cdot 8 \cdot 2.9 + 1.2 \cdot 8 \cdot 2.8
           + 1.3 \cdot 2 \cdot 2.6 + 1.4 \cdot 2 \cdot 2.5 \\
           &amp; \qquad \quad + 0 \cdot 8 \cdot 2.4 + 1.6 \cdot 8 \cdot 2.2
           + 1.7 \cdot 2 \cdot 2.9 + 1.9 \cdot 2 \cdot 0 ) \\
-  &amp; = 1.0587398374</span></p>
-</div><p>The expected results are:</p>
-<div class="math">
-<p><span class="math">\hat{q}' &amp;= \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}} \\
+  &amp; = 1.0587398374\end{split}\]</div>
+<p>The expected results are:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{q}' &amp;= \frac{\Psi_{i, j}^{+} \, q'_{i, j}}{R \, q_{tot}} \\
          &amp;= \frac{1}{98.4 \cdot 1.0587398374}
           [1.1 \cdot 2.9, 1.2 \cdot 2.8, 1.3 \cdot 2.6, 1.4 \cdot 2.5, \\
          &amp; \qquad \qquad \qquad \qquad \qquad 0 \cdot 2.4, 1.6 \cdot 2.2, 1.7 \cdot 2.9, 1.9 \cdot 0] \\
          &amp;= [0.0306200806, 0.0322518718, 0.0324438472, 0.0335956998, \\
-         &amp; \qquad 0.0, 0.0337876752, 0.0473219428, 0.0]</span></p>
-</div><div class="math">
-<p><span class="math">ww &amp;= \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}} \\
+         &amp; \qquad 0.0, 0.0337876752, 0.0473219428, 0.0]\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}ww &amp;= \frac{R}{\Psi_{i, j}^{+} \, \frac{\beta + 1}{2}} \\
    &amp;= [ \frac{1.0587398374}{1.1 \cdot{3}}, \frac{1.0587398374}{1.2 \cdot{3}},
              \frac{1.0587398374}{1.3 \cdot{3}}, \frac{1.0587398374}{1.4 \cdot{3}}, \\
    &amp; \qquad  \frac{1.0587398374}{0 \cdot{3}}, \frac{1.0587398374}{1.6 \cdot{3}},
              \frac{1.0587398374}{1.7 \cdot{3}}, \frac{1.0587398374}{1.9 \cdot{3}} ] \\
    &amp;= [0.3208302538, 0.2940943993, 0.2714717532, 0.2520809137, \\
-   &amp; \qquad  0.0, 0.2205707995, 0.2075960465, 0.1857438311]</span></p>
-</div><p>Notice that the value in the <span class="math">ww</span> vector that is a division by 0 has been replaced with 0.</p>
+   &amp; \qquad  0.0, 0.2205707995, 0.2075960465, 0.1857438311]\end{split}\]</div>
+<p>Notice that the value in the <span class="math notranslate nohighlight">\(ww\)</span> vector that is a division by 0 has been replaced with 0.</p>
 </div>
 </div>
 <div class="section" id="magic-method">
@@ -229,25 +232,23 @@ should be performed with the appropriate energy cut-off and cross section data.<
 <h3>PyNE implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>The implementation of MAGIC in PyNE uses a PyNE meshtally object, which is the
 result of a meshtal file processed by PyNE’s mcnp.Meshtally. Using the results
-of the meshtal file and a specified tolerance for relative error <span class="math">t</span> and
-null value <span class="math">\phi_o</span>, the flux will be normalized for each energy bin and
+of the meshtal file and a specified tolerance for relative error <span class="math notranslate nohighlight">\(t\)</span> and
+null value <span class="math notranslate nohighlight">\(\phi_o\)</span>, the flux will be normalized for each energy bin and
 then be used to generate a wwinp file to be used in a subsequent iteration. The
 steps are as follows:</p>
 <ol class="arabic simple">
-<li>Read meshtally and determine maximum flux <span class="math">\phi_m^k</span> for each enery bin <span class="math">k</span>.</li>
-<li>Normalize flux <span class="math">\phi_i^k</span> in every mesh voxel <span class="math">i</span> for each energy
-bin <span class="math">k</span> according to <span class="math">\phi_m^k</span> to obtain a new <span class="math">\phi_i^{'k}</span>.
-If the relative error <span class="math">e_i^k</span>
-for voxel <span class="math">i</span> in energy bin <span class="math">k</span> is larger than the tolerance
-value <span class="math">t</span>, then set flux <span class="math">\phi_i^{'k}</span> to the null value <span class="math">\phi_o</span>
+<li>Read meshtally and determine maximum flux <span class="math notranslate nohighlight">\(\phi_m^k\)</span> for each enery bin <span class="math notranslate nohighlight">\(k\)</span>.</li>
+<li>Normalize flux <span class="math notranslate nohighlight">\(\phi_i^k\)</span> in every mesh voxel <span class="math notranslate nohighlight">\(i\)</span> for each energy
+bin <span class="math notranslate nohighlight">\(k\)</span> according to <span class="math notranslate nohighlight">\(\phi_m^k\)</span> to obtain a new <span class="math notranslate nohighlight">\(\phi_i^{'k}\)</span>.
+If the relative error <span class="math notranslate nohighlight">\(e_i^k\)</span>
+for voxel <span class="math notranslate nohighlight">\(i\)</span> in energy bin <span class="math notranslate nohighlight">\(k\)</span> is larger than the tolerance
+value <span class="math notranslate nohighlight">\(t\)</span>, then set flux <span class="math notranslate nohighlight">\(\phi_i^{'k}\)</span> to the null value <span class="math notranslate nohighlight">\(\phi_o\)</span>
 instead.</li>
 </ol>
 <blockquote>
-<div><div class="math">
-<p><span class="math">\text{If } e_i^k &lt; t \text{ then, } \phi_i^{'k} = \frac{\phi_i^{k}}{2 \, \phi_m^k}
-
-\text{If } e_i^k &gt; t \text{ then, } \phi_i^{'k} = \phi_o</span></p>
-</div></div></blockquote>
+<div><div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\text{If } e_i^k &lt; t \text{ then, } \phi_i^{'k} = \frac{\phi_i^{k}}{2 \, \phi_m^k}\\\text{If } e_i^k &gt; t \text{ then, } \phi_i^{'k} = \phi_o\end{aligned}\end{align} \]</div>
+</div></blockquote>
 <ol class="arabic simple" start="3">
 <li>Use new flux values to create a weight window tag on the provide meshtally
 and use PyNE’s Wwinp class to create a weight window mesh.</li>
@@ -267,34 +268,34 @@ the following flux and relative error data.</p>
 <col width="24%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><span class="math">\phi_1^{1} = 1.2</span></td>
-<td><span class="math">e_1^1 = 0.11</span></td>
-<td><span class="math">\phi_1^{2} = 3.3</span></td>
-<td><span class="math">e_1^2 = 0.013</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_1^{1} = 1.2\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_1^1 = 0.11\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_1^{2} = 3.3\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_1^2 = 0.013\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\phi_2^{1} = 1.6</span></td>
-<td><span class="math">e_2^1 = 0.14</span></td>
-<td><span class="math">\phi_2^{2} = 1.7</span></td>
-<td><span class="math">e_2^2 = 0.19</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_2^{1} = 1.6\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_2^1 = 0.14\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_2^{2} = 1.7\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_2^2 = 0.19\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\phi_3^{1} = 1.5</span></td>
-<td><span class="math">e_3^1 = 0.02</span></td>
-<td><span class="math">\phi_3^{2} = 1.4</span></td>
-<td><span class="math">e_3^2 = 0.16</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_3^{1} = 1.5\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_3^1 = 0.02\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_3^{2} = 1.4\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_3^2 = 0.16\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\phi_4^{1} = 2.6</span></td>
-<td><span class="math">e_4^1 = 0.04</span></td>
-<td><span class="math">\phi_4^{2} = 1.0</span></td>
-<td><span class="math">e_4^2 = 0.09</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_4^{1} = 2.6\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_4^1 = 0.04\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_4^{2} = 1.0\)</span></td>
+<td><span class="math notranslate nohighlight">\(e_4^2 = 0.09\)</span></td>
 </tr>
 </tbody>
 </table>
 <p>First, the maximum flux for each energy bin is found. In this case the maximum
-for energy bin <span class="math">k = 1</span> occurs in voxel 4 <span class="math">\phi_4^{1} = 2.6</span> and in
-voxel 1 <span class="math">\phi_1^{2} = 3.3</span> for energy bin <span class="math">k = 2</span>. In the first
-energy bin, the flux values are normalized by <span class="math">\phi_m^1 = 2.6</span> and in the
-second <span class="math">\phi_m^2 = 3.3</span>. If the error tolerance is set <span class="math">t = 0.15</span> and the
-null value set to <span class="math">\phi_o = 0.001</span>, then voxels
+for energy bin <span class="math notranslate nohighlight">\(k = 1\)</span> occurs in voxel 4 <span class="math notranslate nohighlight">\(\phi_4^{1} = 2.6\)</span> and in
+voxel 1 <span class="math notranslate nohighlight">\(\phi_1^{2} = 3.3\)</span> for energy bin <span class="math notranslate nohighlight">\(k = 2\)</span>. In the first
+energy bin, the flux values are normalized by <span class="math notranslate nohighlight">\(\phi_m^1 = 2.6\)</span> and in the
+second <span class="math notranslate nohighlight">\(\phi_m^2 = 3.3\)</span>. If the error tolerance is set <span class="math notranslate nohighlight">\(t = 0.15\)</span> and the
+null value set to <span class="math notranslate nohighlight">\(\phi_o = 0.001\)</span>, then voxels
 2 and 3 in the second energy bin have errors larger than the tolerance and are
 therefore set to the null value while everything else is normalized. The following
 is the result.</p>
@@ -304,21 +305,21 @@ is the result.</p>
 <col width="50%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><span class="math">\phi_1^{'1} = \frac{\phi_1^1}{2 \, \phi_m^1} = \frac{1.2}{2*2.6} = 0.23077</span></td>
-<td><span class="math">\phi_1^{'2} = \frac{\phi_1^2}{2 \, \phi_m^2} = \frac{3.3}{2*3.3} = 0.5</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_1^{'1} = \frac{\phi_1^1}{2 \, \phi_m^1} = \frac{1.2}{2*2.6} = 0.23077\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_1^{'2} = \frac{\phi_1^2}{2 \, \phi_m^2} = \frac{3.3}{2*3.3} = 0.5\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\phi_2^{'1} = \frac{\phi_2^1}{2 \, \phi_m^1} = \frac{1.6}{2*2.6} = 0.30769</span></td>
-<td><span class="math">\phi_2^{'2} = \phi_o = 0.001</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_2^{'1} = \frac{\phi_2^1}{2 \, \phi_m^1} = \frac{1.6}{2*2.6} = 0.30769\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_2^{'2} = \phi_o = 0.001\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\phi_3^{'1} = \frac{\phi_3^1}{2 \, \phi_m^1} = \frac{1.5}{2*2.6} = 0.28846</span></td>
-<td><span class="math">\phi_3^{'2} = \phi_o = 0.001</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_3^{'1} = \frac{\phi_3^1}{2 \, \phi_m^1} = \frac{1.5}{2*2.6} = 0.28846\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_3^{'2} = \phi_o = 0.001\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\phi_4^{'1} = \frac{\phi_4^1}{2 \, \phi_m^1} = \frac{2.6}{2*2.6} = 0.5</span></td>
-<td><span class="math">\phi_4^{'2} = \frac{\phi_4^2}{2 \, \phi_m^2} = \frac{1.0}{2*3.3} = 0.12122</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_4^{'1} = \frac{\phi_4^1}{2 \, \phi_m^1} = \frac{2.6}{2*2.6} = 0.5\)</span></td>
+<td><span class="math notranslate nohighlight">\(\phi_4^{'2} = \frac{\phi_4^2}{2 \, \phi_m^2} = \frac{1.0}{2*3.3} = 0.12122\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>The values <span class="math">\phi_i^{'k}</span> are then set as the new weight window values.</p>
+<p>The values <span class="math notranslate nohighlight">\(\phi_i^{'k}\)</span> are then set as the new weight window values.</p>
 </div>
 </div>
 <div class="section" id="references">
@@ -417,8 +418,8 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

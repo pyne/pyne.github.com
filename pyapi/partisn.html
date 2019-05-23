@@ -11,11 +11,14 @@
     <title>PARTISN Input and Output Interfaces – pyne.partisn &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../_static/cloud.js"></script>
@@ -75,7 +78,7 @@ ordinates code produced by Los Almos National Laboratory (LANL). Can be used
 to produce neutron, photon, or coupled neutron photon prblems, adjoint or
 forward or time dependent problems can be run.</p>
 <p>Module is designed to work on 1D, 2D, or 3D Cartesian geometries.</p>
-<p>If PyTaps not installed then this module will not work.</p>
+<p>If PyMOAB not installed then this module will not work.</p>
 <dl class="function">
 <dt id="pyne.partisn.format_repeated_vector">
 <code class="descclassname">pyne.partisn.</code><code class="descname">format_repeated_vector</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/partisn.html#format_repeated_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.partisn.format_repeated_vector" title="Permalink to this definition">¶</a></dt>
@@ -101,14 +104,14 @@ source distribution using this function.</p>
 <code class="descclassname">pyne.partisn.</code><code class="descname">mesh_to_isotropic_source</code><span class="sig-paren">(</span><em>m</em>, <em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/partisn.html#mesh_to_isotropic_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.partisn.mesh_to_isotropic_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function reads an isotropic source definition from a supplied mesh
 and creates a corresponding PARTISN SOURCF input card. The input card wraps
-to 80 characters and utilizes the “R” repeation notation for zero values 
+to 80 characters and utilizes the “R” repeation notation for zero values
 (e.g. 4R 0 = 0 0 0 0).</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="pyne.partisn.write_partisn_input">
 <code class="descclassname">pyne.partisn.</code><code class="descname">write_partisn_input</code><span class="sig-paren">(</span><em>mesh</em>, <em>hdf5</em>, <em>ngroup</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyne/partisn.html#write_partisn_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.partisn.write_partisn_input" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function reads a material-laden geometry file and a pre-made PyNE 
+<dd><p>This function reads a material-laden geometry file and a pre-made PyNE
 mesh object and writes a PARTISN text input file for blocks 1-5. The
 following cards are included:</p>
 <p>block 1: igeom, ngroup, niso,  mt, nzone, im, it, jm, jt, km, kt,
@@ -117,91 +120,87 @@ block 3: names,
 block 4: matls, assign,
 block 5: source.</p>
 <p>The ‘source’ card that appears by default is uniform in space and energy
-and isotropic in direction. In addition, “suggested” cards are printed, 
-commented-out. These suggested cards are the additional cards required for a 
+and isotropic in direction. In addition, “suggested” cards are printed,
+commented-out. These suggested cards are the additional cards required for a
 minimum working PARTISN input file:</p>
 <p>block 1: isn, maxscm, maxlcm,
 block 2: lib, lng, maxord, ihm, iht, ihs, ifido, ititl.</p>
 <p>Using the ‘cards’ parameter, any one of these cards (including ‘source’) as
-well as any PARTISN input card not specified here can be supplied and 
-printed to the input file. Supplied cards will be ommitted from suggested 
+well as any PARTISN input card not specified here can be supplied and
+printed to the input file. Supplied cards will be ommitted from suggested
 cards.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>mesh</strong> : PyNE mesh</p>
-<blockquote>
-<div><p>A premade mesh object that conforms to the geometry. Bounds of the mesh
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mesh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">PyNE mesh</span></dt>
+<dd><p class="first last">A premade mesh object that conforms to the geometry. Bounds of the mesh
 must correspond to the desired PARTISN coarse mesh intervals. By default
 one fine mesh inverval per coarse mesh will be used. This can be changed
-with the fine_per_coarse parameter. The sum of all fine mesh intervals 
-in the problem must be greater than or equal to 7. Mesh can be 1-D 
-(Nx1x1 mesh), 2-D (NxMx1 mesh), or 3-D (NxMxP mesh). Only Cartesian 
+with the fine_per_coarse parameter. The sum of all fine mesh intervals
+in the problem must be greater than or equal to 7. Mesh can be 1-D
+(Nx1x1 mesh), 2-D (NxMx1 mesh), or 3-D (NxMxP mesh). Only Cartesian
 meshes are currently supported.</p>
-</div></blockquote>
-<p><strong>hdf5</strong> : string</p>
-<blockquote>
-<div><p>File path to a material-laden dagmc geometry file.</p>
-</div></blockquote>
-<p><strong>ngroup</strong> : int</p>
-<blockquote>
-<div><p>The number of energy groups in the cross section library.</p>
-</div></blockquote>
-<p><strong>input_file</strong> : string, optional, default = ‘&lt;hdf5 file name&gt;_partisn.inp’</p>
-<blockquote>
-<div><p>Desired path of generated PARTISN input file. Any file already existing
+</dd>
+<dt><strong>hdf5</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">File path to a material-laden dagmc geometry file.</p>
+</dd>
+<dt><strong>ngroup</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The number of energy groups in the cross section library.</p>
+</dd>
+<dt><strong>input_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional, default = ‘&lt;hdf5 file name&gt;_partisn.inp’</span></dt>
+<dd><p class="first last">Desired path of generated PARTISN input file. Any file already existing
 by the same name will be overwritten.</p>
-</div></blockquote>
-<p><strong>cards</strong> : dict, optional, default = {}</p>
-<blockquote>
-<div><p>This is a dictionary with the following keys: ‘block1’, ‘block2’, 
+</dd>
+<dt><strong>cards</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional, default = {}</span></dt>
+<dd><p class="first">This is a dictionary with the following keys: ‘block1’, ‘block2’,
 ‘block3’, ‘block4’, ‘block5’. The values are each dicts in the format:</p>
 <blockquote>
 <div><p>&lt;partisn_card_name&gt;:&lt;partisn_card_value&gt;. These cards will be printed</p>
 </div></blockquote>
-<p>out in the input file produced by this function. When specifying a
+<p class="last">out in the input file produced by this function. When specifying a
 source via this method, the key source be ‘source’ and the value should
-the entire source card, including the card name (e.g. source, sourcx, 
+the entire source card, including the card name (e.g. source, sourcx,
 sourcef, etc) and ‘=’.</p>
-</div></blockquote>
-<p><strong>names_dict</strong> : dict, optional, default = None</p>
-<blockquote>
-<div><p>PyNE element/isotope names to bxslib name assignment. Keys are PyNE
+</dd>
+<dt><strong>names_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional, default = None</span></dt>
+<dd><p class="first last">PyNE element/isotope names to bxslib name assignment. Keys are PyNE
 nucids (int) and values are bxslib names (str)
 Example: names_dict[250550000] =’mn55’</p>
-</div></blockquote>
-<p><strong>num_rays</strong> : int, optional, default = 10</p>
-<blockquote>
-<div><p>For discretize_geom. Structured mesh only. The number of rays to fire 
+</dd>
+<dt><strong>num_rays</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional, default = 10</span></dt>
+<dd><p class="first last">For discretize_geom. Structured mesh only. The number of rays to fire
 in each mesh row for each direction.</p>
-</div></blockquote>
-<p><strong>grid</strong> : boolean, optional, default = False</p>
-<blockquote>
-<div><p>For discretize_geom. Structured mesh only. If false, rays starting 
-points are chosen randomly (on the boundary) for each mesh row. If 
-true, a linearly spaced grid of starting points is used, with dimension 
-sqrt(num_rays) x sqrt(num_rays). In this case, “num_rays” must be a 
+</dd>
+<dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional, default = False</span></dt>
+<dd><p class="first last">For discretize_geom. Structured mesh only. If false, rays starting
+points are chosen randomly (on the boundary) for each mesh row. If
+true, a linearly spaced grid of starting points is used, with dimension
+sqrt(num_rays) x sqrt(num_rays). In this case, “num_rays” must be a
 perfect square.</p>
-</div></blockquote>
-<p><strong>dg</strong> : record array, optional, default = None</p>
-<blockquote>
-<div><p>The output of pyne.dagmc.discretize_geom(). Use this input option if 
+</dd>
+<dt><strong>dg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">record array, optional, default = None</span></dt>
+<dd><p class="first last">The output of pyne.dagmc.discretize_geom(). Use this input option if
 discretize_geom() has already been run, to avoid duplicating this
-expensive step.</p>
-</div></blockquote>
-<p><strong>fine_per_coarse</strong> : int, optional, default = 1</p>
-<blockquote>
-<div><p>The number of fine mesh intervals per coarse mesh interval.</p>
-</div></blockquote>
-<p><strong>data_hdf5path</strong> : string, optional, default = /materials</p>
-<blockquote>
-<div><p>the path in the heirarchy to the data table in an HDF5 file.</p>
-</div></blockquote>
-<p><strong>nuc_hdf5path</strong> : string, optional, default = /nucid</p>
-<blockquote class="last">
-<div><p>the path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</div></blockquote>
+expensive step. If HAVE_DAGMC=False, then this must be supplied.</p>
+</dd>
+<dt><strong>mat_assigns</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional, default = None</span></dt>
+<dd><p class="first last">The output from pyne.cell_material_assignments().
+Dictionary of the cell to material assignments. Keys are cell
+numbers and values are material names. If HAVE_DAGMC=False, then
+this must be supplied.</p>
+</dd>
+<dt><strong>fine_per_coarse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional, default = 1</span></dt>
+<dd><p class="first last">The number of fine mesh intervals per coarse mesh interval.</p>
+</dd>
+<dt><strong>data_hdf5path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional, default = /materials</span></dt>
+<dd><p class="first last">the path in the heirarchy to the data table in an HDF5 file.</p>
+</dd>
+<dt><strong>nuc_hdf5path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional, default = /nucid</span></dt>
+<dd><p class="first last">the path in the heirarchy to the nuclide array in an HDF5 file.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -283,8 +282,8 @@ expensive step.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

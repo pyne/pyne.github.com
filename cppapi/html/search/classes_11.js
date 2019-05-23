@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wimsdfpy',['wimsdfpy',['../structpyne_1_1wimsdfpy.html',1,'pyne']]]
+  ['valueerror',['ValueError',['../classpyne_1_1_value_error.html',1,'pyne']]]
 ];

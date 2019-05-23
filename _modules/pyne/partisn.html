@@ -11,11 +11,14 @@
     <title>pyne.partisn &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -72,10 +75,11 @@ if(ga_enabled){
 
 <span class="sd">Module is designed to work on 1D, 2D, or 3D Cartesian geometries.</span>
 
-<span class="sd">If PyTaps not installed then this module will not work.</span>
+<span class="sd">If PyMOAB not installed then this module will not work.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">HAVE_PYMOAB</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">string</span>
@@ -102,21 +106,23 @@ if(ga_enabled){
 <span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
 
 <span class="c1"># Mesh specific imports</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">itaps</span> <span class="k">import</span> <span class="n">iMesh</span>
-    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;the PyTAPS optional dependency could not be imported. &quot;</span>
-                  <span class="s2">&quot;All aspects of the partisn module are not imported.&quot;</span><span class="p">,</span>
-                  <span class="n">QAWarning</span><span class="p">)</span>
-    <span class="n">HAVE_PYTAPS</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="k">if</span> <span class="n">HAVE_PYTAPS</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">IMeshTag</span>
+<span class="k">if</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">NativeMeshTag</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
+         <span class="s2">&quot;All aspects of the partisn module are not imported.&quot;</span><span class="p">,</span>
+         <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">dagmc</span>
+    <span class="n">HAVE_DAGMC</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">HAVE_DAGMC</span> <span class="o">=</span> <span class="kc">False</span>
+
 
 <div class="viewcode-block" id="write_partisn_input"><a class="viewcode-back" href="../../pyapi/partisn.html#pyne.partisn.write_partisn_input">[docs]</a><span class="k">def</span> <span class="nf">write_partisn_input</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hdf5</span><span class="p">,</span> <span class="n">ngroup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This function reads a material-laden geometry file and a pre-made PyNE </span>
+    <span class="sd">&quot;&quot;&quot;This function reads a material-laden geometry file and a pre-made PyNE</span>
 <span class="sd">    mesh object and writes a PARTISN text input file for blocks 1-5. The</span>
 <span class="sd">    following cards are included:</span>
 
@@ -127,27 +133,27 @@ if(ga_enabled){
 <span class="sd">    block 5: source.</span>
 
 <span class="sd">    The &#39;source&#39; card that appears by default is uniform in space and energy</span>
-<span class="sd">    and isotropic in direction. In addition, &quot;suggested&quot; cards are printed, </span>
-<span class="sd">    commented-out. These suggested cards are the additional cards required for a </span>
+<span class="sd">    and isotropic in direction. In addition, &quot;suggested&quot; cards are printed,</span>
+<span class="sd">    commented-out. These suggested cards are the additional cards required for a</span>
 <span class="sd">    minimum working PARTISN input file:</span>
 
 <span class="sd">    block 1: isn, maxscm, maxlcm,</span>
 <span class="sd">    block 2: lib, lng, maxord, ihm, iht, ihs, ifido, ititl.</span>
 
 <span class="sd">    Using the &#39;cards&#39; parameter, any one of these cards (including &#39;source&#39;) as</span>
-<span class="sd">    well as any PARTISN input card not specified here can be supplied and </span>
-<span class="sd">    printed to the input file. Supplied cards will be ommitted from suggested </span>
+<span class="sd">    well as any PARTISN input card not specified here can be supplied and</span>
+<span class="sd">    printed to the input file. Supplied cards will be ommitted from suggested</span>
 <span class="sd">    cards.</span>
-<span class="sd">   </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    mesh : PyNE mesh </span>
+<span class="sd">    mesh : PyNE mesh</span>
 <span class="sd">        A premade mesh object that conforms to the geometry. Bounds of the mesh</span>
 <span class="sd">        must correspond to the desired PARTISN coarse mesh intervals. By default</span>
 <span class="sd">        one fine mesh inverval per coarse mesh will be used. This can be changed</span>
-<span class="sd">        with the fine_per_coarse parameter. The sum of all fine mesh intervals </span>
-<span class="sd">        in the problem must be greater than or equal to 7. Mesh can be 1-D </span>
-<span class="sd">        (Nx1x1 mesh), 2-D (NxMx1 mesh), or 3-D (NxMxP mesh). Only Cartesian </span>
+<span class="sd">        with the fine_per_coarse parameter. The sum of all fine mesh intervals</span>
+<span class="sd">        in the problem must be greater than or equal to 7. Mesh can be 1-D</span>
+<span class="sd">        (Nx1x1 mesh), 2-D (NxMx1 mesh), or 3-D (NxMxP mesh). Only Cartesian</span>
 <span class="sd">        meshes are currently supported.</span>
 <span class="sd">    hdf5 : string</span>
 <span class="sd">        File path to a material-laden dagmc geometry file.</span>
@@ -157,30 +163,35 @@ if(ga_enabled){
 <span class="sd">        Desired path of generated PARTISN input file. Any file already existing</span>
 <span class="sd">        by the same name will be overwritten.</span>
 <span class="sd">    cards : dict, optional, default = {}</span>
-<span class="sd">        This is a dictionary with the following keys: &#39;block1&#39;, &#39;block2&#39;, </span>
+<span class="sd">        This is a dictionary with the following keys: &#39;block1&#39;, &#39;block2&#39;,</span>
 <span class="sd">        &#39;block3&#39;, &#39;block4&#39;, &#39;block5&#39;. The values are each dicts in the format:</span>
 <span class="sd">         &lt;partisn_card_name&gt;:&lt;partisn_card_value&gt;. These cards will be printed</span>
 <span class="sd">        out in the input file produced by this function. When specifying a</span>
 <span class="sd">        source via this method, the key source be &#39;source&#39; and the value should</span>
-<span class="sd">        the entire source card, including the card name (e.g. source, sourcx, </span>
+<span class="sd">        the entire source card, including the card name (e.g. source, sourcx,</span>
 <span class="sd">        sourcef, etc) and &#39;=&#39;.</span>
 <span class="sd">    names_dict : dict, optional, default = None</span>
 <span class="sd">        PyNE element/isotope names to bxslib name assignment. Keys are PyNE</span>
 <span class="sd">        nucids (int) and values are bxslib names (str)</span>
 <span class="sd">        Example: names_dict[250550000] =&#39;mn55&#39;</span>
 <span class="sd">    num_rays : int, optional, default = 10</span>
-<span class="sd">        For discretize_geom. Structured mesh only. The number of rays to fire </span>
+<span class="sd">        For discretize_geom. Structured mesh only. The number of rays to fire</span>
 <span class="sd">        in each mesh row for each direction.</span>
 <span class="sd">    grid : boolean, optional, default = False</span>
-<span class="sd">        For discretize_geom. Structured mesh only. If false, rays starting </span>
-<span class="sd">        points are chosen randomly (on the boundary) for each mesh row. If </span>
-<span class="sd">        true, a linearly spaced grid of starting points is used, with dimension </span>
-<span class="sd">        sqrt(num_rays) x sqrt(num_rays). In this case, &quot;num_rays&quot; must be a </span>
+<span class="sd">        For discretize_geom. Structured mesh only. If false, rays starting</span>
+<span class="sd">        points are chosen randomly (on the boundary) for each mesh row. If</span>
+<span class="sd">        true, a linearly spaced grid of starting points is used, with dimension</span>
+<span class="sd">        sqrt(num_rays) x sqrt(num_rays). In this case, &quot;num_rays&quot; must be a</span>
 <span class="sd">        perfect square.</span>
 <span class="sd">    dg : record array, optional, default = None</span>
-<span class="sd">        The output of pyne.dagmc.discretize_geom(). Use this input option if </span>
+<span class="sd">        The output of pyne.dagmc.discretize_geom(). Use this input option if</span>
 <span class="sd">        discretize_geom() has already been run, to avoid duplicating this</span>
-<span class="sd">        expensive step.</span>
+<span class="sd">        expensive step. If HAVE_DAGMC=False, then this must be supplied.</span>
+<span class="sd">    mat_assigns : dict, optional, default = None</span>
+<span class="sd">        The output from pyne.cell_material_assignments().</span>
+<span class="sd">        Dictionary of the cell to material assignments. Keys are cell</span>
+<span class="sd">        numbers and values are material names. If HAVE_DAGMC=False, then</span>
+<span class="sd">        this must be supplied.</span>
 <span class="sd">    fine_per_coarse : int, optional, default = 1</span>
 <span class="sd">        The number of fine mesh intervals per coarse mesh interval.</span>
 <span class="sd">    data_hdf5path : string, optional, default = /materials</span>
@@ -188,17 +199,18 @@ if(ga_enabled){
 <span class="sd">    nuc_hdf5path : string, optional, default = /nucid</span>
 <span class="sd">        the path in the heirarchy to the nuclide array in an HDF5 file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># Initialize dictionaries for each PARTISN block</span>
     <span class="n">block01</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">block02</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">block03</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">block04</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">block05</span> <span class="o">=</span> <span class="p">{}</span>
-    
+
     <span class="c1"># Read optional inputs:</span>
     <span class="n">cards</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cards&#39;</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">dg</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dg&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">mat_assigns</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mat_assigns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">num_rays</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_rays&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;num_rays&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s1">&#39;grid&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
@@ -214,15 +226,17 @@ if(ga_enabled){
     <span class="c1"># provided.</span>
     <span class="k">if</span> <span class="s1">&#39;names_dict&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">nuc_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;names_dict&#39;</span><span class="p">]</span>
-        <span class="n">mat_lib</span><span class="p">,</span> <span class="n">unique_names</span><span class="o">=</span> <span class="n">_get_material_lib</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">,</span> <span class="n">nuc_names</span><span class="o">=</span><span class="n">nuc_names</span><span class="p">)</span>
+        <span class="n">mat_lib</span><span class="p">,</span> <span class="n">unique_names</span> <span class="o">=</span> <span class="n">_get_material_lib</span><span class="p">(</span>
+            <span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">,</span> <span class="n">nuc_names</span><span class="o">=</span><span class="n">nuc_names</span><span class="p">)</span>
         <span class="n">mat_xs_names</span> <span class="o">=</span> <span class="n">_nucid_to_xs</span><span class="p">(</span><span class="n">mat_lib</span><span class="p">,</span> <span class="n">nuc_names</span><span class="o">=</span><span class="n">nuc_names</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mat_lib</span><span class="p">,</span> <span class="n">unique_names</span> <span class="o">=</span> <span class="n">_get_material_lib</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">)</span>
+        <span class="n">mat_lib</span><span class="p">,</span> <span class="n">unique_names</span> <span class="o">=</span> <span class="n">_get_material_lib</span><span class="p">(</span>
+            <span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">)</span>
         <span class="n">mat_xs_names</span> <span class="o">=</span> <span class="n">_nucid_to_xs</span><span class="p">(</span><span class="n">mat_lib</span><span class="p">)</span>
-    
+
     <span class="c1"># Set input variables</span>
     <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat_xs_names</span>
-    
+
     <span class="n">xs_names</span> <span class="o">=</span> <span class="n">_get_xs_names</span><span class="p">(</span><span class="n">mat_xs_names</span><span class="p">)</span>
     <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;niso&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs_names</span><span class="p">)</span>
     <span class="n">block03</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs_names</span>
@@ -230,11 +244,12 @@ if(ga_enabled){
     <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;igeom&#39;</span><span class="p">],</span> <span class="n">bounds</span> <span class="o">=</span> <span class="n">_get_coord_sys</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
     <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;ngroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ngroup</span>
     <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;mt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mat_lib</span><span class="p">)</span>
-    
-    <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;zones&#39;</span><span class="p">],</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_zones</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hdf5</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">dg</span><span class="p">,</span> <span class="n">unique_names</span><span class="p">)</span>
+
+    <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;zones&#39;</span><span class="p">],</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_zones</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hdf5</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">,</span>
+                                                     <span class="n">grid</span><span class="p">,</span> <span class="n">dg</span><span class="p">,</span> <span class="n">mat_assigns</span><span class="p">,</span> <span class="n">unique_names</span><span class="p">)</span>
     <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;nzone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">])</span>
     <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fine_per_coarse</span>
-    
+
     <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
@@ -251,17 +266,18 @@ if(ga_enabled){
             <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;km&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
             <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;kt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">block01</span><span class="p">[</span><span class="s1">&#39;km&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">fine_per_coarse</span>
             <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;zmesh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
-    
+
     <span class="n">_check_fine_mesh_total</span><span class="p">(</span><span class="n">block01</span><span class="p">)</span>
 
-    <span class="c1"># call function to write to file</span></div>
-    <span class="n">_write_input</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">block01</span><span class="p">,</span> <span class="n">block02</span><span class="p">,</span> <span class="n">block03</span><span class="p">,</span> <span class="n">block04</span><span class="p">,</span> <span class="n">block05</span><span class="p">,</span> <span class="n">cards</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
+    <span class="c1"># call function to write to file</span>
+    <span class="n">_write_input</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">block01</span><span class="p">,</span> <span class="n">block02</span><span class="p">,</span> <span class="n">block03</span><span class="p">,</span>
+                 <span class="n">block04</span><span class="p">,</span> <span class="n">block05</span><span class="p">,</span> <span class="n">cards</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_get_material_lib</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read material properties from the loaded dagmc geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># If a set of nuc_names is provided, then collapse elements</span>
     <span class="k">if</span> <span class="s1">&#39;nuc_names&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">nuc_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;nuc_names&#39;</span><span class="p">]</span>
@@ -270,7 +286,7 @@ if(ga_enabled){
         <span class="n">mat_except</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nuc_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">collapse</span> <span class="o">=</span> <span class="kc">False</span>
-    
+
     <span class="c1"># collapse isotopes into elements (if required)</span>
     <span class="n">mats</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nucpath</span><span class="o">=</span><span class="n">nuc_hdf5path</span><span class="p">)</span>
     <span class="n">mats_collapsed</span> <span class="o">=</span> <span class="p">{}</span>
@@ -279,7 +295,8 @@ if(ga_enabled){
         <span class="n">fluka_name</span> <span class="o">=</span> <span class="n">mats</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;fluka_name&#39;</span><span class="p">]</span>
         <span class="n">unique_names</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fluka_name</span>
         <span class="k">if</span> <span class="n">collapse</span><span class="p">:</span>
-            <span class="n">mats_collapsed</span><span class="p">[</span><span class="n">fluka_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mats</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span><span class="o">.</span><span class="n">collapse_elements</span><span class="p">(</span><span class="n">mat_except</span><span class="p">)</span>
+            <span class="n">mats_collapsed</span><span class="p">[</span><span class="n">fluka_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mats</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span><span class="o">.</span><span class="n">collapse_elements</span><span class="p">(</span>
+                <span class="n">mat_except</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mats_collapsed</span><span class="p">[</span><span class="n">fluka_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mats</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span>
 
@@ -289,7 +306,7 @@ if(ga_enabled){
         <span class="n">comp</span> <span class="o">=</span> <span class="n">mats_collapsed</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span>
         <span class="n">atom_dens_dict</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">to_atom_dens</span><span class="p">()</span>
         <span class="n">comp_list</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">nucid</span><span class="p">,</span> <span class="n">dens</span> <span class="ow">in</span> <span class="n">atom_dens_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">nucid</span><span class="p">,</span> <span class="n">dens</span> <span class="ow">in</span> <span class="n">atom_dens_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># convert from [at/cc] to [at/b-cm]</span>
             <span class="n">comp_list</span><span class="p">[</span><span class="n">nucid</span><span class="p">]</span> <span class="o">=</span> <span class="n">dens</span><span class="o">*</span><span class="mf">10.</span><span class="o">**-</span><span class="mi">24</span>
         <span class="n">mat_lib</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">comp_list</span>
@@ -305,7 +322,7 @@ if(ga_enabled){
         <span class="n">names_tf</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">names_tf</span> <span class="o">=</span> <span class="kc">False</span>
-    
+
     <span class="n">mat_xs_names</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mat_lib</span><span class="p">:</span>
         <span class="n">mat_xs_names</span><span class="p">[</span><span class="n">mat</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -315,19 +332,21 @@ if(ga_enabled){
                     <span class="n">name</span> <span class="o">=</span> <span class="n">nuc_names</span><span class="p">[</span><span class="n">nucid</span><span class="p">]</span>
                     <span class="n">mat_xs_names</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat_lib</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="n">nucid</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Nucid </span><span class="si">{0}</span><span class="s2"> does not exist in the provided nuc_names dictionary.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nucid</span><span class="p">))</span>
-                    <span class="n">mat_xs_names</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nucid</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mat_lib</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="n">nucid</span><span class="p">]</span>
+                    <span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;Nucid </span><span class="si">{0}</span><span class="s2"> does not exist in the provided nuc_names dictionary.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nucid</span><span class="p">))</span>
+                    <span class="n">mat_xs_names</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">nucid</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mat_lib</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="n">nucid</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">mat_xs_names</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="n">nucname</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">nucid</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mat_lib</span><span class="p">[</span><span class="n">mat</span><span class="p">][</span><span class="n">nucid</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">mat_xs_names</span>
-    
+
 
 <span class="k">def</span> <span class="nf">_get_xs_names</span><span class="p">(</span><span class="n">mat_xs_names</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create list of names (strings) of the nuclides that appear in the cross</span>
 <span class="sd">    section library from the list of nuc_names.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">xs_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">xs_names</span><span class="o">.</span><span class="n">update</span><span class="p">,</span> <span class="n">mat_xs_names</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">xs_names</span><span class="p">)</span>
@@ -336,12 +355,12 @@ if(ga_enabled){
 <span class="k">def</span> <span class="nf">_get_coord_sys</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Determine coordinate system and get bounds</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># get number of divisions</span>
     <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">))</span>
     <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">))</span>
     <span class="n">nz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">))</span>
-    
+
     <span class="n">coord_sys</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">nx</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">coord_sys</span> <span class="o">+=</span> <span class="s2">&quot;x&quot;</span>
@@ -364,21 +383,25 @@ if(ga_enabled){
         <span class="n">igeom</span> <span class="o">=</span> <span class="s1">&#39;x-y&#39;</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord_sys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">igeom</span> <span class="o">=</span> <span class="s1">&#39;x-y-z&#39;</span>
-    
+
     <span class="k">return</span> <span class="n">igeom</span><span class="p">,</span> <span class="n">bounds</span>
 
 
-<span class="k">def</span> <span class="nf">_get_zones</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hdf5</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">dg</span><span class="p">,</span> <span class="n">unique_names</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_zones</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">hdf5</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">dg</span><span class="p">,</span> <span class="n">mat_assigns</span><span class="p">,</span> <span class="n">unique_names</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get the minimum zone definitions for the geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># Discretize the geometry and get cell fractions</span>
     <span class="k">if</span> <span class="n">dg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dagmc</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">hdf5</span><span class="p">)</span>
-        <span class="n">dg</span> <span class="o">=</span> <span class="n">dagmc</span><span class="o">.</span><span class="n">discretize_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">num_rays</span><span class="o">=</span><span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_DAGMC</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;DAGMC is not available.&quot;</span>
+                               <span class="s2">&quot;Unable to discretize the geometry.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dagmc</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">hdf5</span><span class="p">)</span>
+            <span class="n">dg</span> <span class="o">=</span> <span class="n">dagmc</span><span class="o">.</span><span class="n">discretize_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">num_rays</span><span class="o">=</span><span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
 
-    <span class="c1"># Reorganize dictionary of each voxel&#39;s info with the key the voxel number </span>
-    <span class="c1"># and values of cell and volume fraction   </span>
+    <span class="c1"># Reorganize dictionary of each voxel&#39;s info with the key the voxel number</span>
+    <span class="c1"># and values of cell and volume fraction</span>
     <span class="n">voxel</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dg</span><span class="p">:</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># voxel number</span>
@@ -390,7 +413,13 @@ if(ga_enabled){
         <span class="n">voxel</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="c1"># get material to cell assignments</span>
-    <span class="n">mat_assigns</span> <span class="o">=</span> <span class="n">dagmc</span><span class="o">.</span><span class="n">cell_material_assignments</span><span class="p">(</span><span class="n">hdf5</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mat_assigns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_DAGMC</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;DAGMC is not available.&quot;</span>
+                               <span class="s2">&quot;Unable to get cell material assignments.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mat_assigns</span> <span class="o">=</span> <span class="n">dagmc</span><span class="o">.</span><span class="n">cell_material_assignments</span><span class="p">(</span><span class="n">hdf5</span><span class="p">)</span>
+
     <span class="c1"># Replace the names in the material assignments with unique names</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">mat_assigns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -416,11 +445,13 @@ if(ga_enabled){
                 <span class="c1"># update value that already exists with new volume fraction</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]):</span>
                     <span class="k">if</span> <span class="n">mat_assigns</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span><span class="p">:</span>
-                        <span class="n">vol_frac</span> <span class="o">=</span> <span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">voxel</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                        <span class="n">vol_frac</span> <span class="o">=</span> <span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> \
+                            <span class="n">voxel</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
                         <span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">vol_frac</span>
-    
+
     <span class="c1"># Remove vacuum or graveyard from material definition if not vol_frac of 1.0</span>
-    <span class="n">skip_array</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;mat:Vacuum&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;mat:vacuum&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;mat:Graveyard&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;mat:graveyard&#39;</span><span class="p">]]</span>
+    <span class="n">skip_array</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;mat:Vacuum&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;mat:vacuum&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="s1">&#39;mat:Graveyard&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;mat:graveyard&#39;</span><span class="p">]]</span>
     <span class="n">skip_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mat:Vacuum&#39;</span><span class="p">,</span> <span class="s1">&#39;mat:vacuum&#39;</span><span class="p">,</span> <span class="s1">&#39;mat:Graveyard&#39;</span><span class="p">,</span> <span class="s1">&#39;mat:graveyard&#39;</span><span class="p">]</span>
     <span class="n">zones_compressed</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zones</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
@@ -429,19 +460,20 @@ if(ga_enabled){
             <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># check for partial void</span>
-            <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mat&#39;</span><span class="p">:[],</span> <span class="s1">&#39;vol_frac&#39;</span><span class="p">:[]}</span>
+            <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mat&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;vol_frac&#39;</span><span class="p">:</span> <span class="p">[]}</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]):</span>
                 <span class="k">if</span> <span class="n">mat</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_list</span><span class="p">:</span>
                     <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
-                    <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
-    
+                    <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
     <span class="c1"># Eliminate duplicate zones and assign each voxel a zone number.</span>
     <span class="c1"># Assign zone = 0 if vacuum or graveyard and eliminate material definition.</span>
     <span class="n">voxel_zone</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">zones_mats</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>    
+    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">zones_compressed</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
         <span class="c1"># Find if the zone already exists</span>
         <span class="k">for</span> <span class="n">zone</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zones_mats</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
@@ -450,8 +482,8 @@ if(ga_enabled){
             <span class="n">match_all</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s1">&#39;mat&#39;</span><span class="p">]):</span>
                 <span class="k">for</span> <span class="n">jj</span><span class="p">,</span> <span class="n">mat_info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;mat&#39;</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="n">mat</span> <span class="o">==</span> <span class="n">mat_info</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">]),</span> \
-                                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">jj</span><span class="p">]),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">mat</span> <span class="o">==</span> <span class="n">mat_info</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">]),</span>
+                                                       <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">jj</span><span class="p">]),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
                         <span class="n">match_all</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
             <span class="k">if</span> <span class="n">match_all</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
@@ -475,27 +507,28 @@ if(ga_enabled){
                 <span class="n">voxel_zone</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">voxel_zone</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-    
+
     <span class="c1"># Remove any instances of graveyard or vacuum in zone definitions</span>
     <span class="n">zones_novoid</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zones_mats</span><span class="p">:</span>
-        <span class="n">zones_novoid</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mat&#39;</span><span class="p">:[],</span> <span class="s1">&#39;vol_frac&#39;</span><span class="p">:[]}</span>
+        <span class="n">zones_novoid</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mat&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;vol_frac&#39;</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">zones_mats</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">mat</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_list</span><span class="p">:</span>
                 <span class="n">zones_novoid</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
-                <span class="n">zones_novoid</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zones_mats</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
-    
+                <span class="n">zones_novoid</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">zones_mats</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
     <span class="c1"># Put zones into format for PARTISN input</span>
     <span class="k">if</span> <span class="s1">&#39;x&#39;</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
         <span class="n">im</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">im</span> <span class="o">=</span> <span class="mi">1</span>
-    
+
     <span class="k">if</span> <span class="s1">&#39;y&#39;</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
         <span class="n">jm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">jm</span> <span class="o">=</span> <span class="mi">1</span>
-    
+
     <span class="k">if</span> <span class="s1">&#39;z&#39;</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
         <span class="n">km</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
@@ -514,7 +547,7 @@ if(ga_enabled){
         <span class="n">zones_formatted</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
 
     <span class="k">return</span> <span class="n">zones_formatted</span><span class="p">,</span> <span class="n">zones_novoid</span>
-    
+
 
 <span class="k">def</span> <span class="nf">_check_fine_mesh_total</span><span class="p">(</span><span class="n">block01</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check that the fine mesh total is greater than or equal to 7.</span>
@@ -523,7 +556,7 @@ if(ga_enabled){
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">block01</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;it&#39;</span><span class="p">,</span> <span class="s1">&#39;jt&#39;</span><span class="p">,</span> <span class="s1">&#39;kt&#39;</span><span class="p">]:</span>
             <span class="n">total</span> <span class="o">+=</span> <span class="n">block01</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-    
+
     <span class="k">if</span> <span class="n">total</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Please supply a larger mesh. Number of fine mesh intervals is less than 7.&quot;</span><span class="p">)</span>
 
@@ -531,13 +564,13 @@ if(ga_enabled){
 <span class="k">def</span> <span class="nf">_write_input</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">block01</span><span class="p">,</span> <span class="n">block02</span><span class="p">,</span> <span class="n">block03</span><span class="p">,</span> <span class="n">block04</span><span class="p">,</span> <span class="n">block05</span><span class="p">,</span> <span class="n">cards</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write all variables and comments to a file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
- 
+
     <span class="c1"># Create file to write to</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
     <span class="n">partisn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    
+
     <span class="c1"># NOTE: header is prepended at the end of this function.</span>
-    
+
     <span class="c1">###########################################</span>
     <span class="c1">#              Write Block 1              #</span>
     <span class="c1">###########################################</span>
@@ -549,8 +582,7 @@ if(ga_enabled){
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;  niso=</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block01</span><span class="p">[</span><span class="s1">&#39;niso&#39;</span><span class="p">])</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;  mt=</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block01</span><span class="p">[</span><span class="s1">&#39;mt&#39;</span><span class="p">])</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;  nzone=</span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block01</span><span class="p">[</span><span class="s1">&#39;nzone&#39;</span><span class="p">])</span>
-    
-    
+
     <span class="k">if</span> <span class="s1">&#39;im&#39;</span> <span class="ow">in</span> <span class="n">block01</span><span class="p">:</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;im=</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block01</span><span class="p">[</span><span class="s1">&#39;im&#39;</span><span class="p">])</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;  it=</span><span class="si">{0}</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block01</span><span class="p">[</span><span class="s1">&#39;it&#39;</span><span class="p">])</span>
@@ -565,24 +597,24 @@ if(ga_enabled){
 
     <span class="n">block1_cards</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="s1">&#39;block1&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-      <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-          <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-          <span class="n">block1_cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
-    
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">block1_cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
+
     <span class="n">missing_1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;isn&#39;</span><span class="p">,</span> <span class="s1">&#39;maxscm&#39;</span><span class="p">,</span> <span class="s1">&#39;maxlcm&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">block1_cards</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ Please provide input for the following variables:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">mis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">missing_1</span><span class="p">):</span>
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/</span><span class="si">{}</span><span class="s2">=</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s1">&#39;t&#39;</span>
-    
+
     <span class="c1">###########################################</span>
     <span class="c1">#              Write Block 2              #</span>
     <span class="c1">###########################################</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ ------------ Block 2 (Geometry) ------------&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
-    
+
     <span class="k">if</span> <span class="s1">&#39;xmesh&#39;</span> <span class="ow">in</span> <span class="n">block02</span><span class="p">:</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;xmesh= &quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -594,9 +626,10 @@ if(ga_enabled){
                     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">       &quot;</span>
                 <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">xints= &quot;</span>
-        <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;xmesh&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">])</span>
+        <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;xmesh&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">])</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        
+
     <span class="k">if</span> <span class="s1">&#39;ymesh&#39;</span> <span class="ow">in</span> <span class="n">block02</span><span class="p">:</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;ymesh= &quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -608,9 +641,10 @@ if(ga_enabled){
                     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">       &quot;</span>
                 <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">yints= &quot;</span>
-        <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;ymesh&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">])</span>
+        <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;ymesh&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">])</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        
+
     <span class="k">if</span> <span class="s1">&#39;zmesh&#39;</span> <span class="ow">in</span> <span class="n">block02</span><span class="p">:</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;zmesh= &quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -622,9 +656,10 @@ if(ga_enabled){
                     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">       &quot;</span>
                 <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">zints= &quot;</span>
-        <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;zmesh&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">])</span>
+        <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;zmesh&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">block02</span><span class="p">[</span><span class="s1">&#39;fine_per_coarse&#39;</span><span class="p">])</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        
+
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;zones= &quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block02</span><span class="p">[</span><span class="s1">&#39;zones&#39;</span><span class="p">]):</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -641,18 +676,18 @@ if(ga_enabled){
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="s1">&#39;block2&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-      <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-          <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t&quot;</span>
-    
+
     <span class="c1">###########################################</span>
     <span class="c1">#              Write Block 3              #</span>
     <span class="c1">###########################################</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ ------------ Block 3 (Nuclear Data) ------------&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
-    
+
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ Note: NAMES is not all inclusive. Only NAMES that are present in</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ meshed area are listed.</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;names= &quot;</span>
@@ -664,30 +699,30 @@ if(ga_enabled){
             <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block03</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">       &quot;</span>
             <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-    
+
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="n">block3_cards</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="s1">&#39;block3&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-      <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-          <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-          <span class="n">block3_cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
-    
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">block3_cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
+
     <span class="n">missing_3</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;lib&#39;</span><span class="p">,</span> <span class="s1">&#39;lng&#39;</span><span class="p">,</span> <span class="s1">&#39;maxord&#39;</span><span class="p">,</span> <span class="s1">&#39;ihm&#39;</span><span class="p">,</span> <span class="s1">&#39;iht&#39;</span><span class="p">,</span> <span class="s1">&#39;ihs&#39;</span><span class="p">,</span> <span class="s1">&#39;ifido&#39;</span><span class="p">,</span> <span class="s1">&#39;ititl&#39;</span><span class="p">])</span> \
-              <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">block3_cards</span><span class="p">)</span>
+        <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">block3_cards</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_3</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ Please provide input for the following variables:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">mis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">missing_3</span><span class="p">):</span>
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/</span><span class="si">{}</span><span class="s2">=</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t&quot;</span>
-    
+
     <span class="c1">###########################################</span>
     <span class="c1">#              Write Block 4              #</span>
     <span class="c1">###########################################</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ ------------ Block 4 (Cross-Section Mixing) ------------&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
-    
+
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;matls= &quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">]):</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
@@ -707,7 +742,7 @@ if(ga_enabled){
                     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iso</span><span class="p">,</span> <span class="n">dens</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">       &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iso</span><span class="p">,</span> <span class="n">dens</span><span class="p">)</span>
-            
+
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;assign= &quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">]):</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
@@ -715,23 +750,26 @@ if(ga_enabled){
         <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span>
+                                                <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">          &quot;</span>
                     <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                    <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span>
+                                                     <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">        &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                    <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{:.4e}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">        &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">mat</span><span class="p">,</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="s1">&#39;block4&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-      <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-          <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-    
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t&quot;</span>
-    
+
     <span class="c1">###########################################</span>
     <span class="c1">#              Write Block 5              #</span>
     <span class="c1">###########################################</span>
@@ -749,9 +787,9 @@ if(ga_enabled){
         <span class="n">default_source</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="s1">&#39;block5&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-      <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-          <span class="k">if</span> <span class="n">card</span> <span class="o">!=</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span>
-              <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">card</span> <span class="o">!=</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span>
+                <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="c1">###########################################</span>
@@ -767,42 +805,43 @@ if(ga_enabled){
         <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;/ NOTE: The follow commented out cards must be filled in for</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;/       a complete PARTISN input file:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-           <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;/       Block 1:&#39;</span>
-           <span class="k">for</span> <span class="n">mis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">missing_1</span><span class="p">):</span>
-              <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">,&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
-           <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;/       Block 1:&#39;</span>
+            <span class="k">for</span> <span class="n">mis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">missing_1</span><span class="p">):</span>
+                <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">,&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_3</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-           <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;/       Block 3:&#39;</span>
-           <span class="k">for</span> <span class="n">mis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">missing_3</span><span class="p">):</span>
-              <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">,&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
-           <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;/&quot;</span> 
-	<span class="c1"># Prepend header to begining of file</span>
+            <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;/       Block 3:&#39;</span>
+            <span class="k">for</span> <span class="n">mis</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">missing_3</span><span class="p">):</span>
+                <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">,&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;/&quot;</span>
+    <span class="c1"># Prepend header to begining of file</span>
     <span class="n">partisn</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">partisn</span>
-    
+
     <span class="c1"># Write to the file</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">partisn</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="format_repeated_vector"><a class="viewcode-back" href="../../pyapi/partisn.html#pyne.partisn.format_repeated_vector">[docs]</a><span class="k">def</span> <span class="nf">format_repeated_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates string out of a vector with the PARTISN format for repeated</span>
 <span class="sd">    numbers.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters:</span>
 <span class="sd">    -----------</span>
 <span class="sd">    vector: list</span>
 <span class="sd">        Desired list to be formatted</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">    --------</span>
 <span class="sd">    string: string</span>
 <span class="sd">        Formatted string representation of the vector</span>
-<span class="sd">    </span>
+
 <span class="sd">    Example:</span>
 <span class="sd">        vector = [1, 2, 0, 0, 0, 7, 8, 3, 3]</span>
 <span class="sd">        string = &quot;1 2 3R 0 7 8 2R 3&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="c1"># put vector into a list of lists formatted as </span>
+
+    <span class="c1"># put vector into a list of lists formatted as</span>
     <span class="c1"># [[number , R], [number, R], ...]</span>
     <span class="c1"># where &#39;R&#39; is the number of times that &#39;number&#39; is repeated</span>
     <span class="n">tot</span> <span class="o">=</span> <span class="mi">0</span>
@@ -817,25 +856,25 @@ if(ga_enabled){
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">repeats</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">val</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
                 <span class="n">tot</span> <span class="o">+=</span> <span class="mi">1</span>
-    
+
     <span class="c1"># make into a string of characters</span>
     <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">repeats</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">n</span> <span class="o">=+</span> <span class="mi">1</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">R </span><span class="si">{1}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">2</span>
-</div>
-    <span class="k">return</span> <span class="n">string</span>
+
+    <span class="k">return</span> <span class="n">string</span></div>
 
 
 <div class="viewcode-block" id="mesh_to_isotropic_source"><a class="viewcode-back" href="../../pyapi/partisn.html#pyne.partisn.mesh_to_isotropic_source">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_isotropic_source</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function reads an isotropic source definition from a supplied mesh</span>
 <span class="sd">    and creates a corresponding PARTISN SOURCF input card. The input card wraps</span>
-<span class="sd">    to 80 characters and utilizes the &quot;R&quot; repeation notation for zero values </span>
+<span class="sd">    to 80 characters and utilizes the &quot;R&quot; repeation notation for zero values</span>
 <span class="sd">    (e.g. 4R 0 = 0 0 0 0).</span>
 
 <span class="sd">    Parameters:</span>
@@ -854,7 +893,7 @@ if(ga_enabled){
     <span class="c1"># get data</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">structured_ordering</span>
     <span class="n">m</span><span class="o">.</span><span class="n">structured_ordering</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">src</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">src</span> <span class="o">=</span> <span class="n">NativeMeshTag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">src</span><span class="p">[:]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">m</span><span class="o">.</span><span class="n">structured_ordering</span> <span class="o">=</span> <span class="n">temp</span>
     <span class="n">ninti</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">structured_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
@@ -866,7 +905,7 @@ if(ga_enabled){
     <span class="k">for</span> <span class="n">e_row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">e_row</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-               <span class="n">zero_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">zero_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">zero_count</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">zero_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -878,7 +917,7 @@ if(ga_enabled){
             <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="n">ninti</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">zero_count</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">zero_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                       <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot; 0&quot;</span>
+                        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot; 0&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">R 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zero_count</span><span class="p">)</span>
                     <span class="n">zero_count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -886,8 +925,8 @@ if(ga_enabled){
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="c1"># wrap to 80 characters</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span></div>
-    <span class="k">return</span> <span class="n">s</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="isotropic_vol_source"><a class="viewcode-back" href="../../pyapi/partisn.html#pyne.partisn.isotropic_vol_source">[docs]</a><span class="k">def</span> <span class="nf">isotropic_vol_source</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">spectra</span><span class="p">,</span> <span class="n">intensities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -914,27 +953,27 @@ if(ga_enabled){
 <span class="sd">        The normalized energy spectrum for each of the cells. If spectra are</span>
 <span class="sd">        not normalized, they will be normalized in this function.</span>
 <span class="sd">    intensities : list of floats</span>
-<span class="sd">        The volumetric intensity (i.e. s^-1 cm^-3) for each geometry cell. </span>
+<span class="sd">        The volumetric intensity (i.e. s^-1 cm^-3) for each geometry cell.</span>
 <span class="sd">    tag_name : str, optional, default = &#39;src&#39;</span>
 <span class="sd">        The name of the tag for which source data will be tagged on the mesh.</span>
 <span class="sd">    num_rays : int, optional, default = 10</span>
-<span class="sd">        For discretize_geom. The number of rays to fire in each mesh row for </span>
+<span class="sd">        For discretize_geom. The number of rays to fire in each mesh row for</span>
 <span class="sd">        each direction.</span>
 <span class="sd">    grid : boolean, optional, default = False</span>
-<span class="sd">        For discretize_geom. If false, rays starting points are chosen randomly </span>
+<span class="sd">        For discretize_geom. If false, rays starting points are chosen randomly</span>
 <span class="sd">        (on the boundary) for each mesh row. If true, a linearly spaced grid of</span>
-<span class="sd">        starting points is used, with dimension sqrt(num_rays) x sqrt(num_rays). </span>
+<span class="sd">        starting points is used, with dimension sqrt(num_rays) x sqrt(num_rays).</span>
 <span class="sd">        In this case, &quot;num_rays&quot; must be a perfect square.</span>
-<span class="sd">  </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">    --------</span>
 <span class="sd">    output : str</span>
 <span class="sd">        PARTISN SOURF card representing the requested source</span>
 <span class="sd">    dg : record array</span>
-<span class="sd">        The output of dagmc.discretize_geom; stored in a one dimensional array, </span>
+<span class="sd">        The output of dagmc.discretize_geom; stored in a one dimensional array,</span>
 <span class="sd">        each entry containing the following</span>
 <span class="sd">        fields:</span>
-<span class="sd">        :idx: int </span>
+<span class="sd">        :idx: int</span>
 <span class="sd">            The volume element index.</span>
 <span class="sd">        :cell: int</span>
 <span class="sd">            The geometry cell number.</span>
@@ -952,10 +991,10 @@ if(ga_enabled){
 
     <span class="c1"># Check lengths of input</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">intensities</span><span class="p">):</span>
-       <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cells, spectra, intensities must be the same length&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cells, spectra, intensities must be the same length&quot;</span><span class="p">)</span>
     <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spectra</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">length</span> <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="n">lengths</span><span class="p">):</span>
-       <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Spectra must all be the same length&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Spectra must all be the same length&quot;</span><span class="p">)</span>
 
     <span class="c1"># Normalize spectra</span>
     <span class="n">norm_spectra</span> <span class="o">=</span> <span class="p">[]</span>
@@ -967,22 +1006,25 @@ if(ga_enabled){
     <span class="n">intensities</span> <span class="o">=</span> <span class="p">{</span><span class="n">cell</span><span class="p">:</span> <span class="n">inten</span> <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">inten</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">intensities</span><span class="p">)}</span>
 
     <span class="c1"># ray trace</span>
-    <span class="n">dagmc</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
-    <span class="n">dg</span> <span class="o">=</span> <span class="n">dagmc</span><span class="o">.</span><span class="n">discretize_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">num_rays</span><span class="o">=</span><span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_DAGMC</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;DAGMC is not available.&quot;</span>
+                           <span class="s2">&quot;Cannot run isotropic_vol_source().&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dagmc</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        <span class="n">dg</span> <span class="o">=</span> <span class="n">dagmc</span><span class="o">.</span><span class="n">discretize_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">num_rays</span><span class="o">=</span><span class="n">num_rays</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
 
     <span class="c1"># determine  source intensities</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dg</span><span class="p">:</span>
-       <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
-           <span class="n">data</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">intensities</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> 
-                                          <span class="n">norm_spectra</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">intensities</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                           <span class="n">norm_spectra</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
-    <span class="n">mesh</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">IMeshTag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">)</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">NativeMeshTag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">)</span>
     <span class="n">mesh</span><span class="o">.</span><span class="n">tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">data</span>
-    
-    <span class="n">output</span> <span class="o">=</span> <span class="n">mesh_to_isotropic_source</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">dg</span>
 
+    <span class="n">output</span> <span class="o">=</span> <span class="n">mesh_to_isotropic_source</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">dg</span></div>
 </pre></div>
 
           </div>
@@ -1048,8 +1090,8 @@ if(ga_enabled){
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

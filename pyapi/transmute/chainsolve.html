@@ -11,11 +11,14 @@
     <title>Chain Solve – pyne.transmute.chainsolve &#8212; PyNE 0.5.11</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
     <script type="text/javascript" src="../../_static/cloud.base.js"></script>
     <script type="text/javascript" src="../../_static/cloud.js"></script>
@@ -74,82 +77,74 @@ Analysis,” a Ph.D. Dissertation, University of Wisconsin, Madison, WI, 1999.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>t</strong> : float</p>
-<blockquote>
-<div><p>Transmutations time [sec].</p>
-</div></blockquote>
-<p><strong>phi</strong> : float or array of floats</p>
-<blockquote>
-<div><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Transmutations time [sec].</p>
+</dd>
+<dt><strong>phi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or array of floats</span></dt>
+<dd><p class="first last">Neutron flux vector [n/cm^2/sec].  Currently this must either be 
 a scalar or match the group structure of EAF.</p>
-</div></blockquote>
-<p><strong>temp</strong> : float, optional</p>
-<blockquote>
-<div><p>Temperature [K] of material, defaults to 300.0.</p>
-</div></blockquote>
-<p><strong>tol</strong> : float</p>
-<blockquote>
-<div><p>Tolerance level for chain truncation.</p>
-</div></blockquote>
-<p><strong>rxs</strong> : set of ints or strs</p>
-<blockquote>
-<div><p>Reaction ids or names to use in transmutation that produce well-defined 
+</dd>
+<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+</dd>
+<dt><strong>tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Tolerance level for chain truncation.</p>
+</dd>
+<dt><strong>rxs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set of ints or strs</span></dt>
+<dd><p class="first last">Reaction ids or names to use in transmutation that produce well-defined 
 children.  This set should thus not include fission.  If None, then the 
 reactions from EAF are used.</p>
-</div></blockquote>
-<p><strong>log</strong> : file-like or None</p>
-<blockquote>
-<div><p>The log file object should be written. A None imples the log is 
+</dd>
+<dt><strong>log</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file-like or None</span></dt>
+<dd><p class="first last">The log file object should be written. A None imples the log is 
 not desired.</p>
-</div></blockquote>
-<p><strong>args</strong> : tuple, optional</p>
-<blockquote>
-<div><p>Other arguments ignored for compatibility with other Transmuters.</p>
-</div></blockquote>
-<p><strong>kwargs</strong> : dict, optional</p>
-<blockquote class="last">
-<div><p>Other keyword arguments ignored for compatibility with other Transmuters.</p>
-</div></blockquote>
+</dd>
+<dt><strong>args</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple, optional</span></dt>
+<dd><p class="first last">Other arguments ignored for compatibility with other Transmuters.</p>
+</dd>
+<dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Other keyword arguments ignored for compatibility with other Transmuters.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="pyne.transmute.chainsolve.Transmuter.transmute">
-<code class="descname">transmute</code><span class="sig-paren">(</span><em>x</em>, <em>t=None</em>, <em>phi=None</em>, <em>tol=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter.transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter.transmute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transmute</code><span class="sig-paren">(</span><em>self</em>, <em>x</em>, <em>t=None</em>, <em>phi=None</em>, <em>tol=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter.transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter.transmute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transmutes a material into its daughters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : Material or similar</p>
-<blockquote>
-<div><p>Input material for transmutation.</p>
-</div></blockquote>
-<p><strong>t</strong> : float</p>
-<blockquote>
-<div><p>Transmutations time [sec].</p>
-</div></blockquote>
-<p><strong>phi</strong> : float or array of floats</p>
-<blockquote>
-<div><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material or similar</span></dt>
+<dd><p class="first last">Input material for transmutation.</p>
+</dd>
+<dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Transmutations time [sec].</p>
+</dd>
+<dt><strong>phi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or array of floats</span></dt>
+<dd><p class="first last">Neutron flux vector [n/cm^2/sec].  Currently this must either be 
 a scalar or match the group structure of EAF.</p>
-</div></blockquote>
-<p><strong>tol</strong> : float</p>
-<blockquote>
-<div><p>Tolerance level for chain truncation.</p>
-</div></blockquote>
-<p><strong>log</strong> : file-like or None</p>
-<blockquote>
-<div><p>The log file object should be written. A None imples the log is 
+</dd>
+<dt><strong>tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Tolerance level for chain truncation.</p>
+</dd>
+<dt><strong>log</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file-like or None</span></dt>
+<dd><p class="first last">The log file object should be written. A None imples the log is 
 not desired.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : Material</p>
-<blockquote class="last">
-<div><p>The output material post-transmutation.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
+<dd><p class="first last">The output material post-transmutation.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -223,8 +218,8 @@ not desired.</p>
     <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
         
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2011-2017, The PyNE Development Team.
-      Last updated on Mar 01, 2018.
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on May 23, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
