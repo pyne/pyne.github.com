@@ -10,7 +10,7 @@ var searchData=
   ['part_5fto_5fmcnp6',['part_to_mcnp6',['../namespacepyne_1_1particle.html#a340aac212ae5cf8666cc47654c0889c4',1,'pyne::particle']]],
   ['particle',['particle',['../namespacepyne_1_1particle.html',1,'pyne']]],
   ['particle_5fbirth',['particle_birth',['../classpyne_1_1_sampler.html#a2e5d98ef0f98a3093c32936ce6cc8cd2',1,'pyne::Sampler']]],
-  ['particle_5fbirth_5f',['particle_birth_',['../namespacepyne.html#a901431eea411922dfec3f8cbc157c8af',1,'pyne']]],
+  ['particle_5fbirth_5f',['particle_birth_',['../namespacepyne.html#a3018388cce855a6cee0d8e4c931aac4a',1,'pyne']]],
   ['particle_5fname',['particle_name',['../classpyne_1_1_tally.html#af79d35607aeb81e366f76ab75e2bfda0',1,'pyne::Tally']]],
   ['path',['path',['../classh5wrap_1_1_homogenous_type_table.html#a6da460e4b94719f9ff5fe0d17e8859d7',1,'h5wrap::HomogenousTypeTable']]],
   ['path_5fexists',['path_exists',['../namespaceh5wrap.html#ae8e8e2bdbaffb31ee8066260d3c68518',1,'h5wrap']]],

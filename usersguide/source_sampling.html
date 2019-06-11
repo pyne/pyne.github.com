@@ -257,18 +257,19 @@ The simplest way to compile MCNP5 with the source subroutine is as follows:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Obtain a copy of the MCNP5 source code.</li>
-<li>Navigate to the folder MCNP5/Source/src.</li>
-<li>Soft-link the following files into this folder:<ol class="loweralpha">
-<li>pyne/src/source_sampling.cpp</li>
-<li>pyne/src/source_sampling.h</li>
-<li>pyne/src/measure.cpp</li>
-<li>pyne/src/measure.h</li>
+<li>Navigate to the folder MCNP5/Source/src: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">MCNP5/Source/src</span></code></li>
+<li>Symlink the following files into this folder:<ol class="loweralpha">
+<li><code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">-s</span> <span class="pre">/path/to/pyne/src/source_sampling.cpp</span> <span class="pre">.</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">-s</span> <span class="pre">/path/to/pyne/src/source_sampling.h</span> <span class="pre">.</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">-s</span> <span class="pre">/path/to/pyne/src/measure.cpp</span> <span class="pre">.</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">-s</span> <span class="pre">/path/to/pyne/src/measure.h</span> <span class="pre">.</span></code></li>
 </ol>
 </li>
 <li>Remove the pre-existing empty source.F90 file.</li>
-<li>Soft-link pyne/share/source.F90.</li>
-<li>Open the file MCNP/Source/src/FILE.list.</li>
-<li>Edit line 78 to include the additional source files. It should look like “CXX_SRC := measure.cpp source_sampling.cpp”.</li>
+<li>Symlink source.F90: <code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">-s</span> <span class="pre">/path/to/pyne/share/source.F90</span> <span class="pre">.</span></code></li>
+<li>Open the file MCNP/Source/src/FILE.list and edit line 78 to include the
+additional source files. It should look like
+<code class="docutils literal notranslate"><span class="pre">CXX_SRC</span> <span class="pre">:=</span> <span class="pre">measure.cpp</span> <span class="pre">source_sampling.cpp</span></code>.</li>
 <li>Compile MCNP5 using the standard build method.</li>
 </ol>
 </div></blockquote>
@@ -293,6 +294,18 @@ of 100 with source particles specified as photons:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="source-sampling-in-mcnp6">
+<h2>Source Sampling in MCNP6<a class="headerlink" href="#source-sampling-in-mcnp6" title="Permalink to this headline">¶</a></h2>
+<p>Another version of the source.F90 file was produced for use with MCNP6. The
+instructions for how to use it are identical to those for the MCNP5 version
+except for one difference: the file that should be symlinked is called
+<code class="docutils literal notranslate"><span class="pre">pyne/share/source_mcnp6.F90</span></code> instead. It should still be called
+<code class="docutils literal notranslate"><span class="pre">source.F90</span></code> inside the MCNP source directory. For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> MCNP6/Source/src
+ln -s /path/to/pyne/share/source_mcnp6.F90 source.F90
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -311,6 +324,7 @@ of 100 with source particles specified as photons:</p>
 <li><a class="reference internal" href="#python-interface">Python interface</a></li>
 <li><a class="reference internal" href="#fortran-interface">Fortran Interface</a></li>
 <li><a class="reference internal" href="#source-sampling-in-mcnp5">Source Sampling in MCNP5</a></li>
+<li><a class="reference internal" href="#source-sampling-in-mcnp6">Source Sampling in MCNP6</a></li>
 </ul>
 </li>
 </ul>
@@ -371,7 +385,7 @@ of 100 with source particles specified as photons:</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on May 23, 2019.
+      Last updated on Jun 11, 2019.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
