@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Enrichment – pyne.enrichment &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enrichment – pyne.enrichment &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Enrichment – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.enrichment</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -73,129 +73,124 @@ and tail materials, target enrichments, and separation factors.  The main
 functions in this module compute the total flow rate and separation factors
 from an initial cascade.  Other helper functions compute relative flow rates 
 and nuclide-specific separation factors.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.enrichment.Cascade">
-<em class="property">class </em><code class="descclassname">pyne.enrichment.</code><code class="descname">Cascade</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.Cascade" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">Cascade</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.Cascade" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class is a container for enrichment cascade parameters that 
 define the perfomance of a separations plant. Instances of this class 
 are passed into and out of many enrichment functions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">optional</span></dt>
-<dd><p class="first last">Any keyword argument which is supplied is applied as an attribute
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">optional</span></dt><dd><p>Any keyword argument which is supplied is applied as an attribute
 to this instance.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.M">
-<code class="descname">M</code><a class="headerlink" href="#pyne.enrichment.Cascade.M" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">M</code><a class="headerlink" href="#pyne.enrichment.Cascade.M" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of stripping stages.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.Mstar">
-<code class="descname">Mstar</code><a class="headerlink" href="#pyne.enrichment.Cascade.Mstar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Mstar</code><a class="headerlink" href="#pyne.enrichment.Cascade.Mstar" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the mass separation factor <span class="math notranslate nohighlight">\(M^*\)</span>.  On initialization, this 
 should be in the ballpark of the optimized result of the Mstar value.  However, 
 this must always have a value between the weights of the j and k key components.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.N">
-<code class="descname">N</code><a class="headerlink" href="#pyne.enrichment.Cascade.N" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">N</code><a class="headerlink" href="#pyne.enrichment.Cascade.N" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of enriching stages.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.alpha">
-<code class="descname">alpha</code><a class="headerlink" href="#pyne.enrichment.Cascade.alpha" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">alpha</code><a class="headerlink" href="#pyne.enrichment.Cascade.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <span class="math notranslate nohighlight">\(\alpha\)</span> attribute specifies the overall stage separation factor
 for the cascade.  This should be set on initialization.  Values should be
 greater than one.  Values less than one represent de-enrichment.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.j">
-<code class="descname">j</code><a class="headerlink" href="#pyne.enrichment.Cascade.j" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">j</code><a class="headerlink" href="#pyne.enrichment.Cascade.j" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is an integer in id-form that represents the jth key component.
 This nuclide is preferentially enriched in the product stream. For standard 
 uranium cascades j is 922350 (ie U-235).</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.k">
-<code class="descname">k</code><a class="headerlink" href="#pyne.enrichment.Cascade.k" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">k</code><a class="headerlink" href="#pyne.enrichment.Cascade.k" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is an integer in id-form that represents the kth key component.
 This nuclide is preferentially enriched in the tails stream. For standard 
 uranium cascades k is 922380 (ie U-238).</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.l_t_per_feed">
-<code class="descname">l_t_per_feed</code><a class="headerlink" href="#pyne.enrichment.Cascade.l_t_per_feed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">l_t_per_feed</code><a class="headerlink" href="#pyne.enrichment.Cascade.l_t_per_feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total flow rate (<span class="math notranslate nohighlight">\(L_t\)</span>) per feed flow rate.  This is a 
 characteristic of the cascade as a whole.  As such it is this 
 quatity which is minimized in any real cascade.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.mat_feed">
-<code class="descname">mat_feed</code><a class="headerlink" href="#pyne.enrichment.Cascade.mat_feed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mat_feed</code><a class="headerlink" href="#pyne.enrichment.Cascade.mat_feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Feed material to be enriched.  Often set at initialization.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.mat_prod">
-<code class="descname">mat_prod</code><a class="headerlink" href="#pyne.enrichment.Cascade.mat_prod" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mat_prod</code><a class="headerlink" href="#pyne.enrichment.Cascade.mat_prod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Product (enriched) material.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.mat_tail">
-<code class="descname">mat_tail</code><a class="headerlink" href="#pyne.enrichment.Cascade.mat_tail" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mat_tail</code><a class="headerlink" href="#pyne.enrichment.Cascade.mat_tail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tails (de-enriched) material.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.swu_per_feed">
-<code class="descname">swu_per_feed</code><a class="headerlink" href="#pyne.enrichment.Cascade.swu_per_feed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">swu_per_feed</code><a class="headerlink" href="#pyne.enrichment.Cascade.swu_per_feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>The seperative work units (SWU) per unit mass of feed material.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.swu_per_prod">
-<code class="descname">swu_per_prod</code><a class="headerlink" href="#pyne.enrichment.Cascade.swu_per_prod" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">swu_per_prod</code><a class="headerlink" href="#pyne.enrichment.Cascade.swu_per_prod" title="Permalink to this definition">¶</a></dt>
 <dd><p>The seperative work units (SWU) per unit mass of prod material.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.x_feed_j">
-<code class="descname">x_feed_j</code><a class="headerlink" href="#pyne.enrichment.Cascade.x_feed_j" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">x_feed_j</code><a class="headerlink" href="#pyne.enrichment.Cascade.x_feed_j" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the target enrichment of the jth isotope in the
 feed stream mat_feed.  The <span class="math notranslate nohighlight">\(x^F_j\)</span> value should be 
 set prior to solving for the remainder of the cascade.  For 
 typical uranium vectors, this value is about U-235 = 0.00711.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.x_prod_j">
-<code class="descname">x_prod_j</code><a class="headerlink" href="#pyne.enrichment.Cascade.x_prod_j" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">x_prod_j</code><a class="headerlink" href="#pyne.enrichment.Cascade.x_prod_j" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the target enrichment of the jth isotope in the
 product stream mat_prod.  The <span class="math notranslate nohighlight">\(x^P_j\)</span> value should be 
 set prior to solving for the remainder of the cascade.  For 
 typical uranium vectors, this value is about U-235 = 0.05.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pyne.enrichment.Cascade.x_tail_j">
-<code class="descname">x_tail_j</code><a class="headerlink" href="#pyne.enrichment.Cascade.x_tail_j" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">x_tail_j</code><a class="headerlink" href="#pyne.enrichment.Cascade.x_tail_j" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the target enrichment of the jth isotope in the
 Tails stream mat_tail.  The <span class="math notranslate nohighlight">\(x^T_j\)</span> value should be 
 set prior to solving for the remainder of the cascade. For 
@@ -204,43 +199,35 @@ typical uranium vectors, this value is about U-235 = 0.0025.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.alphastar_i">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">alphastar_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.alphastar_i" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">alphastar_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.alphastar_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the stage separation factor for a nuclide i of atomic mass <span class="math notranslate nohighlight">\(M_i\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\alpha^*_i = \alpha^{(M^* - M_i)}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>alpha</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Stage separation factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>alpha</strong><span class="classifier">float</span></dt><dd><p>Stage separation factor.</p>
 </dd>
-<dt><strong>Mstar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Mass separation factor.</p>
+<dt><strong>Mstar</strong><span class="classifier">float</span></dt><dd><p>Mass separation factor.</p>
 </dd>
-<dt><strong>M_i</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Atomic mass of the ith nuclide.</p>
+<dt><strong>M_i</strong><span class="classifier">float</span></dt><dd><p>Atomic mass of the ith nuclide.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>astar_i</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">As calculated above.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>astar_i</strong><span class="classifier">float</span></dt><dd><p>As calculated above.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.default_uranium_cascade">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">default_uranium_cascade</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.default_uranium_cascade" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">default_uranium_cascade</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.default_uranium_cascade" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a copy of a default uranium enrichment cascade, which has 
 sensible initial values for this very common case.</p>
 <p>The values of this instance of Cascade are as follows:</p>
@@ -254,416 +241,318 @@ sensible initial values for this very common case.</p>
         <span class="n">mat_tail</span><span class="o">=</span><span class="n">pyne</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">({},</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">))</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>duc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">As defined above.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>duc</strong><span class="classifier">Cascade</span></dt><dd><p>As defined above.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.feed">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.feed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the feed quantity in kg from either the product or tails.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>product</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of product in kg</p>
+<dt><strong>product</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of product in kg</p>
 </dd>
-<dt><strong>tails</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of tails in kg</p>
+<dt><strong>tails</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of tails in kg</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed quantity</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>feed</strong><span class="classifier">float</span></dt><dd><p>Feed quantity</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.multicomponent">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">multicomponent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.multicomponent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">multicomponent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.multicomponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the optimal value of Mstar by minimzing the seperative power.
 The minimizing the seperative power is equivelent to minimizing <span class="math notranslate nohighlight">\(L_t/F\)</span>,
 or the total flow rate for the cascade divided by the feed flow rate. 
 Note that orig_casc.Mstar represents an intial guess at what Mstar might be.
 This function is appropriate for feed materials with more than 2 nuclides 
 (i.e. multicomponent).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>orig_casc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">A cascade to optimize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>orig_casc</strong><span class="classifier">Cascade</span></dt><dd><p>A cascade to optimize.</p>
 </dd>
-<dt><strong>solver</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Flag for underlying cascade solver function to use. Current options 
+<dt><strong>solver</strong><span class="classifier">str, optional</span></dt><dd><p>Flag for underlying cascade solver function to use. Current options 
 are either “symbolic” or “numeric”.</p>
 </dd>
-<dt><strong>tolerance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Numerical tolerance for underlying solvers, default=1E-7.</p>
+<dt><strong>tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Numerical tolerance for underlying solvers, default=1E-7.</p>
 </dd>
-<dt><strong>max_iter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">Maximum number of iterations for underlying solvers, default=100.</p>
+<dt><strong>max_iter</strong><span class="classifier">int, optional</span></dt><dd><p>Maximum number of iterations for underlying solvers, default=100.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>casc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">A new cascade object, copied from the original, which has been optimized
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>casc</strong><span class="classifier">Cascade</span></dt><dd><p>A new cascade object, copied from the original, which has been optimized
 to minimize flow rates.  Correct values of product and tails materials
 are also computed on this instance.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.prod_per_feed">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">prod_per_feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.prod_per_feed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">prod_per_feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.prod_per_feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the product over feed enrichment ratio.</p>
 <div class="math notranslate nohighlight">
 \[\frac{p}{f} = \frac{(x_f - x_t)}{(x_p - x_t)}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tails enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Tails enrichment.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>pfratio</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">As calculated above.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>pfratio</strong><span class="classifier">float</span></dt><dd><p>As calculated above.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.product">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">product</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.product" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">product</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.product" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the product quantity in kg from either the feed or tails.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of feed in kg</p>
+<dt><strong>feed</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of feed in kg</p>
 </dd>
-<dt><strong>tails</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of tails in kg</p>
+<dt><strong>tails</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of tails in kg</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>product</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product quantity</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>product</strong><span class="classifier">float</span></dt><dd><p>Product quantity</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.solve_numeric">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">solve_numeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.solve_numeric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">solve_numeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.solve_numeric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the total flow rate (<span class="math notranslate nohighlight">\(L_t\)</span>) over the feed flow 
 rate (<span class="math notranslate nohighlight">\(F\)</span>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>orig_casc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">A cascade to compute the l_t_per_feed, swu_per_feed, swu_per_prod,
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>orig_casc</strong><span class="classifier">Cascade</span></dt><dd><p>A cascade to compute the l_t_per_feed, swu_per_feed, swu_per_prod,
 mat_prod, and mat_tail attributes for.</p>
 </dd>
-<dt><strong>tolerance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Numerical tolerance for solvers, default=1E-7.</p>
+<dt><strong>tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Numerical tolerance for solvers, default=1E-7.</p>
 </dd>
-<dt><strong>max_iter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">Maximum number of iterations for underlying solvers, default=100.</p>
+<dt><strong>max_iter</strong><span class="classifier">int, optional</span></dt><dd><p>Maximum number of iterations for underlying solvers, default=100.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>casc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">A new cascade object, copied from the original, with the appropriate
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>casc</strong><span class="classifier">Cascade</span></dt><dd><p>A new cascade object, copied from the original, with the appropriate
 attributes computed.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.solve_symbolic">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">solve_symbolic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.solve_symbolic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">solve_symbolic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.solve_symbolic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the cascade parameters based on a given initial state.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>orig_casc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">A cascade to compute the l_t_per_feed, swu_per_feed, swu_per_prod,
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>orig_casc</strong><span class="classifier">Cascade</span></dt><dd><p>A cascade to compute the l_t_per_feed, swu_per_feed, swu_per_prod,
 mat_prod, and mat_tail attributes for.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>casc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Cascade</span></dt>
-<dd><p class="first last">A new cascade object, copied from the original, with the appropriate
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>casc</strong><span class="classifier">Cascade</span></dt><dd><p>A new cascade object, copied from the original, with the appropriate
 attributes computed.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.swu">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">swu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.swu" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">swu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.swu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the SWU required to reach a given quantity of an enrichment
 level. One of feed, product, or tails must be provided.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of feed in kg</p>
+<dt><strong>feed</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of feed in kg</p>
 </dd>
-<dt><strong>product</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of product in kg</p>
+<dt><strong>product</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of product in kg</p>
 </dd>
-<dt><strong>tails</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of tails in kg</p>
+<dt><strong>tails</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of tails in kg</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>SWU</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">SWU required</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>SWU</strong><span class="classifier">float</span></dt><dd><p>SWU required</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.tail_per_feed">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">tail_per_feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.tail_per_feed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">tail_per_feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.tail_per_feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the tails over feed enrichment ratio.</p>
 <div class="math notranslate nohighlight">
 \[\frac{t}{f} = \frac{(x_f - x_p)}{(x_t - x_p)}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tails enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Tails enrichment.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tfratio</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">As calculated above.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tfratio</strong><span class="classifier">float</span></dt><dd><p>As calculated above.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.tail_per_prod">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">tail_per_prod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.tail_per_prod" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">tail_per_prod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.tail_per_prod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the tails over product enrichment ratio.</p>
 <div class="math notranslate nohighlight">
 \[\frac{t}{p} = \frac{(x_f - x_p)}{(x_t - x_f)}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Product enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Product enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tails enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Tails enrichment.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tpratio</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">As calculated above.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tpratio</strong><span class="classifier">float</span></dt><dd><p>As calculated above.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.tails">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">tails</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.tails" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">tails</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.tails" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the tails quantity in kg from either the feed or product.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x_feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Feed enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_feed</strong><span class="classifier">float</span></dt><dd><p>Feed enrichment.</p>
 </dd>
-<dt><strong>x_prod</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tails enrichment.</p>
+<dt><strong>x_prod</strong><span class="classifier">float</span></dt><dd><p>Tails enrichment.</p>
 </dd>
-<dt><strong>x_tail</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tails enrichment.</p>
+<dt><strong>x_tail</strong><span class="classifier">float</span></dt><dd><p>Tails enrichment.</p>
 </dd>
-<dt><strong>feed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of feed in kg</p>
+<dt><strong>feed</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of feed in kg</p>
 </dd>
-<dt><strong>product</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Quantity of product in kg</p>
+<dt><strong>product</strong><span class="classifier">float, optional</span></dt><dd><p>Quantity of product in kg</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tails</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tails quantity</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tails</strong><span class="classifier">float</span></dt><dd><p>Tails quantity</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.enrichment.value_func">
-<code class="descclassname">pyne.enrichment.</code><code class="descname">value_func</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.value_func" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.enrichment.</code><code class="sig-name descname">value_func</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.enrichment.value_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the value or separation potential of an assay.</p>
 <div class="math notranslate nohighlight">
 \[V(x) = (2x - 1) \log{\frac{x}{x - 1}}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">assay enrichment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float</span></dt><dd><p>assay enrichment.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>val</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">As calculated above.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">float</span></dt><dd><p>As calculated above.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -673,17 +562,15 @@ level. One of feed, product, or tails must be provided.</p>
           <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -717,7 +604,8 @@ level. One of feed, product, or tails must be provided.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Enrichment – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.enrichment</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -727,7 +615,7 @@ level. One of feed, product, or tails must be provided.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

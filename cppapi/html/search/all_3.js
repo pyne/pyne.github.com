@@ -8,6 +8,7 @@ var searchData=
   ['ci_5fper_5fbq',['Ci_per_Bq',['../namespacepyne.html#af67330218cc9e0d1b6fd2d8eca3f8cf8',1,'pyne']]],
   ['cm2_5fper_5fbarn',['cm2_per_barn',['../namespacepyne.html#a0706fc6ba35f0c6f85cea550344c1815',1,'pyne']]],
   ['cols',['cols',['../classh5wrap_1_1_homogenous_type_table.html#a8b60fa54475f44bea26caab0137d8507',1,'h5wrap::HomogenousTypeTable']]],
+  ['comment_5fline_5fwrapping',['comment_line_wrapping',['../namespacepyne.html#a88fb6820f21e3b7846b9abfa562d5f75',1,'pyne']]],
   ['commentafter',['commentAfter',['../namespace_json.html#a4fc417c23905b2ae9e2c47d197a45351ac5784ca53b12250888ddb642b06aebef',1,'Json']]],
   ['commentafteronsameline',['commentAfterOnSameLine',['../namespace_json.html#a4fc417c23905b2ae9e2c47d197a45351a008a230a0586de54f30b76afe70fdcfa',1,'Json']]],
   ['commentbefore',['commentBefore',['../namespace_json.html#a4fc417c23905b2ae9e2c47d197a45351a52f1733775460517b2ea6bedf4906d52',1,'Json']]],

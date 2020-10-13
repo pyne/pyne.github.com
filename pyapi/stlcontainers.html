@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>C++ Standard Library Converters – pyne.stlcontainers &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C++ Standard Library Converters – pyne.stlcontainers &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">C++ Standard Library Converters – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.stlcontainers</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -70,7 +70,7 @@ if(ga_enabled){
 in the C++ standard library.  Because Cython does not yet do templating,
 these classes must be declared and defined for every type.</p>
 <p>All functionality may be found in the <code class="docutils literal notranslate"><span class="pre">stlcontainers</span></code> module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">stlcontainers</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">stlcontainers</span>
 </pre></div>
 </div>
 <p>This module is largely used by PyNE under the convers, in Cython and elsewhere.
@@ -78,163 +78,128 @@ However, these classes are of more general interest, so feel free to use them in
 your own code as well.</p>
 <div class="section" id="set-proxies">
 <h2>Set Proxies<a class="headerlink" href="#set-proxies" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.stlcontainers.SetInt">
-<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">SetInt</code><a class="headerlink" href="#pyne.stlcontainers.SetInt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.stlcontainers.</code><code class="sig-name descname">SetInt</code><a class="headerlink" href="#pyne.stlcontainers.SetInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper class for C++ standard library sets of type &lt;integer&gt;.
 Provides set like interface on the Python level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>new_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or set-like</span></dt>
-<dd><p class="first last">Boolean on whether to make a new set or not, or set-like object
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>new_set</strong><span class="classifier">bool or set-like</span></dt><dd><p>Boolean on whether to make a new set or not, or set-like object
 with values which are castable to the appropriate type.</p>
 </dd>
-<dt><strong>free_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Flag for whether the pointer to the C++ set should be deallocated
+<dt><strong>free_set</strong><span class="classifier">bool</span></dt><dd><p>Flag for whether the pointer to the C++ set should be deallocated
 when the wrapper is dereferenced.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.stlcontainers.SetStr">
-<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">SetStr</code><a class="headerlink" href="#pyne.stlcontainers.SetStr" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.stlcontainers.</code><code class="sig-name descname">SetStr</code><a class="headerlink" href="#pyne.stlcontainers.SetStr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper class for C++ standard library sets of type &lt;string&gt;.
 Provides set like interface on the Python level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>new_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or set-like</span></dt>
-<dd><p class="first last">Boolean on whether to make a new set or not, or set-like object
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>new_set</strong><span class="classifier">bool or set-like</span></dt><dd><p>Boolean on whether to make a new set or not, or set-like object
 with values which are castable to the appropriate type.</p>
 </dd>
-<dt><strong>free_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Flag for whether the pointer to the C++ set should be deallocated
+<dt><strong>free_set</strong><span class="classifier">bool</span></dt><dd><p>Flag for whether the pointer to the C++ set should be deallocated
 when the wrapper is dereferenced.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="map-proxies">
 <h2>Map Proxies<a class="headerlink" href="#map-proxies" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.stlcontainers.MapStrInt">
-<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapStrInt</code><a class="headerlink" href="#pyne.stlcontainers.MapStrInt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.stlcontainers.</code><code class="sig-name descname">MapStrInt</code><a class="headerlink" href="#pyne.stlcontainers.MapStrInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper class for C++ standard library maps of type &lt;string, integer&gt;.
 Provides dictionary like interface on the Python level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>new_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or dict-like</span></dt>
-<dd><p class="first last">Boolean on whether to make a new map or not, or dict-like object
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>new_map</strong><span class="classifier">bool or dict-like</span></dt><dd><p>Boolean on whether to make a new map or not, or dict-like object
 with keys and values which are castable to the appropriate type.</p>
 </dd>
-<dt><strong>free_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Flag for whether the pointer to the C++ map should be deallocated
+<dt><strong>free_map</strong><span class="classifier">bool</span></dt><dd><p>Flag for whether the pointer to the C++ map should be deallocated
 when the wrapper is dereferenced.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.stlcontainers.MapIntStr">
-<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapIntStr</code><a class="headerlink" href="#pyne.stlcontainers.MapIntStr" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.stlcontainers.</code><code class="sig-name descname">MapIntStr</code><a class="headerlink" href="#pyne.stlcontainers.MapIntStr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper class for C++ standard library maps of type &lt;integer, string&gt;.
 Provides dictionary like interface on the Python level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>new_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or dict-like</span></dt>
-<dd><p class="first last">Boolean on whether to make a new map or not, or dict-like object
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>new_map</strong><span class="classifier">bool or dict-like</span></dt><dd><p>Boolean on whether to make a new map or not, or dict-like object
 with keys and values which are castable to the appropriate type.</p>
 </dd>
-<dt><strong>free_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Flag for whether the pointer to the C++ map should be deallocated
+<dt><strong>free_map</strong><span class="classifier">bool</span></dt><dd><p>Flag for whether the pointer to the C++ map should be deallocated
 when the wrapper is dereferenced.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.stlcontainers.MapIntDouble">
-<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapIntDouble</code><a class="headerlink" href="#pyne.stlcontainers.MapIntDouble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.stlcontainers.</code><code class="sig-name descname">MapIntDouble</code><a class="headerlink" href="#pyne.stlcontainers.MapIntDouble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper class for C++ standard library maps of type &lt;integer, double&gt;.
 Provides dictionary like interface on the Python level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>new_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or dict-like</span></dt>
-<dd><p class="first last">Boolean on whether to make a new map or not, or dict-like object
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>new_map</strong><span class="classifier">bool or dict-like</span></dt><dd><p>Boolean on whether to make a new map or not, or dict-like object
 with keys and values which are castable to the appropriate type.</p>
 </dd>
-<dt><strong>free_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Flag for whether the pointer to the C++ map should be deallocated
+<dt><strong>free_map</strong><span class="classifier">bool</span></dt><dd><p>Flag for whether the pointer to the C++ map should be deallocated
 when the wrapper is dereferenced.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.stlcontainers.MapIntComplex">
-<em class="property">class </em><code class="descclassname">pyne.stlcontainers.</code><code class="descname">MapIntComplex</code><a class="headerlink" href="#pyne.stlcontainers.MapIntComplex" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.stlcontainers.</code><code class="sig-name descname">MapIntComplex</code><a class="headerlink" href="#pyne.stlcontainers.MapIntComplex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper class for C++ standard library maps of type &lt;integer, complex&gt;.
 Provides dictionary like interface on the Python level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>new_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or dict-like</span></dt>
-<dd><p class="first last">Boolean on whether to make a new map or not, or dict-like object
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>new_map</strong><span class="classifier">bool or dict-like</span></dt><dd><p>Boolean on whether to make a new map or not, or dict-like object
 with keys and values which are castable to the appropriate type.</p>
 </dd>
-<dt><strong>free_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Flag for whether the pointer to the C++ map should be deallocated
+<dt><strong>free_map</strong><span class="classifier">bool</span></dt><dd><p>Flag for whether the pointer to the C++ map should be deallocated
 when the wrapper is dereferenced.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -245,7 +210,7 @@ when the wrapper is dereferenced.</p>
         </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">C++ Standard Library Converters – <code class="docutils literal notranslate"><span class="pre">pyne.stlcontainers</span></code></a><ul>
+<li><a class="reference internal" href="#">C++ Standard Library Converters – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.stlcontainers</span></code></a><ul>
 <li><a class="reference internal" href="#set-proxies">Set Proxies</a></li>
 <li><a class="reference internal" href="#map-proxies">Map Proxies</a></li>
 </ul>
@@ -254,17 +219,15 @@ when the wrapper is dereferenced.</p>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -298,7 +261,8 @@ when the wrapper is dereferenced.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">C++ Standard Library Converters – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.stlcontainers</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -308,7 +272,7 @@ when the wrapper is dereferenced.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

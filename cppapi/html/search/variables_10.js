@@ -6,7 +6,7 @@ var searchData=
   ['part_5fto_5fgeant4',['part_to_geant4',['../namespacepyne_1_1particle.html#a6032672d7a6469328b8df984e7383eab',1,'pyne::particle']]],
   ['part_5fto_5fmcnp',['part_to_mcnp',['../namespacepyne_1_1particle.html#ab46830f83783c4230c4d30a290d8c5fc',1,'pyne::particle']]],
   ['part_5fto_5fmcnp6',['part_to_mcnp6',['../namespacepyne_1_1particle.html#a340aac212ae5cf8666cc47654c0889c4',1,'pyne::particle']]],
-  ['particle_5fname',['particle_name',['../classpyne_1_1_tally.html#af79d35607aeb81e366f76ab75e2bfda0',1,'pyne::Tally']]],
+  ['particle_5fnames',['particle_names',['../classpyne_1_1_tally.html#ae9f50d9930ebcf219011e2fafd2613d7',1,'pyne::Tally']]],
   ['path',['path',['../classh5wrap_1_1_homogenous_type_table.html#a6da460e4b94719f9ff5fe0d17e8859d7',1,'h5wrap::HomogenousTypeTable']]],
   ['pdc_5fnums',['pdc_nums',['../namespacepyne_1_1particle.html#aaed2c3e1223989afbb685d893cac1af8',1,'pyne::particle']]],
   ['photon_5fbranch_5fratio',['photon_branch_ratio',['../structpyne_1_1decay.html#a7edc52996ae0705ac8c35fb6c437c3a8',1,'pyne::decay']]],

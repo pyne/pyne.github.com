@@ -1,0 +1,403 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Material Libraries – pyne.material_library &#8212; PyNE 0.7.1</title>
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Material Libraries – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material_library</span></code></a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="material-libraries-pyne-material-library">
+<span id="pyne-material-library"></span><h1>Material Libraries – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material_library</span></code><a class="headerlink" href="#material-libraries-pyne-material-library" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the Material Library class, which is used to represent
+collections of nuclear materials throughout PyNE.</p>
+<p>All functionality may be found in the <code class="docutils literal notranslate"><span class="pre">material_library</span></code> package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">material_library</span>
+</pre></div>
+</div>
+<p>Material Libraries provide a way of assembling a collection of <a class="reference internal" href="material.html#pyne-material"><span class="std std-ref">Materials – pyne.material</span></a>
+objects, including the reading and writing of those collections in various
+formats.  They behave in a dictionary-like way in which the key is a string
+that is generally a semantically meaningful name, and the value is a <a class="reference internal" href="material.html#pyne-material"><span class="std std-ref">Materials – pyne.material</span></a>
+object. MaterialLibrary contains mainly a dictionary like object referencing a list of
+<a class="reference internal" href="material.html#pyne-material"><span class="std std-ref">Materials – pyne.material</span></a> by the a string name key.</p>
+<p>The MaterialLibrary class is presented below.  For more information please refer to <a class="reference internal" href="../usersguide/material.html#usersguide-material"><span class="std std-ref">Materials</span></a>.</p>
+<div class="section" id="hdf5-file-structure">
+<h2>HDF5 File Structure<a class="headerlink" href="#hdf5-file-structure" title="Permalink to this headline">¶</a></h2>
+<p>When using the <cite>write_hdf5</cite> method to write a material library in a group named
+<cite>my_mat_lib</cite> (the user shall provide the name for this group in argument <cite>datapath</cite>),
+the default structure for the <cite>HDF5</cite> file is:
+.. verbatim:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">material_library</span><span class="o">/</span>
+<span class="o">/----------------/</span><span class="n">my_mat_lib</span><span class="o">/</span>
+                 <span class="o">/----------/</span><span class="n">composition</span>
+                 <span class="o">/----------/</span><span class="n">nuclidelist</span>
+                 <span class="o">/----------/</span><span class="n">composition_metadata</span>
+</pre></div>
+</div>
+<p>Where, <cite>/material_library</cite> and <cite>/material_library/my_mat_lib</cite> are HDF5 groups.</p>
+</div>
+<div class="section" id="previous-hdf5-file-structure">
+<h2>Previous HDF5 File Structure<a class="headerlink" href="#previous-hdf5-file-structure" title="Permalink to this headline">¶</a></h2>
+<p>If the <cite>datapath</cite> or <cite>/material_library</cite> exist as a dataset in the file,
+then the old writing method will be used.</p>
+<p>Old data structure looks like:
+.. verbatim:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">my_mat_lib</span><span class="o">/</span>
+<span class="o">/----------/</span><span class="n">nucpath</span>
+<span class="o">/</span><span class="n">my_mat_lib_metadata</span>
+<span class="o">/</span><span class="n">nuclidelist</span>
+</pre></div>
+</div>
+<p><cite>my_mat_lib</cite> (the <cite>datapath</cite> – default <cite>material</cite>) is a HDF5 dataset containing the
+array of material compositions, <cite>nucpath</cite> is a attribute containing the path to the
+nuclide list (attached to the <cite>datapath</cite>).
+<cite>my_mat_lib_metadata</cite> is a dataset containing an array of metadata of the materials.
+<cite>nuclidelist</cite> is a dataset containing the list of nuclides composition the
+materials.</p>
+<p><cite>from_hdf5()</cite> will detect the structure (old or new) of the file.</p>
+<div class="section" id="materiallibrary-class">
+<h3>MaterialLibrary Class<a class="headerlink" href="#materiallibrary-class" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyne.material_library.MaterialLibrary">
+<em class="property">class </em><code class="sig-prename descclassname">pyne.material_library.</code><code class="sig-name descname">MaterialLibrary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lib</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">datapath</span><span class="o">=</span><span class="default_value">'/materials'</span></em>, <em class="sig-param"><span class="n">nucpath</span><span class="o">=</span><span class="default_value">'/nucid'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The material library is a collection of unique keys mapped to
+Material objects.</p>
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.dump_json">
+<code class="sig-name descname">dump_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.dump_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the material to a JSON object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">jsoncpp.Value</span></dt><dd><p>An object-type JSON value.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.from_hdf5">
+<code class="sig-name descname">from_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.from_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data from an HDF5 file into this material library.
+Parameters
+———-
+file : str</p>
+<blockquote>
+<div><p>A path to an HDF5 file.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>datapath<span class="classifier">str, optional</span></dt><dd><p>The path in the hierarchy to the data table in an HDF5 file.
+The path in the hierarchy to the nuclide array in an HDF5 file.</p>
+</dd>
+<dt>protocol<span class="classifier">int, optional</span></dt><dd><p>Specifies the protocol to use to read in the data.  Different
+protocols are used to represent different internal structures in
+the HDF5 file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.from_json">
+<code class="sig-name descname">from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a Material object from a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file that contains the data to read in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.load_json">
+<code class="sig-name descname">load_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.load_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a JSON instance into this Material.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>json</strong><span class="classifier">jsoncpp.Value</span></dt><dd><p>An object-type JSON value.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge a material library into this material library.
+Parameters
+———-
+mat_library : MaterialLibrary</p>
+<blockquote>
+<div><p>Material Library to merge</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">key</em>, <em class="sig-param">default=&lt;object object at 0x7faa1112d050&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.popitem">
+<code class="sig-name descname">popitem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.popitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>as a 2-tuple; but raise KeyError if D is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.remove_material">
+<code class="sig-name descname">remove_material</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.remove_material" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a Material from this material library.
+Parameters
+———-
+mat_name : str Name of the material be removed from this material library</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.setdefault">
+<code class="sig-name descname">setdefault</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">\*args</em>, <em class="sig-param">\*\*kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.write_hdf5">
+<code class="sig-name descname">write_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.write_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes this material library to an HDF5 file.
+Parameters
+———-
+filename : str</p>
+<blockquote>
+<div><p>A path to an HDF5 file.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>datapath<span class="classifier">str, optional</span></dt><dd><p>The path in the hierarchy to the data table in an HDF5 file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material_library.MaterialLibrary.write_json">
+<code class="sig-name descname">write_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material_library.MaterialLibrary.write_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the material to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file to write the data to.  If the file already
+exists, it will be overwritten.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="materiallibrary-read-write-functions">
+<h3>MaterialLibrary Read/Write Functions<a class="headerlink" href="#materiallibrary-read-write-functions" title="Permalink to this headline">¶</a></h3>
+<p>A key functionality of the <cite>MaterialLibrary</cite> class is the ability to read and
+write material libraries in different formats.</p>
+<hr class="docutils" />
+<hr class="docutils" />
+</div>
+<hr class="docutils" />
+<div class="section" id="materiallibrary-modification-functions">
+<h3>MaterialLibrary Modification Functions<a class="headerlink" href="#materiallibrary-modification-functions" title="Permalink to this headline">¶</a></h3>
+<p>Functions are provided to ensure robust behavior when working with changes to
+<cite>MaterialLibrary</cite> collections.</p>
+<hr class="docutils" />
+<hr class="docutils" />
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="../index.html">Page contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Material Libraries – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material_library</span></code></a><ul>
+<li><a class="reference internal" href="#hdf5-file-structure">HDF5 File Structure</a></li>
+<li><a class="reference internal" href="#previous-hdf5-file-structure">Previous HDF5 File Structure</a><ul>
+<li><a class="reference internal" href="#materiallibrary-class">MaterialLibrary Class</a></li>
+<li><a class="reference internal" href="#materiallibrary-read-write-functions">MaterialLibrary Read/Write Functions</a></li>
+<li><a class="reference internal" href="#materiallibrary-modification-functions">MaterialLibrary Modification Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Material Libraries – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material_library</span></code></a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Oct 13, 2020.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

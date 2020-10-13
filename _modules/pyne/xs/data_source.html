@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.xs.data_source &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyne.xs.data_source &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../_static/jquery.cookie.js"></script>
+    <script src="../../../_static/cloud.base.js"></script>
+    <script src="../../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -54,7 +53,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.xs.data_source</a></li> 
       </ul>
     </div>
     </div>
@@ -68,38 +68,37 @@ if(ga_enabled){
   <h1>Source code for pyne.xs.data_source</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Cross section library data source interfaces.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">QA_warn</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="k">import</span> <span class="n">StringIO</span>
+    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># openmc is not a hard dependency of pyne</span>
-    <span class="kn">from</span> <span class="nn">openmc</span> <span class="k">import</span> <span class="n">statepoint</span>
+    <span class="kn">from</span> <span class="nn">openmc</span> <span class="kn">import</span> <span class="n">statepoint</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">statepoint</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nuc_data</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">openmc</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">rxname</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">endf</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">bins</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">ace</span>
-<span class="kn">from</span> <span class="nn">pyne.data</span> <span class="k">import</span> <span class="n">MeV_per_K</span>
-<span class="kn">from</span> <span class="nn">pyne.xs.models</span> <span class="k">import</span> <span class="n">partial_energy_matrix</span><span class="p">,</span> <span class="n">group_collapse</span><span class="p">,</span> <span class="n">same_arr_or_none</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nuc_data</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">openmc_utils</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">rxname</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">endf</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">bins</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">ace</span>
+<span class="kn">from</span> <span class="nn">pyne.data</span> <span class="kn">import</span> <span class="n">MeV_per_K</span>
+<span class="kn">from</span> <span class="nn">pyne.xs.models</span> <span class="kn">import</span> <span class="n">partial_energy_matrix</span><span class="p">,</span> <span class="n">group_collapse</span><span class="p">,</span> <span class="n">same_arr_or_none</span>
 
-<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">QA_warn</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">IO_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">)</span>
 
@@ -180,7 +179,7 @@ if(ga_enabled){
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exists</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
             <span class="k">return</span>
@@ -346,7 +345,7 @@ if(ga_enabled){
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NullDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -408,7 +407,7 @@ if(ga_enabled){
                  <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_3n&#39;</span><span class="p">):</span> <span class="s1">&#39;3n&#39;</span><span class="p">,</span>
                  <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;z_4n&#39;</span><span class="p">):</span> <span class="s1">&#39;4n&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SimpleDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -562,7 +561,7 @@ if(ga_enabled){
 
     <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CinderDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -691,7 +690,7 @@ if(ga_enabled){
 
     <span class="n">_USES_TEMP</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">EAFDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -798,7 +797,7 @@ if(ga_enabled){
 <span class="sd">    -----</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">src_phi_g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dst_group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="n">fh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exists</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
@@ -984,10 +983,10 @@ if(ga_enabled){
 
     <span class="n">self_shield_reactions</span> <span class="o">=</span> <span class="p">{</span><span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;fission&#39;</span><span class="p">),</span> <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">),</span> <span class="n">rxname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="s1">&#39;total&#39;</span><span class="p">)}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cross_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cross_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_group_struct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cross_sections : openmc.CrossSections or string or file-like, optional</span>
+<span class="sd">        cross_sections : openmc_utils.CrossSections or string or file-like, optional</span>
 <span class="sd">            Path or file to OpenMC cross_sections.xml</span>
 <span class="sd">        src_group_struct : array-like, optional</span>
 <span class="sd">            The group structure to discretize the ACE data to, defaults to</span>
@@ -996,13 +995,13 @@ if(ga_enabled){
 <span class="sd">            Keyword arguments to be sent to DataSource base class.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cross_sections</span><span class="p">,</span> <span class="n">openmc</span><span class="o">.</span><span class="n">CrossSections</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cross_sections</span><span class="p">,</span> <span class="n">openmc_utils</span><span class="o">.</span><span class="n">CrossSections</span><span class="p">):</span>
             <span class="n">cross_sections</span> <span class="o">=</span> <span class="n">cross_sections</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CROSS_SECTIONS&#39;</span><span class="p">)</span>
-            <span class="n">cross_sections</span> <span class="o">=</span> <span class="n">openmc</span><span class="o">.</span><span class="n">CrossSections</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">cross_sections</span><span class="p">)</span>
+            <span class="n">cross_sections</span> <span class="o">=</span> <span class="n">openmc_utils</span><span class="o">.</span><span class="n">CrossSections</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">cross_sections</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cross_sections</span> <span class="o">=</span> <span class="n">cross_sections</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_src_group_struct</span> <span class="o">=</span> <span class="n">src_group_struct</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">OpenMCDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">libs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># cross section libraries, index by openmc.AceTables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">libs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># cross section libraries, index by openmc_utils.AceTables</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1194,14 +1193,14 @@ if(ga_enabled){
                 <span class="n">lib</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">atab</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="StatePointDataSource"><a class="viewcode-back" href="../../../pyapi/xs/data_source.html#pyne.xs.data_source.StatePointDataSource">[docs]</a><span class="k">class</span> <span class="nc">StatePointDataSource</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data source for reactions coming from openmc state points</span>
+    <span class="sd">&quot;&quot;&quot;Data source for reactions coming from OpenMC state points</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_point</span><span class="p">,</span> <span class="n">tallies</span><span class="p">,</span> <span class="n">num_den</span><span class="p">,</span> <span class="n">phi_tot</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_point</span><span class="p">,</span> <span class="n">tallies</span><span class="p">,</span> <span class="n">num_den</span><span class="p">,</span> <span class="n">phi_tot</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        state_point : string</span>
-<span class="sd">            Path to the openmc statepoint file to be used to build the data_source</span>
+<span class="sd">            Path to the OpenMC statepoint file to be used to build the data_source</span>
 <span class="sd">        tallies : array-like</span>
 <span class="sd">            The tally id&#39;s used to pull the cross sections from.</span>
 <span class="sd">        num_dens: map of int to float</span>
@@ -1225,19 +1224,19 @@ if(ga_enabled){
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_load_group_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loads the group structure from a tally in openMC. It is</span>
+        <span class="sd">&quot;&quot;&quot;Loads the group structure from a tally in OpenMC. It is</span>
 <span class="sd">        assumed that all tallies have the same group structure</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_src_group_struct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_point</span><span class="o">.</span><span class="n">tallies</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tallies</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bins</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">src_group_struct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src_group_struct</span>
 
     <span class="k">def</span> <span class="nf">_load_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dens</span><span class="p">,</span> <span class="n">phi_tot</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loads the group structure from a tally in openMC. It is</span>
+        <span class="sd">&quot;&quot;&quot;Loads the group structure from a tally in OpenMC. It is</span>
 <span class="sd">        assumed that all tallies have the same group structure</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        state_point: openMC statepoint file</span>
+<span class="sd">        state_point: OpenMC statepoint file</span>
 <span class="sd">            The statepoint file that will be used to load the reaction</span>
 <span class="sd">            rates to determine the microscopic cross sections for the</span>
 <span class="sd">            statepoint.</span>
@@ -1277,6 +1276,7 @@ if(ga_enabled){
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">[</span><span class="n">rxkey</span><span class="p">]</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1286,17 +1286,15 @@ if(ga_enabled){
           <img class="logo" src="../../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -1331,7 +1329,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.xs.data_source</a></li> 
       </ul>
     </div>
     </div>
@@ -1341,7 +1340,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

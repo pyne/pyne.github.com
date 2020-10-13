@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Rigorous Two-Step Activation (R2S) &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rigorous Two-Step Activation (R2S) &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Rigorous Two-Step Activation (R2S)</a></li> 
       </ul>
     </div>
     </div>
@@ -68,7 +68,7 @@ if(ga_enabled){
 <span id="rigorous-two-step-activation-r2s"></span><span id="usersguide-r2s"></span><h1>Rigorous Two-Step Activation (R2S)<a class="headerlink" href="#module-pyne.r2s" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>The Rigorous Two-Step (R2S) method <a class="footnote-reference" href="#id6" id="id1">[1]</a> is a method for estimating the photon dose
+<p>The Rigorous Two-Step (R2S) method <a class="footnote-reference brackets" href="#id6" id="id1">1</a> is a method for estimating the photon dose
 rates that result from neutron activation, often as a function of position and
 time after “shutdown” (i.e. when neutron production ceases). The primary
 application of this method is occupational safety and maintenance planning
@@ -76,24 +76,24 @@ within facilities that generate neutrons such as fission reactors, fusion
 devices, and experimental facilities. The so-called “shutdown dose rate” is
 calculated using two separate transport steps, using the procedure below:</p>
 <ol class="arabic simple">
-<li>Neutron transport to obtain a global, energy-wise neutron flux distribution,
-typically on a mesh.</li>
-<li>Nuclear inventory analysis to calculate an energy-wise photon emission density
-distribution for each time after shutdown of interest.</li>
-<li>Photon transport using each of the photon emission density distributions found as
-sources in order to calculate photon dose rates.</li>
+<li><p>Neutron transport to obtain a global, energy-wise neutron flux distribution,
+typically on a mesh.</p></li>
+<li><p>Nuclear inventory analysis to calculate an energy-wise photon emission density
+distribution for each time after shutdown of interest.</p></li>
+<li><p>Photon transport using each of the photon emission density distributions found as
+sources in order to calculate photon dose rates.</p></li>
 </ol>
 <p>PyNE R2S implements a Cartesian- and tetrahedral- mesh-based R2S method that
 operates entirely on CAD geometry. This is accomplished using the Direct
 Accelerated Geometry Monte Carlo (DAGMC) version of MCNP5, known as DAG-MCNP5
-<a class="footnote-reference" href="#id7" id="id2">[2]</a> and the ALARA activation code <a class="footnote-reference" href="#id8" id="id3">[3]</a>. For Cartesian mesh, the CAD geometry
+<a class="footnote-reference brackets" href="#id7" id="id2">2</a> and the ALARA activation code <a class="footnote-reference brackets" href="#id8" id="id3">3</a>. For Cartesian mesh, the CAD geometry
 must be discretized onto the mesh in order to obtain material compositions in each
 mesh volume element for activation. This is done using a ray-tracing technique.
 For both Cartesian and tetrahedral meshes, mesh-based photon sampling is
 accomplished using MCNP5 compiled with a custom source subroutine which utilizes the
 functionality of the pyne.source_sampling module. PyNE R2S has been validated
 using the Frascati Neutron Generator ITER benchmark problem, with close
-agreement to experimental results <a class="footnote-reference" href="#id9" id="id4">[4]</a>.</p>
+agreement to experimental results <a class="footnote-reference brackets" href="#id9" id="id4">4</a>.</p>
 </div>
 <div class="section" id="using-pyne-r2s">
 <h2>Using PyNE R2S<a class="headerlink" href="#using-pyne-r2s" title="Permalink to this headline">¶</a></h2>
@@ -103,10 +103,10 @@ script. Note that more complex use cases may not be handled by this script,
 in which case the user can use the python interface in pyne/pyne/r2s.py. In
 order to use the CLI, the following files are first needed:</p>
 <ol class="arabic simple">
-<li>A material-laden CAD file representing the geometry. Instructions on creating
-this file can be found <a class="reference external" href="http://svalinn.github.io/DAGMC/usersguide/uw2.html">here</a>.</li>
-<li>An MCNP MESHTAL file or DAG-MCNP tetrahedral mesh tally containing the
-neutron fluxes used for neutron activation.</li>
+<li><p>A material-laden CAD file representing the geometry. Instructions on creating
+this file can be found <a class="reference external" href="http://svalinn.github.io/DAGMC/usersguide/uw2.html">here</a>.</p></li>
+<li><p>An MCNP MESHTAL file or DAG-MCNP tetrahedral mesh tally containing the
+neutron fluxes used for neutron activation.</p></li>
 </ol>
 <p>Once these files have been obtained, PyNE R2S can proceed. PyNE R2S is best run
 in its own folder, due the large number of intermediate files created. Create
@@ -126,7 +126,7 @@ file is alara_params.txt. This file will be appended to the ALARA geometry
 information automatically created by PyNE R2S to form a complete ALARA input
 file. The alara_params.txt file will need to be modified to specify the irradiation schedule,
 decay times of interest, and any other parameters. More information can be found in the
-<a class="reference external" href="http://alara.engr.wisc.edu/users.guide.html/">ALARA Users’ Guide</a>. Once both
+<a class="reference external" href="http://svalinn.github.io/ALARA/usersguide/index.html">ALARA Users’ Guide</a>. Once both
 of these files are filled out, run the command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ r2s.py step1
 </pre></div>
@@ -165,7 +165,7 @@ The following content demonstrates the process of caculating the shutdown dose r
 Example files can be found in <a class="reference external" href="https://github.com/pyne/data/blob/master/r2s_examples.tar.gz">r2s_examples</a>.</p>
 <div class="figure align-center" id="id10">
 <img alt="../_images/r2s_example_geometry.png" src="../_images/r2s_example_geometry.png" />
-<p class="caption"><span class="caption-text"><strong>Figure 1:</strong> <em>Geometry of R2S example (X-Y cross section).</em></span></p>
+<p class="caption"><span class="caption-text"><strong>Figure 1:</strong> <em>Geometry of R2S example (X-Y cross section).</em></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
 </div>
 <p>Build the model using Trelis (TM) and set material group and export to <cite>geom_without_material.h5m</cite>.</p>
 <p>Prepare material library, build material library. The material lib is then generated in file “example_material_lib.h5”.</p>
@@ -198,7 +198,7 @@ $ r2s.py setup
 <p>Modify important parameters in the ‘alara_params.txt’ and ‘config.ini’ according to the problem.
 Both are two modes of R2S: the voxel R2S and sub-voxel R2S.
 Examples input files can be seen in both ‘r2s_examples/r2s_run’ and ‘subvoxel_r2s_run’.
-By setting the parameter ‘sub_voxel’ (in ‘config.ini’) to be ‘False’, the user can perform voxel R2S described in <a class="footnote-reference" href="#id9" id="id5">[4]</a>.
+By setting the parameter ‘sub_voxel’ (in ‘config.ini’) to be ‘False’, the user can perform voxel R2S described in <a class="footnote-reference brackets" href="#id9" id="id5">4</a>.
 By setting the parameter ‘sub_voxel’ to be ‘True’, the user can perform sub-voxel R2S without any other change.
 Prepare alara nuclide library, copy preinstalled data library from
 <a class="reference external" href="https://github.com/svalinn/ALARA/tree/master/data">ALARA/data</a>.
@@ -226,44 +226,35 @@ $ mcnp5.mpi <span class="nv">i</span><span class="o">=</span>input <span class="
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<table class="docutils footnote" frame="void" id="id6" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Y. Chen, U. Fischer, Rigorous MCNP Based Shutdown Dose Rate Calculations:
+<dl class="footnote brackets">
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Y. Chen, U. Fischer, Rigorous MCNP Based Shutdown Dose Rate Calculations:
 Computational Scheme, Verification Calculations and Application to ITER, Fusion
-Engineering and Design, Vol. 63-64, (2002)</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="id7" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>T. J. Tautges, P.P.H.  Wilson, J. Kraftcheck, B. F. Smith, D. L.
+Engineering and Design, Vol. 63-64, (2002)</p>
+</dd>
+<dt class="label" id="id7"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>T. J. Tautges, P.P.H.  Wilson, J. Kraftcheck, B. F. Smith, D. L.
 Henderson, “Acceleration Techniques for Direct Use of CAD-Based
 Geometries in Monte Carlo Radiation Transport”, International Conference
 on Mathematics, Computational Methods &amp; Reactor Physics (M&amp;C 2009),
-(2009).</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>P. P.H. Wilson, H. Tsige-Tamirat, H. Y. Khater, D. L.  Henderson,
+(2009).</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>P. P.H. Wilson, H. Tsige-Tamirat, H. Y. Khater, D. L.  Henderson,
 Validation of the ALARA Activation Code, Fusion Technology, Vol. 34,
-Issue 3, (1998),</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="id9" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[4]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id5">2</a>)</em> E. Biondo, A. Davis, A. Scopatz, P. P.H. Wilson, “Rigorous Two-Step
+Issue 3, (1998),</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">4</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id5">2</a>)</span></dt>
+<dd><p>E. Biondo, A. Davis, A. Scopatz, P. P.H. Wilson, “Rigorous Two-Step
 Activation for Fusion Systems with PyNE”, Transactions of the American
-Nuclear Society, Vol. 112, (2015).</td></tr>
-</tbody>
-</table>
+Nuclear Society, Vol. 112, (2015).</p>
+</dd>
+</dl>
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -285,17 +276,15 @@ Nuclear Society, Vol. 112, (2015).</td></tr>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -329,7 +318,8 @@ Nuclear Society, Vol. 112, (2015).</td></tr>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Rigorous Two-Step Activation (R2S)</a></li> 
       </ul>
     </div>
     </div>
@@ -339,7 +329,7 @@ Nuclear Society, Vol. 112, (2015).</td></tr>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

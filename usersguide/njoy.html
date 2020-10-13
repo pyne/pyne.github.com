@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>NJOY Automation &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NJOY Automation &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">NJOY Automation</a></li> 
       </ul>
     </div>
     </div>
@@ -64,25 +64,8 @@ if(ga_enabled){
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-pyne.njoy">
-<span id="njoy-automation"></span><span id="usersguide-njoy"></span><h1>NJOY Automation<a class="headerlink" href="#module-pyne.njoy" title="Permalink to this headline">¶</a></h1>
-<p>Purpose:</p>
-<blockquote>
-<div>Automatic generation of Njoy input data, including dragr data.
-Generation of DRAGLIB and ACELIB.  Please see the tutorial at 
-<a class="reference external" href="http://www.polymtl.ca/merlin/downloads/IGE305.pdf">http://www.polymtl.ca/merlin/downloads/IGE305.pdf</a> for more information.</div></blockquote>
-<p>Copyright:</p>
-<blockquote>
-<div>This code was originally distirbuted under the LGPL license (below).
-However, we have been given written permission from the author Alain
-Herbert to redistribute it under PyNE’s BSD license.</div></blockquote>
-<p>Original Copyright:</p>
-<blockquote>
-<div>Copyright (C) 2003 Ecole Polytechnique de Montreal
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version</div></blockquote>
+  <div class="section" id="njoy-automation">
+<span id="usersguide-njoy"></span><h1>NJOY Automation<a class="headerlink" href="#njoy-automation" title="Permalink to this headline">¶</a></h1>
 <p>The purpose of this module is to enable simple generation of cross section
 libraries and avoiding the need to write NJOY input files by hand. A complete
 processing of an evaluated datafile is done by invoking methods of the Njoy99
@@ -95,81 +78,81 @@ refer to the Library Reference entry for <a class="reference internal" href="../
 <p>The generation of cross section libraries is controlled by a number of
 attributes of the Njoy99 class. These attributes are passed as input parameters
 to NJOY for setting options, temperatures, tolerances, etc.</p>
-<dl class="docutils">
-<dt>self.evaluationName</dt>
-<dd>Path of directory where you want to store the pendf, gendf, draglib and acelib
+<dl class="simple">
+<dt>self.evaluationName</dt><dd><p>Path of directory where you want to store the pendf, gendf, draglib and acelib
 files. The path can be prefixed by /tmp/ to force the files to be created
-locally on the /tmp directory.</dd>
-<dt>self.legendre</dt>
-<dd>Order of Legendre polynomials for neutrons (= 1 for linear anisotropy in LAB -
-default)</dd>
-<dt>self.legendregg</dt>
-<dd>Order of Legendre polynomials for gamma particles (default: = 6)</dd>
-<dt>self.nstr</dt>
-<dd>Option for a particular neutron group structure (= 22 for the XMAS 172–group
-structure)</dd>
-<dt>self.gstr</dt>
-<dd>Option for a particular gamma group structure, for producing neutron–gamma
-coupled sets (equal to zero by default)</dd>
-<dt>self.iwt</dt>
-<dd>Type of flux weighting in groupr (= 1 for user-defined spectra; = 3 for 1/E
-weighting; = 4 recommended/default)</dd>
-<dt>self.wght</dt>
-<dd>User-defined weighting spectra to be used if self.iwt = 1. Given as
-“”“–delimited string.</dd>
-<dt>self.autolib</dt>
-<dd>Three-component tuple containing the energy limits of the autolibs (must
+locally on the /tmp directory.</p>
+</dd>
+<dt>self.legendre</dt><dd><p>Order of Legendre polynomials for neutrons (= 1 for linear anisotropy in LAB -
+default)</p>
+</dd>
+<dt>self.legendregg</dt><dd><p>Order of Legendre polynomials for gamma particles (default: = 6)</p>
+</dd>
+<dt>self.nstr</dt><dd><p>Option for a particular neutron group structure (= 22 for the XMAS 172–group
+structure)</p>
+</dd>
+<dt>self.gstr</dt><dd><p>Option for a particular gamma group structure, for producing neutron–gamma
+coupled sets (equal to zero by default)</p>
+</dd>
+<dt>self.iwt</dt><dd><p>Type of flux weighting in groupr (= 1 for user-defined spectra; = 3 for 1/E
+weighting; = 4 recommended/default)</p>
+</dd>
+<dt>self.wght</dt><dd><p>User-defined weighting spectra to be used if self.iwt = 1. Given as
+“””–delimited string.</p>
+</dd>
+<dt>self.autolib</dt><dd><p>Three-component tuple containing the energy limits of the autolibs (must
 correspond to energy-group limits) and the elementary lethargy width of the
-autolibs</dd>
-<dt>self.temperatures</dt>
-<dd>Value of temperatures at which the cross sections are generated</dd>
-<dt>self.hmat</dt>
-<dd>Material name that is included in the DRAGLIB – User dependent</dd>
-<dt>self.mat</dt>
-<dd>mat number of nuclide under consideration</dd>
-<dt>self.hmatgg</dt>
-<dd>Photo-atomic element name that is included in the DRAGLIB – User dependent</dd>
-<dt>self.matgg</dt>
-<dd>Photo-atomic mat number of element under consideration</dd>
-<dt>self.za</dt>
-<dd>ZA number, mainly required for generation of S(α, β) cross section in acer</dd>
-<dt>self.scatName</dt>
-<dd>Name of S(α, β) cross section identifier for inclusion in xsdir</dd>
-<dt>self.suff</dt>
-<dd>The suffix to be attached to nuclide in ACELIB - User dependent</dd>
-<dt>self.evaluationFile</dt>
-<dd>Path of the evaluated datafile.</dd>
-<dt>self.scatteringLaw</dt>
-<dd>Path of file having thermal scattering data (default = None)</dd>
-<dt>self.scatteringMat</dt>
-<dd>mat number in scattering data file</dd>
-<dt>self.fission</dt>
-<dd>Choice for including delayed neutron fission data in groupr module</dd>
-<dt>self.ss</dt>
-<dd>Two-component tuple containing energy limits in eV for the self-shielding
-domain</dd>
-<dt>self.potential</dt>
-<dd>Value of the potential cross section used in the flux calculator of groupr</dd>
-<dt>self.dilutions</dt>
-<dd>Tuple containing the dilution values that need to be considered for
-calculation of resonance integrals and probability tables</dd>
-<dt>self.dirName</dt>
-<dd>Directory name to store data for independent verification of ACELIB.</dd>
-<dt>self.tempace</dt>
-<dd>Temperature at which ACELIB needs to be generated.</dd>
-<dt>self.eFiss</dt>
-<dd>Fission energy in MeV. Used in cases where this value is not available in the
-evaluation.</dd>
-<dt>self.branchingNG</dt>
-<dd>Radiative capture isomeric branching ratio (default = None). If you use this
-value, don’t forget to reset it to None after the isotope is completed.</dd>
-<dt>self.branchingN2N</dt>
-<dd>N2N isomeric branching ratio (default = None). If you use this value, don’t
-forget to reset it to None after the isotope is completed.</dd>
-<dt>self.purr</dt>
-<dd>Set to 1 to use purr module. By default, use unresr.</dd>
-<dt>self.oldlib</dt>
-<dd>Name of an existing DRAGLIB file that is modified by self.draglib().</dd>
+autolibs</p>
+</dd>
+<dt>self.temperatures</dt><dd><p>Value of temperatures at which the cross sections are generated</p>
+</dd>
+<dt>self.hmat</dt><dd><p>Material name that is included in the DRAGLIB – User dependent</p>
+</dd>
+<dt>self.mat</dt><dd><p>mat number of nuclide under consideration</p>
+</dd>
+<dt>self.hmatgg</dt><dd><p>Photo-atomic element name that is included in the DRAGLIB – User dependent</p>
+</dd>
+<dt>self.matgg</dt><dd><p>Photo-atomic mat number of element under consideration</p>
+</dd>
+<dt>self.za</dt><dd><p>ZA number, mainly required for generation of S(α, β) cross section in acer</p>
+</dd>
+<dt>self.scatName</dt><dd><p>Name of S(α, β) cross section identifier for inclusion in xsdir</p>
+</dd>
+<dt>self.suff</dt><dd><p>The suffix to be attached to nuclide in ACELIB - User dependent</p>
+</dd>
+<dt>self.evaluationFile</dt><dd><p>Path of the evaluated datafile.</p>
+</dd>
+<dt>self.scatteringLaw</dt><dd><p>Path of file having thermal scattering data (default = None)</p>
+</dd>
+<dt>self.scatteringMat</dt><dd><p>mat number in scattering data file</p>
+</dd>
+<dt>self.fission</dt><dd><p>Choice for including delayed neutron fission data in groupr module</p>
+</dd>
+<dt>self.ss</dt><dd><p>Two-component tuple containing energy limits in eV for the self-shielding
+domain</p>
+</dd>
+<dt>self.potential</dt><dd><p>Value of the potential cross section used in the flux calculator of groupr</p>
+</dd>
+<dt>self.dilutions</dt><dd><p>Tuple containing the dilution values that need to be considered for
+calculation of resonance integrals and probability tables</p>
+</dd>
+<dt>self.dirName</dt><dd><p>Directory name to store data for independent verification of ACELIB.</p>
+</dd>
+<dt>self.tempace</dt><dd><p>Temperature at which ACELIB needs to be generated.</p>
+</dd>
+<dt>self.eFiss</dt><dd><p>Fission energy in MeV. Used in cases where this value is not available in the
+evaluation.</p>
+</dd>
+<dt>self.branchingNG</dt><dd><p>Radiative capture isomeric branching ratio (default = None). If you use this
+value, don’t forget to reset it to None after the isotope is completed.</p>
+</dd>
+<dt>self.branchingN2N</dt><dd><p>N2N isomeric branching ratio (default = None). If you use this value, don’t
+forget to reset it to None after the isotope is completed.</p>
+</dd>
+<dt>self.purr</dt><dd><p>Set to 1 to use purr module. By default, use unresr.</p>
+</dd>
+<dt>self.oldlib</dt><dd><p>Name of an existing DRAGLIB file that is modified by self.draglib().</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="draglib-generation">
@@ -248,8 +231,8 @@ be used are</p>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Tripoli4/JEF2/eval/jef2.neutron.H2.bcd&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Tripoli4/JEF2/eval/jef2.neutron.D_D2O.bcd.therm&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">scatteringMat</span> <span class="o">=</span> <span class="mi">11</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">pendf</span><span class="p">()</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">gendf</span><span class="p">()</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">draglib</span><span class="p">()</span>
@@ -266,7 +249,7 @@ values. The instance variables and methods that will be used are</p>
 <span class="n">candu</span><span class="o">.</span><span class="n">temperatures</span> <span class="o">=</span> <span class="p">(</span><span class="mf">293.6</span><span class="p">,</span> <span class="mf">323.6</span><span class="p">,</span> <span class="mf">573.6</span><span class="p">)</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">mat</span> <span class="o">=</span> <span class="mi">4000</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Njoy99/evaluations/database/jendl306.asc&quot;</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">ss</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.76792</span><span class="p">,</span> <span class="mf">1.66156e4</span><span class="p">)</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">potential</span> <span class="o">=</span> <span class="mf">6.5144</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.e10</span><span class="p">,</span> <span class="mf">10000.0</span><span class="p">,</span> <span class="mf">3549.18335</span><span class="p">,</span> <span class="mf">1259.67004</span><span class="p">,</span> <span class="mf">447.079956</span><span class="p">,</span> <span class="mf">158.676849</span><span class="p">,</span> \
@@ -287,10 +270,10 @@ scattering matrices in (NG x NG) format, where NG is number of groups. We
 instead generate only the scattering matrices along the diagonal.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">candu</span><span class="o">.</span><span class="n">hmat</span> <span class="o">=</span> <span class="s2">&quot;Xe135&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">temperatures</span> <span class="o">=</span> <span class="p">(</span><span class="mf">293.6</span><span class="p">,</span> <span class="mf">323.6</span><span class="p">,</span> <span class="mf">573.6</span><span class="p">)</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">legendre</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">mat</span> <span class="o">=</span> <span class="mi">5458</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Njoy99/evaluations/database/jendl310.asc&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">makeFp</span><span class="p">()</span>
@@ -369,8 +352,8 @@ also is to be generated, please refer to Figure 2.</p>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Tripoli4/JEF2/eval/jef2.neutron.H2.bcd&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Tripoli4/JEF2/eval/jef2.neutron.D_D2O.bcd.therm&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">scatteringMat</span> <span class="o">=</span> <span class="mi">11</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">pendf</span><span class="p">()</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">dirName</span> <span class="o">=</span> <span class="s2">&quot;D2O-1&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">tempace</span> <span class="o">=</span> <span class="p">(</span><span class="mf">293.6</span><span class="p">,)</span>
@@ -397,7 +380,7 @@ also is to be generated, please refer to Figure 2.</p>
 <span class="n">candu</span><span class="o">.</span><span class="n">mat</span> <span class="o">=</span> <span class="mi">4000</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">za</span> <span class="o">=</span> <span class="mi">40000</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Njoy99/evaluations/database/jendl306.asc&quot;</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.e10</span><span class="p">,</span> <span class="mf">10000.0</span><span class="p">,</span> <span class="mf">3549.18335</span><span class="p">,</span> <span class="mf">1259.67004</span><span class="p">,</span> <span class="mf">447.079956</span><span class="p">,</span> \
     <span class="mf">158.676849</span><span class="p">,</span> <span class="mf">56.3173141</span><span class="p">,</span> <span class="mf">19.9880447</span><span class="p">,</span> <span class="mf">7.09412289</span><span class="p">,</span> <span class="mf">2.51783395</span><span class="p">)</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">pendf</span><span class="p">()</span>
@@ -423,10 +406,10 @@ also is to be generated, please refer to Figure 2.</p>
 <h3>Xenon-135<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">candu</span><span class="o">.</span><span class="n">hmat</span> <span class="o">=</span> <span class="s2">&quot;Xe135&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">temperatures</span> <span class="o">=</span> <span class="p">(</span> <span class="mf">293.6</span><span class="p">,</span> <span class="mf">323.6</span><span class="p">,</span> <span class="mf">573.6</span><span class="p">,</span> <span class="p">)</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">legendre</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">dilutions</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">mat</span> <span class="o">=</span> <span class="mi">5458</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">za</span> <span class="o">=</span> <span class="mi">54135</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Njoy99/evaluations/database/jendl310.asc&quot;</span>
@@ -455,7 +438,7 @@ also is to be generated, please refer to Figure 2.</p>
 <span class="n">candu</span><span class="o">.</span><span class="n">temperatures</span> <span class="o">=</span> <span class="p">(</span><span class="mf">293.6</span><span class="p">,</span> <span class="mf">323.6</span><span class="p">,</span> <span class="mf">573.6</span><span class="p">)</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">mat</span> <span class="o">=</span> <span class="mi">9228</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">za</span> <span class="o">=</span> <span class="mi">92235</span>
-<span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">candu</span><span class="o">.</span><span class="n">scatteringLaw</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">legendre</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">evaluationFile</span> <span class="o">=</span> <span class="s2">&quot;/home/user/Njoy99/evaluations/database/U-235&quot;</span>
 <span class="n">candu</span><span class="o">.</span><span class="n">fission</span> <span class="o">=</span> <span class="mi">2</span>
@@ -483,6 +466,7 @@ also is to be generated, please refer to Figure 2.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -516,17 +500,15 @@ also is to be generated, please refer to Figure 2.</p>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -560,7 +542,8 @@ also is to be generated, please refer to Figure 2.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">NJOY Automation</a></li> 
       </ul>
     </div>
     </div>
@@ -570,7 +553,7 @@ also is to be generated, please refer to Figure 2.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

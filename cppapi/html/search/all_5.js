@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['e_5fbounds',['e_bounds',['../classpyne_1_1_tally.html#ab5e705bcd3521bc0946ccb026077197c',1,'pyne::Tally']]],
+  ['e_5fints',['e_ints',['../classpyne_1_1_tally.html#ac92555231fcf5dcea1781831ad902e87',1,'pyne::Tally']]],
   ['ec_5fintensity',['ec_intensity',['../structpyne_1_1ecbp.html#a67128407e1bd8eb131b7b2764a6813d8',1,'pyne::ecbp']]],
   ['ecbp',['ecbp',['../structpyne_1_1ecbp.html',1,'pyne::ecbp'],['../namespacepyne.html#a172aa77622d272744ca413d8e1f89735',1,'pyne::ecbp()']]],
   ['ecbp_5fdata',['ecbp_data',['../namespacepyne.html#a43b4b8a8b73a5e966a55e14a270e98bf',1,'pyne']]],
@@ -16,6 +18,9 @@ var searchData=
   ['enrichmentinfinitelooperror',['EnrichmentInfiniteLoopError',['../classpyne_1_1enrichment_1_1_enrichment_infinite_loop_error.html',1,'pyne::enrichment']]],
   ['enrichmentiterationlimit',['EnrichmentIterationLimit',['../classpyne_1_1enrichment_1_1_enrichment_iteration_limit.html',1,'pyne::enrichment']]],
   ['enrichmentiterationnan',['EnrichmentIterationNaN',['../classpyne_1_1enrichment_1_1_enrichment_iteration_na_n.html',1,'pyne::enrichment']]],
+  ['ensure_5fmaterial_5fname_5fand_5fnumber',['ensure_material_name_and_number',['../classpyne_1_1_material_library.html#a6e416ec04f0ba8e61889741ff20deac8',1,'pyne::MaterialLibrary']]],
+  ['ensure_5fmaterial_5fnumber',['ensure_material_number',['../classpyne_1_1_material_library.html#a9fd496f65788d0fb140ebdd59163aa34',1,'pyne::MaterialLibrary']]],
+  ['entity_5fgeometry',['entity_geometry',['../classpyne_1_1_tally.html#a297bfdf2ab5822812c7c1b5c4eb03a2a',1,'pyne::Tally']]],
   ['entity_5fid',['entity_id',['../classpyne_1_1_tally.html#a84aa789b361f4323e2906a411ef3a791',1,'pyne::Tally']]],
   ['entity_5fname',['entity_name',['../classpyne_1_1_tally.html#ac7892546a42be1385f0e805638a124b1',1,'pyne::Tally']]],
   ['entity_5fsize',['entity_size',['../classpyne_1_1_tally.html#a1a19c1b79ed25ea2a3d08b15b30bbea1',1,'pyne::Tally']]],

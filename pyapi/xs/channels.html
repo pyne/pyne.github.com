@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Nuclear Reaction Channels – pyne.xs.channels &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuclear Reaction Channels – pyne.xs.channels &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/jquery.cookie.js"></script>
+    <script src="../../_static/cloud.base.js"></script>
+    <script src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Nuclear Reaction Channels – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.xs.channels</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -71,89 +71,69 @@ sections from the cross section cache and collapse them to the appropriate group
 structure.  Additionally, it provides interfaces for some higher level functionality, 
 such as computing cross sections for materials, fission energy spectra, metastable
 ratios, etc.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.sigma_f">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">sigma_f</code><span class="sig-paren">(</span><em>nuc</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_f" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">sigma_f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the neutron fission cross section for a nuclide.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sigma_f_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The fission cross-section, length G.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sigma_f_g</strong><span class="classifier">ndarray</span></dt><dd><p>The fission cross-section, length G.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This always pulls the fission cross section out of the cache.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.sigma_s_gh">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">sigma_s_gh</code><span class="sig-paren">(</span><em>nuc</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_s_gh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_s_gh" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">sigma_s_gh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_s_gh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_s_gh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the neutron scattering kernel for a nuclide.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sig_s_gh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The scattering kernel, shape GxG.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sig_s_gh</strong><span class="classifier">ndarray</span></dt><dd><p>The scattering kernel, shape GxG.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This function is currently a stub until the proper way to compute the 
+<p class="admonition-title">Warning</p>
+<p>This function is currently a stub until the proper way to compute the 
 scattering kernel is determined.  This function is safe to use but the 
 results are trivial.  This function simply returns an array with the 
 diagonal elements set to sigma_s as computed by pyne.xs.models.sigma_s().
@@ -164,297 +144,231 @@ the h-index.</p>
 <p>This pulls the scattering length out of nuc_data library.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.sigma_s">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">sigma_s</code><span class="sig-paren">(</span><em>nuc</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_s" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">sigma_s</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the neutron scattering cross section for a nuclide.</p>
 <div class="math notranslate nohighlight">
 \[\sigma_{s, g} = \sum_{h} \sigma_{s, g\to h} \]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sig_s_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The scattering cross section, length G.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sig_s_g</strong><span class="classifier">ndarray</span></dt><dd><p>The scattering cross section, length G.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.sigma_a_reaction">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">sigma_a_reaction</code><span class="sig-paren">(</span><em>nuc</em>, <em>rx</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_a_reaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_a_reaction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">sigma_a_reaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">rx</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_a_reaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_a_reaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the neutron absorption reaction cross section for a nuclide.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>rx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Reaction key. (‘gamma’, ‘alpha’, ‘p’, etc.)</p>
+<dt><strong>rx</strong><span class="classifier">str</span></dt><dd><p>Reaction key. (‘gamma’, ‘alpha’, ‘p’, etc.)</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sigma_rx_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The collapsed absorption reaction cross section, length G.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sigma_rx_g</strong><span class="classifier">ndarray</span></dt><dd><p>The collapsed absorption reaction cross section, length G.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES</span></code></dt>
-<dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES_MAP</span></code></dt>
-<dd></dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES</span></code></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES_MAP</span></code></dt><dd></dd>
 </dl>
 </div>
 <p class="rubric">Notes</p>
 <p>This always pulls the absorption reaction cross-section out of the nuc_data.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.metastable_ratio">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">metastable_ratio</code><span class="sig-paren">(</span><em>nuc</em>, <em>rx</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#metastable_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.metastable_ratio" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">metastable_ratio</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">rx</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#metastable_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.metastable_ratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the ratio between a reaction that leaves the nuclide in a 
 metastable state and the equivalent reaction that leaves the nuclide in 
 the ground state.  This allows the calculation of metastable cross sections 
 via sigma_ms = ratio * sigma_ground.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>rx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Reaction key. (‘gamma’, ‘alpha’, ‘p’, etc.)</p>
+<dt><strong>rx</strong><span class="classifier">str</span></dt><dd><p>Reaction key. (‘gamma’, ‘alpha’, ‘p’, etc.)</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>ratio_rx_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">An array of the ratio of the metastable cross section for a reaction 
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ratio_rx_g</strong><span class="classifier">ndarray</span></dt><dd><p>An array of the ratio of the metastable cross section for a reaction 
 to the ground state reaction.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES</span></code></dt>
-<dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES_MAP</span></code></dt>
-<dd></dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES</span></code></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.data_source.RX_TYPES_MAP</span></code></dt><dd></dd>
 </dl>
 </div>
 <p class="rubric">Notes</p>
 <p>This always pulls the absorption reaction cross section out of the cache.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.sigma_a">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">sigma_a</code><span class="sig-paren">(</span><em>nuc</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_a" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">sigma_a</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_a" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the neutron absorption cross section for a nuclide.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sigma_a_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The collapsed absorption cross section, length G.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sigma_a_g</strong><span class="classifier">ndarray</span></dt><dd><p>The collapsed absorption cross section, length G.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This always pulls the absorption cross section out of the cache.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.chi">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">chi</code><span class="sig-paren">(</span><em>nuc</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em>, <em>eres=101</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.chi" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">chi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eres</span><span class="o">=</span><span class="default_value">101</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.chi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the neutron fission energy spectrum for a nuclide.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
-<dt><strong>eres</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">Number of energy-points to integrate over per group.</p>
+<dt><strong>eres</strong><span class="classifier">int, optional</span></dt><dd><p>Number of energy-points to integrate over per group.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>chi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The fission energy spectrum, length G.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>chi_g</strong><span class="classifier">ndarray</span></dt><dd><p>The fission energy spectrum, length G.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="models.html#pyne.xs.models.chi" title="pyne.xs.models.chi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.models.chi</span></code></a></dt>
-<dd>used under the covers by this function.</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="models.html#pyne.xs.models.chi" title="pyne.xs.models.chi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyne.xs.models.chi</span></code></a></dt><dd><p>used under the covers by this function.</p>
+</dd>
 </dl>
 </div>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.xs.channels.sigma_t">
-<code class="descclassname">pyne.xs.channels.</code><code class="descname">sigma_t</code><span class="sig-paren">(</span><em>nuc</em>, <em>temp=300.0</em>, <em>group_struct=None</em>, <em>phi_g=None</em>, <em>xs_cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_t" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.xs.channels.</code><code class="sig-name descname">sigma_t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nuc</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">group_struct</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phi_g</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xs_cache</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/xs/channels.html#sigma_t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.xs.channels.sigma_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the total neutron cross section for a nuclide.</p>
 <div class="math notranslate nohighlight">
 \[\sigma_{t, g} = \sigma_{a, g} + \sigma_{s, g}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, str, Material, or dict-like</span></dt>
-<dd><p class="first last">A nuclide or nuclide-atom fraction mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc</strong><span class="classifier">int, str, Material, or dict-like</span></dt><dd><p>A nuclide or nuclide-atom fraction mapping.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>group_struct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
+<dt><strong>group_struct</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Energy group structure E_g [MeV] from highest-to-lowest energy, length G+1,
 defaults to xs_cache[‘E_g’].</p>
 </dd>
-<dt><strong>phi_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like of floats, optional</span></dt>
-<dd><p class="first last">Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
+<dt><strong>phi_g</strong><span class="classifier">array-like of floats, optional</span></dt><dd><p>Group fluxes [n/cm^2/s] matching group_struct, length G, defaults to 
 xs_cache[‘phi_g’].</p>
 </dd>
-<dt><strong>xs_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">XSCache, optional</span></dt>
-<dd><p class="first last">Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
+<dt><strong>xs_cache</strong><span class="classifier">XSCache, optional</span></dt><dd><p>Cross section cache to use, defaults to pyne.xs.cache.xs_cache.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sig_t_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
-<dd><p class="first last">The total cross section, length G.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sig_t_g</strong><span class="classifier">ndarray</span></dt><dd><p>The total cross section, length G.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -464,17 +378,15 @@ xs_cache[‘phi_g’].</p>
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -508,7 +420,8 @@ xs_cache[‘phi_g’].</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Nuclear Reaction Channels – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.xs.channels</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -518,7 +431,7 @@ xs_cache[‘phi_g’].</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

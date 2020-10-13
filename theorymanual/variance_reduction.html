@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Variance Reduction &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Variance Reduction &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Variance Reduction</a></li> 
       </ul>
     </div>
     </div>
@@ -66,14 +66,11 @@ if(ga_enabled){
             
   <div class="section" id="variance-reduction">
 <span id="id1"></span><h1>Variance Reduction<a class="headerlink" href="#variance-reduction" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Elliott Biondo, Kalin Kiesling</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Elliott Biondo, Kalin Kiesling</p>
+</dd>
+</dl>
 <div class="section" id="cadis-method">
 <h2>CADIS Method<a class="headerlink" href="#cadis-method" title="Permalink to this headline">¶</a></h2>
 <p>The Consistent Adjoint-Driven Importance Sampling (CADIS) method [1] is a Monte
@@ -144,28 +141,28 @@ source densities that are tagged to the output mesh are:</p>
 <p>In this section the expected results for the the test_variancereduction.py unit
 test “test_cadis_multiple_e” are calculated. Consider a 2D mesh with the
 following properties.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.6, 2.5]\)</span></p>
+<tbody>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(q' = [2.6, 2.5]\)</span></p>
 <p><span class="math notranslate nohighlight">\(\Phi = [1.3, 1.4]\)</span></p>
-<p class="last"><span class="math notranslate nohighlight">\(V = 2\)</span></p>
+<p><span class="math notranslate nohighlight">\(V = 2\)</span></p>
 </td>
-<td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.9, 0]\)</span></p>
+<td><p><span class="math notranslate nohighlight">\(q' = [2.9, 0]\)</span></p>
 <p><span class="math notranslate nohighlight">\(\Phi = [1.7, 1.9]\)</span></p>
-<p class="last"><span class="math notranslate nohighlight">\(V = 2\)</span></p>
+<p><span class="math notranslate nohighlight">\(V = 2\)</span></p>
 </td>
 </tr>
-<tr class="row-even"><td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.9, 2.8]\)</span></p>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(q' = [2.9, 2.8]\)</span></p>
 <p><span class="math notranslate nohighlight">\(\Phi = [1.1, 1.2]\)</span></p>
-<p class="last"><span class="math notranslate nohighlight">\(V = 8\)</span></p>
+<p><span class="math notranslate nohighlight">\(V = 8\)</span></p>
 </td>
-<td><p class="first"><span class="math notranslate nohighlight">\(q' = [2.4, 2.2]\)</span></p>
+<td><p><span class="math notranslate nohighlight">\(q' = [2.4, 2.2]\)</span></p>
 <p><span class="math notranslate nohighlight">\(\Phi = [0, 1.6]\)</span></p>
-<p class="last"><span class="math notranslate nohighlight">\(V = 8\)</span></p>
+<p><span class="math notranslate nohighlight">\(V = 8\)</span></p>
 </td>
 </tr>
 </tbody>
@@ -214,19 +211,19 @@ the initial particle distribution will be poor in some highly attenuated regions
 but upon iteration of the MAGIC method, the solution will improve. Below are the
 steps for the MAGIC method. [2]</p>
 <ol class="arabic simple">
-<li>Run MCNP, in analogue mode, to set up a flux meshtally. Multigroup cross
+<li><p>Run MCNP, in analogue mode, to set up a flux meshtally. Multigroup cross
 section data and a high energy cut-off, corresponding to a mean-free path no
-greater than the mesh voxel size, should be used.</li>
-<li>Process the resulting meshtally data by normalizing the flux to have a value
+greater than the mesh voxel size, should be used.</p></li>
+<li><p>Process the resulting meshtally data by normalizing the flux to have a value
 of 0.5 in the source (or highest) region. Use the normalized flux to create
-a new weight window file to be used for MCNP.</li>
-<li>Modify the original MCNP input to use the generated weight window file and
-run again.</li>
-<li>If results are are sufficient, no further iterations are necessary. Else,
-repeat starting from step 2 until desired flux results are obtained.</li>
-<li>If a high energy cut-off was used, reduce the cut-off energy and repeat
+a new weight window file to be used for MCNP.</p></li>
+<li><p>Modify the original MCNP input to use the generated weight window file and
+run again.</p></li>
+<li><p>If results are are sufficient, no further iterations are necessary. Else,
+repeat starting from step 2 until desired flux results are obtained.</p></li>
+<li><p>If a high energy cut-off was used, reduce the cut-off energy and repeat
 iterations until the particle distribution is acceptable. The final iteration
-should be performed with the appropriate energy cut-off and cross section data.</li>
+should be performed with the appropriate energy cut-off and cross section data.</p></li>
 </ol>
 <div class="section" id="id2">
 <h3>PyNE implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
@@ -237,21 +234,21 @@ null value <span class="math notranslate nohighlight">\(\phi_o\)</span>, the flu
 then be used to generate a wwinp file to be used in a subsequent iteration. The
 steps are as follows:</p>
 <ol class="arabic simple">
-<li>Read meshtally and determine maximum flux <span class="math notranslate nohighlight">\(\phi_m^k\)</span> for each enery bin <span class="math notranslate nohighlight">\(k\)</span>.</li>
-<li>Normalize flux <span class="math notranslate nohighlight">\(\phi_i^k\)</span> in every mesh voxel <span class="math notranslate nohighlight">\(i\)</span> for each energy
+<li><p>Read meshtally and determine maximum flux <span class="math notranslate nohighlight">\(\phi_m^k\)</span> for each enery bin <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
+<li><p>Normalize flux <span class="math notranslate nohighlight">\(\phi_i^k\)</span> in every mesh voxel <span class="math notranslate nohighlight">\(i\)</span> for each energy
 bin <span class="math notranslate nohighlight">\(k\)</span> according to <span class="math notranslate nohighlight">\(\phi_m^k\)</span> to obtain a new <span class="math notranslate nohighlight">\(\phi_i^{'k}\)</span>.
 If the relative error <span class="math notranslate nohighlight">\(e_i^k\)</span>
 for voxel <span class="math notranslate nohighlight">\(i\)</span> in energy bin <span class="math notranslate nohighlight">\(k\)</span> is larger than the tolerance
 value <span class="math notranslate nohighlight">\(t\)</span>, then set flux <span class="math notranslate nohighlight">\(\phi_i^{'k}\)</span> to the null value <span class="math notranslate nohighlight">\(\phi_o\)</span>
-instead.</li>
+instead.</p></li>
 </ol>
 <blockquote>
 <div><div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}\text{If } e_i^k &lt; t \text{ then, } \phi_i^{'k} = \frac{\phi_i^{k}}{2 \, \phi_m^k}\\\text{If } e_i^k &gt; t \text{ then, } \phi_i^{'k} = \phi_o\end{aligned}\end{align} \]</div>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li>Use new flux values to create a weight window tag on the provide meshtally
-and use PyNE’s Wwinp class to create a weight window mesh.</li>
+<li><p>Use new flux values to create a weight window tag on the provide meshtally
+and use PyNE’s Wwinp class to create a weight window mesh.</p></li>
 </ol>
 </div>
 <div class="section" id="id3">
@@ -260,33 +257,33 @@ and use PyNE’s Wwinp class to create a weight window mesh.</li>
 “test_magic_multi_bins” are shown. In this test, a 3D 2x2 mesh is given. Each
 voxel contains flux data corresponding to 2 energy bins. The mesh is described by
 the following flux and relative error data.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="27%" />
-<col width="23%" />
-<col width="27%" />
-<col width="24%" />
+<col style="width: 27%" />
+<col style="width: 23%" />
+<col style="width: 27%" />
+<col style="width: 24%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_1^{1} = 1.2\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_1^1 = 0.11\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_1^{2} = 3.3\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_1^2 = 0.013\)</span></td>
+<tbody>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\phi_1^{1} = 1.2\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_1^1 = 0.11\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_1^{2} = 3.3\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_1^2 = 0.013\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_2^{1} = 1.6\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_2^1 = 0.14\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_2^{2} = 1.7\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_2^2 = 0.19\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\phi_2^{1} = 1.6\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_2^1 = 0.14\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_2^{2} = 1.7\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_2^2 = 0.19\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_3^{1} = 1.5\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_3^1 = 0.02\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_3^{2} = 1.4\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_3^2 = 0.16\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\phi_3^{1} = 1.5\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_3^1 = 0.02\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_3^{2} = 1.4\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_3^2 = 0.16\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_4^{1} = 2.6\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_4^1 = 0.04\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_4^{2} = 1.0\)</span></td>
-<td><span class="math notranslate nohighlight">\(e_4^2 = 0.09\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\phi_4^{1} = 2.6\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_4^1 = 0.04\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_4^{2} = 1.0\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(e_4^2 = 0.09\)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -299,23 +296,23 @@ null value set to <span class="math notranslate nohighlight">\(\phi_o = 0.001\)<
 2 and 3 in the second energy bin have errors larger than the tolerance and are
 therefore set to the null value while everything else is normalized. The following
 is the result.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_1^{'1} = \frac{\phi_1^1}{2 \, \phi_m^1} = \frac{1.2}{2*2.6} = 0.23077\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_1^{'2} = \frac{\phi_1^2}{2 \, \phi_m^2} = \frac{3.3}{2*3.3} = 0.5\)</span></td>
+<tbody>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\phi_1^{'1} = \frac{\phi_1^1}{2 \, \phi_m^1} = \frac{1.2}{2*2.6} = 0.23077\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_1^{'2} = \frac{\phi_1^2}{2 \, \phi_m^2} = \frac{3.3}{2*3.3} = 0.5\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_2^{'1} = \frac{\phi_2^1}{2 \, \phi_m^1} = \frac{1.6}{2*2.6} = 0.30769\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_2^{'2} = \phi_o = 0.001\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\phi_2^{'1} = \frac{\phi_2^1}{2 \, \phi_m^1} = \frac{1.6}{2*2.6} = 0.30769\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_2^{'2} = \phi_o = 0.001\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi_3^{'1} = \frac{\phi_3^1}{2 \, \phi_m^1} = \frac{1.5}{2*2.6} = 0.28846\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_3^{'2} = \phi_o = 0.001\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\phi_3^{'1} = \frac{\phi_3^1}{2 \, \phi_m^1} = \frac{1.5}{2*2.6} = 0.28846\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_3^{'2} = \phi_o = 0.001\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi_4^{'1} = \frac{\phi_4^1}{2 \, \phi_m^1} = \frac{2.6}{2*2.6} = 0.5\)</span></td>
-<td><span class="math notranslate nohighlight">\(\phi_4^{'2} = \frac{\phi_4^2}{2 \, \phi_m^2} = \frac{1.0}{2*3.3} = 0.12122\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\phi_4^{'1} = \frac{\phi_4^1}{2 \, \phi_m^1} = \frac{2.6}{2*2.6} = 0.5\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_4^{'2} = \frac{\phi_4^2}{2 \, \phi_m^2} = \frac{1.0}{2*3.3} = 0.12122\)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -324,18 +321,19 @@ is the result.</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>[1] Haghighat, A. and Wagner, J. C., “Monte Carlo Variance Reduction with</dt>
-<dd>Deterministic Importance Functions,” Progress in Nuclear Energy, Vol. 42,
-No. 1, pp. 25-53, 2003.</dd>
-<dt>[2] Davis, A. and Turner, A., “Comparison of global variance reduction</dt>
-<dd>techniques for Monte Carlo radiation transport simulations of ITER,” Fusion
-Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
+<dl class="simple">
+<dt>[1] Haghighat, A. and Wagner, J. C., “Monte Carlo Variance Reduction with</dt><dd><p>Deterministic Importance Functions,” Progress in Nuclear Energy, Vol. 42,
+No. 1, pp. 25-53, 2003.</p>
+</dd>
+<dt>[2] Davis, A. and Turner, A., “Comparison of global variance reduction</dt><dd><p>techniques for Monte Carlo radiation transport simulations of ITER,” Fusion
+Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</p>
+</dd>
 </dl>
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -365,17 +363,15 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -409,7 +405,8 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Variance Reduction</a></li> 
       </ul>
     </div>
     </div>
@@ -419,7 +416,7 @@ Engineering and Design, Vol. 86, Issues 9-11, pp. 2698-2700, 2011.</dd>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

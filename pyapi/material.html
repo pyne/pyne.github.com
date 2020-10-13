@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Materials – pyne.material &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Materials – pyne.material &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Materials – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -69,31 +69,82 @@ if(ga_enabled){
 <p>This module contains the Material class, which is used to represent nuclear
 materials throughout PyNE.</p>
 <p>All functionality may be found in the <code class="docutils literal notranslate"><span class="pre">material</span></code> package:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">material</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">material</span>
 </pre></div>
 </div>
-<p>Materials are the primary container for radionuclides. They map nuclides to <strong>mass weights</strong>,
-though they contain methods for converting to/from atom fractions as well.
-In many ways they take inspiration from numpy arrays and python dictionaries.  Materials
-have two main attributes which define them.</p>
+<p>Materials are the primary container for mixtures of radionuclides. They map
+nuclides to <strong>mass fractions</strong>, though they contain methods for converting
+to/from atom fractions as well.  In many ways they take inspiration from numpy
+arrays and python dictionaries.  Materials have two main attributes which define
+them.</p>
 <ol class="arabic simple">
-<li><strong>comp</strong>: a normalized composition mapping from nuclides (zzaaam-ints) to mass-weights (floats).</li>
-<li><strong>mass</strong>: the mass of the material.</li>
+<li><p><strong>comp</strong>: a normalized composition mapping from nuclides (zzaaam-ints) to
+mass-fractions (floats).</p></li>
+<li><p><strong>mass</strong>: the mass of the material.</p></li>
 </ol>
-<p>The material class is presented below.  For more information please refer to <a class="reference internal" href="../usersguide/material.html#usersguide-material"><span class="std std-ref">Materials</span></a>.</p>
+<p>The <a class="reference internal" href="material_library.html#pyne-material-library"><span class="std std-ref">Material Libraries – pyne.material_library</span></a> class is available to efficiently manipulate
+collections of materials.  The material class is presented below.  For more
+information please refer to <a class="reference internal" href="../usersguide/material.html#usersguide-material"><span class="std std-ref">Materials</span></a>.</p>
+<div class="section" id="hdf5-file-structure">
+<h2>HDF5 File Structure<a class="headerlink" href="#hdf5-file-structure" title="Permalink to this headline">¶</a></h2>
+<p>When using the <cite>write_hdf5</cite> method to write a material in a group named
+<cite>my_mat</cite> (the user shall provide the name for this group in argument <cite>datapath</cite>),
+the default structure for the <cite>HDF5</cite> file is:
+.. verbatim:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">material</span><span class="o">/</span>
+<span class="o">/--------/</span><span class="n">my_mat</span><span class="o">/</span>
+         <span class="o">/------/</span><span class="n">composition</span>
+         <span class="o">/------/</span><span class="n">nuclidelist</span>
+         <span class="o">/------/</span><span class="n">composition_metadata</span>
+</pre></div>
+</div>
+<p>Where, <cite>/material</cite> and <cite>/material/my_mat</cite> are HDF5 groups, and
+<cite>composition</cite>, <cite>nuclidelist</cite> and <cite>composition_metadata</cite> are HDF5 datasets.</p>
+<p>The <a class="reference internal" href="material_library.html#pyne-material-library"><span class="std std-ref">Material Libraries – pyne.material_library</span></a> class is available to efficiently manipulate
+collections of materials.</p>
+</div>
+<div class="section" id="previous-hdf5-file-structure">
+<h2>Previous HDF5 File Structure<a class="headerlink" href="#previous-hdf5-file-structure" title="Permalink to this headline">¶</a></h2>
+<p>In files created with previous versions, it’s possible that
+the <cite>datapath</cite> or <cite>/material</cite> already exist as a dataset in the file.
+In such cases, the old writing method will be used.
+Older data structure are deprecated but still available to written when providing a</p>
+<blockquote>
+<div><p><cite>nucpath</cite> to the</p>
+</div></blockquote>
+<p><cite>write_hdf5()</cite> method, or when writing a material in a file with the old
+data structure.
+Old data structure looks like:
+.. verbatim:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">my_mat</span><span class="o">/</span>
+<span class="o">/------/</span><span class="n">nucpath</span>
+<span class="o">/</span><span class="n">my_mat_metadata</span>
+<span class="o">/</span><span class="n">nuclidelist</span>
+</pre></div>
+</div>
+<p><cite>my_mat</cite> (the <cite>datapath</cite> – default <cite>material</cite>) is a HDF5 dataset containing the
+material composition, <cite>nucpath</cite> is a attribute containing the path to the
+nuclide list. The attribute is attached to the <cite>datapath</cite>.
+<cite>my_mat_metadata</cite> is a dataset containing the metadata of the material.
+<cite>nuclidelist</cite> is a dataset containing the list of nuclides composition the
+material.</p>
+<p><cite>from_hdf5()</cite> will detect the structure (old or new) of the file (when using
+<cite>protocol1</cite>).</p>
+<div class="section" id="the-material-class-is-presented-below">
+<h3>The material class is presented below.<a class="headerlink" href="#the-material-class-is-presented-below" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="for-more-information-please-refer-to-ref-usersguide-material">
+<h3><em>For more information please refer to :ref:`usersguide_material`.</em><a class="headerlink" href="#for-more-information-please-refer-to-ref-usersguide-material" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="material-class">
-<h2>Material Class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<h4>Material Class<a class="headerlink" href="#material-class" title="Permalink to this headline">¶</a></h4>
+<dl class="py class">
 <dt id="pyne.material.Material">
-<em class="property">class </em><code class="descclassname">pyne.material.</code><code class="descname">Material</code><a class="headerlink" href="#pyne.material.Material" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.material.</code><code class="sig-name descname">Material</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">comp</span></em>, <em class="sig-param"><span class="n">mass</span><span class="o">=</span><span class="default_value">- 1.0</span></em>, <em class="sig-param"><span class="n">atoms_per_mol</span><span class="o">=</span><span class="default_value">- 1.0</span></em>, <em class="sig-param"><span class="n">attrs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Material composed of nuclides.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>comp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict or str</span></dt>
-<dd><p class="first last">This is the input nuclide component dictionary.  This dictionary need
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>comp</strong><span class="classifier">dict or str</span></dt><dd><p>This is the input nuclide component dictionary.  This dictionary need
 not be normalized; Material initialization will automatically
 renormalize the stream.  Thus the comp simply is a dictionary of
 relative mass.  The keys of comp must be integers representing
@@ -103,393 +154,345 @@ Material will read in the comp vector from a file at the string’s
 location.  This either plaintext or hdf5 files. If no comp is provided,
 an empty Material object is constructed.</p>
 </dd>
-<dt><strong>mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">This is the mass of the new stream. If the mass provided is negative
+<dt><strong>mass</strong><span class="classifier">float, optional</span></dt><dd><p>This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
 sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
 </dd>
-<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">This is the density of the material.</p>
+<dt><strong>density</strong><span class="classifier">float, optional</span></dt><dd><p>This is the density of the material.</p>
 </dd>
-<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Number of atoms to per molecule of material.  Needed to obtain proper
+<dt><strong>atoms_per_molecule</strong><span class="classifier">float, optional</span></dt><dd><p>Number of atoms to per molecule of material.  Needed to obtain proper
 scaling of molecular mass.  For example, this value for water is
 3.0.</p>
 </dd>
-<dt><strong>metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">JSON-convertable Python object, optional</span></dt>
-<dd><p class="first last">Initial attributes to build the material with.  At the top-level this is
+<dt><strong>metadata</strong><span class="classifier">JSON-convertable Python object, optional</span></dt><dd><p>Initial attributes to build the material with.  At the top-level this is
 usually a dictionary with string keys.  This container is used to store
 arbitrary metadata about the material.</p>
 </dd>
-<dt><strong>free_mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Flag for whether this wrapper ‘owns’ this underlying C++ pyne::Material
+<dt><strong>free_mat</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag for whether this wrapper ‘owns’ this underlying C++ pyne::Material
 object, and thus determines whether or not to deallocate it on wrapper
 destruction.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="pyne.material.Material.activity">
-<code class="descname">activity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.activity" title="Permalink to this definition">¶</a></dt>
-<dd><p>This provides the activity of the comp of the material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">For a Material mat</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt id="pyne.material.Material.activity">
+<code class="sig-name descname">activity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.activity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>This provides the activity of the comp of the material. It assumes</dt><dd><p>that the mass of the material is given in units of [grams] and returns
+activities in units of [Bq].</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nucvec</strong><span class="classifier">dict</span></dt><dd><p>For a Material mat</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.alara">
-<code class="descname">alara</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.alara" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">alara</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.alara" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method returns an ALARA material in string form, with relevant
 attributes as ALARA valid comments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>s</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">The MCNP material card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>s</strong><span class="classifier">str</span></dt><dd><p>The MCNP material card.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.clear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.collapse_elements">
-<code class="descname">collapse_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.collapse_elements" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">collapse_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.collapse_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Collapses the elements in the material, excluding the nucids in
 the set nucset. This function returns a copy of the material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nucset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set, optional</span></dt>
-<dd><p class="first last">A set of integers representing nucids which should not
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nucset</strong><span class="classifier">set, optional</span></dt><dd><p>A set of integers representing nucids which should not
 be collapsed.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>newmat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A copied and collapsed material.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>newmat</strong><span class="classifier">Material</span></dt><dd><p>A copied and collapsed material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.cram">
-<code class="descname">cram</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.cram" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cram</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.cram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transmutes the material via the CRAM method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array-like</span></dt>
-<dd><p class="first last">The transmutation matrix [unitless]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">1D array-like</span></dt><dd><p>The transmutation matrix [unitless]</p>
 </dd>
-<dt><strong>order</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">The CRAM approximation order (default 14).</p>
+<dt><strong>order</strong><span class="classifier">int, optional</span></dt><dd><p>The CRAM approximation order (default 14).</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt>A new material which has been transmuted.</dt>
-<dd></dd>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>A new material which has been transmuted.</dt><dd></dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.decay">
-<code class="descname">decay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.decay" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">decay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.decay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decays a material for a time t, in seconds. Returns a new material.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.decay_heat">
-<code class="descname">decay_heat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.decay_heat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">decay_heat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.decay_heat" title="Permalink to this definition">¶</a></dt>
 <dd><p>This provides the decay heat using the comp of the the Material. It
 assumes that the composition of material is given in units of [grams]
 and returns decay heat in units of [MW].</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">For a Material mat</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nucvec</strong><span class="classifier">dict</span></dt><dd><p>For a Material mat</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.del_mat">
-<code class="descname">del_mat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.del_mat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">del_mat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.del_mat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a subset of the material and returns a new material
 comprised of only the non-specified nuclides.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc_sequence</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
-<dd><p class="first last">Nuclides to be taken out of the current material.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc_sequence</strong><span class="classifier">sequence</span></dt><dd><p>Nuclides to be taken out of the current material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new material object that only has the members not given in
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new material object that only has the members not given in
 nuc_sequence.  The mass of the submaterial is calculated based on
 the mass fraction composition and mass of the original material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>The input here is seen as a suggestion and so no error is raised if a
 nuclide is asked for via nuc_sequence that is not present in the
 original material.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.del_range">
-<code class="descname">del_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.del_range" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">del_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.del_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a range [lower, upper) of nuclides from this material and
 returns a submaterial.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
-<dd><p class="first last">Lower bound on nuclide range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>lower</strong><span class="classifier">nuclide-name, optional</span></dt><dd><p>Lower bound on nuclide range.</p>
 </dd>
-<dt><strong>upper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
-<dd><p class="first last">Upper bound on nuclide range.</p>
+<dt><strong>upper</strong><span class="classifier">nuclide-name, optional</span></dt><dd><p>Upper bound on nuclide range.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that does not contain nuclides on the
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that does not contain nuclides on the
 given range.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.dose_per_g">
-<code class="descname">dose_per_g</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.dose_per_g" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dose_per_g</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.dose_per_g" title="Permalink to this definition">¶</a></dt>
 <dd><p>This provides the dose per gram using the comp of the the Material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dose_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">One of: ext_air, ext_soil, ingest, inhale</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dose_type</strong><span class="classifier">string</span></dt><dd><p>One of: ext_air, ext_soil, ingest, inhale</p>
 </dd>
-<dt><strong>source</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">optional; default is EPA
+<dt><strong>source</strong><span class="classifier">int</span></dt><dd><p>optional; default is EPA
 0 for EPA, 1 for DOE, 2 for GENII</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">For a Material mat:
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>nucvec</strong><span class="classifier">dict</span></dt><dd><p>For a Material mat:
 ext_air_dose returns mrem/h per g per m^3
 ext_soil_dose returns mrem/h per g per m^2
 ingest_dose returns mrem per g
 inhale_dose returns mrem per g</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.Material.dump_json">
-<code class="descname">dump_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.dump_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dumps the material to a JSON object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>val</strong> <span class="classifier-delimiter">:</span> <span class="classifier">jsoncpp.Value</span></dt>
-<dd><p class="first last">An object-type JSON value.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pyne.material.Material.dump_json">
+<code class="sig-name descname">dump_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.dump_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the material to a JSON object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">jsoncpp.Value</span></dt><dd><p>An object-type JSON value.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pyne.material.Material.expand_elements">
-<code class="descname">expand_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.expand_elements" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">expand_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.expand_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expands the elements (‘U’, ‘C’, etc) in the material by
 replacing them with their natural isotopic distributions with
 the exception of the ids in nucset. This function returns a
 copy.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nucset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set, optional</span></dt>
-<dd><p class="first last">A set of integers representing nucids which should not
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nucset</strong><span class="classifier">set, optional</span></dt><dd><p>A set of integers representing nucids which should not
 be expanded.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>newmat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A copied and expanded material.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>newmat</strong><span class="classifier">Material</span></dt><dd><p>A copied and expanded material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.fluka">
-<code class="descname">fluka</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fluka</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a fluka material record if there is only one component,
 otherwise return the compound material record and the fluka
 compound record
 Parameters
-———-</p>
-<blockquote>
-<div>The sequential material id starting from 26 unless predefined</div></blockquote>
+———-
+The sequential material id starting from 26 unless predefined</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.fluka_compound_str">
-<code class="descname">fluka_compound_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_compound_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fluka_compound_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_compound_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the FLUKA MATERIAL record for the compound, and the
-FLUKA COMPOUND record for the components
-Parameters
-———-</p>
+FLUKA COMPOUND record for the components</p>
 <blockquote>
-<div>The sequential compound id starting from 26 unless predefined</div></blockquote>
+<div><p>The sequential compound id starting from 26 unless predefined</p>
+</div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.fluka_format_field">
-<code class="descname">fluka_format_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_format_field" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fluka_format_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_format_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string for a single field in the FLUKA MATERIAL record
 Parameters
-———-</p>
-<blockquote>
-<div>The field value</div></blockquote>
+———-
+The field value</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.fluka_material_component">
-<code class="descname">fluka_material_component</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fluka_material_component</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_component" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the FLUKA MATERIAL record with the given id, nucid and name.
 Parameters
-———-</p>
-<blockquote>
-<div>The sequential material id, the (single) nucid, and the fluka name</div></blockquote>
+———-
+The sequential material id, the (single) nucid, and the fluka name</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.fluka_material_line">
-<code class="descname">fluka_material_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fluka_material_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the FLUKA MATERIAL record with the given znum, atomic mass, id,
 and fluka name
 Parameters
-———-</p>
-<blockquote>
-<div>The znum, atomic mass, material id, and the fluka name</div></blockquote>
+———-
+The znum, atomic mass, material id, and the fluka name</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.fluka_material_str">
-<code class="descname">fluka_material_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fluka_material_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.fluka_material_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the FLUKA MATERIAL record with the given id.
 A single-component material is expected
 Parameters
-———-</p>
-<blockquote>
-<div>The sequential material id starting from 26 unless predefined</div></blockquote>
+———-
+The sequential material id starting from 26 unless predefined</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pyne.material.Material.from_activity">
+<code class="sig-name descname">from_activity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the material composition based on a mapping of radionuclide
+activities. It assumes that activities are supplied in units of [Bq]
+and sets the material mass to units of [grams].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>activities</strong><span class="classifier">dict</span></dt><dd><p>Dictionary that maps radionuclides to activities for the material.
+The keys may be intergers or strings. The values must be castable
+to floats.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>To get a material of natural uranium, based on activities:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">natu</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;U234&#39;</span><span class="p">:</span> <span class="mf">12223.2</span><span class="p">,</span> <span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">568.648</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">12347.1</span><span class="p">}</span>
+<span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+<span class="n">mat</span><span class="o">.</span><span class="n">from_activity</span><span class="p">(</span><span class="n">natu</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pyne.material.Material.from_atom_frac">
-<code class="descname">from_atom_frac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_atom_frac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_atom_frac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_atom_frac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the material composition based on a mapping of atom fractions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>atom_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Dictionary that maps nuclides or materials to atom fractions for
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>atom_fracs</strong><span class="classifier">dict</span></dt><dd><p>Dictionary that maps nuclides or materials to atom fractions for
 the material.  The keys may be intergers, strings, or materials.
 The values must be castable to floats.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>To get a material from water, based on atom fractions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10010</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;O16&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
@@ -512,37 +515,29 @@ The values must be castable to floats.</p>
 This is possible because Materials are hashable.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.from_hdf5">
-<code class="descname">from_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_hdf5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a Material object from an HDF5 file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to HDF5 file that contains the data to read in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to HDF5 file that contains the data to read in.</p>
 </dd>
-<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to HDF5 table or group that represents the data.
-In the example below, datapath = “/material”.</p>
+<dt><strong>datapath</strong><span class="classifier">str</span></dt><dd><p>Path to HDF5 table or group that represents the data.
+In the example below, datapath = “/mat_name”.</p>
 </dd>
-<dt><strong>row</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">The index of the arrays from which to read the data.  This
+<dt><strong>row</strong><span class="classifier">int, optional</span></dt><dd><p>The index of the arrays from which to read the data.  This
 ranges from 0 to N-1.  Defaults to the last element of the array.
 Negative indexing is allowed (row[-N] = row[0]).</p>
 </dd>
-<dt><strong>protocol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">Specifies the protocol to use to read in the data.  Different
+<dt><strong>protocol</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the protocol to use to read in the data.  Different
 protocols are used to represent different internal structures in
 the HDF5 file.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>There are currently two protocols which are implemented for how to
 store materials inside of an HDF5 file.  Protocol 0 is the older,
@@ -593,42 +588,32 @@ Initialization is therefore a two-step process:</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.from_json">
-<code class="descname">from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a Material object from a JSON file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to text file that contains the data to read in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file that contains the data to read in.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.from_text">
-<code class="descname">from_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.from_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a Material object from a simple text file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to text file that contains the data to read in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file that contains the data to read in.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>The text representation of Materials are nuclide identifiers in the
 first column and mass or weight values in the second column.  For
@@ -659,683 +644,566 @@ Initialization is therefore a two-step process:</p>
 <p>This method is most often called implicitly by the Material constructor.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.gammas">
-<code class="descname">gammas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.gammas" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">gammas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.gammas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a vector of gamma rays and intensities in decays/s/atom material</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>gammas</strong> <span class="classifier-delimiter">:</span> <span class="classifier">a vector of pairs of gamma-rays and intensities. The</span></dt>
-<dd><p class="first last">intensities are in decays/s/atom material</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>gammas</strong><span class="classifier">a vector of pairs of gamma-rays and intensities. The</span></dt><dd><p>intensities are in decays/s/atom material</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>self</em>, <em>key</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="pyne.material.Material.items">
-<code class="descname">items</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.items" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.Material.iteritems">
-<code class="descname">iteritems</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.iteritems" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.Material.iterkeys">
-<code class="descname">iterkeys</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.iterkeys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.Material.itervalues">
-<code class="descname">itervalues</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.itervalues" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.Material.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.Material.load_json">
-<code class="descname">load_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.load_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a JSON instance into this Material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>json</strong> <span class="classifier-delimiter">:</span> <span class="classifier">jsoncpp.Value</span></dt>
-<dd><p class="first last">An object-type JSON value.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt id="pyne.material.Material.get_uwuw_name">
+<code class="sig-name descname">get_uwuw_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.get_uwuw_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a uwuw material name</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pyne.material.Material.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material.Material.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyne.material.Material.load_json">
+<code class="sig-name descname">load_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.load_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a JSON instance into this Material.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>json</strong><span class="classifier">jsoncpp.Value</span></dt><dd><p>An object-type JSON value.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pyne.material.Material.mass_density">
-<code class="descname">mass_density</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mass_density" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mass_density</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mass_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes, sets, and returns the mass density when num_dens is greater
 than or equal zero.  If num_dens is negative, this simply returns the
 current value of the density attribute.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>num_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">The number density from which to compute the mass density in units
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_dens</strong><span class="classifier">float, optional</span></dt><dd><p>The number density from which to compute the mass density in units
 of [1/cc].</p>
 </dd>
-<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Number of atoms to per molecule of material. For example, this value
+<dt><strong>atoms_per_molecule</strong><span class="classifier">float, optional</span></dt><dd><p>Number of atoms to per molecule of material. For example, this value
 for water is 3.0.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">The density attr [g/cc].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>density</strong><span class="classifier">float</span></dt><dd><p>The density attr [g/cc].</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.mcnp">
-<code class="descname">mcnp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mcnp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mcnp</code><span class="sig-paren">(</span><em class="sig-param">frac_type='mass'</em>, <em class="sig-param">mult_den=True) Return an mcnp card Parameters ---------- frac_type : str</em>, <em class="sig-param">optional Either 'mass' or 'atom'. Speficies whether mass or atom fractions are used to describe material composition. (default 'mass') mult_den : bool</em>, <em class="sig-param">optional Flag for whether material cards are written in mass density if True</em>, <em class="sig-param">or mass fraction if False. (default True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mcnp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an mcnp card
 Parameters
-———-</p>
+———-
+frac_type : str, optional</p>
 <blockquote>
-<div>int 0 means use “mass” as the frac_type</div></blockquote>
+<div><p>Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
+are used to describe material composition. (default ‘mass’)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>mult_den<span class="classifier">bool, optional</span></dt><dd><p>Flag for whether material cards are written in mass density if True,
+or mass fraction if False. (default True)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.molecular_mass">
-<code class="descname">molecular_mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.molecular_mass" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">molecular_mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.molecular_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method returns the molecular mass of the comp of this
 material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">double, optional</span></dt>
-<dd><p class="first last">Number of atoms to per molecule of material.  Needed to obtain
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>atoms_per_molecule</strong><span class="classifier">double, optional</span></dt><dd><p>Number of atoms to per molecule of material.  Needed to obtain
 proper scaling.  For example, this value for water is 3.0.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mol_mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Molecular mass in [amu].</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mol_mass</strong><span class="classifier">float</span></dt><dd><p>Molecular mass in [amu].</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.mult_by_mass">
-<code class="descname">mult_by_mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mult_by_mass" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mult_by_mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.mult_by_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>This multiplies comp by mass and returns the resultant
 nuctopic vector.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>nucvec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first">For a Material mat,</p>
-<div class="last math notranslate nohighlight">
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl>
+<dt><strong>nucvec</strong><span class="classifier">dict</span></dt><dd><p>For a Material mat,</p>
+<div class="math notranslate nohighlight">
 \[\mbox{nucvec[nuc]} = \mbox{mat.comp[nuc]} \times \mbox{mat.mass}\]</div>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.norm_comp">
-<code class="descname">norm_comp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.norm_comp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">norm_comp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.norm_comp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalizes the composition, preserving the mass of the nuclide
 vector as mass.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.normalize">
-<code class="descname">normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.normalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>This convenience method normalizes the mass stream by setting its
 mass = 1.0.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.not_fluka_builtin">
-<code class="descname">not_fluka_builtin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.not_fluka_builtin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">not_fluka_builtin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.not_fluka_builtin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether a string is in the fluka built-in list
 Parameters
-———-</p>
-<blockquote>
-<div>A string representing a FLUKA material name</div></blockquote>
+———-
+A string representing a FLUKA material name</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.number_density">
-<code class="descname">number_density</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.number_density" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">number_density</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.number_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes and returns the number density from the mass_dens argument if this
 is greater than or equal zero.  If mass_dens is negative, then the number
 density is computed using the current value of the density attribute.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>mass_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">The mass density from which to compute the number density in units
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mass_dens</strong><span class="classifier">float, optional</span></dt><dd><p>The mass density from which to compute the number density in units
 of [g/cc].</p>
 </dd>
-<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Number of atoms to per molecule of material. For example, this value
+<dt><strong>atoms_per_molecule</strong><span class="classifier">float, optional</span></dt><dd><p>Number of atoms to per molecule of material. For example, this value
 for water is 3.0.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>num_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">The number density [1/cc] of the material.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>num_dens</strong><span class="classifier">float</span></dt><dd><p>The number density [1/cc] of the material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.openmc">
-<code class="descname">openmc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.openmc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">openmc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.openmc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an openmc xml element for the material</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pyne.material.Material.phits">
+<code class="sig-name descname">phits</code><span class="sig-paren">(</span><em class="sig-param">frac_type='mass'</em>, <em class="sig-param">mult_den=True) Return an phits card Parameters ---------- frac_type : str</em>, <em class="sig-param">optional Either 'mass' or 'atom'. Speficies whether mass or atom fractions are used to describe material composition. (default 'mass') mult_den : bool</em>, <em class="sig-param">optional Flag for whether material cards are written in mass density if True</em>, <em class="sig-param">or mass fraction if False. (default True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.phits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an phits card
+Parameters
+———-
+frac_type : str, optional</p>
+<blockquote>
+<div><p>Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
+are used to describe material composition. (default ‘mass’)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>mult_den<span class="classifier">bool, optional</span></dt><dd><p>Flag for whether material cards are written in mass density if True,
+or mass fraction if False. (default True)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pyne.material.Material.photons">
-<code class="descname">photons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.photons" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">photons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.photons" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a vector of photons and intensities in decays/s/atom material.
 This vector is the combination of X-rays and gamma-rays produced in the
 decay of the material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">Whether or not to normalize the returned data if True then
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>norm</strong><span class="classifier">boolean</span></dt><dd><p>Whether or not to normalize the returned data if True then
 intensities</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>photons</strong> <span class="classifier-delimiter">:</span> <span class="classifier">a vector of pairs of photon energies and intensities. The</span></dt>
-<dd><p class="first last">intensities are in decays/s/atom material</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>photons</strong><span class="classifier">a vector of pairs of photon energies and intensities. The</span></dt><dd><p>intensities are in decays/s/atom material</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.pop">
-<code class="descname">pop</code><span class="sig-paren">(</span><em>self</em>, <em>key</em>, <em>default=&lt;object object at 0x7f90d667a030&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.pop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">key</em>, <em class="sig-param">default=&lt;object object at 0x7faa1112d050&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.popitem">
-<code class="descname">popitem</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.popitem" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">popitem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.popitem" title="Permalink to this definition">¶</a></dt>
 <dd><p>as a 2-tuple; but raise KeyError if D is empty.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.set_mat">
-<code class="descname">set_mat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.set_mat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_mat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.set_mat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a subset of the material to a new value and returns a new
 material.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc_sequence</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
-<dd><p class="first last">Nuctopes –OR– elements to be taken from current stream.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc_sequence</strong><span class="classifier">sequence</span></dt><dd><p>Nuctopes –OR– elements to be taken from current stream.
 Members of this list must be integers.  For example, [922350, 942390]
 would take U-235 and Pu-239.</p>
 </dd>
-<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Mass value to set all nuclides in sequence to on the material.</p>
+<dt><strong>value</strong><span class="classifier">float</span></dt><dd><p>Mass value to set all nuclides in sequence to on the material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new material object whose members in nuc_sequence have the
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new material object whose members in nuc_sequence have the
 cooresponding mass value.  The mass of the submaterial is
 calculated based on the mass fraction composition and mass of the
 original material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.set_range">
-<code class="descname">set_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.set_range" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.set_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a sub-material from this mat based on a range [lower, upper) to
 a new mass weight value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
-<dd><p class="first last">Lower bound on nuclide range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>lower</strong><span class="classifier">nuclide-name, optional</span></dt><dd><p>Lower bound on nuclide range.</p>
 </dd>
-<dt><strong>upper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
-<dd><p class="first last">Upper bound on nuclide range.</p>
+<dt><strong>upper</strong><span class="classifier">nuclide-name, optional</span></dt><dd><p>Upper bound on nuclide range.</p>
 </dd>
-<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Mass value to set all nuclides on the range to on the material.</p>
+<dt><strong>value</strong><span class="classifier">float</span></dt><dd><p>Mass value to set all nuclides on the range to on the material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has nuclides on the given range.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has nuclides on the given range.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.setdefault">
-<code class="descname">setdefault</code><span class="sig-paren">(</span><em>self</em>, <em>key</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.setdefault" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">setdefault</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.setdefault" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_act">
-<code class="descname">sub_act</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_act" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_act</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_act" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Actinide portion of a mass stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Actinide members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Actinide members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_elem">
-<code class="descname">sub_elem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_elem" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_elem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_elem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grabs a subset of the material and returns a new material comprised of
 only the nuclides of the specified element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has members of the given element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has members of the given element.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_fp">
-<code class="descname">sub_fp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_fp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_fp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_fp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Fission Product portion of a mass
 stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Fission Product members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Fission Product members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_lan">
-<code class="descname">sub_lan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_lan" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_lan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_lan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Lanthanide portion of a mass stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Lanthanide members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Lanthanide members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_ma">
-<code class="descname">sub_ma</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_ma" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_ma</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_ma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Minor Actinide portion of a mass
 stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Minor Actinide members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Minor Actinide members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_mat">
-<code class="descname">sub_mat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_mat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_mat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_mat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grabs a subset of the material and returns a new material comprised
 of only the specified nuclides.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nuc_sequence</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sequence</span></dt>
-<dd><p class="first last">Nuctopes –OR– elements to be taken from current stream.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nuc_sequence</strong><span class="classifier">sequence</span></dt><dd><p>Nuctopes –OR– elements to be taken from current stream.
 Members of this list must be integers.  For example, [922350, 942390]
 would take U-235 and Pu-239.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only
 has the members given in nuc_sequence.  The mass of the submaterial
 is calculated based on the mass fraction composition and mass
 of the original mass stream.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>The input here is seen as a suggestion and so no error is raised if a
 nuclide is asked for via nuc_sequence that is not present in the
 original material.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_pu">
-<code class="descname">sub_pu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_pu" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_pu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_pu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Plutonium portion of a mass stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Plutonium members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Plutonium members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_range">
-<code class="descname">sub_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_range" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grabs a sub-material from this mat based on a range [lower, upper)
 of values.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
-<dd><p class="first last">Lower bound on nuclide range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>lower</strong><span class="classifier">nuclide-name, optional</span></dt><dd><p>Lower bound on nuclide range.</p>
 </dd>
-<dt><strong>upper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">nuclide-name, optional</span></dt>
-<dd><p class="first last">Upper bound on nuclide range.</p>
+<dt><strong>upper</strong><span class="classifier">nuclide-name, optional</span></dt><dd><p>Upper bound on nuclide range.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has nuclides on the given range.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has nuclides on the given range.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_tru">
-<code class="descname">sub_tru</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_tru" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_tru</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_tru" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Transuranic portion of a mass
 stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Transuranic members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Transuranic members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.sub_u">
-<code class="descname">sub_u</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_u" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_u</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.sub_u" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method that gets the Uranium portion of a mass stream.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>submaterial</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A new mass stream object that only has Uranium members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>submaterial</strong><span class="classifier">Material</span></dt><dd><p>A new mass stream object that only has Uranium members.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.to_atom_dens">
-<code class="descname">to_atom_dens</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.to_atom_dens" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_atom_dens</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.to_atom_dens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the material to a map of nuclides to atom densities.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>atom_dens</strong> <span class="classifier-delimiter">:</span> <span class="classifier">mapping</span></dt>
-<dd><p class="first last">Dictionary-like object that maps nuclides to atom densites in the
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>atom_dens</strong><span class="classifier">mapping</span></dt><dd><p>Dictionary-like object that maps nuclides to atom densites in the
 material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.to_atom_frac">
-<code class="descname">to_atom_frac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.to_atom_frac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_atom_frac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.to_atom_frac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the material to a map of nuclides to atom fractions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>atom_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">mapping</span></dt>
-<dd><p class="first last">Dictionary-like object that maps nuclides to atom fractions in the
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>atom_fracs</strong><span class="classifier">mapping</span></dt><dd><p>Dictionary-like object that maps nuclides to atom fractions in the
 material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">\*args</em>, <em class="sig-param">\*\*kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
 If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
 In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.values">
-<code class="descname">values</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.write_alara">
-<code class="descname">write_alara</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_alara" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_alara</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_alara" title="Permalink to this definition">¶</a></dt>
 <dd><p>The method appends an ALARA material d$efinition, with attributes
 to the file with the supplied filename.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">The file to append the material definition to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The file to append the material definition to.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.write_hdf5">
-<code class="descname">write_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_hdf5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the material to an HDF5 file, using Protocol 1 (see the
 from_hdf5() method).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to HDF5 file to write the data out to.  If the file does not
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to HDF5 file to write the data out to.  If the file does not
 exist, it will be created.</p>
 </dd>
-<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Path to HDF5 table that represents the data.  If the table does not
+<dt><strong>datapath</strong><span class="classifier">str, optional</span></dt><dd><p>Path to HDF5 table that represents the data.  If the table does not
 exist, it will be created.</p>
 </dd>
-<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Path to id array of nuclides to write out.  If this array does
+<dt><strong>nucpath</strong><span class="classifier">str, optional</span></dt><dd><p>Path to id array of nuclides to write out.  If this array does
 not exist, it is created with the nuclides present in this
 material. Nuclides present in this material but not in nucpath will
 not be written out.</p>
 </dd>
-<dt><strong>row</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">The row index of the HDF5 table to write this material to.  This
+<dt><strong>row</strong><span class="classifier">float, optional</span></dt><dd><p>The row index of the HDF5 table to write this material to.  This
 ranges from 0 to N.  Negative indexing is allowed (row[-N] =
 row[0]).  Defaults to the appending this material to the table
 (row[N] = row[-0.0]).  This value must be a float since in integer
 repesentation 0 <strong>is</strong> -0, but in float representation 0.0 <strong>is
 not</strong> -0.0.</p>
 </dd>
-<dt><strong>chunksize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">In Protocol 1, materials are stored in an HDF5 table which is an
+<dt><strong>chunksize</strong><span class="classifier">int, optional</span></dt><dd><p>In Protocol 1, materials are stored in an HDF5 table which is an
 extensible data type. The chunksize determines the number of rows
 per chunk.  For better performance, this number should be as close
 as possible to the final table size.  This parameter is only
 relevant if a new table is being created.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>The following writes out ten low-enriched uranium materials to a new
 table:</p>
@@ -1350,24 +1218,19 @@ table:</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.write_json">
-<code class="descname">write_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the material to a JSON file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to text file to write the data to.  If the file already
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file to write the data to.  If the file already
 exists, it will be overwritten.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>The following writes out a low-enriched uranium material to a new file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -1376,72 +1239,55 @@ exists, it will be overwritten.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.write_mcnp">
-<code class="descname">write_mcnp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_mcnp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_mcnp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">frac_type</span><span class="o">=</span><span class="default_value">'mass'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_mcnp" title="Permalink to this definition">¶</a></dt>
 <dd><p>The method appends an MCNP mass fraction definition, with
 attributes to the file with the supplied filename.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">The file to append the material definition to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The file to append the material definition to.</p>
 </dd>
-<dt><strong>frac_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
+<dt><strong>frac_type</strong><span class="classifier">str, optional</span></dt><dd><p>Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
 are used to describe material composition.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.write_openmc">
-<code class="descname">write_openmc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_openmc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_openmc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">frac_type</span><span class="o">=</span><span class="default_value">'mass'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_openmc" title="Permalink to this definition">¶</a></dt>
 <dd><p>The method appends an OpenMC mass fraction definition, with
 attributes to the file with the supplied filename.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">The file to append the material definition to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The file to append the material definition to.</p>
 </dd>
-<dt><strong>frac_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
+<dt><strong>frac_type</strong><span class="classifier">str, optional</span></dt><dd><p>Either ‘mass’ or ‘atom’. Speficies whether mass or atom fractions
 are used to describe material composition.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.write_text">
-<code class="descname">write_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.write_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the material to a plain text file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to text file to write the data to.  If the file already
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file to write the data to.  If the file already
 exists, it will be overwritten.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>The following writes out a low-enriched uranium material to a new file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leu</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s1">&#39;U235&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">,</span> <span class="s1">&#39;U238&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">},</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s2">&quot;LEU&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -1450,82 +1296,68 @@ exists, it will be overwritten.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyne.material.Material.xrays">
-<code class="descname">xrays</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.xrays" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">xrays</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.Material.xrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a vector of X rays and intensities in decays/s/atom material.
 Includes only X rays from internal conversion and electron capture</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>x-rays</strong> <span class="classifier-delimiter">:</span> <span class="classifier">a vector of pairs of X-rays and intensities. The</span></dt>
-<dd><p class="first last">intensities are in decays/s/atom material</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x-rays</strong><span class="classifier">a vector of pairs of X-rays and intensities. The</span></dt><dd><p>intensities are in decays/s/atom material</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="material-generation-functions">
-<h2>Material Generation Functions<a class="headerlink" href="#material-generation-functions" title="Permalink to this headline">¶</a></h2>
-<p>The following top-level module functions are used to generate materials from various sources.</p>
-<dl class="function">
+<h4>Material Generation Functions<a class="headerlink" href="#material-generation-functions" title="Permalink to this headline">¶</a></h4>
+<p>The following top-level module functions are used to generate materials from
+various sources.</p>
+<dl class="py function">
 <dt id="pyne.material.from_atom_frac">
-<code class="descclassname">pyne.material.</code><code class="descname">from_atom_frac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.from_atom_frac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.material.</code><code class="sig-name descname">from_atom_frac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.from_atom_frac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Material from a mapping of atom fractions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>atom_fracs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Dictionary that maps nuclides or materials to atom fractions for the
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>atom_fracs</strong><span class="classifier">dict</span></dt><dd><p>Dictionary that maps nuclides or materials to atom fractions for the
 material.  The keys may be intergers, strings, or materials. The values
 must be castable to floats.</p>
 </dd>
-<dt><strong>mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">This is the mass of the new stream. If the mass provided is negative
+<dt><strong>mass</strong><span class="classifier">float, optional</span></dt><dd><p>This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
 sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
 </dd>
-<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">This is the density of the material.</p>
+<dt><strong>density</strong><span class="classifier">float, optional</span></dt><dd><p>This is the density of the material.</p>
 </dd>
-<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Number of atoms per molecule of material.  Needed to obtain proper
+<dt><strong>atoms_per_molecule</strong><span class="classifier">float, optional</span></dt><dd><p>Number of atoms per molecule of material.  Needed to obtain proper
 scaling of molecular mass.  For example, this value for water is
 3.0.</p>
 </dd>
-<dt><strong>metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">JSON-convertable Python object, optional</span></dt>
-<dd><p class="first last">Initial attributes to build the material with.  At the top-level this is
+<dt><strong>metadata</strong><span class="classifier">JSON-convertable Python object, optional</span></dt><dd><p>Initial attributes to build the material with.  At the top-level this is
 usually a dictionary with string keys.  This container is used to store
 arbitrary metadata about the material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A material generated from atom fractions.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mat</strong><span class="classifier">Material</span></dt><dd><p>A material generated from atom fractions.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#pyne.material.Material.from_atom_frac" title="pyne.material.Material.from_atom_frac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_atom_frac</span></code></a></dt>
-<dd>Underlying method class method.</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#pyne.material.Material.from_atom_frac" title="pyne.material.Material.from_atom_frac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_atom_frac</span></code></a></dt><dd><p>Underlying method class method.</p>
+</dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
@@ -1548,48 +1380,39 @@ This is possible because Materials are hashable.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.material.from_hdf5">
-<code class="descclassname">pyne.material.</code><code class="descname">from_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.from_hdf5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.material.</code><code class="sig-name descname">from_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.from_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Material object from an HDF5 file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to HDF5 file that contains the data to read in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to HDF5 file that contains the data to read in.</p>
 </dd>
-<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to HDF5 table or group that represents the data.</p>
+<dt><strong>datapath</strong><span class="classifier">str</span></dt><dd><p>Path to HDF5 table or group that represents the data.</p>
 </dd>
-<dt><strong>row</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">The index of the arrays from which to read the data.  This
+<dt><strong>row</strong><span class="classifier">int, optional</span></dt><dd><p>The index of the arrays from which to read the data.  This
 ranges from 0 to N-1.  Defaults to the last element of the array.
 Negative indexing is allowed (row[-N] = row[0]).</p>
 </dd>
-<dt><strong>protocol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">Specifies the protocol to use to read in the data.  Different
+<dt><strong>protocol</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the protocol to use to read in the data.  Different
 protocols are used to represent different internal structures in
 the HDF5 file.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A material found in the HDF5 file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mat</strong><span class="classifier">Material</span></dt><dd><p>A material found in the HDF5 file.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#pyne.material.Material.from_hdf5" title="pyne.material.Material.from_hdf5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_hdf5</span></code></a></dt>
-<dd>Underlying method class method.</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#pyne.material.Material.from_hdf5" title="pyne.material.Material.from_hdf5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_hdf5</span></code></a></dt><dd><p>Underlying method class method.</p>
+</dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
@@ -1600,51 +1423,42 @@ the HDF5 file.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<dl class="function">
+<dl class="py function">
 <dt id="pyne.material.from_text">
-<code class="descclassname">pyne.material.</code><code class="descname">from_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.from_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyne.material.</code><code class="sig-name descname">from_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.from_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Material object from a simple text file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Path to text file that contains the data to read in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path to text file that contains the data to read in.</p>
 </dd>
-<dt><strong>mass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">This is the mass of the new stream. If the mass provided is negative
+<dt><strong>mass</strong><span class="classifier">float, optional</span></dt><dd><p>This is the mass of the new stream. If the mass provided is negative
 (default -1.0) then the mass of the new stream is calculated from the
 sum of compdict’s components before normalization.  If the mass here is
 positive or zero, then this mass overrides the calculated one.</p>
 </dd>
-<dt><strong>atoms_per_molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Number of atoms to per molecule of material.  Needed to obtain proper
+<dt><strong>atoms_per_molecule</strong><span class="classifier">float, optional</span></dt><dd><p>Number of atoms to per molecule of material.  Needed to obtain proper
 scaling of molecular mass.  For example, this value for water is
 3.0.</p>
 </dd>
-<dt><strong>metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">JSON-convertable Python object, optional</span></dt>
-<dd><p class="first last">Initial attributes to build the material with.  At the top-level this is
+<dt><strong>metadata</strong><span class="classifier">JSON-convertable Python object, optional</span></dt><dd><p>Initial attributes to build the material with.  At the top-level this is
 usually a dictionary with string keys.  This container is used to store
 arbitrary metadata about the material.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">A material found in the HDF5 file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mat</strong><span class="classifier">Material</span></dt><dd><p>A material found in the HDF5 file.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#pyne.material.Material.from_text" title="pyne.material.Material.from_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_text</span></code></a></dt>
-<dd>Underlying method class method.</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#pyne.material.Material.from_text" title="pyne.material.Material.from_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Material.from_text</span></code></a></dt><dd><p>Underlying method class method.</p>
+</dd>
 </dl>
 </div>
 <p class="rubric">Examples</p>
@@ -1656,192 +1470,14 @@ arbitrary metadata about the material.</p>
 
 </div>
 <div class="section" id="material-library">
-<h2>Material Library<a class="headerlink" href="#material-library" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pyne.material.MaterialLibrary">
-<em class="property">class </em><code class="descclassname">pyne.material.</code><code class="descname">MaterialLibrary</code><span class="sig-paren">(</span><em>lib=None</em>, <em>datapath=&quot;/materials&quot;</em>, <em>nucpath=&quot;/nucid&quot;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary" title="Permalink to this definition">¶</a></dt>
-<dd><p>The material library is a collection of unique keys mapped to
-Material objects.  This is useful for organization and declaring
-prefernces between several sources (multiple libraries).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>lib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict-like, str, or None, optional</span></dt>
-<dd><p class="first last">The data to intialize the material library with.  If this is a
-string, it is interpreted as a path to a file.</p>
-</dd>
-<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The path in the heirarchy to the data table in an HDF5 file.</p>
-</dd>
-<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.clear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.from_hdf5">
-<code class="descname">from_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.from_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads data from an HDF5 file into this material library.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">A path to an HDF5 file.</p>
-</dd>
-<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The path in the heirarchy to the data table in an HDF5 file.</p>
-</dd>
-<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.from_json">
-<code class="descname">from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.from_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads data from a JSON file into this material library.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">A path to a JSON file.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>self</em>, <em>key</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.items">
-<code class="descname">items</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.items" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.iteritems">
-<code class="descname">iteritems</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.iteritems" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.iterkeys">
-<code class="descname">iterkeys</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.iterkeys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.itervalues">
-<code class="descname">itervalues</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.itervalues" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.pop">
-<code class="descname">pop</code><span class="sig-paren">(</span><em>self</em>, <em>key</em>, <em>default=&lt;object object at 0x7f90d667a030&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.pop" title="Permalink to this definition">¶</a></dt>
-<dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.popitem">
-<code class="descname">popitem</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.popitem" title="Permalink to this definition">¶</a></dt>
-<dd><p>as a 2-tuple; but raise KeyError if D is empty.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.setdefault">
-<code class="descname">setdefault</code><span class="sig-paren">(</span><em>self</em>, <em>key</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.setdefault" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
-If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
-In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.values">
-<code class="descname">values</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.write_hdf5">
-<code class="descname">write_hdf5</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.write_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes this material library to an HDF5 file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">A path to an HDF5 file.</p>
-</dd>
-<dt><strong>datapath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The path in the heirarchy to the data table in an HDF5 file.</p>
-</dd>
-<dt><strong>nucpath</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The path in the heirarchy to the nuclide array in an HDF5 file.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyne.material.MaterialLibrary.write_json">
-<code class="descname">write_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyne.material.MaterialLibrary.write_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes this material library to a JSON file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">A path to a JSON file.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<h4>Material Library<a class="headerlink" href="#material-library" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1852,27 +1488,33 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
         </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Materials – <code class="docutils literal notranslate"><span class="pre">pyne.material</span></code></a><ul>
+<li><a class="reference internal" href="#">Materials – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material</span></code></a><ul>
+<li><a class="reference internal" href="#hdf5-file-structure">HDF5 File Structure</a></li>
+<li><a class="reference internal" href="#previous-hdf5-file-structure">Previous HDF5 File Structure</a><ul>
+<li><a class="reference internal" href="#the-material-class-is-presented-below">The material class is presented below.</a></li>
+<li><a class="reference internal" href="#for-more-information-please-refer-to-ref-usersguide-material"><em>For more information please refer to :ref:`usersguide_material`.</em></a><ul>
 <li><a class="reference internal" href="#material-class">Material Class</a></li>
 <li><a class="reference internal" href="#material-generation-functions">Material Generation Functions</a></li>
 <li><a class="reference internal" href="#material-library">Material Library</a></li>
 </ul>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -1906,7 +1548,8 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Materials – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.material</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -1916,7 +1559,7 @@ In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

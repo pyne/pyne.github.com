@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.mcnp &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyne.mcnp &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/jquery.cookie.js"></script>
+    <script src="../../_static/cloud.base.js"></script>
+    <script src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -54,7 +53,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.mcnp</a></li> 
       </ul>
     </div>
     </div>
@@ -79,35 +79,35 @@ if(ga_enabled){
 <span class="sd">available to use.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">HAVE_PYMOAB</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshTally</span><span class="p">,</span> <span class="n">HAVE_PYMOAB</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">linecache</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tables</span>
 
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span>
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">MultiMaterial</span>
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
-<span class="kn">from</span> <span class="nn">pyne.binaryreader</span> <span class="k">import</span> <span class="n">_BinaryReader</span><span class="p">,</span> <span class="n">_FortranRecord</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">QA_warn</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">MultiMaterial</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.binaryreader</span> <span class="kn">import</span> <span class="n">_BinaryReader</span><span class="p">,</span> <span class="n">_FortranRecord</span>
 
-<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">QA_warn</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># Mesh specific imports</span>
 
 <span class="k">if</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">NativeMeshTag</span>
+    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="kn">import</span> <span class="n">NativeMeshTag</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
          <span class="s2">&quot;Some aspects of the mcnp module may be incomplete.&quot;</span><span class="p">,</span>
-         <span class="n">QAWarning</span><span class="p">)</span>
+         <span class="ne">ImportWarning</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
@@ -115,7 +115,7 @@ if(ga_enabled){
 
 
 <span class="k">class</span> <span class="nc">Mctal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -215,12 +215,12 @@ if(ga_enabled){
 
 
 <span class="k">class</span> <span class="nc">SourceSurf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
 
 <span class="k">class</span> <span class="nc">TrackData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
 
@@ -239,13 +239,12 @@ if(ga_enabled){
 <span class="sd">        Path to surface source file being read or written.</span>
 <span class="sd">    mode : str, optional</span>
 <span class="sd">        String indicating file opening mode to be used (defaults to &#39;rb&#39;).</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SurfSrc</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_header</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SurfSrc.print_header"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.print_header">[docs]</a>    <span class="k">def</span> <span class="nf">print_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -255,8 +254,8 @@ if(ga_enabled){
 <span class="sd">        -------</span>
 <span class="sd">        header_string : str</span>
 <span class="sd">            A line-by-line listing of the contents of the SurfSrc&#39;s header.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">header_string</span> <span class="o">=</span> <span class="s2">&quot;Code: </span><span class="si">{0}</span><span class="s2"> (version: </span><span class="si">{1}</span><span class="s2">) [</span><span class="si">{2}</span><span class="s2">]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">kod</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loddat</span><span class="p">)</span>
         <span class="n">header_string</span> <span class="o">+=</span> <span class="s2">&quot;Problem info: (</span><span class="si">{0}</span><span class="s2">) </span><span class="si">{1}</span><span class="se">\n</span><span class="si">{2}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -321,7 +320,7 @@ if(ga_enabled){
 
         <span class="k">return</span> <span class="n">track_data</span></div>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">rtn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cmp__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rtn</span> <span class="o">==</span> <span class="mi">0</span>
 
@@ -395,6 +394,7 @@ if(ga_enabled){
         <span class="sd">&quot;&quot;&quot;Read in the header block data. This block comprises 4 fortran</span>
 <span class="sd">        records which we refer to as: header, table1, table2, summary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># read header record</span>
         <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">()</span>
 
@@ -428,7 +428,7 @@ if(ga_enabled){
                 <span class="bp">self</span><span class="o">.</span><span class="n">np1</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_long</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># hist used to gen. src</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nrss</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_long</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># #tracks to surf src</span>
 
-	    <span class="c1"># values in surf src record</span>
+        <span class="c1"># values in surf src record</span>
             <span class="c1"># 6 for a spherical source</span>
             <span class="c1"># 11 otherwise</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ncrd</span> <span class="o">=</span> <span class="n">tablelengths</span><span class="o">.</span><span class="n">get_int</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -595,7 +595,6 @@ if(ga_enabled){
 
 <div class="viewcode-block" id="SurfSrc.put_surface_info"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.SurfSrc.put_surface_info">[docs]</a>    <span class="k">def</span> <span class="nf">put_surface_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the record for each surface to the surface source file&quot;&quot;&quot;</span>
-
         <span class="k">for</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surflist</span><span class="p">):</span>
             <span class="n">newrecord</span> <span class="o">=</span> <span class="n">_FortranRecord</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">newrecord</span><span class="o">.</span><span class="n">put_int</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -622,6 +621,7 @@ if(ga_enabled){
         <span class="sd">&quot;&quot;&quot;Write the first part of the MCNP surface source file. The header content</span>
 <span class="sd">        comprises five parts shown below.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">put_header</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">put_table_1</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">put_table_2</span><span class="p">()</span>
@@ -682,7 +682,7 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">tracklist</span> <span class="o">=</span> <span class="n">surf_src</span><span class="o">.</span><span class="n">tracklist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nrss</span> <span class="o">=</span> <span class="n">surf_src</span><span class="o">.</span><span class="n">nrss</span></div>
 
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Destructor. The only thing to do is close the file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -695,10 +695,9 @@ if(ga_enabled){
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str</span>
 <span class="sd">        Path to Srctp file being worked with.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Srctp</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -735,22 +734,22 @@ if(ga_enabled){
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">index</span><span class="p">:</span> <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_run</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;Srctp: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">SourceSite</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;SourceSite: (</span><span class="si">{0.x}</span><span class="s2">,</span><span class="si">{0.y}</span><span class="s2">,</span><span class="si">{0.z}</span><span class="s2">)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Runtpe"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Runtpe">[docs]</a><span class="k">class</span> <span class="nc">Runtpe</span><span class="p">(</span><span class="n">_BinaryReader</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Runtpe</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -774,7 +773,7 @@ if(ga_enabled){
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_tables</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fortran_record</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;Runtpe: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
@@ -803,12 +802,13 @@ if(ga_enabled){
 <span class="sd">    See MCNP5 User&#39;s Guide Volume 3 Appendix K for more information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str</span>
 <span class="sd">            Path to xsdir file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -818,8 +818,7 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Xsdir.read"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Xsdir.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Populate the Xsdir object by reading the file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Populate the xsdir object by reading the file.&quot;&quot;&quot;</span>
         <span class="c1"># Go to beginning of file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
@@ -862,7 +861,7 @@ if(ga_enabled){
             <span class="c1"># Handle continuation lines</span>
             <span class="k">while</span> <span class="n">words</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
                 <span class="n">extraWords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">words</span> <span class="o">=</span> <span class="n">words</span> <span class="o">+</span> <span class="n">extraWords</span>
+                <span class="n">words</span> <span class="o">=</span> <span class="n">words</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">extraWords</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">7</span>
 
             <span class="c1"># Create XsdirTable object and add to line</span>
@@ -900,6 +899,7 @@ if(ga_enabled){
 <span class="sd">        tables : list</span>
 <span class="sd">            All XsdirTable objects for a given ZIAD.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
@@ -913,15 +913,15 @@ if(ga_enabled){
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str</span>
 <span class="sd">            The output filename.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">xsdata</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">serpent_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">xsdata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">to_serpent</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">xsdata</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">table</span>
 
@@ -934,6 +934,7 @@ if(ga_enabled){
 <span class="sd">        valid_nucs : set</span>
 <span class="sd">            The valid nuclide ids.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">valid_nucs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
                          <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="k">if</span>
                          <span class="n">nucname</span><span class="o">.</span><span class="n">isnuclide</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
@@ -977,7 +978,7 @@ if(ga_enabled){
 <span class="sd">        unresolved resonance range probability tables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">awr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
@@ -992,8 +993,7 @@ if(ga_enabled){
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">alias</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the name of the table entry &lt;ZIAD&gt;.&lt;library id&gt;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the name of the table entry &lt;ZIAD&gt;.&lt;library id&gt;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
@@ -1003,6 +1003,7 @@ if(ga_enabled){
 <span class="sd">            :2: dosimetry table (y).</span>
 <span class="sd">            :3: termal (t).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">):</span>
@@ -1017,6 +1018,7 @@ if(ga_enabled){
         <span class="sd">&quot;&quot;&quot;Returns 1 is xsdir table nuclide is metastable. Returns zero</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Only valid for neutron cross-sections</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
             <span class="k">return</span>
@@ -1036,8 +1038,7 @@ if(ga_enabled){
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">zaid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the ZIAD of the nuclide.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the ZIAD of the nuclide.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)]</span>
 
 <div class="viewcode-block" id="XsdirTable.to_serpent"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.XsdirTable.to_serpent">[docs]</a>    <span class="k">def</span> <span class="nf">to_serpent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -1048,6 +1049,7 @@ if(ga_enabled){
 <span class="sd">        directory : str</span>
 <span class="sd">            The directory where Serpent data is to be stored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Adjust directory</span>
         <span class="k">if</span> <span class="n">directory</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">directory</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
@@ -1059,7 +1061,7 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">awr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mf">8.6173423e-11</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetype</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
             <span class="n">directory</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;XsDirTable: </span><span class="si">{0}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
@@ -1067,6 +1069,7 @@ if(ga_enabled){
     <span class="sd">&quot;&quot;&quot;This class holds one Ptrac event and serves as a table definition</span>
 <span class="sd">    for saving Ptrac data to a HDF5 file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">event_type</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Int32Col</span><span class="p">()</span>
     <span class="n">node</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Float32Col</span><span class="p">()</span>
     <span class="n">nsr</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Float32Col</span><span class="p">()</span>
@@ -1089,13 +1092,12 @@ if(ga_enabled){
 
 
 <div class="viewcode-block" id="PtracReader"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader">[docs]</a><span class="k">class</span> <span class="nc">PtracReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class to read _binary_ PTRAC files generated by MCNP.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to read _binary_ PTRAC files generated by MCNP.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct a new Ptrac reader for a given filename, determine the</span>
 <span class="sd">        number format and read the file&#39;s headers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">variable_mappings</span> <span class="o">=</span> <span class="p">{</span>
             <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;nps&quot;</span><span class="p">,</span>
             <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;ncl&quot;</span><span class="p">,</span>
@@ -1129,9 +1131,8 @@ if(ga_enabled){
 
         <span class="bp">self</span><span class="o">.</span><span class="n">next_event</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Destructor. The only thing to do is close the Ptrac file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Destructor. The only thing to do is close the Ptrac file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PtracReader.determine_endianness"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.determine_endianness">[docs]</a>    <span class="k">def</span> <span class="nf">determine_endianness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1225,6 +1226,7 @@ if(ga_enabled){
         <span class="sd">&quot;&quot;&quot;Read and save the MCNP version and problem description from the</span>
 <span class="sd">        Ptrac file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># mcnp version info</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mcnp_version_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">auto</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># problem title</span>
@@ -1302,8 +1304,7 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span> <span class="o">=</span> <span class="n">variable_ids</span></div>
 
 <div class="viewcode-block" id="PtracReader.read_nps_line"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.PtracReader.read_nps_line">[docs]</a>    <span class="k">def</span> <span class="nf">read_nps_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read an NPS record and save the type of the next event.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Read an NPS record and save the type of the next event.&quot;&quot;&quot;</span>
         <span class="n">nps_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_nums</span><span class="p">[</span><span class="s2">&quot;nps&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next_event</span> <span class="o">=</span> <span class="n">nps_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
@@ -1473,6 +1474,7 @@ if(ga_enabled){
             <span class="n">data_string</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">linecache</span><span class="o">.</span><span class="n">getline</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mat_line</span> <span class="o">+</span> <span class="n">line_index</span><span class="p">)</span>
+            
         <span class="c1"># otherwise this not a line we care about, move on and</span>
         <span class="c1"># skip lines that start with c or C</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1482,19 +1484,29 @@ if(ga_enabled){
     <span class="c1"># create dictionaries nucvec and table_ids</span>
     <span class="n">nucvec</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">table_ids</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">())):</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">zzzaaam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span>
-                <span class="n">nucname</span><span class="o">.</span><span class="n">mcnp_to_id</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
+    <span class="n">lib_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NLIB&#39;</span><span class="p">,</span> <span class="s1">&#39;PLIB&#39;</span><span class="p">,</span> <span class="s1">&#39;HLIB&#39;</span><span class="p">,</span> <span class="s1">&#39;PNLIB&#39;</span><span class="p">,</span> <span class="s1">&#39;ELIB&#39;</span><span class="p">]</span>
+    <span class="n">default_libs</span> <span class="o">=</span> <span class="p">{}</span>
 
+    <span class="c1"># skip the first token that is the material card identifier</span>
+    <span class="n">token_list</span> <span class="o">=</span> <span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">token_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">token_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;=&#39;</span> <span class="ow">in</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">lib_name</span><span class="p">,</span> <span class="n">lib_num</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lib_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">lib_names</span><span class="p">:</span>
+                <span class="n">default_libs</span><span class="p">[</span><span class="n">lib_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="n">lib_num</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nuc_info</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">zzzaaam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">zzaaam</span><span class="p">(</span><span class="n">nucname</span><span class="o">.</span><span class="n">mcnp_to_id</span><span class="p">(</span><span class="n">nuc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
             <span class="c1"># this allows us to read nuclides that are repeated</span>
+            <span class="n">nuc_frac</span> <span class="o">=</span> <span class="n">token_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">zzzaaam</span> <span class="ow">in</span> <span class="n">nucvec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">nucvec</span><span class="p">[</span><span class="n">zzzaaam</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">nucvec</span><span class="p">[</span><span class="n">zzzaaam</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nuc_frac</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">nucvec</span><span class="p">[</span><span class="n">zzzaaam</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">table_ids</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">zzzaaam</span><span class="p">)]</span> <span class="o">=</span> <span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">nucvec</span><span class="p">[</span><span class="n">zzzaaam</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nuc_frac</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nuc_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">table_ids</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">zzzaaam</span><span class="p">)]</span> <span class="o">=</span> <span class="n">nuc_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># Check to see it material is definted my mass or atom fracs.</span>
     <span class="c1"># Do this by comparing the first non-zero fraction to the rest</span>
@@ -1520,6 +1532,8 @@ if(ga_enabled){
         <span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">nucvec</span><span class="o">=</span><span class="n">nucvec</span><span class="p">)</span>
 
     <span class="n">mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;table_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table_ids</span>
+    <span class="k">for</span> <span class="n">lib_name</span><span class="p">,</span> <span class="n">lib_num</span> <span class="ow">in</span> <span class="n">default_libs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">lib_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib_num</span>
     <span class="n">mat</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;mat_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
 
     <span class="c1"># collect metadata, if present</span>
@@ -1569,7 +1583,7 @@ if(ga_enabled){
                 <span class="n">converted_densities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">mass_density</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">den</span><span class="p">)</span><span class="o">*</span><span class="mf">1E24</span><span class="p">))</span>
 
         <span class="c1"># check to see how many densities are associated with this material.</span>
-        <span class="c1"># if there is more than one, create a multimaterial&quot;&quot;&quot;</span>
+        <span class="c1"># if there is more than one, create a multimaterial</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">converted_densities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">mat</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">converted_densities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">finished_mat</span> <span class="o">=</span> <span class="n">mat</span>
@@ -1638,10 +1652,9 @@ if(ga_enabled){
 <span class="sd">    -----</span>
 <span class="sd">    Attribute names are identical to names speficied in WWINP file</span>
 <span class="sd">    description in the MCNP5 User&#39;s Guide Volume 3 Appendix J.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
                                <span class="s2">&quot;unable to create Wwinp Mesh.&quot;</span><span class="p">)</span>
@@ -1650,6 +1663,7 @@ if(ga_enabled){
 <div class="viewcode-block" id="Wwinp.read_wwinp"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Wwinp.read_wwinp">[docs]</a>    <span class="k">def</span> <span class="nf">read_wwinp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This method creates a Wwinp object from the WWINP file &lt;filename&gt;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_block1</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_block2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -1779,8 +1793,7 @@ if(ga_enabled){
         <span class="n">tag_e_bounds</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">[</span><span class="n">particle_index</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Wwinp.write_wwinp"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Wwinp.write_wwinp">[docs]</a>    <span class="k">def</span> <span class="nf">write_wwinp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This method writes a complete WWINP file to &lt;filename&gt;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;This method writes a complete WWINP file to &lt;filename&gt;.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_block1</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_block2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -2008,10 +2021,9 @@ if(ga_enabled){
 <span class="sd">        tag name, and the total relative error tag name. If tags is None</span>
 <span class="sd">        the tags are named &#39;x_result&#39;, &#39;x_rel_error&#39;, &#39;x_result_total&#39;,</span>
 <span class="sd">        &#39;x_rel_error_total&#39; where x is n or p for neutrons or photons.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meshes_have_mats</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meshes_have_mats</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str</span>
@@ -2040,9 +2052,7 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_tallies</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_meshtal_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the version, ld, title card and number of histories.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="sd">&quot;&quot;&quot;Get the version, ld, title card and number of histories.&quot;&quot;&quot;</span>
         <span class="n">line_1</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="c1"># set mcnp version</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">line_1</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
@@ -2058,71 +2068,31 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">histories</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line_3</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">_read_tallies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read in all of the mesh tallies from the meshtal file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Read in all of the mesh tallies from the meshtal file.&quot;&quot;&quot;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;Mesh&#39;</span><span class="p">,</span> <span class="s1">&#39;Tally&#39;</span><span class="p">,</span> <span class="s1">&#39;Number&#39;</span><span class="p">]:</span>
                 <span class="n">tally_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">])</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tally_num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">MeshTally</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tally_num</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_meshtally</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tally_num</span><span class="p">,</span>
                                                       <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tally_num</span><span class="p">],</span>
                                                       <span class="n">mesh_has_mats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_meshes_have_mats</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">MeshTally</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tally_num</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tally</span><span class="p">[</span><span class="n">tally_num</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_meshtally</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tally_num</span><span class="p">,</span>
                                                       <span class="n">mesh_has_mats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_meshes_have_mats</span><span class="p">)</span>
 
-            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span></div>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
+<div class="viewcode-block" id="Meshtal.create_meshtally"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Meshtal.create_meshtally">[docs]</a>    <span class="k">def</span> <span class="nf">create_meshtally</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">tally_number</span><span class="p">,</span> <span class="n">tag_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mesh_has_mats</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function creates a Mesh instance from MCNP meshtal file.</span>
 
-<div class="viewcode-block" id="MeshTally"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.MeshTally">[docs]</a><span class="k">class</span> <span class="nc">MeshTally</span><span class="p">(</span><span class="n">StatMesh</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This class stores all information from all single MCNP mesh tally that</span>
-<span class="sd">    exists within some meshtal file. Header information is stored as attributes</span>
-<span class="sd">    and the &quot;mesh&quot; attribute is a MOAB mesh with all result and relative error</span>
-<span class="sd">    data tagged. This class inherits from StatMesh, exposing all statistical</span>
-<span class="sd">    mesh manipulation methods.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    tally_number : int</span>
-<span class="sd">        The MCNP tally number. Must end in 4 (e.g. 4, 14, 214).</span>
-<span class="sd">    particle : string</span>
-<span class="sd">        Either &quot;neutron&quot; for a neutron mesh tally or &quot;photon&quot; for a photon mesh</span>
-<span class="sd">        tally.</span>
-<span class="sd">    dose_response : bool</span>
-<span class="sd">        True is the tally is modified by a dose response function.</span>
-<span class="sd">    x_bounds : list of floats</span>
-<span class="sd">        The locations of mesh vertices in the x direction.</span>
-<span class="sd">    y_bounds : list of floats</span>
-<span class="sd">        The locations of mesh vertices in the y direction.</span>
-<span class="sd">    z_bounds : list of floats</span>
-<span class="sd">        The locations of mesh vertices in the z direction.</span>
-<span class="sd">    e_bounds : list of floats</span>
-<span class="sd">        The minimum and maximum bounds for energy bins</span>
-<span class="sd">    mesh :</span>
-<span class="sd">        An PyMOAB core instance tagged with all results and</span>
-<span class="sd">        relative errors</span>
-<span class="sd">    tag_names : iterable</span>
-<span class="sd">        Four strs that specify the tag names for the results, relative errors,</span>
-<span class="sd">        total results, and relative errors of the total results.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    All Mesh/StatMesh attributes are also present via a super() call to</span>
-<span class="sd">    StatMesh.__init__().</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">tally_number</span><span class="p">,</span> <span class="n">tag_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mesh_has_mats</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create MeshTally object from a filestream open to the second</span>
-<span class="sd">        line of a mesh tally header (the neutron/photon line). MeshTally objects</span>
-<span class="sd">        should be instantiated only through the Meshtal class.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        f : filestream</span>
-<span class="sd">            Open to the neutron/photon line.</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        f : str or filestream</span>
+<span class="sd">            Filestream of the meshtal file.</span>
 <span class="sd">        tally_number : int</span>
 <span class="sd">            The MCNP fmesh4 tally number (e.g. 4, 14, 24).</span>
 <span class="sd">        tag_names : iterable, optional</span>
@@ -2132,136 +2102,187 @@ if(ga_enabled){
 <span class="sd">        mesh_has_mats : bool</span>
 <span class="sd">             If false, Meshtally objects will be created without PyNE material</span>
 <span class="sd">             objects.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        m : MeshTally object</span>
+<span class="sd">            The MeshTally object created from MCNP mesh tally of tally_number.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
-                               <span class="s2">&quot;unable to create Meshtally Mesh.&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">tally_number</span> <span class="o">=</span> <span class="n">tally_number</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_read_meshtally_head</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_read_column_order</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
+        <span class="n">m</span> <span class="o">=</span> <span class="n">MeshTally</span><span class="p">()</span>
+        <span class="c1"># assign tally_number</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">tally_number</span> <span class="o">=</span> <span class="n">tally_number</span>
+        <span class="c1"># assign particle and dose_response</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">particle</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">dose_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_meshtally_head</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="c1"># assign tag_names</span>
         <span class="k">if</span> <span class="n">tag_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
-                              <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result_rel_error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
-                              <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result_total&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
-                              <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result_total_rel_error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">set_default_tag_names</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span> <span class="o">=</span> <span class="n">tag_names</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tag_names</span> <span class="o">=</span> <span class="n">tag_names</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_create_mesh</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">mesh_has_mats</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">e_bounds</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_xyze_bounds</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">num_ves</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>\
+            <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_column_order</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="c1"># create mesh</span>
+        <span class="n">mats</span> <span class="o">=</span> <span class="p">()</span> <span class="k">if</span> <span class="n">mesh_has_mats</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MeshTally</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">structured_coords</span><span class="o">=</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
+                <span class="n">structured</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mats</span><span class="o">=</span><span class="n">mats</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_read_meshtally_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the particle type, spacial and energy bounds, and whether or</span>
-<span class="sd">        not flux-to-dose conversion factors are being used.</span>
+        <span class="c1"># read result, rel_error, res_tot and rel_err_tot</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">rel_error</span><span class="p">,</span> <span class="n">res_tot</span><span class="p">,</span> <span class="n">rel_err_tot</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_tally_results_rel_error</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">num_ves</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">tag_flux_error_from_tally_results</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">rel_error</span><span class="p">,</span>
+                <span class="n">res_tot</span><span class="p">,</span> <span class="n">rel_err_tot</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span></div>
+
+<div class="viewcode-block" id="Meshtal.read_meshtally_head"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Meshtal.read_meshtally_head">[docs]</a>    <span class="k">def</span> <span class="nf">read_meshtally_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the particle type and response bool of whether flux-to-dose</span>
+<span class="sd">        conversion factors are being used.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : str or filestream</span>
+<span class="sd">            Filestream of the meshtal file.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle : str</span>
+<span class="sd">            The particle type, &#39;neutron&#39; or &#39;photon&#39;.</span>
+<span class="sd">        dose_response : bool</span>
+<span class="sd">            True : if this meshtally is modified by a dose function.</span>
+<span class="sd">            False : if this meshtally is not modified by a dose function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;neutron&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="s1">&#39;neutron&#39;</span>
+            <span class="n">particle</span> <span class="o">=</span> <span class="s1">&#39;neutron&#39;</span>
         <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;photon&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="s1">&#39;photon&#39;</span>
+            <span class="n">particle</span> <span class="o">=</span> <span class="s1">&#39;photon&#39;</span>
 
         <span class="c1"># determine if meshtally flux-to-dose conversion factors are being used.</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">dr_str</span> <span class="o">=</span> <span class="s1">&#39;This mesh tally is modified by a dose response function.&#39;</span>
         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">dr_str</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dose_response</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">dose_response</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dose_response</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">dose_response</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">particle</span><span class="p">,</span> <span class="n">dose_response</span></div>
+
+<div class="viewcode-block" id="Meshtal.read_xyze_bounds"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Meshtal.read_xyze_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">read_xyze_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the spatial and energy bounds.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : str or filestream</span>
+<span class="sd">            Filestream of the meshtal file.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x_bounds : tuple of float</span>
+<span class="sd">            Mesh boundaries of X dimension.</span>
+<span class="sd">        y_bounds : tuple of float</span>
+<span class="sd">            Mesh boundaries of Y dimension.</span>
+<span class="sd">        z_bounds : tuple of float</span>
+<span class="sd">            Mesh boundaries of Z dimension.</span>
+<span class="sd">        e_bounds : tuple of float</span>
+<span class="sd">            Energy boundaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># advance the file to the line where x, y, z, bounds start</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Tally bin boundaries:&#39;</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]]</span>
+        <span class="n">x_bounds</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="n">y_bounds</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="n">z_bounds</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">:])</span>
         <span class="c1"># &quot;Energy bin boundaries&quot; contain one more word than &quot;X boundaries&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">e_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">:]]</span>
+        <span class="n">e_bounds</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">x_bounds</span><span class="p">,</span> <span class="n">y_bounds</span><span class="p">,</span> <span class="n">z_bounds</span><span class="p">,</span> <span class="n">e_bounds</span></div>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                                 <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                                 <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+<div class="viewcode-block" id="Meshtal.read_column_order"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Meshtal.read_column_order">[docs]</a>    <span class="k">def</span> <span class="nf">read_column_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create dictionary with table headings as keys and their column</span>
+<span class="sd">        location as values. Dictionary is the private attribute _column_idx.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : str or filestream</span>
+<span class="sd">            Filestream of the meshtal file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># skip blank line between enery bin boundaries and table headings</span>
         <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_read_column_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create dictionary with table headings as keys and their column</span>
-<span class="sd">        location as values. Dictionary is the private attribute _column_idx.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">column_names</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Rel &#39;</span><span class="p">,</span> <span class="s1">&#39;Rel_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
             <span class="s1">&#39;Rslt * &#39;</span><span class="p">,</span> <span class="s1">&#39;Rslt_*_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">column_names</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_names</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_idx</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">column_names</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_names</span><span class="p">))))</span></div>
 
-    <span class="k">def</span> <span class="nf">_create_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">mesh_has_mats</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate a Mesh object and tag the PyMOAB core instance</span>
-<span class="sd">           with results and relative errors.</span>
+<div class="viewcode-block" id="Meshtal.read_tally_results_rel_error"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.Meshtal.read_tally_results_rel_error">[docs]</a>    <span class="k">def</span> <span class="nf">read_tally_results_rel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">num_e_groups</span><span class="p">,</span> <span class="n">num_ves</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read meshtally results and relative error data.</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : str or filestream</span>
+<span class="sd">            Filestream of the meshtal file.</span>
+<span class="sd">        num_e_groups: int</span>
+<span class="sd">            Number of energy groups.</span>
+<span class="sd">        num_ves: int</span>
+<span class="sd">            Number of volume elements.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        results : numpy array, shape=(num_ves, num_e_groups)</span>
+<span class="sd">            Tally results data.</span>
+<span class="sd">        rel_error : numpy array, shape=(num_ves, num_e_groups)</span>
+<span class="sd">            Tally relative error data.</span>
+<span class="sd">        res_tot : numpy array</span>
+<span class="sd">            Tally total flux result.</span>
+<span class="sd">        rel_err_tot : numpy array</span>
+<span class="sd">            Total relative error fo flux.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">mats</span> <span class="o">=</span> <span class="p">()</span> <span class="k">if</span> <span class="n">mesh_has_mats</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MeshTally</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structured_coords</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">,</span>
-                                                           <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">],</span>
-                                        <span class="n">structured</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mats</span><span class="o">=</span><span class="n">mats</span><span class="p">)</span>
-
-        <span class="n">num_vol_elements</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>\
-            <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">num_e_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e_bounds</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
-
         <span class="c1"># get result and relative error data from file</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">num_vol_elements</span><span class="p">))</span>
-        <span class="n">rel_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">num_vol_elements</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_e_groups</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">num_ves</span><span class="p">))</span>
+        <span class="n">rel_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">num_ves</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_e_groups</span><span class="p">):</span>
             <span class="n">result_row</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">rel_error_row</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_vol_elements</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ves</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">result_row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span><span class="p">[</span><span class="s2">&quot;Result&quot;</span><span class="p">]]))</span>
+                <span class="n">result_row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_idx</span><span class="p">[</span><span class="s2">&quot;Result&quot;</span><span class="p">]]))</span>
                 <span class="n">rel_error_row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span><span class="p">[</span><span class="s2">&quot;Rel_Error&quot;</span><span class="p">]]))</span>
-
+                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_idx</span><span class="p">[</span><span class="s2">&quot;Rel_Error&quot;</span><span class="p">]]))</span>
             <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_row</span>
             <span class="n">rel_error</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_error_row</span>
 
-        <span class="c1"># Tag results and error vector to mesh</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">,</span>
-                 <span class="n">size</span><span class="o">=</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="n">res_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">,</span>
-                 <span class="n">size</span><span class="o">=</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="n">rel_err_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="k">if</span> <span class="n">num_e_groups</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">res_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">rel_err_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">rel_error</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">res_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-            <span class="n">rel_err_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">rel_error</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-
+        <span class="n">res_tot</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rel_err_tot</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># If &quot;total&quot; data exists (i.e. if there is more than</span>
         <span class="c1"># 1 energy group) get it and tag it onto the mesh.</span>
         <span class="k">if</span> <span class="n">num_e_groups</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">rel_error</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_vol_elements</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ves</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span><span class="p">[</span><span class="s2">&quot;Result&quot;</span><span class="p">]]))</span>
-                <span class="n">rel_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_idx</span><span class="p">[</span><span class="s2">&quot;Rel_Error&quot;</span><span class="p">]]))</span>
+                <span class="n">res_tot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_idx</span><span class="p">[</span><span class="s2">&quot;Result&quot;</span><span class="p">]]))</span>
+                <span class="n">rel_err_tot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_idx</span><span class="p">[</span><span class="s2">&quot;Rel_Error&quot;</span><span class="p">]]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res_tot</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">rel_err_tot</span> <span class="o">=</span> <span class="n">rel_error</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                     <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">)</span>
-            <span class="n">res_tot_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                     <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">tagtype</span><span class="o">=</span><span class="s1">&#39;nat_mesh&#39;</span><span class="p">)</span>
-            <span class="n">rel_err_tot_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-
-            <span class="n">res_tot_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">result</span>
-            <span class="n">rel_err_tot_tag</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">rel_error</span></div>
-
+        <span class="c1"># convert the shape of result and rel_err to (num_ves, num_e_groups)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">rel_error</span> <span class="o">=</span> <span class="n">rel_error</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">rel_error</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">res_tot</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rel_err_tot</span><span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="mesh_to_geom"><a class="viewcode-back" href="../../pyapi/mcnp.html#pyne.mcnp.mesh_to_geom">[docs]</a><span class="k">def</span> <span class="nf">mesh_to_geom</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">frac_type</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="n">title_card</span><span class="o">=</span><span class="s2">&quot;Generated from PyNE Mesh&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function reads a structured Mesh object and returns the geometry</span>
@@ -2284,8 +2305,8 @@ if(ga_enabled){
 <span class="sd">    geom : str</span>
 <span class="sd">        The title, cell, surface, and material cards of an MCNP input file in</span>
 <span class="sd">        the proper order.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">mesh</span><span class="o">.</span><span class="n">_structured_check</span><span class="p">()</span>
     <span class="n">divs</span> <span class="o">=</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span>
             <span class="n">mesh</span><span class="o">.</span><span class="n">structured_get_divisions</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">),</span>
@@ -2318,7 +2339,7 @@ if(ga_enabled){
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">divs</span><span class="p">[</span><span class="mi">2</span><span class="p">])):</span>
                 <span class="c1"># Cell number, mat number, density</span>
                 <span class="n">cell_cards</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
-                                                    <span class="n">mesh</span><span class="o">.</span><span class="n">density</span><span class="p">[</span><span class="n">idx</span><span class="o">.</span><span class="n">next</span><span class="p">()])</span>
+                                                    <span class="n">mesh</span><span class="o">.</span><span class="n">density</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">idx</span><span class="p">)])</span>
                 <span class="c1"># x, y, and z surfaces</span>
                 <span class="n">cell_cards</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> -</span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> -</span><span class="si">{3}</span><span class="s2"> </span><span class="si">{4}</span><span class="s2"> -</span><span class="si">{5}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                               <span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">x_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
@@ -2349,12 +2370,13 @@ if(ga_enabled){
     <span class="n">mat_cards</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">iter_structured_idx</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
-        <span class="n">mesh</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;mat_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">mesh</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;mat_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">mat_cards</span> <span class="o">+=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mcnp</span><span class="p">(</span><span class="n">frac_type</span><span class="o">=</span><span class="n">frac_type</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">mat_cards</span>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -2364,17 +2386,15 @@ if(ga_enabled){
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -2409,7 +2429,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.mcnp</a></li> 
       </ul>
     </div>
     </div>
@@ -2419,7 +2440,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

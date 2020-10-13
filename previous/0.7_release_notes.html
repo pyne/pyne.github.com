@@ -1,0 +1,522 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>&lt;no title&gt; &#8212; PyNE 0.7.1</title>
+    <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
+    <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"><script type="text/javascript">
+var ga_enabled = !$.cookie('disable-ga');
+if(ga_enabled){
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37452818-1']);
+  _gaq.push(['_setCookiePath', '/']);
+  _gaq.push(['_setDetectFlash', false]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+}
+</script>
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <dl class="simple">
+<dt>IMPORTANT: Python 2 is no longer supported as of this release.  Some packages may continue to work,</dt><dd><p>but there is no longer testing of Python 2 during development.</p>
+</dd>
+</dl>
+<p><strong>New Capabilities</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Subvoxel R2S allows activation and photon source sampling by material within a mesh voxel</dt><dd><ul>
+<li><p>SubMode parameter in source_sampling</p></li>
+<li><p>Add code for submode: SUBVOXEL</p></li>
+<li><p>Test functions to test SUBVOXEL codes in test_source_sampling.py</p></li>
+<li><p>Add subvoxel r2s workflow support in pyne/scripts/r2s.py</p></li>
+<li><p>Use new sampler for both voxel and sub-voxel R2S.</p></li>
+<li><p>Define cell_mats for subvoxel equals False</p></li>
+<li><p>Function Sampler::mesh_tag_data to be compatible for both DEFAULT and SUBVOXEL mode</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>OpenMC support</dt><dd><ul>
+<li><p>Add CI test for OpenMC as an optional dependency</p></li>
+<li><p>Add options to install OpenMC Python API</p></li>
+<li><p>Functions to read OpenMC state point file to get meshtally data</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>File scripts/activation_responses.py to get activation responses data for ALARA output file for better visualization. Responses include:</dt><dd><ul>
+<li><p>decay heat</p></li>
+<li><p>specific activity</p></li>
+<li><p>alpha heat</p></li>
+<li><p>beta heat</p></li>
+<li><p>gamma heat</p></li>
+<li><p>wdr</p></li>
+<li><p>photon_source</p></li>
+<li><p>multiple response in one output.txt file</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>first introduction of GT-CADIS workflows</dt><dd><ul>
+<li><p>added gtcadis.py script</p></li>
+<li><p>first step for the GT-CADIS workflow, further steps to follow</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Enhancements to Previous Capabilities</strong></p>
+<ul>
+<li><p>Turn off QA warnings by default and enable with env variable ‘PYNE_QA_WARN’ (#1268)</p></li>
+<li><dl>
+<dt>Enhancements of Material and MaterialLibrary capabilities</dt><dd><ul>
+<li><p>A C++ API for the MaterialLibrary class has been created for direct
+use in compiled software tools</p></li>
+<li><p>Change the MaterialLibrary Python API to bind to the new c++ one.</p></li>
+<li><dl>
+<dt>Overhaul of HDF5 format of Material and MaterialLibrary</dt><dd><ul>
+<li><p>Capability to read nuclides from a specific path when loading material
+from an hdf5 file (not necessarily relying on autodetect the nucpath).</p></li>
+<li><p>change the structure of material when written in a hdf5 file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">material</span><span class="o">/</span>
+<span class="o">/</span><span class="n">material</span><span class="o">/</span><span class="n">my_mat</span><span class="o">/</span>
+<span class="o">/</span><span class="n">material</span><span class="o">/</span><span class="n">my_mat</span><span class="o">/</span><span class="n">composition</span>
+<span class="o">/</span><span class="n">material</span><span class="o">/</span><span class="n">my_mat</span><span class="o">/</span><span class="n">nuclidelist</span>
+<span class="o">/</span><span class="n">material</span><span class="o">/</span><span class="n">my_mat</span><span class="o">/</span><span class="n">composition_metadata</span>
+</pre></div>
+</div>
+<p>where, <code class="docutils literal notranslate"><span class="pre">/material</span></code> and <code class="docutils literal notranslate"><span class="pre">/material/my_mat</span></code> are now HDF5 groups</p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Material I/O formats</dt><dd><ul class="simple">
+<li><p>pyne::Material: capability to form PHITS input material card</p></li>
+<li><p>capability to form a uwuw material name</p></li>
+<li><p>A new argument <code class="docutils literal notranslate"><span class="pre">mult_den</span></code> (bool) that makes <em>Material</em> class’s
+<strong>get_density_frac</strong> method (hence also <strong>mcnp</strong> and <strong>phits</strong> methods)
+write atom/mass density if true, otherwise write atom/mass fraction.</p></li>
+<li><p>increased precision of the material density reported in the comment card
+for an MCNP material to 5 decimal places</p></li>
+<li><p>Adds tests to tests/test:materials.py:test_decay_heat(self) to check more isotopes</p></li>
+<li><p>Adds from_activity() to create or redefine materials using radionuclide
+activities</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Bug fixes in serpent support</dt><dd><ul class="simple">
+<li><p>in serpent.py, function VOL_serp2_fix() to correct for
+_VOL variable being an array. as seen in serpent 2</p></li>
+<li><p>fix error in serpent parse_dep</p></li>
+<li><p>serpent.py function parse_dep.  Catches ValueError that
+occurs when parse_dep attempts to make_mats with a serpent 2 *_dep.m file
+due to the *_VOL variable not being a float</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Fixes in examples and tutorials</dt><dd><ul class="simple">
+<li><p>in half_life example, changed nuc_data call in anum to give int data type</p></li>
+<li><p>in Data Sources, rerun example to update output</p></li>
+<li><p>in Chainsolve Transmutation, rerun example to update output</p></li>
+<li><p>pytaps to pymoab update in intro/diffusion tutorials (#1282, #1304)</p></li>
+<li><p>in material_library example, updated import and class usage to reflect MaterialLibrary changes (#1280)</p></li>
+<li><p>Removed QA warnings</p></li>
+<li><p>in ACE Module example, change urllib for requests</p></li>
+<li><p>adds broken yt warning to examples notebooks, updates deprecated urlretrieve to requests (#1295, #1304)</p></li>
+<li><p>remove Origen 2.2: H1 Cross Section for PyNE repo not supporting necessary inputs to reproduce the example.</p></li>
+<li><p>in mesh basic tutorial, add broken yt warning</p></li>
+<li><p>in endf reader example, cross-section plots from ENDF/B-VII.1 and updated module for deprecated urlretrieve to requests (#1297, #1317)</p></li>
+<li><p>change to integer division in example in nuclide naming tutorial, fix typo (#1310)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Changes in source sampling for mesh-based Monte Carlo sources</dt><dd><ul class="simple">
+<li><p>Add statistics summary output of find_cell failure in source sampling.</p></li>
+<li><p>Add the ability to allow user turn off the void rejection in source sampling.</p></li>
+<li><p>Add cell_fracs and cell_number tags for both default and subvoxel r2s modes</p></li>
+<li><p>Check for the existence of the e_bounds file. Print error message when it’s missing.</p></li>
+<li><p>Check for bias_tag data. Report error when bias tag data are all zero</p></li>
+<li><p>Check ‘cell_fracs’ tag in source_sampling.cpp when sub_mode is DEFAULT. Prevent wrong use of source.h5m.</p></li>
+<li><p>Fix the problem of reading cell_number_tag with size of 1</p></li>
+<li><p>Change mode range of cell rejection from &gt;3 to &gt;2</p></li>
+<li><p>Sort cell_fracs according to the order of ‘idx’ and ‘vol_frac’. For faster source sampling.</p></li>
+<li><p>Pass cell_list back to Fortran, to speed up source sampling.</p></li>
+<li><p>function to write total photon intensities for subvoxel r2s</p></li>
+<li><p>Removed variables <code class="docutils literal notranslate"><span class="pre">`icl_tmp`</span></code> and <code class="docutils literal notranslate"><span class="pre">`find_cell`</span></code> which are not longer needed.</p></li>
+<li><p>MCNP6 version of source.F90</p></li>
+<li><p>Changed source.F90 to use “implicit none” instead of “implicit real”</p></li>
+<li><p>Addition &amp; updates of unit tests for above improvements</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Improvements in Rigorous-2-Step shutdown dose rate analysis workflow</dt><dd><ul class="simple">
+<li><p>Documentation improvements</p></li>
+<li><p>Provide example files for variety of problems/problem modes</p></li>
+<li><dl class="simple">
+<dt>Improvements in testing of R2S</dt><dd><ul>
+<li><p>Use example files for automated testing</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Streamline code related to addition of subvoxel mode</dt><dd><ul>
+<li><p>Combine the subvoxel/voxel R2S loops to calculate the total photon source intensities.</p></li>
+<li><p>Keep cell_number, cell_fracs, cell_largest_frac_number and cell_largest_frac tag in r2s step1</p></li>
+<li><p>Use subvoxel and normal r2s compatible workflow parameters</p></li>
+<li><p>Input check of cell_fracs tag under voxel mode. As the cell_fracs tag is there for voxel/sub-voxel mode.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Load geom and calculate cell_mats in r2s step2</p></li>
+<li><p>Read decay times from r2s config.ini, and then write them into alara_inp.</p></li>
+<li><p>In R2S step2, add option to write only ‘total’ to h5 file, reduce the CPU time</p></li>
+<li><p>Error in voxel R2S.</p></li>
+<li><dl class="simple">
+<dt>Changes in processing of ALARA input/output</dt><dd><ul>
+<li><p>Change some default names of alara_inp.</p></li>
+<li><p>Decay times in the alara_params.txt.</p></li>
+<li><p>Add input units check to the function utils.py/to_sec</p></li>
+<li><p>Use function utils.py/to_sec to replace alara.py/_TO_SEC</p></li>
+<li><p>Simplify the method to get the list of decay/cooling times</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Nuclear Data Handling and Reporting</dt><dd><ul class="simple">
+<li><p>Fixed issue where some gamma x-rays where throwing <code class="docutils literal notranslate"><span class="pre">NotANuclide</span></code> errors
+because the underlying nuclides were being read &amp; recorded with negative ids.
+All nuclide ids are now ensured to be positive.</p></li>
+<li><p>Misidentification of descriptive text in (MF,MT)=(1,451) as contents lines.</p></li>
+<li><p>decay_heat() in material.cpp now calls metastable_id to convert zas_id to state_id</p></li>
+<li><p>Fix ENDF parsing of TSL files with short collision time approximation for non-principal atoms.</p></li>
+<li><dl class="simple">
+<dt>endf.Library._read_headers() and regular expressions in endf.pyx</dt><dd><ul>
+<li><p>Removed regexps: CONTENTS_R, SPACE66_R, NUMERICAL_DATA_R</p></li>
+<li><p>Added regexps:   SPACEINT11_R</p></li>
+<li><p>Added methods:   _isContentLine(parts)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>ENSDF database link to 2019 Oct 4th database</p></li>
+<li><p>Update the C012-n.ace file link.</p></li>
+<li><p>Missing elements name_to_zz dictionary</p></li>
+<li><p>Updated half_life in data.pyx to return nan if isotope not found (#1257)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Improvements in Mesh capabilities</dt><dd><ul class="simple">
+<li><p>added mesh tally definitions to tallies</p></li>
+<li><p>store multi particle tally (for Volume and Surface)</p></li>
+<li><p>mcnp can write multi-particle tally</p></li>
+<li><p>Move check of tag_names to mesh.py</p></li>
+<li><p>Fix a problem of creating mesh from reading h5m files in unstructued R2S</p></li>
+<li><p>Default initializer pyne.mesh.Mesh() now raises an exception with info on how
+to properly make a mesh</p></li>
+<li><p>Move class MeshTally from mcnp.py to mesh.py</p></li>
+<li><p>Change the method of creating meshtally from mcnp meshtal</p></li>
+<li><dl class="simple">
+<dt>pyne.mesh now takes advantage of PyMOAB instead of PyTAPS:</dt><dd><ul>
+<li><p>IMeshTag changed to NativeMeshTag, with according tagetype name change:
+from ‘imesh’ to ‘nat_mesh’</p></li>
+<li><p>write_hdf5(self, filename) -&gt; write_hdf5(self, filename, write_mats)</p></li>
+<li><p>new save(self, filename, write_mats) (alias for write hdf5)</p></li>
+<li><p>new class MeshSetIterator()</p></li>
+<li><p>new get_tag(self, tag_name) and delete_tag(self, tag_name) methods</p></li>
+<li><dl class="simple">
+<dt>when tagging the root set of a mesh, a new syntax is available:</dt><dd><ul>
+<li><p><cite>mymesh.mytag[mesh.mesh.getRootSet()] = val</cite>  can now be written as <cite>mymesh.mytag[mymesh] = val</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>direct call to the mesh entities change accordingly for example:</dt><dd><ul>
+<li><p>getEntSets() -&gt; get_entities_by_type( , )</p></li>
+<li><p>getTagHandle(‘XXX’) -&gt; tag_get_handle(types.XXXXX)</p></li>
+<li><p>iterate() -&gt; mesh_iterate()</p></li>
+<li><p>getAllTags(xx) -&gt; tag_get_tags_on_entity(xx)</p></li>
+<li><p>mesh.destroyTag(self, boolean) -&gt; mesh.delete_tag(self)</p></li>
+<li><p>… (see PyTAPS and PyMOAB respective documentation)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>those changes have been propagated in mcnp.py, alara.py, ccc.py, dagmc.pyx,
+r2s.py, variancereduction.py, expand_tags.py, and their respective tests…</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Maintenance</strong></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Documentation Changes</dt><dd><ul>
+<li><p>Credit Rochman for allowing redistribute TENDL file</p></li>
+<li><p>Fix various typos</p></li>
+<li><p>automatic deployment of a updated version of the website on tags</p></li>
+<li><p>automatic creation of a new version of the website (not deployed) for
+verification purposes in <code class="docutils literal notranslate"><span class="pre">pyne.github.com/website_preview</span></code></p></li>
+<li><p>New developers guide: The update adds information about creating an environment,
+updates formatting for more consistency, details considerations and methods to
+check the version of dependencies, and adds additional links to coding resources.</p></li>
+<li><p>In website index, change C++ API link to “C++ API Documentation”
+instead of “C++ &amp; Fortran API Documentation”</p></li>
+<li><p>Added publications to bibliography (PR #1256)</p></li>
+<li><p>Adding contributing guide and code of conduct (#1258)</p></li>
+<li><p>Changed Doc and Tutorial mentions of iPython notebooks to Jupyter notebooks (PR #1262)</p></li>
+<li><p>Improvements in documentation for release (#1290 #1285 #1299)</p></li>
+<li><p>Fix broken links (#1311)</p></li>
+<li><p>Update install instructions (#1238 &amp; #1315)</p></li>
+<li><p>Update New Developers Guide</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Improvements in building and testing</dt><dd><ul>
+<li><p>require contributor to change CHANGELOG</p></li>
+<li><dl class="simple">
+<dt>now get the base branch name from github and check change against it</dt><dd><p>(inspired by <a class="reference external" href="https://github.com/NarrativeScience/circleci-orb-ghpr/blob/master/src/commands/get-pr-info.yml">https://github.com/NarrativeScience/circleci-orb-ghpr/blob/master/src/commands/get-pr-info.yml</a>)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Expand testing matrix to include:</dt><dd><ul>
+<li><p>python 2 vs 3</p></li>
+<li><p>with vs without PyMOAB</p></li>
+<li><p>with vs without DAGMC</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Added FindDAGMC.cmake file</p></li>
+<li><p>turn off BLAS/LAPACK &amp; FORTRAN in MOAB build</p></li>
+<li><p>Dockerfile to build many variations of PyNE docker image, with python script CLI</p></li>
+<li><p>Add hdf5-tools as dependency for docker images used in CircleCI, for better nose test comparing h5 files</p></li>
+<li><p>Add future as dependency for docker images used in CircleCI, for python2 and python3 compatibility</p></li>
+<li><p>“–dagmc” flag added to <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> in order to build PyNE against DAGMC</p></li>
+<li><p>new check won’t now be triggered after a merge only on PRs</p></li>
+<li><p>utils.py: updated the download timeout time to 120sec (from 30sec)</p></li>
+<li><p>updated CI to use CircleCI 2.1 workflows: now build separately from tests with state saved between runs</p></li>
+<li><dl class="simple">
+<dt>test_fluka:</dt><dd><ul>
+<li><p>added test to check the data tag name of the different tally part and
+error.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>revert internal nuc_data_path to origin value after internal data test</p></li>
+<li><p>added DEFINE variable to allow material.cpp amalgamation without decay.cpp</p></li>
+<li><dl class="simple">
+<dt>now skips endf test when website is not reachable to allow completeness of the other tests.</dt><dd><ul>
+<li><p>test file for ENDF was wrong</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Add functions to do file, file block, line, and string almost the same
+compare functions in pyne/utils.py</p></li>
+<li><p>make data available as replacement for data.pyne.io (#1261, #1265)</p></li>
+<li><p>Removed iPython check from <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and added Jupyter to be an optional dependency in documentation (#1273)</p></li>
+<li><p>Install Python dependencies with Pip instead of APT in Dockerfile</p></li>
+<li><p>Remove if block in travis-run-tests.sh (just run nosetests)</p></li>
+<li><p>Deprecating most of the python 2 tests. Only testing python2 with pyMOAB and DAGMC deps.</p></li>
+<li><p>updates tutorials and examples to python3 syntax to avoid failures (#1271)</p></li>
+<li><p>added a welcome bot for first PR, Issue, and merge (#1287)</p></li>
+<li><p>allow spatial solvers to be built in conda environments (#1305)</p></li>
+<li><p>allow spatial solvers to be turned on/off at time of setup (#1308)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Code cleanup</dt><dd><ul>
+<li><p>Formatting improvements</p></li>
+<li><dl class="simple">
+<dt>Compatibility with language updates</dt><dd><ul>
+<li><p>update the way that <code class="docutils literal notranslate"><span class="pre">collections</span></code> is imported in preparation
+for deprecated changes in future python versions</p></li>
+<li><p>removed some imports of <code class="docutils literal notranslate"><span class="pre">collections</span></code> that were not necessary</p></li>
+<li><p>change return type of method to avoid compiler compatibility issue</p></li>
+<li><p>Convert some code and tests to enable python2/3 compatibility</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Clean up some hard coded strings in test_source_sampling.py</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rxname.child()</span></code> and <code class="docutils literal notranslate"><span class="pre">rxname.parent()</span></code> now accept <code class="docutils literal notranslate"><span class="pre">str</span></code> for the
+<code class="docutils literal notranslate"><span class="pre">z</span></code> argument in Python 3.</p></li>
+<li><p>dagmc_bridge: added a static DagMC instance</p></li>
+<li><p>cleanup throws return from <code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">(const</span> <span class="pre">char</span> <span class="pre">*)</span></code> to simple <code class="docutils literal notranslate"><span class="pre">return</span></code>
+(it was suggested that those complicated return might cause seg fault, on some system – OsX+conda)</p></li>
+<li><p>Fixes string formatting typo in <code class="docutils literal notranslate"><span class="pre">pyne/fortranformat/_parser.py</span></code>. Entire file is now <code class="docutils literal notranslate"><span class="pre">str.format()</span></code> (#1275)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Fixed:</strong></p>
+<ul class="simple">
+<li><p>Bug fix in xsdir class for parsing correct ZAID XS (#1314)</p></li>
+</ul>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/pyne_icon_small.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">PyNE</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+    <div style="background-color:rgba(255,255,255,0.5);display:inline-block;border-radius:10px;padding:6px;">
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2019, The PyNE Development Team.
+      Last updated on Oct 13, 2020.
+    </div><script type="text/javascript">
+    if(ga_enabled){
+        document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");
+        document.write("Click <button title=\"set cookie to disable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', 'true', {expires: 3650, path: '/'}); window.location.reload(); return false; \">here</button> to disable analytics for this site.");
+        document.write("</div>");
+    }else{
+        document.write("<div class=\"footer\">Google Analytics has been disabled. ");
+        document.write("Click <button title=\"set cookie to re-enable analytics for this site\" class=\"link\" onclick=\"$.cookie('disable-ga', null, {path: '/'}); window.location.reload(); return false; \">here</button> to re-enable analytics for this site.");
+    };
+</script>
+    <!-- cloud_sptheme 1.4 -->
+    </div>
+    </div>
+  </body>
+</html>

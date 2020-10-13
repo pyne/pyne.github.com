@@ -12,5 +12,7 @@ var searchData=
   ['_7enotaparticle',['~NotAParticle',['../classpyne_1_1particle_1_1_not_a_particle.html#abe61e24b09e9846161bc264a1dc7978d',1,'pyne::particle::NotAParticle']]],
   ['_7enotareaction',['~NotAReaction',['../classpyne_1_1rxname_1_1_not_a_reaction.html#a2a34cc0de45875c17c004acff20dc535',1,'pyne::rxname::NotAReaction']]],
   ['_7epathnotfound',['~PathNotFound',['../classh5wrap_1_1_path_not_found.html#acf9696ccdfb4a4c63454dbfc1dcde060',1,'h5wrap::PathNotFound']]],
+  ['_7epointsource',['~PointSource',['../classpyne_1_1_point_source.html#a1046e21b47ca99f1f5d3edecc04db237',1,'pyne::PointSource']]],
+  ['_7esource',['~Source',['../classpyne_1_1_source.html#ad25e278cf6787a6153fad6bffca500e8',1,'pyne::Source']]],
   ['_7evalueerror',['~ValueError',['../classpyne_1_1_value_error.html#a9925f29080ee4da11b17522550579aa8',1,'pyne::ValueError']]]
 ];

@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.partisn &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyne.partisn &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/jquery.cookie.js"></script>
+    <script src="../../_static/cloud.base.js"></script>
+    <script src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -54,7 +53,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.partisn</a></li> 
       </ul>
     </div>
     </div>
@@ -78,44 +78,43 @@ if(ga_enabled){
 <span class="sd">If PyMOAB not installed then this module will not work.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">HAVE_PYMOAB</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="kn">import</span> <span class="n">HAVE_PYMOAB</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">linecache</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">textwrap</span> <span class="k">import</span> <span class="n">wrap</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">wrap</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">QA_warn</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tables</span>
 
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span>
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">MultiMaterial</span>
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">MaterialLibrary</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">MultiMaterial</span>
+<span class="kn">from</span> <span class="nn">pyne.material_library</span> <span class="kn">import</span> <span class="n">MaterialLibrary</span>
 
-<span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">nucname</span>
-<span class="kn">from</span> <span class="nn">pyne.binaryreader</span> <span class="k">import</span> <span class="n">_BinaryReader</span><span class="p">,</span> <span class="n">_FortranRecord</span>
+<span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">nucname</span>
+<span class="kn">from</span> <span class="nn">pyne.binaryreader</span> <span class="kn">import</span> <span class="n">_BinaryReader</span><span class="p">,</span> <span class="n">_FortranRecord</span>
 
-<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">QA_warn</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># Mesh specific imports</span>
 
 <span class="k">if</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="k">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">NativeMeshTag</span>
+    <span class="kn">from</span> <span class="nn">pyne.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">StatMesh</span><span class="p">,</span> <span class="n">MeshError</span><span class="p">,</span> <span class="n">NativeMeshTag</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
          <span class="s2">&quot;All aspects of the partisn module are not imported.&quot;</span><span class="p">,</span>
-         <span class="n">QAWarning</span><span class="p">)</span>
+         <span class="ne">ImportWarning</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">dagmc</span>
+    <span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">dagmc</span>
     <span class="n">HAVE_DAGMC</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="n">HAVE_DAGMC</span> <span class="o">=</span> <span class="kc">False</span>
@@ -227,11 +226,11 @@ if(ga_enabled){
     <span class="k">if</span> <span class="s1">&#39;names_dict&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">nuc_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;names_dict&#39;</span><span class="p">]</span>
         <span class="n">mat_lib</span><span class="p">,</span> <span class="n">unique_names</span> <span class="o">=</span> <span class="n">_get_material_lib</span><span class="p">(</span>
-            <span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">,</span> <span class="n">nuc_names</span><span class="o">=</span><span class="n">nuc_names</span><span class="p">)</span>
+            <span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_names</span><span class="o">=</span><span class="n">nuc_names</span><span class="p">)</span>
         <span class="n">mat_xs_names</span> <span class="o">=</span> <span class="n">_nucid_to_xs</span><span class="p">(</span><span class="n">mat_lib</span><span class="p">,</span> <span class="n">nuc_names</span><span class="o">=</span><span class="n">nuc_names</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mat_lib</span><span class="p">,</span> <span class="n">unique_names</span> <span class="o">=</span> <span class="n">_get_material_lib</span><span class="p">(</span>
-            <span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">)</span>
+            <span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">)</span>
         <span class="n">mat_xs_names</span> <span class="o">=</span> <span class="n">_nucid_to_xs</span><span class="p">(</span><span class="n">mat_lib</span><span class="p">)</span>
 
     <span class="c1"># Set input variables</span>
@@ -274,7 +273,7 @@ if(ga_enabled){
                  <span class="n">block04</span><span class="p">,</span> <span class="n">block05</span><span class="p">,</span> <span class="n">cards</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_material_lib</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nuc_hdf5path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_material_lib</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">data_hdf5path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read material properties from the loaded dagmc geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -288,12 +287,19 @@ if(ga_enabled){
         <span class="n">collapse</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># collapse isotopes into elements (if required)</span>
-    <span class="n">mats</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="n">data_hdf5path</span><span class="p">,</span> <span class="n">nucpath</span><span class="o">=</span><span class="n">nuc_hdf5path</span><span class="p">)</span>
+    <span class="n">mats</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">hdf5</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="n">data_hdf5path</span><span class="p">)</span>
+
     <span class="n">mats_collapsed</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">unique_names</span> <span class="o">=</span> <span class="p">{}</span>
+
     <span class="k">for</span> <span class="n">mat_name</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">:</span>
+        <span class="n">mat_name</span> <span class="o">=</span> <span class="n">mat_name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="n">fluka_name</span> <span class="o">=</span> <span class="n">mats</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;fluka_name&#39;</span><span class="p">]</span>
-        <span class="n">unique_names</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fluka_name</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">unique_names</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fluka_name</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unique_names</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fluka_name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">collapse</span><span class="p">:</span>
             <span class="n">mats_collapsed</span><span class="p">[</span><span class="n">fluka_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mats</span><span class="p">[</span><span class="n">mat_name</span><span class="p">]</span><span class="o">.</span><span class="n">collapse_elements</span><span class="p">(</span>
                 <span class="n">mat_except</span><span class="p">)</span>
@@ -454,7 +460,7 @@ if(ga_enabled){
                   <span class="p">[</span><span class="s1">&#39;mat:Graveyard&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;mat:graveyard&#39;</span><span class="p">]]</span>
     <span class="n">skip_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mat:Vacuum&#39;</span><span class="p">,</span> <span class="s1">&#39;mat:vacuum&#39;</span><span class="p">,</span> <span class="s1">&#39;mat:Graveyard&#39;</span><span class="p">,</span> <span class="s1">&#39;mat:graveyard&#39;</span><span class="p">]</span>
     <span class="n">zones_compressed</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zones</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zones</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="c1"># check first if the definition is 100% void, keep same if is</span>
         <span class="k">if</span> <span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;mat&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">skip_array</span> <span class="ow">and</span> <span class="n">zones</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]:</span>
             <span class="n">zones_compressed</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span>
@@ -474,9 +480,9 @@ if(ga_enabled){
     <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">zones_compressed</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">zones_compressed</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="c1"># Find if the zone already exists</span>
-        <span class="k">for</span> <span class="n">zone</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zones_mats</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">zone</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zones_mats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># Iterate through both sets to disregard order</span>
             <span class="n">match_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s1">&#39;mat&#39;</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
             <span class="n">match_all</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -597,7 +603,7 @@ if(ga_enabled){
 
     <span class="n">block1_cards</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="s1">&#39;block1&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">block1_cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
 
@@ -676,7 +682,7 @@ if(ga_enabled){
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="s1">&#39;block2&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t&quot;</span>
@@ -692,7 +698,7 @@ if(ga_enabled){
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;/ meshed area are listed.</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;names= &quot;</span>
     <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block03</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">block03</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">])):</span>
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
@@ -704,7 +710,7 @@ if(ga_enabled){
 
     <span class="n">block3_cards</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="s1">&#39;block3&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">block3_cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
 
@@ -724,11 +730,11 @@ if(ga_enabled){
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">/ </span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;matls= &quot;</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">])):</span>
         <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">iso</span><span class="p">,</span> <span class="n">dens</span> <span class="ow">in</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">][</span><span class="n">mat</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">iso</span><span class="p">,</span> <span class="n">dens</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">][</span><span class="n">mat</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block04</span><span class="p">[</span><span class="s1">&#39;matls&#39;</span><span class="p">][</span><span class="n">mat</span><span class="p">]):</span>
@@ -765,7 +771,7 @@ if(ga_enabled){
                         <span class="n">mat</span><span class="p">,</span> <span class="n">block04</span><span class="p">[</span><span class="s1">&#39;assign&#39;</span><span class="p">][</span><span class="n">z</span><span class="p">][</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="s1">&#39;block4&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t&quot;</span>
@@ -787,7 +793,7 @@ if(ga_enabled){
         <span class="n">default_source</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="s1">&#39;block5&#39;</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">card</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">[</span><span class="s1">&#39;block5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">card</span> <span class="o">!=</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span>
                 <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">card</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
     <span class="n">partisn</span> <span class="o">+=</span> <span class="s2">&quot;t</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1027,6 +1033,7 @@ if(ga_enabled){
     <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">dg</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1036,17 +1043,15 @@ if(ga_enabled){
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -1081,7 +1086,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.partisn</a></li> 
       </ul>
     </div>
     </div>
@@ -1091,7 +1097,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

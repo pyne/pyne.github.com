@@ -1,6 +1,7 @@
 var searchData=
 [
   ['activity',['activity',['../classpyne_1_1_material.html#aae4cbb00f956e2b89fc30ec65124408e',1,'pyne::Material']]],
+  ['add_5fmaterial',['add_material',['../classpyne_1_1_material_library.html#a720dba099f6e634c234fc9d261e89e2d',1,'pyne::MaterialLibrary::add_material(pyne::Material mat)'],['../classpyne_1_1_material_library.html#a4231a77add5e603588b3fe62531fe2dd',1,'pyne::MaterialLibrary::add_material(const std::string &amp;mat_name, const pyne::Material &amp;mat)']]],
   ['aliastable',['AliasTable',['../classpyne_1_1_alias_table.html#a18d70805153a53fcf0a337d77931bd19',1,'pyne::AliasTable']]],
   ['almost_5fstable',['almost_stable',['../namespacedecaygen.html#a8267524e00bea03ef7218742ef99b713',1,'decaygen']]],
   ['almost_5fstable_5fmask',['almost_stable_mask',['../namespacedecaygen.html#a03f99e352f15d9f51dcc70013a1fe2d9',1,'decaygen']]],

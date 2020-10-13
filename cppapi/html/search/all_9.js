@@ -10,6 +10,8 @@ var searchData=
   ['ingest_5fdose',['ingest_dose',['../structpyne_1_1dose.html#a96dc0ff17888672afb40c82b3c6bb996',1,'pyne::dose::ingest_dose()'],['../namespacepyne.html#a887bcaf7058c4b8aba27ba942fe7819a',1,'pyne::ingest_dose()']]],
   ['inhale_5fdose',['inhale_dose',['../structpyne_1_1dose.html#ade66b3422bf24883142e0de856d67228',1,'pyne::dose::inhale_dose()'],['../namespacepyne.html#ab1b598dc77d5c5f0c33f4d3d6d14a454',1,'pyne::inhale_dose()']]],
   ['intensity',['intensity',['../structpyne_1_1alpha.html#a56e40c800fbe36f1d62113ddf4c162e7',1,'pyne::alpha::intensity()'],['../structpyne_1_1beta.html#a9c2cd5b0d491324940bdd68bde23113a',1,'pyne::beta::intensity()']]],
+  ['ints',['ints',['../classpyne_1_1_tally.html#ac7c55b8fbc45b4399a27953e7981b06c',1,'pyne::Tally']]],
   ['intvalue',['intValue',['../namespace_json.html#a7d654b75c16a57007925868e38212b4eae5a9d708d5c9e23ae9bf98898522512d',1,'Json']]],
-  ['invalidsimplexs',['InvalidSimpleXS',['../classpyne_1_1_invalid_simple_x_s.html',1,'pyne::InvalidSimpleXS'],['../classpyne_1_1_invalid_simple_x_s.html#ad3bac5f587ea476c11a622024914d074',1,'pyne::InvalidSimpleXS::InvalidSimpleXS()']]]
+  ['invalidsimplexs',['InvalidSimpleXS',['../classpyne_1_1_invalid_simple_x_s.html',1,'pyne::InvalidSimpleXS'],['../classpyne_1_1_invalid_simple_x_s.html#ad3bac5f587ea476c11a622024914d074',1,'pyne::InvalidSimpleXS::InvalidSimpleXS()']]],
+  ['iterator',['iterator',['../classpyne_1_1_material_library.html#abb2c5af112371df0cee26b7fe7d17d89',1,'pyne::MaterialLibrary']]]
 ];

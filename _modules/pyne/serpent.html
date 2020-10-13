@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.serpent &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyne.serpent &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/jquery.cookie.js"></script>
+    <script src="../../_static/cloud.base.js"></script>
+    <script src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -54,7 +53,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.serpent</a></li> 
       </ul>
     </div>
     </div>
@@ -68,15 +68,14 @@ if(ga_enabled){
   <h1>Source code for pyne.serpent</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
- 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">QA_warn</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
     <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
-    
-<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+
+<span class="n">QA_warn</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">_if_idx_str_serpent1</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;if (exist(&quot;idx&quot;, &quot;var&quot;));</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -84,7 +83,7 @@ if(ga_enabled){
     <span class="s1">&#39;else;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="s1">&#39;  idx = 1;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="s1">&#39;end;&#39;</span>
-    <span class="p">)</span>
+<span class="p">)</span>
 
 <span class="n">_if_idx_str_serpent2</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;if (exist(&#39;idx&#39;, &#39;var&#39;));</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -92,7 +91,7 @@ if(ga_enabled){
     <span class="s1">&#39;else;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="s1">&#39;  idx = 1;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="s1">&#39;end;&#39;</span>
-    <span class="p">)</span>
+<span class="p">)</span>
 
 <span class="n">_num_pattern</span> <span class="o">=</span> <span class="s2">&quot;([0-9]+[.]?[0-9]*[Ee]?[+-]?[0-9]*)&quot;</span>
 
@@ -113,11 +112,57 @@ if(ga_enabled){
 
 <span class="n">_imaterial_line_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(i[a-zA-Z]\w+)\s*=\s*\d*;&quot;</span>
 
+
 <span class="k">def</span> <span class="nf">_delete_imaterial</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;&quot;Remove imaterial information from the top of Serpent2 *_dep.m file started from &#39;i&#39; with nothing.&quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">_imaterial_line_pattern</span><span class="p">,</span>
                <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span>
+
+
+<div class="viewcode-block" id="form_footer"><a class="viewcode-back" href="../../pyapi/serpent.html#pyne.serpent.form_footer">[docs]</a><span class="k">def</span> <span class="nf">form_footer</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">serp2</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Creates the footer for use in the parse_dep</span>
+<span class="sd">    function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : str</span>
+<span class="sd">        f from parse_dep</span>
+<span class="sd">    serp2 : bool</span>
+<span class="sd">    True if serp2 dep file, False if serp1.  Default false</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    footer : str</span>
+<span class="sd">        The footer to be appended to f</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">vol_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">serp2</span><span class="p">:</span>
+        <span class="n">vol_name</span> <span class="o">=</span> <span class="s2">&quot;vol[col]&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vol_name</span> <span class="o">=</span> <span class="s2">&quot;VOLUME&quot;</span>
+    <span class="n">mat_gen_line</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">MATERIAL = [</span><span class="si">{name}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">vol_name</span> <span class="o">+</span> <span class="s1">&#39; *&#39;</span>
+                   <span class="s1">&#39;Material(dict(zip(zai[:-2], </span><span class="si">{name}</span><span class="s1">MDENS[:-2, col])))&#39;</span>
+                   <span class="s1">&#39; for col in cols]</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">footer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">construct_string</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1"># Construct materials</span><span class="se">\n</span><span class="s1">&#39;</span>
+                        <span class="s1">&#39;zai = list(map(int, ZAI))</span><span class="se">\n</span><span class="s1">&#39;</span>
+                        <span class="s1">&#39;cols = list(range(len(DAYS)))</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">serp2</span><span class="p">:</span>
+        <span class="n">construct_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">vol = list(map(float, </span><span class="si">{name}</span><span class="s1">VOLUME))</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">base_names</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(MAT_\w*_)MDENS = &#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">base_name</span> <span class="ow">in</span> <span class="n">base_names</span><span class="p">:</span>
+        <span class="n">footer</span> <span class="o">+=</span> <span class="n">construct_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">base_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">base_name</span> <span class="ow">in</span> <span class="n">base_names</span><span class="p">:</span>
+        <span class="n">footer</span> <span class="o">+=</span> <span class="n">mat_gen_line</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">base_name</span><span class="p">)</span>
+    <span class="n">footer</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39;TOT_MATERIAL = [Material(dict(zip(zai[:-2], &#39;</span>
+               <span class="s1">&#39;TOT_MASS[:-2, col]))) for col in cols]</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">footer</span> <span class="o">+=</span> <span class="s2">&quot;del zai, cols</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="n">footer</span></div>
+
 
 <span class="k">def</span> <span class="nf">_replace_comments</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Replaces matlab comments with python arrays in string s.&quot;&quot;&quot;</span>
@@ -217,8 +262,8 @@ if(ga_enabled){
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="s2">&quot;int&quot;</span>
 
-        <span class="n">zero_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> = np.zeros([</span><span class="si">{1}</span><span class="s2">, </span><span class="si">{2}</span><span class="s2">], dtype=</span><span class="si">{3}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                     <span class="n">IDX</span><span class="p">,</span> <span class="n">vs_shape</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="n">zero_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> = np.zeros([</span><span class="si">{1}</span><span class="s2">, </span><span class="si">{2}</span><span class="s2">], dtype=</span><span class="si">{3}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">vs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">IDX</span><span class="p">,</span> <span class="n">vs_shape</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">zero_line</span>
 
     <span class="c1"># Add IDx to file</span>
@@ -229,11 +274,19 @@ if(ga_enabled){
     <span class="n">f</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">f</span>
 
     <span class="c1"># Replace variable overrides</span>
-    <span class="nb">vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">_lhs_variable_pattern</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">))))</span>
+    <span class="nb">vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">_lhs_variable_pattern</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">))))</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">[idx] &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
-    <span class="c1"># Remove semicolons</span>
+    <span class="c1"># Remove semicolons    if serp2:</span>
+        <span class="n">mat_gen_line</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">MATERIAL = [</span><span class="si">{name}</span><span class="s1">vol[col] *&#39;</span>
+                        <span class="s1">&#39;Material(dict(zip(zai[:-2], </span><span class="si">{name}</span><span class="s1">MDENS[:-2, col])))&#39;</span>
+                        <span class="s1">&#39; for col in cols]</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mat_gen_line</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">MATERIAL = [</span><span class="si">{name}</span><span class="s1">VOLUME *&#39;</span>
+                        <span class="s1">&#39;Material(dict(zip(zai[:-2], </span><span class="si">{name}</span><span class="s1">MDENS[:-2, col])))&#39;</span>
+                        <span class="s1">&#39; for col in cols]</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_replace_semicolons</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="c1"># Write the file out</span>
@@ -283,13 +336,13 @@ if(ga_enabled){
 
     <span class="c1"># Remove imaterial information from the top of Serpent2 *_dep.m file</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_delete_imaterial</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    
+
     <span class="c1"># Keep comments around</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_replace_comments</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="c1"># Replace matlab Arrays</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_replace_arrays</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    
+
     <span class="c1"># Now to find and convert arrays that have comments in them</span>
     <span class="n">comment_arrays</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">_comment_array_pattern</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">comment_arrays</span><span class="p">:</span>
@@ -329,18 +382,10 @@ if(ga_enabled){
     <span class="c1"># Add materials</span>
     <span class="n">footer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">make_mats</span><span class="p">:</span>
-        <span class="n">mat_gen_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">MATERIAL = [</span><span class="si">{name}</span><span class="s2">VOLUME * Material(dict(zip(zai[:-2], </span><span class="si">{name}</span><span class="s2">MDENS[:-2, col]))) for col in cols]</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">footer</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1"># Construct materials</span><span class="se">\n</span><span class="s1">&#39;</span>
-                   <span class="s1">&#39;zai = list(map(int, ZAI))</span><span class="se">\n</span><span class="s1">&#39;</span>
-                   <span class="s1">&#39;cols = list(range(len(DAYS)))</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">base_names</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(MAT_\w*_)MDENS = &#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">base_name</span> <span class="ow">in</span> <span class="n">base_names</span><span class="p">:</span>
-            <span class="n">footer</span> <span class="o">+=</span> <span class="n">mat_gen_line</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">base_name</span><span class="p">)</span>
-        <span class="n">footer</span> <span class="o">+=</span> <span class="s2">&quot;TOT_MATERIAL = [Material(dict(zip(zai[:-2], TOT_MASS[:-2, col]))) for col in cols]</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">footer</span> <span class="o">+=</span> <span class="s2">&quot;del zai, cols</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">footer</span> <span class="o">=</span> <span class="n">form_footer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="c1"># Add header &amp; footer to file</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">footer</span>
+    <span class="n">full_f</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">footer</span>
 
     <span class="c1"># Write the file out</span>
     <span class="k">if</span> <span class="n">write_py</span><span class="p">:</span>
@@ -349,11 +394,26 @@ if(ga_enabled){
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_filename</span> <span class="o">=</span> <span class="n">depfile</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.py&#39;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">new_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pyfile</span><span class="p">:</span>
-            <span class="n">pyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">pyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">full_f</span><span class="p">)</span>
 
     <span class="c1"># Execute the adjusted file</span>
     <span class="n">dep</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">exec</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">dep</span><span class="p">,</span> <span class="n">dep</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">exec</span><span class="p">(</span><span class="n">full_f</span><span class="p">,</span> <span class="n">dep</span><span class="p">,</span> <span class="n">dep</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1">#if the first attempt fails, it may be due to the VOLUME</span>
+        <span class="c1">#variable being an array.  Below changes mat_gen_line to</span>
+        <span class="c1">#work with an array</span>
+        <span class="n">correct_footer</span> <span class="o">=</span> <span class="n">form_footer</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">serp2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">full_f</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">correct_footer</span>
+
+        <span class="c1"># Overwrite the file made before to reflect changes</span>
+        <span class="k">if</span> <span class="n">write_py</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">new_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pyfile</span><span class="p">:</span>
+                <span class="n">pyfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">full_f</span><span class="p">)</span>
+
+        <span class="n">exec</span><span class="p">(</span><span class="n">full_f</span><span class="p">,</span> <span class="n">dep</span><span class="p">,</span> <span class="n">dep</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="s1">&#39;__builtins__&#39;</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">dep</span><span class="p">[</span><span class="s1">&#39;__builtins__&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">dep</span></div>
@@ -407,7 +467,7 @@ if(ga_enabled){
                 <span class="n">f</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">.shape = (</span><span class="si">{name}</span><span class="s1">_VALS, 13)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">dn</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">f</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">.shape = (</span><span class="si">{name_min_E}</span><span class="s1">_EBINS, 3)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">dn</span><span class="p">,</span>
-                                                            <span class="n">name_min_E</span><span class="o">=</span><span class="n">dn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                                                                       <span class="n">name_min_E</span><span class="o">=</span><span class="n">dn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">dn</span> <span class="o">+</span> <span class="s1">&#39;T&#39;</span> <span class="ow">in</span> <span class="n">det_names</span><span class="p">):</span>
                 <span class="n">f</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">.shape = (len(</span><span class="si">{name}</span><span class="s1">)//13, 13)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">dn</span><span class="p">)</span>
@@ -440,6 +500,7 @@ if(ga_enabled){
     <span class="k">return</span> <span class="n">det</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -449,17 +510,15 @@ if(ga_enabled){
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -494,7 +553,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.serpent</a></li> 
       </ul>
     </div>
     </div>
@@ -504,7 +564,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

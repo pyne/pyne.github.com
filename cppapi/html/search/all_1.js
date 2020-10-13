@@ -1,9 +1,10 @@
 var searchData=
 [
   ['abund',['abund',['../structpyne_1_1atomic__mass__data.html#ace923c525f6151899458705dbcb51676',1,'pyne::atomic_mass_data']]],
-  ['act',['ACT',['../namespacepyne_1_1nucname.html#a47f7c8b69afe39df2b9de731a6018e64',1,'pyne::nucname::ACT()'],['../namespacepyne_1_1nucname.html#a388ff81a89b2258f0ac2b353af72032a',1,'pyne::nucname::act()']]],
+  ['act',['act',['../namespacepyne_1_1nucname.html#a388ff81a89b2258f0ac2b353af72032a',1,'pyne::nucname::act()'],['../namespacepyne_1_1nucname.html#a47f7c8b69afe39df2b9de731a6018e64',1,'pyne::nucname::ACT()']]],
   ['act_5farray',['ACT_array',['../namespacepyne_1_1nucname.html#a5b7bd8782296656958a06b01b78f78ba',1,'pyne::nucname']]],
   ['activity',['activity',['../classpyne_1_1_material.html#aae4cbb00f956e2b89fc30ec65124408e',1,'pyne::Material']]],
+  ['add_5fmaterial',['add_material',['../classpyne_1_1_material_library.html#a720dba099f6e634c234fc9d261e89e2d',1,'pyne::MaterialLibrary::add_material(pyne::Material mat)'],['../classpyne_1_1_material_library.html#a4231a77add5e603588b3fe62531fe2dd',1,'pyne::MaterialLibrary::add_material(const std::string &amp;mat_name, const pyne::Material &amp;mat)']]],
   ['alias',['alias',['../classpyne_1_1_alias_table.html#af946606a3f7426fef270f3e32ee46a68',1,'pyne::AliasTable']]],
   ['aliastable',['AliasTable',['../classpyne_1_1_alias_table.html',1,'pyne::AliasTable'],['../classpyne_1_1_alias_table.html#a18d70805153a53fcf0a337d77931bd19',1,'pyne::AliasTable::AliasTable()']]],
   ['almost_5fstable',['almost_stable',['../namespacedecaygen.html#a8267524e00bea03ef7218742ef99b713',1,'decaygen']]],
@@ -21,5 +22,6 @@ var searchData=
   ['atomic_5fmass_5fmap',['atomic_mass_map',['../namespacepyne.html#ad57b70e4dd814b1efc458ff58641bcef',1,'pyne']]],
   ['atoms_5fper_5fmol',['atoms_per_mol',['../structpyne_1_1material__data.html#a135b69d35e0bc6c49a025a24cb153798',1,'pyne::material_data']]],
   ['atoms_5fper_5fmolecule',['atoms_per_molecule',['../classpyne_1_1_material.html#a7ddff1aaebc94bcda22d3422c093a756',1,'pyne::Material']]],
-  ['avg_5fenergy',['avg_energy',['../structpyne_1_1beta.html#aef1da93efa75bfbb8c77604b8c24ba04',1,'pyne::beta::avg_energy()'],['../structpyne_1_1ecbp.html#a2ecaf87cb93b936c48f89465958d47f7',1,'pyne::ecbp::avg_energy()']]]
+  ['avg_5fenergy',['avg_energy',['../structpyne_1_1beta.html#aef1da93efa75bfbb8c77604b8c24ba04',1,'pyne::beta::avg_energy()'],['../structpyne_1_1ecbp.html#a2ecaf87cb93b936c48f89465958d47f7',1,'pyne::ecbp::avg_energy()']]],
+  ['axs',['axs',['../classpyne_1_1_tally.html#a883412bf93615a0cf19f0404b5bf6cba',1,'pyne::Tally']]]
 ];

@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyne.mesh &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyne.mesh &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/jquery.cookie.js"></script>
+    <script src="../../_static/cloud.base.js"></script>
+    <script src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -54,7 +53,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.mesh</a></li> 
       </ul>
     </div>
     </div>
@@ -66,32 +66,36 @@ if(ga_enabled){
           <div class="body" role="main">
             
   <h1>Source code for pyne.mesh</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="k">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">MaterialLibrary</span><span class="p">,</span> <span class="n">MultiMaterial</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">future.utils</span> <span class="kn">import</span> <span class="n">implements_iterator</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">MultiMaterial</span>
+<span class="kn">from</span> <span class="nn">pyne.material_library</span> <span class="kn">import</span> <span class="n">MaterialLibrary</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="k">import</span> <span class="n">QAWarning</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pyne.utils</span> <span class="kn">import</span> <span class="n">QA_warn</span><span class="p">,</span> <span class="n">check_iterable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tables</span> <span class="k">as</span> <span class="nn">tb</span>
 
-
-<span class="n">warn</span><span class="p">(</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; is not yet QA compliant.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+<span class="n">QA_warn</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pymoab</span> <span class="k">import</span> <span class="n">core</span> <span class="k">as</span> <span class="n">mb_core</span><span class="p">,</span> <span class="n">hcoord</span><span class="p">,</span> <span class="n">scd</span><span class="p">,</span> <span class="n">types</span>
-    <span class="kn">from</span> <span class="nn">pymoab.rng</span> <span class="k">import</span> <span class="n">subtract</span>
-    <span class="kn">from</span> <span class="nn">pymoab.tag</span> <span class="k">import</span> <span class="n">Tag</span>
-    <span class="kn">from</span> <span class="nn">pymoab.types</span> <span class="k">import</span> <span class="n">_eh_py_type</span><span class="p">,</span> <span class="n">_TAG_TYPE_STRS</span>
+    <span class="kn">from</span> <span class="nn">pymoab</span> <span class="kn">import</span> <span class="n">core</span> <span class="k">as</span> <span class="n">mb_core</span><span class="p">,</span> <span class="n">hcoord</span><span class="p">,</span> <span class="n">scd</span><span class="p">,</span> <span class="n">types</span>
+    <span class="kn">from</span> <span class="nn">pymoab.rng</span> <span class="kn">import</span> <span class="n">subtract</span>
+    <span class="kn">from</span> <span class="nn">pymoab.tag</span> <span class="kn">import</span> <span class="n">Tag</span>
+    <span class="kn">from</span> <span class="nn">pymoab.types</span> <span class="kn">import</span> <span class="n">_eh_py_type</span><span class="p">,</span> <span class="n">_TAG_TYPE_STRS</span>
     <span class="n">HAVE_PYMOAB</span> <span class="o">=</span> <span class="kc">True</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">HAVE_PYMOAB</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The PyMOAB optional dependency could not be imported. &quot;</span>
-         <span class="s2">&quot;Some aspects of the mesh module may be incomplete.&quot;</span><span class="p">,</span> <span class="n">QAWarning</span><span class="p">)</span>
+         <span class="s2">&quot;Some aspects of the mesh module may be incomplete.&quot;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
 
 
 <span class="n">_BOX_DIMS_TAG_NAME</span> <span class="o">=</span> <span class="s2">&quot;BOX_DIMS&quot;</span>
@@ -126,7 +130,7 @@ if(ga_enabled){
 <span class="sd">    metadata attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mesh : Mesh, optional</span>
@@ -135,8 +139,8 @@ if(ga_enabled){
 <span class="sd">            The name of the tag.</span>
 <span class="sd">        doc : str, optional</span>
 <span class="sd">            Documentation string for the tag.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mesh&#39;</span><span class="p">:</span> <span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">:</span> <span class="n">doc</span><span class="p">}</span>
             <span class="k">return</span>
@@ -149,17 +153,17 @@ if(ga_enabled){
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_lazy_args&#39;</span><span class="p">):</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_args</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">(name=</span><span class="si">{1!r}</span><span class="s2">, doc=</span><span class="si">{2!r}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                                                    <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Tag</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;can&#39;t set tag from non-tag objects, &quot;</span>
                                  <span class="s2">&quot;got </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
@@ -168,7 +172,7 @@ if(ga_enabled){
                                  <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
         <span class="bp">self</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[:]</span>
 
-    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
         <span class="k">del</span> <span class="n">mesh</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">del</span> <span class="bp">self</span><span class="p">[:]</span>
 
@@ -190,14 +194,14 @@ if(ga_enabled){
 <span class="sd">    features to this process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Mesh.mats is None, please add a MaterialLibrary.&quot;</span><span class="p">)</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">_INTEGRAL_TYPES</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mats</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mats</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">)],</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
                              <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">key</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">size</span><span class="p">))])</span>
@@ -213,7 +217,7 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -251,7 +255,7 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;the material property tag </span><span class="si">{0!r}</span><span class="s2"> may &quot;</span>
                <span class="s2">&quot;not be deleted&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
@@ -268,7 +272,7 @@ if(ga_enabled){
 <span class="sd">    features to this process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -291,11 +295,11 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;the material method tag </span><span class="si">{0!r}</span><span class="s2"> may not be set&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;the material method tag </span><span class="si">{0!r}</span><span class="s2"> may not be &quot;</span>
                <span class="s2">&quot;deleted&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
@@ -315,7 +319,7 @@ if(ga_enabled){
 <span class="sd">    features to this process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -336,7 +340,7 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -374,7 +378,7 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -414,7 +418,7 @@ if(ga_enabled){
 <span class="sd">    features to this process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
@@ -432,8 +436,8 @@ if(ga_enabled){
 <span class="sd">            The name of the tag.</span>
 <span class="sd">        doc : str, optional</span>
 <span class="sd">            Documentation string for the tag.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">NativeMeshTag</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -462,7 +466,7 @@ if(ga_enabled){
             <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">default</span>
 
-    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NativeMeshTag</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__delete__</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
         <span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
 
@@ -486,7 +490,7 @@ if(ga_enabled){
                                 <span class="s2">&quot;(non-ints, non-handles)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">list_of_ves</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
         <span class="n">mtag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span>
@@ -522,7 +526,7 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># get value into canonical form</span>
         <span class="n">tsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">get_dtype</span><span class="p">())</span>
@@ -574,7 +578,7 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">mesh</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
         <span class="n">mtag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span>
@@ -615,6 +619,7 @@ if(ga_enabled){
 
 <span class="sd">        are created and the data is tagged accordingly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot expand a tag that is already a scalar.&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
@@ -650,10 +655,9 @@ if(ga_enabled){
 <span class="sd">    The results of computed tags are not stored and the function object itself</span>
 <span class="sd">    is also not persisted.  Therefore, you must manually re-tag the mesh with</span>
 <span class="sd">    the desired functions each session.</span>
-
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        f : callable object</span>
@@ -664,8 +668,8 @@ if(ga_enabled){
 <span class="sd">            The name of the tag.</span>
 <span class="sd">        doc : str, optional</span>
 <span class="sd">            Documentation string for the tag.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="vm">__doc__</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ComputedTag</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -673,7 +677,7 @@ if(ga_enabled){
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -695,11 +699,11 @@ if(ga_enabled){
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not an int, slice, mask, &quot;</span>
                             <span class="s2">&quot;or fancy index.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;the computed tag </span><span class="si">{0!r}</span><span class="s2"> may not be set&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;the computed tag </span><span class="si">{0!r}</span><span class="s2"> may not be deleted&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
@@ -727,7 +731,7 @@ if(ga_enabled){
 <span class="sd">        &#39;xyz&#39;, meaning z changest fastest, then y, then x.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">structured</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">structured</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">structured_coords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">structured_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">structured_ordering</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">mats</span><span class="o">=</span><span class="p">()):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
@@ -770,8 +774,19 @@ if(ga_enabled){
 <span class="sd">            where each value is a volume element index number. Typically volume</span>
 <span class="sd">            elements should be indexed from 0. The &quot;BOX_DIMS&quot; information is</span>
 <span class="sd">            stored in self.dims.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if Mesh is made and no parameters passed, raise MeshError</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">structured</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">structured_coords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> \
+            <span class="ow">and</span> <span class="p">(</span><span class="n">structured_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">structured_ordering</span> <span class="o">==</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span> \
+            <span class="ow">and</span> <span class="p">(</span><span class="n">mats</span> <span class="o">==</span> <span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">MeshError</span><span class="p">(</span><span class="s2">&quot;Trivial mesh instantiation detected. &quot;</span>
+                            <span class="s2">&quot;For structured mesh instantiation, &quot;</span>
+                                <span class="s2">&quot;supply exactly one of the following:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;A. PyMOAB instance</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;B. Mesh file</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;C. Mesh coordinates</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;D. Structured entity set AND PyMOAB instance&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mb_core</span><span class="o">.</span><span class="n">Core</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
@@ -794,7 +809,7 @@ if(ga_enabled){
                 <span class="c1"># check for the structured box tag on the instance</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">box_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_handle</span><span class="p">(</span><span class="n">_BOX_DIMS_TAG_NAME</span><span class="p">)</span>
-                <span class="k">except</span> <span class="n">types</span><span class="o">.</span><span class="n">MB_TAG_NOT_FOUND</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BOX_DIMS not found on MOAB mesh instance&quot;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="n">e</span>
 
@@ -884,10 +899,15 @@ if(ga_enabled){
         <span class="n">mats_in_mesh_file</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">mats</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">tb</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5f</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s1">&#39;/materials&#39;</span> <span class="ow">in</span> <span class="n">h5f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;/mat_name&#39;</span> <span class="ow">in</span> <span class="n">h5f</span><span class="p">:</span>
                     <span class="n">mats_in_mesh_file</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">mat_path</span> <span class="o">=</span> <span class="s1">&#39;/mat_name&#39;</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;/materials&#39;</span> <span class="ow">in</span> <span class="n">h5f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;/material_library/materials&#39;</span> <span class="ow">in</span> <span class="n">h5f</span><span class="p">):</span>
+                    <span class="n">mats_in_mesh_file</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">mat_path</span> <span class="o">=</span> <span class="s1">&#39;/materials&#39;</span>
+
             <span class="k">if</span> <span class="n">mats_in_mesh_file</span><span class="p">:</span>
-                <span class="n">mats</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+                <span class="n">mats</span> <span class="o">=</span> <span class="n">MaterialLibrary</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">datapath</span><span class="o">=</span><span class="n">mat_path</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -965,13 +985,14 @@ if(ga_enabled){
     <span class="k">def</span> <span class="nf">get_all_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">Tag</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterates through the mesh and at each step yield the volume element</span>
 <span class="sd">        index i, the material mat, and the volume element itself ve.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">mats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mats</span>
         <span class="k">if</span> <span class="n">mats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ve</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_ve</span><span class="p">()):</span>
@@ -981,17 +1002,16 @@ if(ga_enabled){
                 <span class="k">yield</span> <span class="n">i</span><span class="p">,</span> <span class="n">mats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ve</span>
 
 <div class="viewcode-block" id="Mesh.iter_ve"><a class="viewcode-back" href="../../pyapi/mesh.html#pyne.mesh.Mesh.iter_ve">[docs]</a>    <span class="k">def</span> <span class="nf">iter_ve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns an iterator that yields on the volume elements.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns an iterator that yields on the volume elements.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">structured</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">structured_iterate_hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structured_ordering</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_entities_by_dimension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_root_set</span><span class="p">(),</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">True</span><span class="p">)))</span></div>
 
-    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Tag</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;_lazy_args&#39;</span><span class="p">):</span>
             <span class="c1"># some 1337 1Azy 3\/a1</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">_lazy_args</span>
@@ -1022,8 +1042,8 @@ if(ga_enabled){
 <span class="sd">        dtype : numpy dtype, optional</span>
 <span class="sd">            The data type of the tag. This only applies to NativeMeshTags. See PyMOAB</span>
 <span class="sd">            for more details.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> tag already exists on the mesh&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">tagtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1088,33 +1108,33 @@ if(ga_enabled){
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">):</span>
             <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Adds the common tags of other to the mesh object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds the common tags of other to the mesh object.&quot;&quot;&quot;</span>
         <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_ve_tags</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Substracts the common tags of other to the mesh object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Substracts the common tags of other to the mesh object.&quot;&quot;&quot;</span>
         <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_ve_tags</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Multiplies the common tags of other to the mesh object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Multiplies the common tags of other to the mesh object.&quot;&quot;&quot;</span>
         <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_ve_tags</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Divides the common tags of other to the mesh object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Divides the common tags of other to the mesh object.&quot;&quot;&quot;</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_ve_tags</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__itruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Divides the common tags of other to the mesh object.&quot;&quot;&quot;</span>
         <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_ve_tags</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_do_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Private function to do mesh +, -, *, /.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Private function to do mesh +, -, *, /.&quot;&quot;&quot;</span>
         <span class="c1"># Exclude error tags in a case a StatMesh is mistakenly initialized as</span>
         <span class="c1"># a Mesh object.</span>
         <span class="n">tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tag</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">tag</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_error&#39;</span><span class="p">))</span>
@@ -1138,18 +1158,17 @@ if(ga_enabled){
         <span class="k">return</span> <span class="n">mesh_1</span>
 
 <div class="viewcode-block" id="Mesh.common_ve_tags"><a class="viewcode-back" href="../../pyapi/mesh.html#pyne.mesh.Mesh.common_ve_tags">[docs]</a>    <span class="k">def</span> <span class="nf">common_ve_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the volume element tags in common between self and other.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the volume element tags in common between self and other.&quot;&quot;&quot;</span>
         <span class="n">self_it</span> <span class="o">=</span> <span class="n">MeshSetIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
                                   <span class="bp">self</span><span class="o">.</span><span class="n">structured_set</span><span class="p">,</span>
                                   <span class="n">types</span><span class="o">.</span><span class="n">MBMAXTYPE</span><span class="p">,</span>
                                   <span class="n">dim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">self_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_tags_on_entity</span><span class="p">(</span><span class="n">self_it</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+        <span class="n">self_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_tags_on_entity</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">self_it</span><span class="p">))</span>
         <span class="n">other_it</span> <span class="o">=</span> <span class="n">MeshSetIterator</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
                                    <span class="n">other</span><span class="o">.</span><span class="n">structured_set</span><span class="p">,</span>
                                    <span class="n">types</span><span class="o">.</span><span class="n">MBMAXTYPE</span><span class="p">,</span>
                                    <span class="n">dim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">other_tags</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_tags_on_entity</span><span class="p">(</span><span class="n">other_it</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+        <span class="n">other_tags</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">tag_get_tags_on_entity</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">other_it</span><span class="p">))</span>
         <span class="n">self_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">self_tags</span><span class="p">)</span>
         <span class="n">other_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">other_tags</span><span class="p">)</span>
         <span class="n">intersect</span> <span class="o">=</span> <span class="n">self_tags</span> <span class="o">&amp;</span> <span class="n">other_tags</span>
@@ -1181,6 +1200,7 @@ if(ga_enabled){
 <span class="sd">        .. : float</span>
 <span class="sd">            Element&#39;s volume. Returns None if volume is not a hex or tet.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_coords</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">(</span><span class="n">ve</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">num_coords</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1208,6 +1228,7 @@ if(ga_enabled){
 <span class="sd">        center : tuple</span>
 <span class="sd">           The (x, y, z) coordinates of the center of the mesh volume element.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">ve_handle</span> <span class="o">=</span> <span class="n">_eh_py_type</span><span class="p">(</span><span class="n">ve</span><span class="p">)</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_coords</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">(</span><span class="n">ve_handle</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -1283,6 +1304,7 @@ if(ga_enabled){
 <span class="sd">                                        values change fastest, j-values least</span>
 <span class="sd">                                        fast.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_structured_check</span><span class="p">()</span>
 
         <span class="c1"># special case: zyx order is the standard pytaps iteration order,</span>
@@ -1307,6 +1329,7 @@ if(ga_enabled){
 <span class="sd">        See structured_iterate_hex() for an explanation of the order argument</span>
 <span class="sd">        and the available keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_structured_check</span><span class="p">()</span>
         <span class="c1"># special case: zyx order without kw is equivalent to an iterator</span>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;zyx&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kw</span><span class="p">:</span>
@@ -1326,6 +1349,7 @@ if(ga_enabled){
 <span class="sd">        See structured_iterate_hex() for an explanation of the order argument</span>
 <span class="sd">        and the available keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_structured_check</span><span class="p">()</span>
         <span class="n">indices</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_structured_iter_setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
         <span class="c1"># Use an inefficient but simple approach: call structured_hex_volume()</span>
@@ -1351,6 +1375,7 @@ if(ga_enabled){
 <span class="sd">        order : str, optional</span>
 <span class="sd">            The requested iteration order (e.g. &#39;zyx&#39;).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_structured_check</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">order</span><span class="p">:</span>
             <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structured_ordering</span>
@@ -1366,8 +1391,10 @@ if(ga_enabled){
 <span class="sd">        Given a dimension &quot;x&quot;, &quot;y&quot;, or &quot;z&quot;, return a list of the mesh vertices</span>
 <span class="sd">        along that dimension.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_structured_check</span><span class="p">()</span>
 
+        <span class="c1">## sometimes the dim is the ascii of the &#39;x&#39;, &#39;y&#39;, &#39;z&#39;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">dim</span> <span class="ow">in</span> <span class="s2">&quot;xyz&quot;</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_coords</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structured_iterate_vertex</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
@@ -1411,8 +1438,8 @@ if(ga_enabled){
 <span class="sd">        cell_mats : dict</span>
 <span class="sd">            Maps geometry cell numbers to Material objects that represent what</span>
 <span class="sd">            material each cell is made of.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
             <span class="n">mat_col</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Collection of materials in the ith ve.</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cell_fracs</span><span class="p">[</span><span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">]:</span>
@@ -1442,10 +1469,11 @@ if(ga_enabled){
 
 <span class="sd">            The array must be sorted with respect to both idx and cell, with</span>
 <span class="sd">            cell changing fastest.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">num_vol_elements</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># sort cell_fracs</span>
+        <span class="n">cell_fracs</span> <span class="o">=</span> <span class="n">_cell_fracs_sort_vol_frac_reverse</span><span class="p">(</span><span class="n">cell_fracs</span><span class="p">)</span>
         <span class="c1"># Find the maximum cell number in a voxel</span>
         <span class="n">max_num_cells</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_vol_elements</span><span class="p">):</span>
@@ -1506,7 +1534,7 @@ if(ga_enabled){
 <span class="sd">    and b.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">structured</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">structured</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">structured_coords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">structured_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mats</span><span class="o">=</span><span class="p">()):</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">StatMesh</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
@@ -1518,6 +1546,7 @@ if(ga_enabled){
         <span class="sd">&quot;&quot;&quot;Private function to do mesh +, -, *, /. Called by operater</span>
 <span class="sd">        overloading functions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Exclude error tags because result and error tags are treated</span>
         <span class="c1"># simultaneously so there is not need to include both in the tag</span>
         <span class="c1"># list to iterate through.</span>
@@ -1558,6 +1587,121 @@ if(ga_enabled){
 
         <span class="k">return</span> <span class="n">mesh_1</span></div>
 
+
+<div class="viewcode-block" id="MeshTally"><a class="viewcode-back" href="../../pyapi/mesh.html#pyne.mesh.MeshTally">[docs]</a><span class="k">class</span> <span class="nc">MeshTally</span><span class="p">(</span><span class="n">StatMesh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class stores all information from a single mesh tally that</span>
+<span class="sd">    exists within some meshtal or state point file. Header information is</span>
+<span class="sd">    stored as attributes and the &quot;mesh&quot; attribute is a PyNE mesh object tagged</span>
+<span class="sd">    with all result and relative error data. This class inherits from StatMesh,</span>
+<span class="sd">    exposing all statistical mesh manipulation methods.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tally_number : int</span>
+<span class="sd">        The tally number.</span>
+<span class="sd">        For mesh tally from MCNP, it must end with 4 (e.g. 4, 14, 214).</span>
+<span class="sd">        For mesh tally from OpenMC, it could be any int.</span>
+<span class="sd">    particle : string</span>
+<span class="sd">        Either &quot;neutron&quot; for a neutron mesh tally or &quot;photon&quot; for a photon mesh</span>
+<span class="sd">        tally.</span>
+<span class="sd">    dose_response : bool</span>
+<span class="sd">        True if the tally is modified by a dose response function.</span>
+<span class="sd">    x_bounds : tuple of floats</span>
+<span class="sd">        The locations of mesh vertices in the x direction.</span>
+<span class="sd">    y_bounds : tuple of floats</span>
+<span class="sd">        The locations of mesh vertices in the y direction.</span>
+<span class="sd">    z_bounds : tuple of floats</span>
+<span class="sd">        The locations of mesh vertices in the z direction.</span>
+<span class="sd">    dims : list</span>
+<span class="sd">        Dimensions of the mesh.</span>
+<span class="sd">    num_ves : int</span>
+<span class="sd">        Number of volume elements.</span>
+<span class="sd">    e_bounds : tuple of floats</span>
+<span class="sd">        The minimum and maximum bounds for energy bins.</span>
+<span class="sd">    num_e_groups: int</span>
+<span class="sd">        Number of energy groups.</span>
+<span class="sd">    mesh :</span>
+<span class="sd">        An PyMOAB core instance tagged with all results and</span>
+<span class="sd">        relative errors.</span>
+<span class="sd">    tag_names : iterable</span>
+<span class="sd">        Four strs that specify the tag names for the results, relative errors,</span>
+<span class="sd">        total results, and total relative error.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    All Mesh/StatMesh attributes are also present via a super() call to</span>
+<span class="sd">    StatMesh.__init__().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create an empty MeshTally object and set default values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAVE_PYMOAB</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;PyMOAB is not available, &quot;</span>
+                               <span class="s2">&quot;unable to create Meshtally Mesh.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tally_number</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="s1">&#39;neutron&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_tag_names</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag_names</span>
+
+    <span class="nd">@tag_names</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tag_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_names</span><span class="p">):</span>
+        <span class="n">_check_meshtally_tag_names</span><span class="p">(</span><span class="n">tag_names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag_names</span> <span class="o">=</span> <span class="n">tag_names</span>
+
+<div class="viewcode-block" id="MeshTally.set_default_tag_names"><a class="viewcode-back" href="../../pyapi/mesh.html#pyne.mesh.MeshTally.set_default_tag_names">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_tag_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set default tag_names according to particle type.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                          <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result_rel_error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                          <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result_total&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                          <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_result_total_rel_error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MeshTally.tag_flux_error_from_tally_results"><a class="viewcode-back" href="../../pyapi/mesh.html#pyne.mesh.MeshTally.tag_flux_error_from_tally_results">[docs]</a>    <span class="k">def</span> <span class="nf">tag_flux_error_from_tally_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">rel_err</span><span class="p">,</span> <span class="n">res_tot</span><span class="p">,</span>
+                                          <span class="n">rel_err_tot</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function uses the output tally result, rel_err, res_tot and the</span>
+<span class="sd">        rel_err_tot to set the flux and error tags.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        result : numpy array</span>
+<span class="sd">            This numpy array contains the flux data read from MCNP meshtal or</span>
+<span class="sd">            OpenMC state point file.</span>
+<span class="sd">            The shape of this numpy array is (ves, num_e_groups).</span>
+<span class="sd">        rel_err : numpy array</span>
+<span class="sd">            This numpy array contains the relative error data read from MCNP</span>
+<span class="sd">            meshtal or OpenMC state point file. The shape of this numpy array</span>
+<span class="sd">            is (num_ves, num_e_groups).</span>
+<span class="sd">        res_tot : list</span>
+<span class="sd">            The total results.</span>
+<span class="sd">        rel_err_tot : list</span>
+<span class="sd">            Relative error of total results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">num_ves</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+                 <span class="n">doc</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> flux&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                 <span class="n">tagtype</span><span class="o">=</span><span class="n">NativeMeshTag</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="c1"># set result_rel_error tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                 <span class="n">value</span><span class="o">=</span><span class="n">rel_err</span><span class="p">,</span>
+                 <span class="n">doc</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> flux relative error&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                 <span class="n">tagtype</span><span class="o">=</span><span class="n">NativeMeshTag</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_e_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="c1"># set result_total tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                 <span class="n">value</span><span class="o">=</span><span class="n">res_tot</span><span class="p">,</span>
+                 <span class="n">doc</span><span class="o">=</span><span class="s1">&#39;total </span><span class="si">{0}</span><span class="s1"> flux&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                 <span class="n">tagtype</span><span class="o">=</span><span class="n">NativeMeshTag</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="c1"># set result_total_rel_error tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_names</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                 <span class="n">value</span><span class="o">=</span><span class="n">rel_err_tot</span><span class="p">,</span>
+                 <span class="n">doc</span><span class="o">=</span><span class="s1">&#39;total </span><span class="si">{0}</span><span class="s1"> flux relative error&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle</span><span class="p">),</span>
+                 <span class="n">tagtype</span><span class="o">=</span><span class="n">NativeMeshTag</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span></div></div>
+
+
 <span class="c1">######################################################</span>
 <span class="c1"># private helper functions for structured mesh methods</span>
 <span class="c1">######################################################</span>
@@ -1568,6 +1712,7 @@ if(ga_enabled){
 
 <span class="sd">    For tuple (i,j,k), return the number N in the appropriate iterator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">dim0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ijk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="n">dims</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ijk</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
@@ -1585,8 +1730,9 @@ if(ga_enabled){
 
 <span class="sd">    Return the nth item in the iterator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">it</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
     <span class="n">it</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">r</span>
 
@@ -1599,6 +1745,7 @@ if(ga_enabled){
 <span class="sd">    with fastest-changing coordinate in the last column), and the</span>
 <span class="sd">    ordmap used by _structured_iter to reorder each coodinate to (i,j,k).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># a valid order has the letters &quot;x&quot;, &quot;y&quot;, and &quot;z&quot;</span>
     <span class="c1"># in any order without duplicates</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">and</span>
@@ -1638,6 +1785,7 @@ if(ga_enabled){
     <span class="sd">&quot;&quot;&quot;Iterate over the indices lists, yielding _structured_step_iter(it) for</span>
 <span class="sd">    each.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -1660,7 +1808,7 @@ if(ga_enabled){
 
 <span class="k">class</span> <span class="nc">MeshSetIterator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meshset</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">arr_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">meshset</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">arr_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pymb</span> <span class="o">=</span> <span class="n">inst</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meshset</span> <span class="o">=</span> <span class="n">meshset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ent_type</span> <span class="o">=</span> <span class="n">entity_type</span>
@@ -1686,16 +1834,19 @@ if(ga_enabled){
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ents</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="o">=</span> <span class="n">ents</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># for Python2 compatability</span>
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_steps</span><span class="p">)</span>  <span class="c1"># protecting from Python 3 auto-promotion</span>
@@ -1704,8 +1855,68 @@ if(ga_enabled){
             <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">at_end</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">at_end</span>
+
+<span class="k">def</span> <span class="nf">_cell_fracs_sort_vol_frac_reverse</span><span class="p">(</span><span class="n">cell_fracs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sort cell_fracs according to the order of increasing idx and decreasing</span>
+<span class="sd">    with vol_frac.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cell_fracs : structured array</span>
+<span class="sd">            The output from dagmc.discretize_geom(). A sorted, one dimensional</span>
+<span class="sd">            array, each entry containing the following fields:</span>
+
+<span class="sd">                :idx: int</span>
+<span class="sd">                    The volume element index.</span>
+<span class="sd">                :cell: int</span>
+<span class="sd">                    The geometry cell number.</span>
+<span class="sd">                :vol_frac: float</span>
+<span class="sd">                    The volume fraction of the cell withing the mesh ve.</span>
+<span class="sd">                :rel_error: float</span>
+<span class="sd">                    The relative error associated with the volume fraction.</span>
+
+<span class="sd">            The array must be sorted with respect to both idx and cell, with</span>
+<span class="sd">            cell changing fastest.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cell_fracs : structured array</span>
+<span class="sd">        Sorted cell_fracs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># sort ascending along idx and vol_frac</span>
+    <span class="c1"># ndarray.sort can&#39;t sort using desending sequence.</span>
+    <span class="c1"># Multiply the vol_frac to -1.0 to sort the vol_frac in reverse order.</span>
+    <span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">cell_fracs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">,</span> <span class="s1">&#39;vol_frac&#39;</span><span class="p">])</span>
+    <span class="n">cell_fracs</span><span class="p">[</span><span class="s1">&#39;vol_frac&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="k">return</span> <span class="n">cell_fracs</span>
+
+<span class="k">def</span> <span class="nf">_check_meshtally_tag_names</span><span class="p">(</span><span class="n">tag_names</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make sure tag_names is an iterable of 4 strings.&quot;&quot;&quot;</span>
+    <span class="c1"># check iterable</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_iterable</span><span class="p">(</span><span class="n">tag_names</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The given tag_names is not an Iterable.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># check length of 4</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag_names</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The length of tag_names is not 4.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># check content strings</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tag_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The content of tag_names &quot;</span>
+                            <span class="s2">&quot;should be strings&quot;</span><span class="p">)</span>
+
+    <span class="c1"># tag_names should be a string with length of 4</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The tag_names should not be a single string&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1715,17 +1926,15 @@ if(ga_enabled){
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -1760,7 +1969,8 @@ if(ga_enabled){
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
 
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyne.mesh</a></li> 
       </ul>
     </div>
     </div>
@@ -1770,7 +1980,7 @@ if(ga_enabled){
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>nucname &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nucname &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">nucname</a></li> 
       </ul>
     </div>
     </div>
@@ -76,10 +76,10 @@ by three nucleon number digits (the A-number) followed by four state digits
 (the S-number). Thus we see that the full id form is <code class="docutils literal notranslate"><span class="pre">ZZZAAASSSS</span></code>.</p>
 <p>This format has two important properties:</p>
 <ol class="arabic simple">
-<li>It preserves a natural sort order for nuclides (hydrogen species come before
-helium species which come before lithium, etc.)</li>
-<li>It maximizes the amount of information that can be stored in a 32-bit signed
-integer.</li>
+<li><p>It preserves a natural sort order for nuclides (hydrogen species come before
+helium species which come before lithium, etc.)</p></li>
+<li><p>It maximizes the amount of information that can be stored in a 32-bit signed
+integer.</p></li>
 </ol>
 <p>In most applications, the state number is interpreted as a metastable state since
 this is the most common usage in nuclear engineering. In certain instances when
@@ -92,13 +92,13 @@ radioactive decay.</p>
 <p>The following are rules about the semantic meaning of specific classes of
 identifiers, in no particular order:</p>
 <ul class="simple">
-<li>Negative nuclides have no meaning (yet).</li>
-<li>Nuclides where <code class="docutils literal notranslate"><span class="pre">AAA</span> <span class="pre">&lt;</span> <span class="pre">ZZZ</span></code> are physically impossible and thus not allowed.</li>
-<li>Nuclides where <code class="docutils literal notranslate"><span class="pre">SSSS</span> <span class="pre">==</span> <span class="pre">0</span></code> are considered to be in the ground state.</li>
-<li>Nuclides where <code class="docutils literal notranslate"><span class="pre">AAA</span> <span class="pre">==</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">ZZZ</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> represent the chemical element.
+<li><p>Negative nuclides have no meaning (yet).</p></li>
+<li><p>Nuclides where <code class="docutils literal notranslate"><span class="pre">AAA</span> <span class="pre">&lt;</span> <span class="pre">ZZZ</span></code> are physically impossible and thus not allowed.</p></li>
+<li><p>Nuclides where <code class="docutils literal notranslate"><span class="pre">SSSS</span> <span class="pre">==</span> <span class="pre">0</span></code> are considered to be in the ground state.</p></li>
+<li><p>Nuclides where <code class="docutils literal notranslate"><span class="pre">AAA</span> <span class="pre">==</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">ZZZ</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> represent the chemical element.
 In most applications this takes on the natural isotopic abundances. The
-state number is assumed to be zero for elements</li>
-<li>Humans should use a human readable format, computers should use <code class="docutils literal notranslate"><span class="pre">id</span></code>.</li>
+state number is assumed to be zero for elements</p></li>
+<li><p>Humans should use a human readable format, computers should use <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p></li>
 </ul>
 <div class="section" id="well-defined-vs-ambiguous-situations">
 <h3>Well-Defined vs Ambiguous Situations<a class="headerlink" href="#well-defined-vs-ambiguous-situations" title="Permalink to this headline">¶</a></h3>
@@ -117,21 +117,21 @@ Other nuclide names are completely indeterminate. In the case of indeterminate
 species the <code class="docutils literal notranslate"><span class="pre">id()</span></code> function will throw an error. In the case of ambiguous forms
 where the input is an integer input, the form resolution order is:</p>
 <ul class="simple">
-<li>id</li>
-<li>zz (elemental z-num only given)</li>
-<li>zzaaam</li>
-<li>cinder (aaazzzm)</li>
-<li>mcnp</li>
-<li>zzaaa</li>
+<li><p>id</p></li>
+<li><p>zz (elemental z-num only given)</p></li>
+<li><p>zzaaam</p></li>
+<li><p>cinder (aaazzzm)</p></li>
+<li><p>mcnp</p></li>
+<li><p>zzaaa</p></li>
 </ul>
 <p>For string (or <code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*</span></code>) input, the form resolution order is as follows:</p>
 <ul class="simple">
-<li>ZZ-LL-AAAM</li>
-<li>Integer form in a string representation, uses integer resolution</li>
-<li>NIST</li>
-<li>name form</li>
-<li>Serpent</li>
-<li>LL (element symbol)</li>
+<li><p>ZZ-LL-AAAM</p></li>
+<li><p>Integer form in a string representation, uses integer resolution</p></li>
+<li><p>NIST</p></li>
+<li><p>name form</p></li>
+<li><p>Serpent</p></li>
+<li><p>LL (element symbol)</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">name()</span></code> function first converts functions to id form using the <code class="docutils literal notranslate"><span class="pre">id()</span></code>
 function. Thus the form order resolution for <code class="docutils literal notranslate"><span class="pre">id()</span></code> also applies to <code class="docutils literal notranslate"><span class="pre">name()</span></code>.</p>
@@ -140,63 +140,64 @@ function. Thus the form order resolution for <code class="docutils literal notra
 <h3>Nuclide Forms<a class="headerlink" href="#nuclide-forms" title="Permalink to this headline">¶</a></h3>
 <p>The following are the currently implemented nuclide naming conventions in pyne:</p>
 <ol class="arabic simple">
-<li><strong>id (zas)</strong>: This type places the charge of the nucleus out front, then has three
+<li><p><strong>id (zas)</strong>: This type places the charge of the nucleus out front, then has three
 digits for the atomic mass number, and ends with four state digits (0 = ground,
 1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
-be expressed as ‘922350000’.  This is th canonical form for nuclides.</li>
-<li><strong>name</strong>: This is the more common, human readable notation.  The chemical symbol
+be expressed as ‘922350000’.  This is th canonical form for nuclides.</p></li>
+<li><p><strong>name</strong>: This is the more common, human readable notation.  The chemical symbol
 (one or two characters long) is first, followed by the atomic weight.  Lastly if
 the nuclide is metastable, the letter <em>M</em> is concatenated to the end.  For
 example, ‘H-1’ and ‘Am242M’ are both valid.  Note that nucname will always
-return name form with the dash removed and all letters uppercase.</li>
-<li><strong>zzaaam</strong>: This type places the charge of the nucleus out front, then has three
+return name form with the dash removed and all letters uppercase.</p></li>
+<li><p><strong>zzaaam</strong>: This type places the charge of the nucleus out front, then has three
 digits for the atomic mass number, and ends with a metastable flag (0 = ground,
 1 = first excited state, 2 = second excited state, etc).  Uranium-235 here would
-be expressed as ‘922350’.</li>
-<li><strong>zzzaaa</strong>: This type places the charge of the nucleus out front, then has three
-digits for the atomic mass.  It contains no information about the excited state.</li>
-<li><strong>zzllaaam</strong>: The ZZLLAAAM naming convention is similar to name form.  However, it
+be expressed as ‘922350’.</p></li>
+<li><p><strong>zzzaaa</strong>: This type places the charge of the nucleus out front, then has three
+digits for the atomic mass.  It contains no information about the excited state.</p></li>
+<li><p><strong>zzllaaam</strong>: The ZZLLAAAM naming convention is similar to name form.  However, it
 is preceded by the nuclides two AA numbers, followed by the two LL characters.
 Of the two LL characters, only the first letter in the chemical symbol is uppercase,
 the dash is always present, and the the meta-stable flag is lowercase.  For
-instance, ‘95-Am-242m’ is the valid serpent notation for this nuclide.</li>
-<li><strong>SZA</strong>: This type places three state digits out front, the charge of the nucleus in
+instance, ‘95-Am-242m’ is the valid serpent notation for this nuclide.</p></li>
+<li><p><strong>SZA</strong>: This type places three state digits out front, the charge of the nucleus in
 the middle, and then has three digits for the atomic mass number. Uranium-235M here
-would be expressed as ‘1092235’.</li>
-<li><strong>MCNP</strong>: The MCNP format for entering nuclides is unfortunately
+would be expressed as ‘1092235’.</p></li>
+<li><p><strong>MCNP</strong>: The MCNP format for entering nuclides is unfortunately
 non-standard.  In most ways it is similar to zzaaam form, except that it
 lacks the metastable flag.  For information on how metastable isotopes are
-named, please consult the MCNPX documentation for more information.</li>
-<li><strong>Serpent</strong>: The serpent naming convention is similar to name form.
+named, please consult the MCNPX documentation for more information.</p></li>
+<li><p><strong>Serpent</strong>: The serpent naming convention is similar to name form.
 However, only the first letter in the chemical symbol is uppercase, the
 dash is always present, and the the meta-stable flag is lowercase.  For
-instance, ‘Am-242m’ is the valid serpent notation for this nuclide.</li>
-<li><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.
+instance, ‘Am-242m’ is the valid serpent notation for this nuclide.</p></li>
+<li><p><strong>NIST</strong>: The NIST naming convention is also similar to the Serpent form.
 However, this convention contains no metastable information.  Moreover, the
 A-number comes before the element symbol.  For example, ‘242Am’ is the
-valid NIST notation.</li>
-<li><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the
+valid NIST notation.</p></li>
+<li><p><strong>CINDER</strong>: The CINDER format is similar to zzaaam form except that the
 placement of the Z- and A-numbers are swapped. Therefore, this format is
 effectively aaazzzm.  For example, ‘2420951’ is the valid cinder notation
-for ‘AM242M’.</li>
-<li><strong>ALARA</strong>: In ALARA format, elements are denoted by the lower case atomic symbol.
+for ‘AM242M’.</p></li>
+<li><p><strong>ALARA</strong>: In ALARA format, elements are denoted by the lower case atomic symbol.
 Nuclides are specified by appending a semicolon and A-number. For example, “fe”
 and “fe:56” represent elemental iron and iron-56 respectively. No metastable
-flag exists.</li>
-<li><strong>Groundstate</strong>:  In Groundstate format, the nuclide is stored in a form similar
+flag exists.</p></li>
+<li><p><strong>Groundstate</strong>:  In Groundstate format, the nuclide is stored in a form similar
 to the standard id form, but the last four digits are zero to eliminate the
-information about the nuclide’s state.</li>
-<li><strong>state_id</strong>: The state id naming convention uses the form zzzaaassss. It is
+information about the nuclide’s state.</p></li>
+<li><p><strong>state_id</strong>: The state id naming convention uses the form zzzaaassss. It is
 different from the canonical zzzaaassss form in that ssss refers to a list
 of states by ordered by energy. This is derived from the levels listed in the
 ENSDF files for a given nuclide. Using this form is dangerous as it may change
-with new releases of ENSDF data.</li>
+with new releases of ENSDF data.</p></li>
 </ol>
 </div>
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -219,17 +220,15 @@ with new releases of ENSDF data.</li>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -263,7 +262,8 @@ with new releases of ENSDF data.</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">nucname</a></li> 
       </ul>
     </div>
     </div>
@@ -273,7 +273,7 @@ with new releases of ENSDF data.</li>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

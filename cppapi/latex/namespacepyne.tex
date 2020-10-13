@@ -49,12 +49,16 @@ class \hyperlink{classpyne_1_1_material}{Material}
 \begin{DoxyCompactList}\small\item\em \hyperlink{classpyne_1_1_material}{Material} composed of nuclides. \end{DoxyCompactList}\item 
 struct \hyperlink{structpyne_1_1material__data}{material\+\_\+data}
 \item 
+class \hyperlink{classpyne_1_1_material_library}{Material\+Library}
+\item 
 class \hyperlink{classpyne_1_1_material_protocol_error}{Material\+Protocol\+Error}
 \begin{DoxyCompactList}\small\item\em Custom exception for invalid H\+D\+F5 protocol numbers. \end{DoxyCompactList}\item 
 struct \hyperlink{structpyne_1_1ndsfpy}{ndsfpy}
 \begin{DoxyCompactList}\small\item\em a struct matching the \textquotesingle{}/neutron/nds\+\_\+fission\+\_\+product\textquotesingle{} table in nuc\+\_\+data.\+h5 \end{DoxyCompactList}\item 
 struct \hyperlink{structpyne_1_1ndsfpysub}{ndsfpysub}
 \begin{DoxyCompactList}\small\item\em a struct for the nds data for fpyield \end{DoxyCompactList}\item 
+class \hyperlink{classpyne_1_1_point_source}{Point\+Source}
+\item 
 struct \hyperlink{structpyne_1_1q__val__data}{q\+\_\+val\+\_\+data}
 \begin{DoxyCompactList}\small\item\em a struct matching the q\+\_\+value table in nuc\+\_\+data.\+h5. \end{DoxyCompactList}\item 
 class \hyperlink{classpyne_1_1ray__buffers}{ray\+\_\+buffers}
@@ -63,6 +67,8 @@ class \hyperlink{classpyne_1_1_sampler}{Sampler}
 \begin{DoxyCompactList}\small\item\em Mesh based Monte Carlo source sampling. \end{DoxyCompactList}\item 
 struct \hyperlink{structpyne_1_1scattering__lengths}{scattering\+\_\+lengths}
 \begin{DoxyCompactList}\small\item\em a struct matching the \textquotesingle{}/neutron/scattering\+\_\+lengths\textquotesingle{} table in nuc\+\_\+data.\+h5. \end{DoxyCompactList}\item 
+class \hyperlink{classpyne_1_1_source}{Source}
+\item 
 class \hyperlink{classpyne_1_1_source_particle}{Source\+Particle}
 \item 
 class \hyperlink{classpyne_1_1swapmapcompare}{swapmapcompare}
@@ -85,6 +91,18 @@ typedef std\+::map$<$ int, double $>$ \hyperlink{namespacepyne_a86738cecccf4ce3f
 typedef comp\+\_\+map\+::iterator \hyperlink{namespacepyne_af38f60eec2c4c80e6decc75c3b21a879}{comp\+\_\+iter}
 \begin{DoxyCompactList}\small\item\em Nuclide-\/mass composition iter type. \end{DoxyCompactList}\item 
 typedef struct \hyperlink{structpyne_1_1material__data}{pyne\+::material\+\_\+data} \hyperlink{namespacepyne_a30fee8818307aa6d8d45dc33ddee6008}{material\+\_\+data}
+\item 
+\mbox{\Hypertarget{namespacepyne_a09ce84044845a9b4a1ec41e4205c6ce6}\label{namespacepyne_a09ce84044845a9b4a1ec41e4205c6ce6}} 
+typedef std\+::shared\+\_\+ptr$<$ \hyperlink{classpyne_1_1_material}{pyne\+::\+Material} $>$ {\bfseries shr\+\_\+mat\+\_\+ptr}
+\item 
+\mbox{\Hypertarget{namespacepyne_adf98ac3f9a74de842afb72a3150cea9d}\label{namespacepyne_adf98ac3f9a74de842afb72a3150cea9d}} 
+typedef std\+::unordered\+\_\+map$<$ std\+::string, shr\+\_\+mat\+\_\+ptr $>$ {\bfseries mat\+\_\+map}
+\item 
+\mbox{\Hypertarget{namespacepyne_a254553a1032f10261d2efd71dca90631}\label{namespacepyne_a254553a1032f10261d2efd71dca90631}} 
+typedef std\+::set$<$ std\+::string $>$ {\bfseries matname\+\_\+set}
+\item 
+\mbox{\Hypertarget{namespacepyne_a5cc467c62fe926f7916689167e980689}\label{namespacepyne_a5cc467c62fe926f7916689167e980689}} 
+typedef std\+::set$<$ int $>$ {\bfseries nuc\+\_\+set}
 \item 
 typedef struct \hyperlink{structpyne_1_1tally__struct}{pyne\+::tally\+\_\+struct} \hyperlink{namespacepyne_a50f65e8f1e109c362c1cd737d0627941}{tally\+\_\+struct}
 \end{DoxyCompactItemize}
@@ -174,8 +192,13 @@ double \hyperlink{namespacepyne_a5175275a09e97886dcf15a082a719812}{simple\+\_\+x
 \item 
 double \hyperlink{namespacepyne_ac9f173d7792a84eb558dc7396c7d4d56}{simple\+\_\+xs} (std\+::string nuc, std\+::string rx, std\+::string energy)
 \item 
+bool \hyperlink{namespacepyne_a6582252a1fea0f1f0f8e1daeccb670b9}{detect\+\_\+nuclidelist} (hid\+\_\+t dataset, std\+::string \&nucpath)
+\item 
 std\+::ostream \& \hyperlink{namespacepyne_a1241699bbd3224bb066190b7778dbd82}{operator$<$$<$} (std\+::ostream \&os, \hyperlink{classpyne_1_1_material}{Material} mat)
 \item 
+\mbox{\Hypertarget{namespacepyne_a33f937cac54a22e48d1a37d4f5b21655}\label{namespacepyne_a33f937cac54a22e48d1a37d4f5b21655}} 
+std\+::ostream \& \hyperlink{namespacepyne_a33f937cac54a22e48d1a37d4f5b21655}{operator$<$$<$} (std\+::ostream \&os, \hyperlink{classpyne_1_1_source}{Source} source)
+\begin{DoxyCompactList}\small\item\em Converts a \hyperlink{classpyne_1_1_source}{Source} to a string stream representation. \end{DoxyCompactList}\item 
 void \hyperlink{namespacepyne_a4e0d5dd130728ec7c2bbf6b9189cde4b}{sampling\+\_\+setup\+\_\+} (int $\ast$mode, int $\ast$cell\+\_\+list\+\_\+size)
 \item 
 void \hyperlink{namespacepyne_a3018388cce855a6cee0d8e4c931aac4a}{particle\+\_\+birth\+\_\+} (double $\ast$rands, double $\ast$x, double $\ast$y, double $\ast$z, double $\ast$e, double $\ast$w, int $\ast$cell\+\_\+list)
@@ -210,6 +233,9 @@ std\+::string \hyperlink{namespacepyne_ad694bbfebcefbdb2839ed156ab216abc}{to\+\_
 \mbox{\Hypertarget{namespacepyne_a8855d064ba8f0c3ab7b85aa9788c9673}\label{namespacepyne_a8855d064ba8f0c3ab7b85aa9788c9673}} 
 std\+::string \hyperlink{namespacepyne_a8855d064ba8f0c3ab7b85aa9788c9673}{capitalize} (std\+::string s)
 \begin{DoxyCompactList}\small\item\em Returns a capitalized copy of the string. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacepyne_a88fb6820f21e3b7846b9abfa562d5f75}\label{namespacepyne_a88fb6820f21e3b7846b9abfa562d5f75}} 
+std\+::string \hyperlink{namespacepyne_a88fb6820f21e3b7846b9abfa562d5f75}{comment\+\_\+line\+\_\+wrapping} (std\+::string line, std\+::string comment\+\_\+prefix=\char`\"{}\char`\"{}, int line\+\_\+length=79)
+\begin{DoxyCompactList}\small\item\em Forms and returns the wrapped lines with a lenght up to line\+\_\+lenght. \end{DoxyCompactList}\item 
 std\+::string \hyperlink{namespacepyne_ab883f7c602f63e87fae5c2f48cfed0f8}{get\+\_\+flag} (char line\mbox{[}$\,$\mbox{]}, int max\+\_\+l)
 \item 
 \mbox{\Hypertarget{namespacepyne_adf03d1957dc2420ef99554c6fe4c4ec0}\label{namespacepyne_adf03d1957dc2420ef99554c6fe4c4ec0}} 
@@ -234,6 +260,21 @@ bool \hyperlink{namespacepyne_aacdc15f9fd3df02a25971257b3f83b47}{contains\+\_\+s
 \begin{DoxyCompactList}\small\item\em Returns true if {\itshape substr} is in {\itshape s}. \end{DoxyCompactList}\item 
 std\+::string \hyperlink{namespacepyne_aa136c046c495673c1167472b96901e33}{natural\+\_\+naming} (std\+::string name)
 \item 
+\mbox{\Hypertarget{namespacepyne_a6af6b3eb159d1f892b23d6ce7acc546f}\label{namespacepyne_a6af6b3eb159d1f892b23d6ce7acc546f}} 
+std\+::vector$<$ std\+::string $>$ {\bfseries split\+\_\+string} (std\+::string lists, std\+::string delimiter=\char`\"{} \char`\"{})
+\item 
+\mbox{\Hypertarget{namespacepyne_a07b8809a3685a2da5d869150ea596f16}\label{namespacepyne_a07b8809a3685a2da5d869150ea596f16}} 
+{\footnotesize template$<$typename T $>$ }\\std\+::string {\bfseries join\+\_\+to\+\_\+string} (std\+::vector$<$ T $>$ vect, std\+::string delimiter=\char`\"{} \char`\"{})
+\item 
+\mbox{\Hypertarget{namespacepyne_a6a66264c3fbcc6da944c670c8de3c123}\label{namespacepyne_a6a66264c3fbcc6da944c670c8de3c123}} 
+template std\+::string {\bfseries join\+\_\+to\+\_\+string} (std\+::vector$<$ int $>$ vect, std\+::string delimiter)
+\item 
+\mbox{\Hypertarget{namespacepyne_a0cd18a43a0e5874257a31372e519731f}\label{namespacepyne_a0cd18a43a0e5874257a31372e519731f}} 
+template std\+::string {\bfseries join\+\_\+to\+\_\+string} (std\+::vector$<$ double $>$ vect, std\+::string delimiter)
+\item 
+\mbox{\Hypertarget{namespacepyne_a09ca965fca7520f28802594e4f032909}\label{namespacepyne_a09ca965fca7520f28802594e4f032909}} 
+template std\+::string {\bfseries join\+\_\+to\+\_\+string} (std\+::vector$<$ std\+::string $>$ vect, std\+::string delimiter)
+\item 
 \mbox{\Hypertarget{namespacepyne_a98db52b7243a761ad6f2819478eeda30}\label{namespacepyne_a98db52b7243a761ad6f2819478eeda30}} 
 double \hyperlink{namespacepyne_a98db52b7243a761ad6f2819478eeda30}{slope} (double x2, double y2, double x1, double y1)
 \begin{DoxyCompactList}\small\item\em Finds the slope of a line from the points ({\itshape x1}, {\itshape y1}) and ({\itshape x2}, {\itshape y2}). \end{DoxyCompactList}\item 
@@ -248,6 +289,12 @@ double \hyperlink{namespacepyne_a03cad3093b97f2f6a5dcb5cdc4cb562e}{coth} (double
 \mbox{\Hypertarget{namespacepyne_ad514c252885b18fb9c6ef3ac5f0ac680}\label{namespacepyne_ad514c252885b18fb9c6ef3ac5f0ac680}} 
 bool \hyperlink{namespacepyne_ad514c252885b18fb9c6ef3ac5f0ac680}{file\+\_\+exists} (std\+::string strfilename)
 \begin{DoxyCompactList}\small\item\em Returns true if the file can be found. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacepyne_a2579b1014a5fbb1fd17d71adabc84d7c}\label{namespacepyne_a2579b1014a5fbb1fd17d71adabc84d7c}} 
+std\+::string {\bfseries get\+\_\+full\+\_\+filepath} (char $\ast$filename)
+\item 
+\mbox{\Hypertarget{namespacepyne_ae6cd39e4eda0548238b85d09a180b7a7}\label{namespacepyne_ae6cd39e4eda0548238b85d09a180b7a7}} 
+std\+::string {\bfseries get\+\_\+full\+\_\+filepath} (std\+::string filename)
+\item 
 \mbox{\Hypertarget{namespacepyne_a6dea834f084c2ff3a3c8ce67c3eaf8e1}\label{namespacepyne_a6dea834f084c2ff3a3c8ce67c3eaf8e1}} 
 bool \hyperlink{namespacepyne_a6dea834f084c2ff3a3c8ce67c3eaf8e1}{toggle\+\_\+warnings} ()
 \begin{DoxyCompactList}\small\item\em Toggles warnings on and off. \end{DoxyCompactList}\item 
@@ -283,11 +330,17 @@ std\+::map$<$ std\+::string, std\+::string $>$ \hyperlink{namespacepyne_a092bde8
 \mbox{\Hypertarget{namespacepyne_a75b3d385906d5d2f078a6d099629a5c8}\label{namespacepyne_a75b3d385906d5d2f078a6d099629a5c8}} 
 std\+::map$<$ std\+::string, std\+::map$<$ int, std\+::map$<$ int, double $>$ $>$ $>$ \hyperlink{namespacepyne_a75b3d385906d5d2f078a6d099629a5c8}{simple\+\_\+xs\+\_\+map}
 \begin{DoxyCompactList}\small\item\em map$<$energy, map$<$nuclide, map$<$rx, xs$>$ $>$ $>$ \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacepyne_a6d2e20b389686b95d7e8207c957e755a}\label{namespacepyne_a6d2e20b389686b95d7e8207c957e755a}} 
+const vector$<$ double $>$ {\bfseries null\+\_\+v\+\_\+dbl}
+\item 
+\mbox{\Hypertarget{namespacepyne_aafb4c1cfb275a35448c6db6dd7596344}\label{namespacepyne_aafb4c1cfb275a35448c6db6dd7596344}} 
+const vector$<$ int $>$ {\bfseries null\+\_\+v\+\_\+int}
+\item 
 \mbox{\Hypertarget{namespacepyne_a7927bda45ba222dccef6e43a373b76a6}\label{namespacepyne_a7927bda45ba222dccef6e43a373b76a6}} 
 std\+::string \hyperlink{namespacepyne_a7927bda45ba222dccef6e43a373b76a6}{P\+Y\+N\+E\+\_\+\+D\+A\+TA} = \char`\"{}\char`\"{}
 \begin{DoxyCompactList}\small\item\em Path to the directory containing the Py\+NE data. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacepyne_a462bdf434637e275c203175076b85c36}\label{namespacepyne_a462bdf434637e275c203175076b85c36}} 
-std\+::string \hyperlink{namespacepyne_a462bdf434637e275c203175076b85c36}{V\+E\+R\+S\+I\+ON} = \char`\"{}0.\+5.\+11\char`\"{}
+std\+::string \hyperlink{namespacepyne_a462bdf434637e275c203175076b85c36}{V\+E\+R\+S\+I\+ON} = \char`\"{}0.\+7.\+1\char`\"{}
 \begin{DoxyCompactList}\small\item\em Py\+NE version number. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacepyne_aa938a7defc049d691fa6d84aa2c1931e}\label{namespacepyne_aa938a7defc049d691fa6d84aa2c1931e}} 
 double($\ast$ \hyperlink{namespacepyne_aa938a7defc049d691fa6d84aa2c1931e}{endftod} )(char $\ast$s) = \&\hyperlink{namespacepyne_a14e300f1e589b42aaa451bc3cf4c70b8}{pyne\+::endftod\+\_\+f}
@@ -981,7 +1034,23 @@ This function works by first checking decay\+\_\+chidlren\+\_\+map. If this is e
 
 Returns the decay constant for a nuclide {\itshape nuc}. 
 
-This function works by first checking the decay\+\_\+const\+\_\+map. If this is empty it loads the data from disk. If the nuclide is still not found, then the species is assumed to be stable and 0.\+0 is returned. \mbox{\Hypertarget{namespacepyne_a01290076b747cd8f6fb8785d698d9319}\label{namespacepyne_a01290076b747cd8f6fb8785d698d9319}} 
+This function works by first checking the decay\+\_\+const\+\_\+map. If this is empty it loads the data from disk. If the nuclide is still not found, then the species is assumed to be stable and 0.\+0 is returned. \mbox{\Hypertarget{namespacepyne_a6582252a1fea0f1f0f8e1daeccb670b9}\label{namespacepyne_a6582252a1fea0f1f0f8e1daeccb670b9}} 
+\index{pyne@{pyne}!detect\+\_\+nuclidelist@{detect\+\_\+nuclidelist}}
+\index{detect\+\_\+nuclidelist@{detect\+\_\+nuclidelist}!pyne@{pyne}}
+\subsubsection{\texorpdfstring{detect\+\_\+nuclidelist()}{detect\_nuclidelist()}}
+{\footnotesize\ttfamily bool pyne\+::detect\+\_\+nuclidelist (\begin{DoxyParamCaption}\item[{hid\+\_\+t}]{dataset,  }\item[{std\+::string \&}]{nucpath }\end{DoxyParamCaption})}
+
+Looking for the nuclide list path in the nucpath attribute of the dataset. This happens according to protocol 1. 
+\begin{DoxyParams}{Parameters}
+{\em dataset} & hid of the dataset. \\
+\hline
+{\em nucpath} & address of the path to the nuclides list in the file (update when nucpath is found). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the nucpath attribure is present in the dataset 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacepyne_a01290076b747cd8f6fb8785d698d9319}\label{namespacepyne_a01290076b747cd8f6fb8785d698d9319}} 
 \index{pyne@{pyne}!ecbp\+\_\+endpoint\+\_\+energy@{ecbp\+\_\+endpoint\+\_\+energy}}
 \index{ecbp\+\_\+endpoint\+\_\+energy@{ecbp\+\_\+endpoint\+\_\+energy}!pyne@{pyne}}
 \subsubsection{\texorpdfstring{ecbp\+\_\+endpoint\+\_\+energy()}{ecbp\_endpoint\_energy()}}

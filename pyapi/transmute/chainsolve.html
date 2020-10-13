@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Chain Solve – pyne.transmute.chainsolve &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chain Solve – pyne.transmute.chainsolve &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/jquery.cookie.js"></script>
+    <script src="../../_static/cloud.base.js"></script>
+    <script src="../../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Chain Solve – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.transmute.chainsolve</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -69,86 +69,64 @@ if(ga_enabled){
 <p>This module implements an ALARA[1]-like chain-based transmutation solver.</p>
 <p>[1] Wilson, P. P. H. “ALARA: Analytic Laplacian Adaptive Radioactivity 
 Analysis,” a Ph.D. Dissertation, University of Wisconsin, Madison, WI, 1999.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pyne.transmute.chainsolve.Transmuter">
-<em class="property">class </em><code class="descclassname">pyne.transmute.chainsolve.</code><code class="descname">Transmuter</code><span class="sig-paren">(</span><em>t=0.0</em>, <em>phi=0.0</em>, <em>temp=300.0</em>, <em>tol=1e-07</em>, <em>rxs=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyne.transmute.chainsolve.</code><code class="sig-name descname">Transmuter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">phi</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">temp</span><span class="o">=</span><span class="default_value">300.0</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">rxs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for transmuting materials using an ALARA-like chain solver.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Transmutations time [sec].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>Transmutations time [sec].</p>
 </dd>
-<dt><strong>phi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or array of floats</span></dt>
-<dd><p class="first last">Neutron flux vector [n/cm^2/sec].  Currently this must either be 
+<dt><strong>phi</strong><span class="classifier">float or array of floats</span></dt><dd><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
 a scalar or match the group structure of EAF.</p>
 </dd>
-<dt><strong>temp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Temperature [K] of material, defaults to 300.0.</p>
+<dt><strong>temp</strong><span class="classifier">float, optional</span></dt><dd><p>Temperature [K] of material, defaults to 300.0.</p>
 </dd>
-<dt><strong>tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tolerance level for chain truncation.</p>
+<dt><strong>tol</strong><span class="classifier">float</span></dt><dd><p>Tolerance level for chain truncation.</p>
 </dd>
-<dt><strong>rxs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set of ints or strs</span></dt>
-<dd><p class="first last">Reaction ids or names to use in transmutation that produce well-defined 
+<dt><strong>rxs</strong><span class="classifier">set of ints or strs</span></dt><dd><p>Reaction ids or names to use in transmutation that produce well-defined 
 children.  This set should thus not include fission.  If None, then the 
 reactions from EAF are used.</p>
 </dd>
-<dt><strong>log</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file-like or None</span></dt>
-<dd><p class="first last">The log file object should be written. A None imples the log is 
+<dt><strong>log</strong><span class="classifier">file-like or None</span></dt><dd><p>The log file object should be written. A None imples the log is 
 not desired.</p>
 </dd>
-<dt><strong>args</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple, optional</span></dt>
-<dd><p class="first last">Other arguments ignored for compatibility with other Transmuters.</p>
+<dt><strong>args</strong><span class="classifier">tuple, optional</span></dt><dd><p>Other arguments ignored for compatibility with other Transmuters.</p>
 </dd>
-<dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
-<dd><p class="first last">Other keyword arguments ignored for compatibility with other Transmuters.</p>
+<dt><strong>kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Other keyword arguments ignored for compatibility with other Transmuters.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="pyne.transmute.chainsolve.Transmuter.transmute">
-<code class="descname">transmute</code><span class="sig-paren">(</span><em>self</em>, <em>x</em>, <em>t=None</em>, <em>phi=None</em>, <em>tol=None</em>, <em>log=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter.transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter.transmute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transmute</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x</em>, <em class="sig-param">t=None</em>, <em class="sig-param">phi=None</em>, <em class="sig-param">tol=None</em>, <em class="sig-param">log=None</em>, <em class="sig-param">\*args</em>, <em class="sig-param">\*\*kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyne/transmute/chainsolve.html#Transmuter.transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyne.transmute.chainsolve.Transmuter.transmute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transmutes a material into its daughters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material or similar</span></dt>
-<dd><p class="first last">Input material for transmutation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">Material or similar</span></dt><dd><p>Input material for transmutation.</p>
 </dd>
-<dt><strong>t</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Transmutations time [sec].</p>
+<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>Transmutations time [sec].</p>
 </dd>
-<dt><strong>phi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or array of floats</span></dt>
-<dd><p class="first last">Neutron flux vector [n/cm^2/sec].  Currently this must either be 
+<dt><strong>phi</strong><span class="classifier">float or array of floats</span></dt><dd><p>Neutron flux vector [n/cm^2/sec].  Currently this must either be 
 a scalar or match the group structure of EAF.</p>
 </dd>
-<dt><strong>tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tolerance level for chain truncation.</p>
+<dt><strong>tol</strong><span class="classifier">float</span></dt><dd><p>Tolerance level for chain truncation.</p>
 </dd>
-<dt><strong>log</strong> <span class="classifier-delimiter">:</span> <span class="classifier">file-like or None</span></dt>
-<dd><p class="first last">The log file object should be written. A None imples the log is 
+<dt><strong>log</strong><span class="classifier">file-like or None</span></dt><dd><p>The log file object should be written. A None imples the log is 
 not desired.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Material</span></dt>
-<dd><p class="first last">The output material post-transmutation.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y</strong><span class="classifier">Material</span></dt><dd><p>The output material post-transmutation.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -156,6 +134,7 @@ not desired.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -165,17 +144,15 @@ not desired.</p>
           <img class="logo" src="../../_static/pyne_icon_small.png" alt="Logo"/>
         </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -209,7 +186,8 @@ not desired.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Chain Solve – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.transmute.chainsolve</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -219,7 +197,7 @@ not desired.</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tally_5fstruct',['tally_struct',['../namespacepyne.html#a50f65e8f1e109c362c1cd737d0627941',1,'pyne']]]
+  ['scattering_5flengths',['scattering_lengths',['../namespacepyne.html#a9a7904773bd3c8c5b8c4e10360c78c89',1,'pyne']]]
 ];

@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>CCCC Formats &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CCCC Formats &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">CCCC Formats</a></li> 
       </ul>
     </div>
     </div>
@@ -75,8 +75,8 @@ and SPECTR.</p>
 open-source C++ classes from the University of Michigan and later expanded by
 Nick Touran for work on his PhD thesis. DLAYXS was later added by Paul Romano.
 RTFLUX was done by Elliott Biondo.</p>
-<p>A description of several CCCC formats are available online for <a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/isotxs.html">ISOTXS</a>, <a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/matxs.html">MATXS</a>,
-<a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/rtflux.html">RTFLUX</a>, and <a class="reference external" href="http://t2.lanl.gov/codes/transx-hyper/rzflux.html">RZFLUX</a>. Other format specifications can be found in Los Alamos
+<p>A description of several CCCC formats are available online for <a class="reference external" href="http://t2.lanl.gov/nis/codes/transx-hyper/isotxs.html">ISOTXS</a>, <a class="reference external" href="http://t2.lanl.gov/nis/codes/transx-hyper/matxs.html">MATXS</a>,
+<a class="reference external" href="http://t2.lanl.gov/nis/codes/transx-hyper/rtflux.html">RTFLUX</a>, and <a class="reference external" href="http://t2.lanl.gov/nis/codes/transx-hyper/rzflux.html">RZFLUX</a>. Other format specifications can be found in Los Alamos
 Report <a class="reference external" href="http://www.osti.gov/bridge/servlets/purl/5369298-uIcX6p/">LA-5324-MS</a>.</p>
 <p>For a complete specification for the classes in the <code class="docutils literal notranslate"><span class="pre">cccc</span></code> module, please
 refer to the Library Reference entry for <a class="reference internal" href="../pyapi/cccc.html#pyne-cccc"><span class="std std-ref">CCCC Formats – pyne.cccc</span></a>.</p>
@@ -93,37 +93,42 @@ the Isotxs class specifying the path to the ISOTXS file.</p>
 </div>
 <p>After the file has been read, the data from the ISOTXS is now accessible through
 the attributes of the <code class="docutils literal notranslate"><span class="pre">isoFile</span></code> object. Some of the attributes are as follows:</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">chi:</th><td class="field-body">Normalized fission spectrum, giving the fraction of neutrons emitted in each
-energy group.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">emax:</th><td class="field-body">Maximum energies for each of the energy groups in units of eV.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">emin:</th><td class="field-body">Minimum energy for the lowest (thermal) energy group, typically somewhere
-around 0.00001 eV.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">fc:</th><td class="field-body">Dictionary containing several important parameters. For example
+<dl class="field-list simple">
+<dt class="field-odd">chi</dt>
+<dd class="field-odd"><p>Normalized fission spectrum, giving the fraction of neutrons emitted in each
+energy group.</p>
+</dd>
+<dt class="field-even">emax</dt>
+<dd class="field-even"><p>Maximum energies for each of the energy groups in units of eV.</p>
+</dd>
+<dt class="field-odd">emin</dt>
+<dd class="field-odd"><p>Minimum energy for the lowest (thermal) energy group, typically somewhere
+around 0.00001 eV.</p>
+</dd>
+<dt class="field-even">fc</dt>
+<dd class="field-even"><p>Dictionary containing several important parameters. For example
 <code class="docutils literal notranslate"><span class="pre">isofile.fc['niso']</span></code> tells you the number of nuclides in the file and
-<code class="docutils literal notranslate"><span class="pre">isoFile.fc['ngroup']</span></code> tells you the number of energy groups.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">label:</th><td class="field-body">Identification label describing the data in the file.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">nucNames:</th><td class="field-body">A list of the labels for each nuclide.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">nuclides:</th><td class="field-body">A list of nuclides present in the file. Each nuclide is an instance of
-the <code class="docutils literal notranslate"><span class="pre">Nuclide</span></code> class which contains data on cross-sections.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">vel:</th><td class="field-body">Mean neutron velocity in each energy group.</td>
-</tr>
-</tbody>
-</table>
+<code class="docutils literal notranslate"><span class="pre">isoFile.fc['ngroup']</span></code> tells you the number of energy groups.</p>
+</dd>
+<dt class="field-odd">label</dt>
+<dd class="field-odd"><p>Identification label describing the data in the file.</p>
+</dd>
+<dt class="field-even">nucNames</dt>
+<dd class="field-even"><p>A list of the labels for each nuclide.</p>
+</dd>
+<dt class="field-odd">nuclides</dt>
+<dd class="field-odd"><p>A list of nuclides present in the file. Each nuclide is an instance of
+the <code class="docutils literal notranslate"><span class="pre">Nuclide</span></code> class which contains data on cross-sections.</p>
+</dd>
+<dt class="field-even">vel</dt>
+<dd class="field-even"><p>Mean neutron velocity in each energy group.</p>
+</dd>
+</dl>
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -142,17 +147,15 @@ the <code class="docutils literal notranslate"><span class="pre">Nuclide</span><
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -186,7 +189,8 @@ the <code class="docutils literal notranslate"><span class="pre">Nuclide</span><
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">CCCC Formats</a></li> 
       </ul>
     </div>
     </div>
@@ -196,7 +200,7 @@ the <code class="docutils literal notranslate"><span class="pre">Nuclide</span><
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

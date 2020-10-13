@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Integrating Fortran with PyNE &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Integrating Fortran with PyNE &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Integrating Fortran with PyNE</a></li> 
       </ul>
     </div>
     </div>
@@ -71,43 +71,40 @@ with fortran.  The Spatial Solver component of PyNE uses this in the manner
 outlined below:</p>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>F2py is a tool that can generate both python and c interfaces for fortran codes.  Because PyNE uses the CMAKE build system, all f2py interface building is done via CMAKE.  When the initial build process occurs, CMAKE:</dt>
-<dd><ol class="first last arabic simple">
-<li>Creates fortran objects for each of the required source files (as specified in the CMAKELISTS.TXT files)</li>
-<li>Wraps them with f2py, creating a shared object</li>
-<li>Links that shared object with the PyNE python interface</li>
+<dl class="simple">
+<dt>F2py is a tool that can generate both python and c interfaces for fortran codes.  Because PyNE uses the CMAKE build system, all f2py interface building is done via CMAKE.  When the initial build process occurs, CMAKE:</dt><dd><ol class="arabic simple">
+<li><p>Creates fortran objects for each of the required source files (as specified in the CMAKELISTS.TXT files)</p></li>
+<li><p>Wraps them with f2py, creating a shared object</p></li>
+<li><p>Links that shared object with the PyNE python interface</p></li>
 </ol>
 </dd>
 </dl>
 <div class="section" id="where-fortran-files-live">
 <h3>Where Fortran Files Live<a class="headerlink" href="#where-fortran-files-live" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>All fortran files currently live in the pyne/src folder.  For Spatial Solver, all files live in pyne/src/transport_spatial_methods.</li>
+<li><p>All fortran files currently live in the pyne/src folder.  For Spatial Solver, all files live in pyne/src/transport_spatial_methods.</p></li>
 </ul>
 </div>
 <div class="section" id="spatial-solver-specifics">
 <h3>Spatial Solver Specifics<a class="headerlink" href="#spatial-solver-specifics" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The Spatial Solver module has a fortran API, but it is not accessible through PyNE. The only
+<li><p>The Spatial Solver module has a fortran API, but it is not accessible through PyNE. The only
 accessible API is the wrapped and linked python interface that uses the fortran codes through
-f2py.  Pyne currently has no frameworks for a direct fortran API to be set up with.</li>
+f2py.  Pyne currently has no frameworks for a direct fortran API to be set up with.</p></li>
 </ul>
 </div>
 <div class="section" id="steps-for-wrapping-with-cmake">
 <h3>Steps for wrapping with CMAKE<a class="headerlink" href="#steps-for-wrapping-with-cmake" title="Permalink to this headline">¶</a></h3>
 <ul>
-<li><p class="first">All fortran files, except for the one being wrapped, must be declared in a CMakeLists.txt file located in the fortran source directory???</p>
-</li>
-<li><p class="first">Following the file declaration, the file grouping must be linked.  The following is the linking for the spatial solver module:</p>
+<li><p>All fortran files, except for the one being wrapped, must be declared in a CMakeLists.txt file located in the fortran source directory???</p></li>
+<li><p>Following the file declaration, the file grouping must be linked.  The following is the linking for the spatial solver module:</p>
 <blockquote>
 <div><p># compile and link library</p>
 <p>add_library(ahot ${AHOT_SRCS})</p>
 <p>target_link_libraries(ahot blas lapack)</p>
 </div></blockquote>
 </li>
-<li><p class="first">F2py wrapping must then be done in pyne/pyne/CMakeLists.txt.  The spatial solver wrapping (and linking) is done as following:</p>
-</li>
+<li><p>F2py wrapping must then be done in pyne/pyne/CMakeLists.txt.  The spatial solver wrapping (and linking) is done as following:</p></li>
 </ul>
 <p>add_custom_target(transport_spatial_methods ALL DEPENDS transport_spatial_methods${CMAKE_SHARED_LIBRARY_SUFFIX})</p>
 <p>add_custom_command(OUTPUT transport_spatial_methods${CMAKE_SHARED_LIBRARY_SUFFIX}</p>
@@ -127,6 +124,7 @@ f2py.  Pyne currently has no frameworks for a direct fortran API to be set up wi
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -150,17 +148,15 @@ f2py.  Pyne currently has no frameworks for a direct fortran API to be set up wi
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -194,7 +190,8 @@ f2py.  Pyne currently has no frameworks for a direct fortran API to be set up wi
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Integrating Fortran with PyNE</a></li> 
       </ul>
     </div>
     </div>
@@ -204,7 +201,7 @@ f2py.  Pyne currently has no frameworks for a direct fortran API to be set up wi
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

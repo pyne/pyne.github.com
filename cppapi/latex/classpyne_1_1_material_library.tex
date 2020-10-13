@@ -1,0 +1,373 @@
+\hypertarget{classpyne_1_1_material_library}{}\section{pyne\+:\+:Material\+Library Class Reference}
+\label{classpyne_1_1_material_library}\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef mat\+\_\+map\+::iterator \hyperlink{classpyne_1_1_material_library_abb2c5af112371df0cee26b7fe7d17d89}{iterator}
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a31912e6e89931bc31e0d96a8ca53adcb}\label{classpyne_1_1_material_library_a31912e6e89931bc31e0d96a8ca53adcb}} 
+typedef mat\+\_\+map\+::const\+\_\+iterator {\bfseries const\+\_\+iterator}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classpyne_1_1_material_library_a38e307d9c8c2f6266cc0a5b2f8f81bc5}{Material\+Library} (const std\+::string \&fname, const std\+::string \&datapath)
+\begin{DoxyCompactList}\small\item\em Constructor from file. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_ae6e7c80567660b1dae6f1fcc30c31b83}{from\+\_\+hdf5} (const std\+::string \&filename, const std\+::string \&datapath)
+\begin{DoxyCompactList}\small\item\em loads the pyne materials in map of name vs \hyperlink{classpyne_1_1_material}{Material} \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_aef44a4072ce57379d36798647f9b3c02}{from\+\_\+json} (const std\+::string \&filename)
+\begin{DoxyCompactList}\small\item\em loads the pyne materials in map of name vs \hyperlink{classpyne_1_1_material}{Material} / \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a0cf8c7a187dfcaf0ded4744515110be2}\label{classpyne_1_1_material_library_a0cf8c7a187dfcaf0ded4744515110be2}} 
+void {\bfseries load\+\_\+json} (Json\+::\+Value json)
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a7c09faa38f4006e699ccd119f91852b5}\label{classpyne_1_1_material_library_a7c09faa38f4006e699ccd119f91852b5}} 
+Json\+::\+Value {\bfseries dump\+\_\+json} ()
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a67279bc01566a0e5b2f0e42a9019fa94}\label{classpyne_1_1_material_library_a67279bc01566a0e5b2f0e42a9019fa94}} 
+void {\bfseries write\+\_\+json} (const std\+::string \&filename)
+\item 
+void \hyperlink{classpyne_1_1_material_library_abd87cb634714069e4e1636d61484bab2}{write\+\_\+hdf5} (const std\+::string \&filename, const std\+::string \&datapath=\char`\"{}/materials\char`\"{}, bool h5\+\_\+overwrite=false) const
+\begin{DoxyCompactList}\small\item\em Writes \hyperlink{classpyne_1_1_material_library}{Material\+Library} out to an H\+D\+F5 file. This happens according to protocol 1. Writting in a file already containing This might cause issue to read material already present in the datapath, and for the new materials if written in the same datapath. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_afceefe2623ad725faa0c6a256b66a0dc}{write\+\_\+hdf5\+\_\+nucpath} (hid\+\_\+t db, std\+::string nucpath) const
+\begin{DoxyCompactList}\small\item\em Writes this nucpath to an H\+D\+F5 file. This happens according to protocol 1. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_a9185526712a0bc540c9ca43b1fc02dd4}{merge} (const \hyperlink{classpyne_1_1_material_library}{pyne\+::\+Material\+Library} \&mat\+\_\+lib)
+\begin{DoxyCompactList}\small\item\em Merge a material library into the current one. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_afce914be857b938191b0322615bbd8f4}{merge} (\hyperlink{classpyne_1_1_material_library}{pyne\+::\+Material\+Library} $\ast$mat\+\_\+lib)
+\begin{DoxyCompactList}\small\item\em Merge a material library into the current one. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_a720dba099f6e634c234fc9d261e89e2d}{add\+\_\+material} (\hyperlink{classpyne_1_1_material}{pyne\+::\+Material} mat)
+\begin{DoxyCompactList}\small\item\em Add a material to the library. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_a4231a77add5e603588b3fe62531fe2dd}{add\+\_\+material} (const std\+::string \&mat\+\_\+name, const \hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \&mat)
+\begin{DoxyCompactList}\small\item\em Add a material to the library. \end{DoxyCompactList}\item 
+void \hyperlink{classpyne_1_1_material_library_a2b433e4d9c8d5c7cfeed915cd83f843c}{del\+\_\+material} (const std\+::string \&mat\+\_\+name)
+\begin{DoxyCompactList}\small\item\em remove a material of the Library by name \end{DoxyCompactList}\item 
+\hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \hyperlink{classpyne_1_1_material_library_a7f4a9f6b1122433bd2191cb54fc27e30}{get\+\_\+material} (const std\+::string \&mat\+\_\+name) const
+\begin{DoxyCompactList}\small\item\em remove a material of the Library by name \end{DoxyCompactList}\item 
+pyne\+::shr\+\_\+mat\+\_\+ptr \hyperlink{classpyne_1_1_material_library_a4d14394a369b4cecb07a5e875f7713d1}{get\+\_\+material\+\_\+ptr} (const std\+::string \&mat\+\_\+name) const
+\begin{DoxyCompactList}\small\item\em Get a material of the Library by name. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classpyne_1_1_material_library_a6e416ec04f0ba8e61889741ff20deac8}{ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number} (\hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \&mat) const
+\begin{DoxyCompactList}\small\item\em Return a material material number, ensure it exist if it does not exist build it using the material number, if material number is not defined, define it accordingly to the material library. \end{DoxyCompactList}\item 
+int \hyperlink{classpyne_1_1_material_library_a9fd496f65788d0fb140ebdd59163aa34}{ensure\+\_\+material\+\_\+number} (\hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \&mat) const
+\begin{DoxyCompactList}\small\item\em Return a material material number, ensure it exist as an int, if it exist as a string convert it into int and update the material. \end{DoxyCompactList}\item 
+pyne\+::mat\+\_\+map \hyperlink{classpyne_1_1_material_library_aac74b654cf331fada9b8030098c9f3ea}{get\+\_\+mat\+\_\+library} () const
+\begin{DoxyCompactList}\small\item\em Get the material library itself. \end{DoxyCompactList}\item 
+pyne\+::matname\+\_\+set \hyperlink{classpyne_1_1_material_library_a63cfe9b6595def305421d6eccf71f3fd}{get\+\_\+keylist} () const
+\begin{DoxyCompactList}\small\item\em Get the list of materials in the Library. \end{DoxyCompactList}\item 
+pyne\+::nuc\+\_\+set \hyperlink{classpyne_1_1_material_library_a1f4d1bc89f50f73e2397119e5cafa5f5}{get\+\_\+nuclist} () const
+\begin{DoxyCompactList}\small\item\em Get the list of nuclides in the Library. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a90e154cd937a445c99b469dffc4ba609}\label{classpyne_1_1_material_library_a90e154cd937a445c99b469dffc4ba609}} 
+\hyperlink{classpyne_1_1_material_library_abb2c5af112371df0cee26b7fe7d17d89}{iterator} {\bfseries begin} ()
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a5741939ca7eb32d1f7283a594ee13aa1}\label{classpyne_1_1_material_library_a5741939ca7eb32d1f7283a594ee13aa1}} 
+\hyperlink{classpyne_1_1_material_library_abb2c5af112371df0cee26b7fe7d17d89}{iterator} {\bfseries end} ()
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a0b351bff84d7f1ed0dcee93f362d1e05}\label{classpyne_1_1_material_library_a0b351bff84d7f1ed0dcee93f362d1e05}} 
+const\+\_\+iterator {\bfseries cbegin} () const
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_abfbbc85e5254a24a0d412628c8c8f137}\label{classpyne_1_1_material_library_abfbbc85e5254a24a0d412628c8c8f137}} 
+const\+\_\+iterator {\bfseries cend} () const
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a740e487d411e9c7825359cd39d37cc22}\label{classpyne_1_1_material_library_a740e487d411e9c7825359cd39d37cc22}} 
+std\+::size\+\_\+t {\bfseries size} () const
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a2fd7b38656ab2ff3fa0c8e1d0193c669}\label{classpyne_1_1_material_library_a2fd7b38656ab2ff3fa0c8e1d0193c669}} 
+bool {\bfseries emtpy} () const
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_afd063989aded77d8e16c3eb9986d29ef}\label{classpyne_1_1_material_library_afd063989aded77d8e16c3eb9986d29ef}} 
+std\+::size\+\_\+t {\bfseries count} (std\+::string mat\+\_\+name) const
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_a1bf3b87be3d6c30e783604fa1bce224f}\label{classpyne_1_1_material_library_a1bf3b87be3d6c30e783604fa1bce224f}} 
+std\+::shared\+\_\+ptr$<$ \hyperlink{classpyne_1_1_material}{Material} $>$ \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (const std\+::string \&k)
+\item 
+\mbox{\Hypertarget{classpyne_1_1_material_library_aa5eac668c5303785aa0d6870495792bc}\label{classpyne_1_1_material_library_aa5eac668c5303785aa0d6870495792bc}} 
+std\+::shared\+\_\+ptr$<$ \hyperlink{classpyne_1_1_material}{Material} $>$ \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (std\+::string \&\&k)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classpyne_1_1_material_library_abb2c5af112371df0cee26b7fe7d17d89}\label{classpyne_1_1_material_library_abb2c5af112371df0cee26b7fe7d17d89}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!iterator@{iterator}}
+\index{iterator@{iterator}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{iterator}{iterator}}
+{\footnotesize\ttfamily typedef mat\+\_\+map\+::iterator \hyperlink{classpyne_1_1_material_library_abb2c5af112371df0cee26b7fe7d17d89}{pyne\+::\+Material\+Library\+::iterator}}
+
+Set of method allowing \hyperlink{classpyne_1_1_material_library}{Material\+Library} to behave like a undordered\+\_\+map, pointing directly to the nested material\+\_\+library 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a38e307d9c8c2f6266cc0a5b2f8f81bc5}\label{classpyne_1_1_material_library_a38e307d9c8c2f6266cc0a5b2f8f81bc5}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!Material\+Library@{Material\+Library}}
+\index{Material\+Library@{Material\+Library}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{Material\+Library()}{MaterialLibrary()}}
+{\footnotesize\ttfamily pyne\+::\+Material\+Library\+::\+Material\+Library (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{fname,  }\item[{const std\+::string \&}]{datapath }\end{DoxyParamCaption})}
+
+
+
+Constructor from file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & path to file on disk, this file may be either in plaintext or H\+D\+F5 format. \\
+\hline
+{\em datapath} & Path to the materials in the file. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a720dba099f6e634c234fc9d261e89e2d}\label{classpyne_1_1_material_library_a720dba099f6e634c234fc9d261e89e2d}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!add\+\_\+material@{add\+\_\+material}}
+\index{add\+\_\+material@{add\+\_\+material}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{add\+\_\+material()}{add\_material()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::add\+\_\+material (\begin{DoxyParamCaption}\item[{\hyperlink{classpyne_1_1_material}{pyne\+::\+Material}}]{mat }\end{DoxyParamCaption})}
+
+
+
+Add a material to the library. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & material to add \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a4231a77add5e603588b3fe62531fe2dd}\label{classpyne_1_1_material_library_a4231a77add5e603588b3fe62531fe2dd}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!add\+\_\+material@{add\+\_\+material}}
+\index{add\+\_\+material@{add\+\_\+material}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{add\+\_\+material()}{add\_material()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::add\+\_\+material (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mat\+\_\+name,  }\item[{const \hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \&}]{mat }\end{DoxyParamCaption})}
+
+
+
+Add a material to the library. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat\+\_\+name} & name of the material to add(will overwrite material name if it already has one) \\
+\hline
+{\em mat} & material to add \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a2b433e4d9c8d5c7cfeed915cd83f843c}\label{classpyne_1_1_material_library_a2b433e4d9c8d5c7cfeed915cd83f843c}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!del\+\_\+material@{del\+\_\+material}}
+\index{del\+\_\+material@{del\+\_\+material}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{del\+\_\+material()}{del\_material()}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::del\+\_\+material (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mat\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+remove a material of the Library by name 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat\+\_\+name} & name of the material to remove \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a6e416ec04f0ba8e61889741ff20deac8}\label{classpyne_1_1_material_library_a6e416ec04f0ba8e61889741ff20deac8}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number@{ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number}}
+\index{ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number@{ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number()}{ensure\_material\_name\_and\_number()}}
+{\footnotesize\ttfamily std\+::string pyne\+::\+Material\+Library\+::ensure\+\_\+material\+\_\+name\+\_\+and\+\_\+number (\begin{DoxyParamCaption}\item[{\hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \&}]{mat }\end{DoxyParamCaption}) const}
+
+
+
+Return a material material number, ensure it exist if it does not exist build it using the material number, if material number is not defined, define it accordingly to the material library. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & material to check \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::string 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a9fd496f65788d0fb140ebdd59163aa34}\label{classpyne_1_1_material_library_a9fd496f65788d0fb140ebdd59163aa34}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!ensure\+\_\+material\+\_\+number@{ensure\+\_\+material\+\_\+number}}
+\index{ensure\+\_\+material\+\_\+number@{ensure\+\_\+material\+\_\+number}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{ensure\+\_\+material\+\_\+number()}{ensure\_material\_number()}}
+{\footnotesize\ttfamily int pyne\+::\+Material\+Library\+::ensure\+\_\+material\+\_\+number (\begin{DoxyParamCaption}\item[{\hyperlink{classpyne_1_1_material}{pyne\+::\+Material} \&}]{mat }\end{DoxyParamCaption}) const}
+
+
+
+Return a material material number, ensure it exist as an int, if it exist as a string convert it into int and update the material. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & material to check \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classpyne_1_1_material_library_ae6e7c80567660b1dae6f1fcc30c31b83}\label{classpyne_1_1_material_library_ae6e7c80567660b1dae6f1fcc30c31b83}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!from\+\_\+hdf5@{from\+\_\+hdf5}}
+\index{from\+\_\+hdf5@{from\+\_\+hdf5}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{from\+\_\+hdf5()}{from\_hdf5()}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::from\+\_\+hdf5 (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename,  }\item[{const std\+::string \&}]{datapath }\end{DoxyParamCaption})}
+
+
+
+loads the pyne materials in map of name vs \hyperlink{classpyne_1_1_material}{Material} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path on disk to the H\+D\+F5 file. \\
+\hline
+{\em datapath} & Path to the materials in the file. \\
+\hline
+{\em protocol} & Flag for layout of material on disk. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_aef44a4072ce57379d36798647f9b3c02}\label{classpyne_1_1_material_library_aef44a4072ce57379d36798647f9b3c02}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!from\+\_\+json@{from\+\_\+json}}
+\index{from\+\_\+json@{from\+\_\+json}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{from\+\_\+json()}{from\_json()}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::from\+\_\+json (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
+
+
+
+loads the pyne materials in map of name vs \hyperlink{classpyne_1_1_material}{Material} / 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path on disk to the json file. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a63cfe9b6595def305421d6eccf71f3fd}\label{classpyne_1_1_material_library_a63cfe9b6595def305421d6eccf71f3fd}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!get\+\_\+keylist@{get\+\_\+keylist}}
+\index{get\+\_\+keylist@{get\+\_\+keylist}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{get\+\_\+keylist()}{get\_keylist()}}
+{\footnotesize\ttfamily pyne\+::matname\+\_\+set pyne\+::\+Material\+Library\+::get\+\_\+keylist (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the list of materials in the Library. 
+
+\begin{DoxyReturn}{Returns}
+std\+::set$<$std\+::string$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classpyne_1_1_material_library_aac74b654cf331fada9b8030098c9f3ea}\label{classpyne_1_1_material_library_aac74b654cf331fada9b8030098c9f3ea}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!get\+\_\+mat\+\_\+library@{get\+\_\+mat\+\_\+library}}
+\index{get\+\_\+mat\+\_\+library@{get\+\_\+mat\+\_\+library}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{get\+\_\+mat\+\_\+library()}{get\_mat\_library()}}
+{\footnotesize\ttfamily pyne\+::mat\+\_\+map pyne\+::\+Material\+Library\+::get\+\_\+mat\+\_\+library (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the material library itself. 
+
+\begin{DoxyReturn}{Returns}
+std\+::map$<$std\+::string, pyne\+::\+Material$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a7f4a9f6b1122433bd2191cb54fc27e30}\label{classpyne_1_1_material_library_a7f4a9f6b1122433bd2191cb54fc27e30}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!get\+\_\+material@{get\+\_\+material}}
+\index{get\+\_\+material@{get\+\_\+material}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{get\+\_\+material()}{get\_material()}}
+{\footnotesize\ttfamily \hyperlink{classpyne_1_1_material}{pyne\+::\+Material} pyne\+::\+Material\+Library\+::get\+\_\+material (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mat\+\_\+name }\end{DoxyParamCaption}) const}
+
+
+
+remove a material of the Library by name 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat\+\_\+name} & name of the material to remove \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a4d14394a369b4cecb07a5e875f7713d1}\label{classpyne_1_1_material_library_a4d14394a369b4cecb07a5e875f7713d1}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!get\+\_\+material\+\_\+ptr@{get\+\_\+material\+\_\+ptr}}
+\index{get\+\_\+material\+\_\+ptr@{get\+\_\+material\+\_\+ptr}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{get\+\_\+material\+\_\+ptr()}{get\_material\_ptr()}}
+{\footnotesize\ttfamily pyne\+::shr\+\_\+mat\+\_\+ptr pyne\+::\+Material\+Library\+::get\+\_\+material\+\_\+ptr (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{mat\+\_\+name }\end{DoxyParamCaption}) const}
+
+
+
+Get a material of the Library by name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat\+\_\+name} & name of the material to return \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a1f4d1bc89f50f73e2397119e5cafa5f5}\label{classpyne_1_1_material_library_a1f4d1bc89f50f73e2397119e5cafa5f5}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!get\+\_\+nuclist@{get\+\_\+nuclist}}
+\index{get\+\_\+nuclist@{get\+\_\+nuclist}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{get\+\_\+nuclist()}{get\_nuclist()}}
+{\footnotesize\ttfamily pyne\+::nuc\+\_\+set pyne\+::\+Material\+Library\+::get\+\_\+nuclist (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the list of nuclides in the Library. 
+
+\begin{DoxyReturn}{Returns}
+std\+::set$<$int$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classpyne_1_1_material_library_a9185526712a0bc540c9ca43b1fc02dd4}\label{classpyne_1_1_material_library_a9185526712a0bc540c9ca43b1fc02dd4}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!merge@{merge}}
+\index{merge@{merge}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{merge()}{merge()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::merge (\begin{DoxyParamCaption}\item[{const \hyperlink{classpyne_1_1_material_library}{pyne\+::\+Material\+Library} \&}]{mat\+\_\+lib }\end{DoxyParamCaption})}
+
+
+
+Merge a material library into the current one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat\+\_\+library} & pyne material library to merge \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_afce914be857b938191b0322615bbd8f4}\label{classpyne_1_1_material_library_afce914be857b938191b0322615bbd8f4}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!merge@{merge}}
+\index{merge@{merge}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{merge()}{merge()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::merge (\begin{DoxyParamCaption}\item[{\hyperlink{classpyne_1_1_material_library}{pyne\+::\+Material\+Library} $\ast$}]{mat\+\_\+lib }\end{DoxyParamCaption})}
+
+
+
+Merge a material library into the current one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat\+\_\+library} & pointer to the pyne material library to merge \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_abd87cb634714069e4e1636d61484bab2}\label{classpyne_1_1_material_library_abd87cb634714069e4e1636d61484bab2}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!write\+\_\+hdf5@{write\+\_\+hdf5}}
+\index{write\+\_\+hdf5@{write\+\_\+hdf5}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{write\+\_\+hdf5()}{write\_hdf5()}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::write\+\_\+hdf5 (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename,  }\item[{const std\+::string \&}]{datapath = {\ttfamily \char`\"{}/materials\char`\"{}},  }\item[{bool}]{h5\+\_\+overwrite = {\ttfamily false} }\end{DoxyParamCaption}) const}
+
+
+
+Writes \hyperlink{classpyne_1_1_material_library}{Material\+Library} out to an H\+D\+F5 file. This happens according to protocol 1. Writting in a file already containing This might cause issue to read material already present in the datapath, and for the new materials if written in the same datapath. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path on disk to the H\+D\+F5 file. \\
+\hline
+{\em datapath} & Path to the the material in the file. \\
+\hline
+{\em h5\+\_\+overwrite} & bool to decide if existing path should be overwritten \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpyne_1_1_material_library_afceefe2623ad725faa0c6a256b66a0dc}\label{classpyne_1_1_material_library_afceefe2623ad725faa0c6a256b66a0dc}} 
+\index{pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}!write\+\_\+hdf5\+\_\+nucpath@{write\+\_\+hdf5\+\_\+nucpath}}
+\index{write\+\_\+hdf5\+\_\+nucpath@{write\+\_\+hdf5\+\_\+nucpath}!pyne\+::\+Material\+Library@{pyne\+::\+Material\+Library}}
+\subsubsection{\texorpdfstring{write\+\_\+hdf5\+\_\+nucpath()}{write\_hdf5\_nucpath()}}
+{\footnotesize\ttfamily void pyne\+::\+Material\+Library\+::write\+\_\+hdf5\+\_\+nucpath (\begin{DoxyParamCaption}\item[{hid\+\_\+t}]{db,  }\item[{std\+::string}]{nucpath }\end{DoxyParamCaption}) const}
+
+
+
+Writes this nucpath to an H\+D\+F5 file. This happens according to protocol 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em db} & H\+D\+F5 id for the open H\+D\+F5 file. \\
+\hline
+{\em nucpath} & Path to the nuclides list in the file. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/mouginot/work/app/pyne/src/material\+\_\+library.\+h\item 
+/home/mouginot/work/app/pyne/src/material\+\_\+library.\+cpp\end{DoxyCompactItemize}

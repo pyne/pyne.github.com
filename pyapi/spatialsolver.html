@@ -1,27 +1,26 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Spatialsolver Support – pyne.spatialsolver &#8212; PyNE 0.5.11</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spatialsolver Support – pyne.spatialsolver &#8212; PyNE 0.7.1</title>
     <link rel="stylesheet" href="../_static/pyne.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../_static/cloud.base.js"></script>
-    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/jquery.cookie.js"></script>
+    <script src="../_static/cloud.base.js"></script>
+    <script src="../_static/cloud.js"></script>
     <link rel="shortcut icon" href="../_static/pyne_icon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -53,7 +52,8 @@ if(ga_enabled){
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Spatialsolver Support – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.spatialsolver</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -71,30 +71,31 @@ solver is its own unique nodal method.  The solvers included in this module are 
 can be found in the <a class="reference internal" href="../theorymanual/spatial_solvers.html#theorymanual-spatialsolver"><span class="std std-ref">theory documentation</span></a>.</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><strong>AHOTN-LN</strong>: Arbitrarily higher order transport method of the nodal type
-linear-nodal method</li>
-<li><strong>AHOTN-LL</strong>:  Arbitrarily higher order transport method of the nodal type
-linear-linear method</li>
-<li><strong>AHOTN-NEFD</strong>: Arbitrarily higher order transport method of the nodal type
-that makes use of the unknown nodal flux moments (NEFD algorithm).</li>
-<li><strong>DGFEM-LD</strong>: The Discontinuous Galerkin Finite Element Method (DGFEM) with
-a linear discontinuous (LD) approximation for angular flux.</li>
-<li><strong>DGFEM-DENSE</strong>: The Discontinuous Galerkin Finite Element Method (DGFEM)
-that use Lagrange polynomials to create a function space in each  dimension.</li>
-<li><strong>DGFEM-LAGRANGE</strong>:   The Discontinuous Galerkin Finite Element Method (DGFEM)
-uses Lagrange polynomials to create a function space in each dimension.</li>
-<li><strong>SCTSTEP</strong>: SCT Step algorithm uses a step approximation in all cells that
-are intersected by lines and planes of non-smoothness.</li>
+<li><p><strong>AHOTN-LN</strong>: Arbitrarily higher order transport method of the nodal type
+linear-nodal method</p></li>
+<li><p><strong>AHOTN-LL</strong>:  Arbitrarily higher order transport method of the nodal type
+linear-linear method</p></li>
+<li><p><strong>AHOTN-NEFD</strong>: Arbitrarily higher order transport method of the nodal type
+that makes use of the unknown nodal flux moments (NEFD algorithm).</p></li>
+<li><p><strong>DGFEM-LD</strong>: The Discontinuous Galerkin Finite Element Method (DGFEM) with
+a linear discontinuous (LD) approximation for angular flux.</p></li>
+<li><p><strong>DGFEM-DENSE</strong>: The Discontinuous Galerkin Finite Element Method (DGFEM)
+that use Lagrange polynomials to create a function space in each  dimension.</p></li>
+<li><p><strong>DGFEM-LAGRANGE</strong>:   The Discontinuous Galerkin Finite Element Method (DGFEM)
+uses Lagrange polynomials to create a function space in each dimension.</p></li>
+<li><p><strong>SCTSTEP</strong>: SCT Step algorithm uses a step approximation in all cells that
+are intersected by lines and planes of non-smoothness.</p></li>
 </ol>
 </div></blockquote>
 <div class="section" id="spatialsolver-api">
 <h2>Spatialsolver API<a class="headerlink" href="#spatialsolver-api" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div>As these are complicated solvers, they require a large amount of input data
+<div><p>As these are complicated solvers, they require a large amount of input data
 supplied by the user.  This information needs to be entered as a Python
 dictionary. Of the many key-pair values listed below, most are required, but
 some are optional.  The optional entries will be overridden by default values
-if not present/specified.</div></blockquote>
+if not present/specified.</p>
+</div></blockquote>
 </div>
 <div class="section" id="input-dictionary-entries">
 <h2>Input Dictionary Entries<a class="headerlink" href="#input-dictionary-entries" title="Permalink to this headline">¶</a></h2>
@@ -423,23 +424,21 @@ The quadrature order may only be an even number!
 </div>
 <div class="section" id="source-file-formatting">
 <h3>Source File Formatting<a class="headerlink" href="#source-file-formatting" title="Permalink to this headline">¶</a></h3>
-<dl class="docutils">
-<dt>The spatial solver dictionary requires multiple input binary source files.  The required files are the following:</dt>
-<dd><ol class="first last arabic simple">
-<li>XS file</li>
-<li>Source input file</li>
-<li>BC input file</li>
-<li>Quad file (optional)</li>
+<dl class="simple">
+<dt>The spatial solver dictionary requires multiple input binary source files.  The required files are the following:</dt><dd><ol class="arabic simple">
+<li><p>XS file</p></li>
+<li><p>Source input file</p></li>
+<li><p>BC input file</p></li>
+<li><p>Quad file (optional)</p></li>
 </ol>
 </dd>
 </dl>
 <p>Here is a brief description of how each should be (or is) formatted.</p>
 <blockquote>
-<div><dl class="docutils">
-<dt>(1.) XS file:</dt>
-<dd><p class="first">The xs file contains information about the cross sections for materials used.  Each material should be assigned an ID,
+<div><dl>
+<dt>(1.) XS file:</dt><dd><p>The xs file contains information about the cross sections for materials used.  Each material should be assigned an ID,
 and the cross section data should be in the following format.  It should be saved as either an extensionless or .txt file.</p>
-<blockquote class="last">
+<blockquote>
 <div><p>! Cross section file</p>
 <blockquote>
 <div><p>! Material # 1</p>
@@ -452,8 +451,7 @@ and the cross section data should be in the following format.  It should be save
 </div></blockquote>
 </div></blockquote>
 </dd>
-<dt>(2.) Source file:</dt>
-<dd><p class="first">The source file is a file containing source information for each cell.  The formatting is dependant on the solver
+<dt>(2.) Source file:</dt><dd><p>The source file is a file containing source information for each cell.  The formatting is dependant on the solver
 you select.</p>
 <p>For the AHOTN and DGFEM solvers, the source file should be formatted as following.
 There should be ng * nx * ny * nz * lambda * lambda * lambda source entries present.
@@ -497,23 +495,16 @@ The source entries should be in the following order:</p>
 <p>…</p>
 <p>(.,.,.,.,.,.,.)</p>
 </div></blockquote>
-<dl class="docutils">
-<dt>When being read in, they will be iterated over by the following loop:</dt>
-<dd><dl class="first last docutils">
-<dt>DO g=1,ng</dt>
-<dd><dl class="first last docutils">
-<dt>DO ix=1,nx</dt>
-<dd><dl class="first last docutils">
-<dt>DO iy=1,ny</dt>
-<dd><dl class="first last docutils">
-<dt>DO iz=1,nz</dt>
-<dd><dl class="first last docutils">
-<dt>DO jx=0,lambda</dt>
-<dd><dl class="first last docutils">
-<dt>DO jy=0,lambda</dt>
-<dd><dl class="first last docutils">
-<dt>DO jz=0,lambda</dt>
-<dd>READ(12) s(jx,jy,jz,ix,iy,iz,g)</dd>
+<dl class="simple">
+<dt>When being read in, they will be iterated over by the following loop:</dt><dd><dl class="simple">
+<dt>DO g=1,ng</dt><dd><dl class="simple">
+<dt>DO ix=1,nx</dt><dd><dl class="simple">
+<dt>DO iy=1,ny</dt><dd><dl class="simple">
+<dt>DO iz=1,nz</dt><dd><dl class="simple">
+<dt>DO jx=0,lambda</dt><dd><dl class="simple">
+<dt>DO jy=0,lambda</dt><dd><dl class="simple">
+<dt>DO jz=0,lambda</dt><dd><p>READ(12) s(jx,jy,jz,ix,iy,iz,g)</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -565,17 +556,13 @@ The source entries should be in the following order:</p>
 <p>(2,2,.,.)</p>
 <p>(.,.,.,.)</p>
 </div></blockquote>
-<dl class="last docutils">
-<dt>When being read in, they will be iterated over by the following loop:</dt>
-<dd><dl class="first last docutils">
-<dt>DO g=1,ng</dt>
-<dd><dl class="first last docutils">
-<dt>DO ix=1,nx</dt>
-<dd><dl class="first last docutils">
-<dt>DO iy=1,ny</dt>
-<dd><dl class="first last docutils">
-<dt>DO iz=1,nz</dt>
-<dd>READ(12) s(ix,iy,iz,g,1,1,1)</dd>
+<dl class="simple">
+<dt>When being read in, they will be iterated over by the following loop:</dt><dd><dl class="simple">
+<dt>DO g=1,ng</dt><dd><dl class="simple">
+<dt>DO ix=1,nx</dt><dd><dl class="simple">
+<dt>DO iy=1,ny</dt><dd><dl class="simple">
+<dt>DO iz=1,nz</dt><dd><p>READ(12) s(ix,iy,iz,g,1,1,1)</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -586,12 +573,11 @@ The source entries should be in the following order:</p>
 </dd>
 </dl>
 </dd>
-<dt>(3.) Boundary Condition file (only needed if one of the boundary conditions specified above is 2):</dt>
-<dd>The boundary condition file contains information about the incoming scalar flux on each face of each cell.</dd>
-<dt>(4.) Quadrature file (optional):</dt>
-<dd>If the quadrature type you selected was 2, a quadrature file is required for running the solver.  If the quadrature type is not 2, no quadrature file is necessary.</dd>
-<dt>(5.) Flux output file (output &amp; optional):</dt>
-<dd><p class="first">If a output file name was specified, the final flux will be printed to that file in the following format.  Note that all flux values will be printed as a fortran REAL, and the termination key will be 0.0d0 (to indicate the end of the flux info)</p>
+<dt>(3.) Boundary Condition file (only needed if one of the boundary conditions specified above is 2):</dt><dd><p>The boundary condition file contains information about the incoming scalar flux on each face of each cell.</p>
+</dd>
+<dt>(4.) Quadrature file (optional):</dt><dd><p>If the quadrature type you selected was 2, a quadrature file is required for running the solver.  If the quadrature type is not 2, no quadrature file is necessary.</p>
+</dd>
+<dt>(5.) Flux output file (output &amp; optional):</dt><dd><p>If a output file name was specified, the final flux will be printed to that file in the following format.  Note that all flux values will be printed as a fortran REAL, and the termination key will be 0.0d0 (to indicate the end of the flux info)</p>
 <p>AHOTN Solvers:  Unformatted file, with all mesh scalar flux values in the following order:</p>
 <p>NOTE ORDERING: flux(ng,nx,ny,nz,jx,jy,jz)</p>
 <blockquote>
@@ -619,10 +605,9 @@ The source entries should be in the following order:</p>
 <p>(ng,.,.,.,.,.,.)</p>
 <p>…</p>
 </div></blockquote>
-<dl class="docutils">
-<dt>DGFEM Solvers: Unformatted file, with all mesh scalar flux values in the following order:</dt>
-<dd><p class="first">NOTE ORDERING: flux(ng,nx,ny,nz,spatial_order,spatial_order,spatial_order)</p>
-<blockquote class="last">
+<dl>
+<dt>DGFEM Solvers: Unformatted file, with all mesh scalar flux values in the following order:</dt><dd><p>NOTE ORDERING: flux(ng,nx,ny,nz,spatial_order,spatial_order,spatial_order)</p>
+<blockquote>
 <div><p>(0,0,0,0,0,0,0)</p>
 <p>(0,0,0,0,0,0,1)</p>
 <p>…</p>
@@ -655,12 +640,12 @@ The source entries should be in the following order:</p>
 </div></blockquote>
 </dd>
 </dl>
-<p class="last">SCTSTEP Solvers: SCTSTEP Currently not supported.  Nothing will be printed to file (although file may still be created).</p>
+<p>SCTSTEP Solvers: SCTSTEP Currently not supported.  Nothing will be printed to file (although file may still be created).</p>
 </dd>
 </dl>
 </div></blockquote>
 <p>All functionality may be found in the <code class="docutils literal notranslate"><span class="pre">spatialsolver</span></code> package:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="k">import</span> <span class="n">spatialsolver</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyne</span> <span class="kn">import</span> <span class="n">spatialsolver</span>
 </pre></div>
 </div>
 </div>
@@ -668,6 +653,7 @@ The source entries should be in the following order:</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -678,7 +664,7 @@ The source entries should be in the following order:</p>
         </a></p><div class="sphinx-toc sphinxlocaltoc">
     <h3><a href="../index.html">Page contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Spatialsolver Support – <code class="docutils literal notranslate"><span class="pre">pyne.spatialsolver</span></code></a><ul>
+<li><a class="reference internal" href="#">Spatialsolver Support – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.spatialsolver</span></code></a><ul>
 <li><a class="reference internal" href="#spatialsolver-api">Spatialsolver API</a></li>
 <li><a class="reference internal" href="#input-dictionary-entries">Input Dictionary Entries</a></li>
 <li><a class="reference internal" href="#output-dictionary-entries">Output Dictionary Entries</a><ul>
@@ -692,17 +678,15 @@ The source entries should be in the following order:</p>
 
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
     
@@ -736,7 +720,8 @@ The source entries should be in the following order:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
     <li><a href="../index.html">PyNE</a> &#187;</li>
- 
+
+        <li class="nav-item nav-item-this"><a href="">Spatialsolver Support – <code class="xref py py-mod docutils literal notranslate"><span class="pre">pyne.spatialsolver</span></code></a></li> 
       </ul>
     </div>
     </div>
@@ -746,7 +731,7 @@ The source entries should be in the following order:</p>
         
     <div class="footer" role="contentinfo">
         &#169; Copyright 2011-2019, The PyNE Development Team.
-      Last updated on Jun 11, 2019.
+      Last updated on Oct 13, 2020.
     </div><script type="text/javascript">
     if(ga_enabled){
         document.write("<div class=\"footer\">This page uses <a href=\"http://analytics.google.com\">Google Analytics</a> to collect statistics. ");

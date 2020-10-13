@@ -11,7 +11,7 @@ var searchData=
   ['_5fload_5fatomic_5fmass_5fmap',['_load_atomic_mass_map',['../namespacepyne.html#afc84ecca5a23b416bd3bf42b0756e68e',1,'pyne']]],
   ['_5fload_5fatomic_5fmass_5fmap_5fmemory',['_load_atomic_mass_map_memory',['../namespacepyne.html#a17db902268741d241fcc9d57ff7eef13',1,'pyne']]],
   ['_5fload_5fcomp_5fprotocol0',['_load_comp_protocol0',['../classpyne_1_1_material.html#a53c124ac70017813b4893a2f7fe3db6a',1,'pyne::Material']]],
-  ['_5fload_5fcomp_5fprotocol1',['_load_comp_protocol1',['../classpyne_1_1_material.html#a8b46ba10cebb01cd36a5379e363267b1',1,'pyne::Material']]],
+  ['_5fload_5fcomp_5fprotocol1',['_load_comp_protocol1',['../classpyne_1_1_material.html#a8b46ba10cebb01cd36a5379e363267b1',1,'pyne::Material::_load_comp_protocol1(hid_t db, std::string datapath, int row)'],['../classpyne_1_1_material.html#af8bdc1a9e08c188dde5683548df5b8c2',1,'pyne::Material::_load_comp_protocol1(hid_t db, std::string datapath, std::string nucpath, int row)']]],
   ['_5fload_5fdata_3c_20alpha_20_3e',['_load_data&lt; alpha &gt;',['../namespacepyne.html#a673b0b45ebe0592568a4562122a18bbb',1,'pyne']]],
   ['_5fload_5fdata_3c_20beta_20_3e',['_load_data&lt; beta &gt;',['../namespacepyne.html#ac03b565590e9d917e4f93d65dac36db6',1,'pyne']]],
   ['_5fload_5fdata_3c_20decay_20_3e',['_load_data&lt; decay &gt;',['../namespacepyne.html#a07e79f58de58caf7c09cd643dcd2155a',1,'pyne']]],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wimsdfpy',['wimsdfpy',['../namespacepyne.html#a8346e297aba51dd65836af1b9b1e22c6',1,'pyne']]]
+  ['tally_5fstruct',['tally_struct',['../namespacepyne.html#a50f65e8f1e109c362c1cd737d0627941',1,'pyne']]]
 ];
